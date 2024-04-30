@@ -1,0 +1,1 @@
+# Sizing for AI Applications on Nutanix
