@@ -14,6 +14,26 @@ The site contains the following:
 
 <div class="grid cards" markdown>
 
+-   :material-table-column-plus-after:{ .lg .middle } __Set up Nutanix Cluster in an hour__
+
+    ---
+
+    You can setup a Nutanix cluster in under an hour using Foundation to prepare your infrastructure
+
+    [:octicons-arrow-right-24: Setup a Nutanix cluster](https://nhtd1.howntnx.win/diyfoundation/diyfoundation/)
+  
+    [:octicons-arrow-right-24: Deploy Prism Central](https://nhtd1.howntnx.win/pcdeploy/pcdeploy/)
+
+-   :material-format-font:{ .lg .middle } __AI Apps Design on Nutanix__
+
+    ---
+
+    Start here to read about gathering requirements and considering general design considerations.
+
+    [:octicons-arrow-right-24: Start designing](#)
+
+    [:octicons-arrow-right-24: Start sizing :material-size-s::material-size-m: :material-size-l: ](#)
+
 -   :material-clock-fast:{ .lg .middle } __Set up LLM on Nutanix in 5 minutes__
 
     ---
@@ -24,17 +44,6 @@ The site contains the following:
     This site will also take you through implementation.
 
     [:octicons-arrow-right-24: Quick start](#)
-
-
--   :material-format-font:{ .lg .middle } __AI and LLM Design on Nutanix__
-
-    ---
-
-    Start here to read about gathering requirements and considering general design considerations.
-
-    [:octicons-arrow-right-24: Start designing](#)
-
-    [:octicons-arrow-right-24: Start sizing :material-size-s::material-size-m: :material-size-l: ](#)
 
 -   :material-clock-fast:{ .lg .middle } __Set up Support GPT in 15 minutes__
 
@@ -47,15 +56,6 @@ The site contains the following:
 
     [:octicons-arrow-right-24: Contributing](contributing.md)
 
--   :material-table-column-plus-after:{ .lg .middle } __Set up Nutanix cluster in an hour__
-
-    ---
-
-    You can setup a Nutanix cluster in under an hour using Foundation to prepare your infrastructure
-
-    [:octicons-arrow-right-24: Setup a Nutanix cluster](https://nhtd1.howntnx.win/diyfoundation/diyfoundation/)
-  
-    [:octicons-arrow-right-24: Deploy Prism Central](https://nhtd1.howntnx.win/pcdeploy/pcdeploy/)
 
 -   :fontawesome-brands-markdown:{ .lg .middle } __It's just Markdown__
 
@@ -71,7 +71,7 @@ The site contains the following:
 
 <div class="grid" markdown>
 
-:simple-nutanix: __Nutanix__ solutions used in this project
+:simple-nutanix: __Nutanix__ components used in this project
 { .card }
 
 :material-hammer-screwdriver: [__Open Source Tools__](tools/tools.md) used in this projects
