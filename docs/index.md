@@ -14,16 +14,6 @@ The site contains the following:
 
 <div class="grid cards" markdown>
 
--   :material-table-column-plus-after:{ .lg .middle } __Set up Nutanix Cluster in an hour__
-
-    ---
-
-    You can setup a Nutanix cluster in under an hour using Foundation to prepare your infrastructure
-
-    [:octicons-arrow-right-24: Setup a Nutanix cluster](https://nhtd1.howntnx.win/diyfoundation/diyfoundation/)
-  
-    [:octicons-arrow-right-24: Deploy Prism Central](https://nhtd1.howntnx.win/pcdeploy/pcdeploy/)
-
 -   :material-format-font:{ .lg .middle } __AI Apps Design on Nutanix__
 
     ---
@@ -32,29 +22,35 @@ The site contains the following:
 
     [:octicons-arrow-right-24: Start designing](#)
 
-    [:octicons-arrow-right-24: Start sizing :material-size-s::material-size-m: :material-size-l: ](#)
+    [:octicons-arrow-right-24: Start sizing :material-size-s: :material-size-m: :material-size-l: ](#)
+
+-   :material-table-column-plus-after:{ .lg .middle } __Set up Nutanix Cluster in an hour__
+
+    ---
+
+    You can setup a Nutanix cluster in under an hour using Foundation to prepare your infrastructure.
+
+    [:octicons-arrow-right-24: Setup a Nutanix cluster](https://nhtd1.howntnx.win/diyfoundation/diyfoundation/)
+  
+    [:octicons-arrow-right-24: Deploy Prism Central](https://nhtd1.howntnx.win/pcdeploy/pcdeploy/)
 
 -   :material-clock-fast:{ .lg .middle } __Set up LLM on Nutanix in 5 minutes__
 
     ---
 
-    Install and host a LLM on Nutanix platform using this framework in this [repo](https://github.com/jesse-gonzalez/nai-llm-fleet-infra). Get up
-    and running in minutes
+    Install and host a LLM on Nutanix platform using this framework in this [repo](https://github.com/jesse-gonzalez/nai-llm-fleet-infra). Get up and running in minutes.
 
     This site will also take you through implementation.
 
-    [:octicons-arrow-right-24: Quick start](#)
+    [:octicons-arrow-right-24: Start](#)
 
 -   :material-clock-fast:{ .lg .middle } __Set up Support GPT in 15 minutes__
 
     ---
 
-    Install and host a LLM on Nutanix platform using this framework in this [repo](https://github.com/jesse-gonzalez/nai-llm-fleet-infra). Get up
-    and running in minutes
+    Install and host a Support GPT application on Nutanix platform using this framework in this [repo](https://github.com/jesse-gonzalez/nai-llm-fleet-infra). 
 
-    This site will also take you through implementation.
-
-    [:octicons-arrow-right-24: Contributing](contributing.md)
+    [:octicons-arrow-right-24: Start](contributing.md)
 
 
 -   :fontawesome-brands-markdown:{ .lg .middle } __It's just Markdown__
