@@ -13,7 +13,8 @@ nav:
       - Conceptual Design: conceptual/conceptual.md
       - Physical Design and Components: components/components.md
       - Sizing: sizing/sizing.md
-    - Infra Preparation: infra/infra.md
+    - Infra Preparation: 
+      - K8S clusters: infra/infra.md
     - Solutions:
       - LLM: llmmgmt/llmmgmt.md
       - SupportGPT: supportgpt/supportgpt.md
