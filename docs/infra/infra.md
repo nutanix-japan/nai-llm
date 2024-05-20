@@ -8,7 +8,7 @@ This section will expand to other available Kubernetes implementations on Nutani
 
 We will use Infrastucture as Code framework to deploy NKE kubernetes clusters. 
 
-## Pre-requsitis
+## Pre-requisites
 
 - NKE is enabled on Nutanix Prism Central
 - NKE is at version 1.8 (updated through LCM)
