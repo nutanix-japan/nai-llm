@@ -2,32 +2,59 @@
 
 ## Sizing LLM Infrastructures: Key Considerations
 
-As large language models (LLMs) continue to grow in size and complexity, ensuring adequate infrastructure is crucial for efficient deployment and performance. This blog explores key considerations when sizing LLM infrastructures, including model storage, GPU requirements, networking throughput, and optimization techniques.
+As large language models (LLMs) continue to grow in size and complexity, ensuring adequate infrastructure is crucial for efficient deployment and performance. This section explores key considerations when sizing LLM infrastructures, including model storage, GPU requirements, networking throughput, and optimization techniques.
+
+## Common Application and Generative AI Use Cases
+
+LLMs are versatile and can be employed in a wide range of AI tasks and applications, including:
+
+1. **Natural Language Processing (NLP)**: Language translation, text summarization, sentiment analysis, question answering, and text generation.
+
+2. **Conversational AI**: Building chatbots, virtual assistants, and dialogue systems for customer service, e-commerce, and personal assistance.
+
+3. **Content Creation**: Generating creative content such as articles, stories, scripts, and marketing copy.
+
+4. **Code Generation**: Assisting developers by generating code snippets, suggesting improvements, and explaining code functionality.
+
+5. **Multimodal AI**: Combining language models with computer vision and speech recognition for tasks like image captioning, video understanding, and audio transcription.
+
+6. **Scientific Research**: Analyzing and summarizing large volumes of scientific literature, assisting in hypothesis generation, and supporting drug discovery efforts.
 
 ### LLM Model Sizes
 
 Recent LLM models like Llama2, Llama3, Mixtral-7B, and Mixtral-8x7B have pushed the boundaries of model size and complexity. These models can range from several gigabytes to hundreds of gigabytes in size, posing significant challenges for storage and computational resources.
 
+For a list of currently supported validated models with Nutanix GPT-in-a-Box (0.2) on Kubernetes, see https://opendocs.nutanix.com/gpt-in-a-box/kubernetes/v0.2/validated_models/
+
 #### Model Storage
 
-Storing these massive models requires substantial storage infrastructure. For example, the Llama2 model is approximately 7GB, while the Mixtral-8x7B model can reach up to 200GB or more. Solid-state drives (SSDs) or high-performance storage arrays are recommended for optimal performance and low latency.
+Storing these massive models requires substantial storage infrastructure. For example, the Llama2 model is approximately 7GB, while the Mixtral-8x7B model can reach up to 200GB or more.
 
-When sizing storage infrastructure, consider the following factors:
+Solid-state (SSDs) or Non-Volatile Memory (NVMe) drives are highly recommended for optimal performance and low latency when accessing the underlying model storage.
+
+As with any workload running on Nutanix Infrastructure, sizing the underlying storage infrastructure should consider the following factors:
 
 - Total model size
 - Number of models to be stored
 - Redundancy and backup requirements
 - Future growth and scalability needs
 
-Additionally, the choice of storage solution plays a crucial role in performance and accessibility. Here are some options to consider:
+Additionally, for LLM deployments and AI applications leveraging Retrieval-Augmented Generation (RAG) pipelines should take into consideration additional storage capacity that may be required to handle scenarios that incorporate:
 
-1. **Network File System (NFS) (i.e., Nutanix Files)**: NFS is a traditional file sharing protocol that allows multiple systems to access the same storage over a network. It provides low latency and high throughput but may require additional infrastructure and management overhead.
+- **Vector Databases**: Deploying a vector database like [Milvus](https://milvus.io/docs/prerequisite-helm.md) to store and retrieve relevant information from unstructured data sources should be sized accordingly to the vendor's hardware recommendations when running on Kubernetes. 
+- **Data Ingestion**: Workloads for importing and preprocessing various unstructured data sources into solutions such as [Nutanix Objects](https://www.nutanix.com/products/objects), such as documents, PDFs, web pages, or misc. multimedia content.
 
-2. **S3 Object Storage (i.e., Nutanix Objects)**: Nutanix Objects is a software-defined object storage solution that offers scalable and cost-effective storage for large datasets. It can be integrated with Nutanix's hyperconverged infrastructure (HCI) platform, providing a unified storage and compute solution.
+Additionally, the choice of the underlying storage technology being leveraged for model storage plays a crucial role in performance and accessibility. 
 
-3. **OCI Container Image Registry (e.g., Harbor, JFrog Artifactory)**: A private OCI container registry can be used to store and distribute LLM models as container images. This approach can simplify model deployment and management, especially in containerized environments.
+Here are some options to consider:
 
-The choice of storage solution should be based on factors such as performance requirements, scalability needs, and integration with existing infrastructure.
+1. **Network File System (NFS) (i.e., [Nutanix Files](https://www.nutanix.com/products/files))**: NFS is a traditional file sharing protocol that allows multiple systems to access the same storage over a network. It provides low latency and high throughput but may require additional infrastructure and management overhead.
+
+When deploying [Nutanix GPT-in-a-Box](https://opendocs.nutanix.com/gpt-in-a-box/kubernetes/v0.2/getting_started/), the getting started guide leverages Nutanix Files, but alternative approaches can be considered for advanced use cases.
+
+1. **S3 Object Storage (i.e., [Nutanix Objects](https://www.nutanix.com/products/objects))**: Nutanix Objects is a software-defined object storage solution that offers scalable and cost-effective storage for large datasets.
+
+2. **OCI Container Image Registry (i.e., [Harbor](https://goharbor.io/docs/2.10.0/install-config/installation-prereqs/))**: Any preferred OCI compliant container registry can be used to store and distribute LLM models as container images. This approach can simplify model deployment and management, especially in containerized environments.
 
 ### GPU Requirements
 
@@ -60,7 +87,7 @@ The L40S is an excellent choice for edge deployments where power efficiency and 
 
 #### NVIDIA L40S
 
-The NVIDIA L40S (GPU Memory: 48GB) is a data center-grade GPU designed for high-performance computing and AI workloads. 
+The NVIDIA L40S (GPU Memory: 48GB) is a data center-grade GPU designed for high-performance computing and AI workloads.
 
 With its powerful compute capabilities and ample memory, the L4 is well-suited for deploying larger LLM models in data center environments. It can handle computationally intensive tasks such as language model training, inference, and multi-modal AI applications.
 
@@ -105,22 +132,6 @@ When sizing networking infrastructure, consider the following factors:
 - Data transfer requirements (model updates, inference requests)
 - Bandwidth and latency requirements
 - Scalability and future growth needs
-
-### AI Tasks and Common Application Use Cases
-
-LLMs are versatile and can be employed in a wide range of AI tasks and applications, including:
-
-1. **Natural Language Processing (NLP)**: Language translation, text summarization, sentiment analysis, question answering, and text generation.
-
-2. **Conversational AI**: Building chatbots, virtual assistants, and dialogue systems for customer service, e-commerce, and personal assistance.
-
-3. **Content Creation**: Generating creative content such as articles, stories, scripts, and marketing copy.
-
-4. **Code Generation**: Assisting developers by generating code snippets, suggesting improvements, and explaining code functionality.
-
-5. **Multimodal AI**: Combining language models with computer vision and speech recognition for tasks like image captioning, video understanding, and audio transcription.
-
-6. **Scientific Research**: Analyzing and summarizing large volumes of scientific literature, assisting in hypothesis generation, and supporting drug discovery efforts.
 
 ## Best Practices for Sizing and Optimizing Modern LLM Models
 
