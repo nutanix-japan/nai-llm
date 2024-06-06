@@ -6,23 +6,29 @@ This project will take your through design and hosting AI applications on Nutani
 
 Intended to be used by any Nutanix user to setup and run LLMs, LLM with RAG, Support GPT and other AI applications. 
 
-The site contains the following:
+This site follows **Design > Deploy** model.
 
-- Design
-- Implementation in lab format
-
+## Design Infra, K8S and AI Apps
+---
 
 <div class="grid cards" markdown>
 
--   :material-format-font:{ .lg .middle } __AI Apps Design on Nutanix__
+-   :material-robot:{ .lg .middle } __AI Apps Design on Nutanix__
 
     ---
 
     Start here to read about gathering requirements and considering general design considerations.
 
-    [:octicons-arrow-right-24: Start designing](#)
+    [:octicons-arrow-right-24: Start designing](design/design.md)
 
-    [:octicons-arrow-right-24: Start sizing :material-size-s: :material-size-m: :material-size-l: ](#)
+    [:octicons-arrow-right-24: Start sizing :material-size-s: :material-size-m: :material-size-l: ](sizing/sizing.md)
+
+</div>
+
+## Deploy Infra
+---
+
+<div class="grid cards" markdown>
 
 -   :material-table-column-plus-after:{ .lg .middle } __Set up Nutanix Cluster in an hour__
 
@@ -33,6 +39,36 @@ The site contains the following:
     [:octicons-arrow-right-24: Setup a Nutanix cluster](https://nhtd1.howntnx.win/diyfoundation/diyfoundation/)
   
     [:octicons-arrow-right-24: Deploy Prism Central](https://nhtd1.howntnx.win/pcdeploy/pcdeploy/)
+
+</div>
+
+## Deploy K8S 
+---
+
+<div class="grid cards" markdown>
+
+-   :material-kubernetes:{ .lg .middle } __Set up Nutanix Karbon Engine in 10 minutes__
+
+    ---
+
+    You can setup a Nutanix cluster in under an hour using Foundation to prepare your infrastructure.
+
+    [:octicons-arrow-right-24: Setup D2iQ Kubernetes Platform](infra/infra.md)
+
+-   :material-kubernetes:{ .lg .middle } __Set up D2iQ Kubernetes Platform in 30 minutes__
+
+    ---
+
+    You can setup a Nutanix cluster in under an hour using Foundation to prepare your infrastructure.
+
+    [:octicons-arrow-right-24: Setup Nutanix Karbon Engine](infra/infra_nke.md)
+
+</div>
+
+## Deploy AI Apps
+---
+
+<div class="grid cards" markdown>
 
 -   :material-clock-fast:{ .lg .middle } __Set up LLM on Nutanix in 5 minutes__
 
@@ -52,6 +88,12 @@ The site contains the following:
 
     [:octicons-arrow-right-24: Start](contributing.md)
 
+</div>
+
+## Others
+---
+
+<div class="grid cards" markdown>
 
 -   :fontawesome-brands-markdown:{ .lg .middle } __It's just Markdown__
 
@@ -65,7 +107,7 @@ The site contains the following:
 
 </div>
 
-<div class="grid" markdown>
+<div class="grid cards" markdown>
 
 :simple-nutanix: __Nutanix__ components used in this project
 { .card }
