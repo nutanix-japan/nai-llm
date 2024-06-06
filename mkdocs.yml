@@ -86,7 +86,13 @@ theme:
   - navigation.integrate
   - search.highlight
   - search.suggest
+  - search.share
   - toc.follow
+  - announce.dismiss
+  - content.action.edit
+  - content.action.view
+  - content.code.annotate
+  - content.code.copy
 
 markdown_extensions:
   - admonition

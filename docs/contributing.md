@@ -1,6 +1,6 @@
 # Contributing
 
-Contributions are always welcome. Before contributing please search the [issue tracker](../../issues). Your issue may have already been discussed or fixed in `main`. To contribute, [fork](https://help.github.com/articles/fork-a-repo/) this repository, commit your changes, and [send a Pull Request](https://help.github.com/articles/using-pull-requests/).
+Contributions are always welcome. Before contributing please search the [issue tracker](). Your issue may have already been discussed or fixed in `main`. To contribute, [fork](https://help.github.com/articles/fork-a-repo/) this repository, commit your changes, and [send a Pull Request](https://help.github.com/articles/using-pull-requests/).
 
 ## Pull requests
 

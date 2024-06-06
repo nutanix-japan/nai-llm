@@ -19,7 +19,7 @@ This site follows **Design > Deploy** model.
 
     Start here to read about gathering requirements and considering general design considerations.
 
-    [:octicons-arrow-right-24: Start designing](design/design.md)
+    [:octicons-arrow-right-24: Start designing](conceptual/conceptual.md)
 
     [:octicons-arrow-right-24: Start sizing :material-size-s: :material-size-m: :material-size-l: ](sizing/sizing.md)
 
@@ -53,7 +53,7 @@ This site follows **Design > Deploy** model.
 
     You can setup a Nutanix cluster in under an hour using Foundation to prepare your infrastructure.
 
-    [:octicons-arrow-right-24: Setup D2iQ Kubernetes Platform](infra/infra.md)
+    [:octicons-arrow-right-24: Setup D2iQ Kubernetes Platform](infra/infra_dkp.md)
 
 -   :material-kubernetes:{ .lg .middle } __Set up D2iQ Kubernetes Platform in 30 minutes__
 
