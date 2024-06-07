@@ -7,24 +7,25 @@ theme:
 # Site navigation
 
 nav:
-    - Home: index.md
-    - Possibilities: possibilities/possibilities.md
-    - Design: 
-      - Conceptual Design: conceptual/conceptual.md
-      - Physical Design and Components: components/components.md
-      - Sizing: sizing/sizing.md
-    - Infra Preparation: 
-      - K8S NKE Clusters: infra/infra_nke.md
-      - K8S D2iQ Clusters: infra/infra_dkp.md
-    - Solutions:
-      - LLM: llmmgmt/llmmgmt.md
-      - SupportGPT: supportgpt/supportgpt.md
-    - References:
-      - Nutanix Components: ntxcomponents/ntxcomponents.md
-      - Tools used and why?: tools/tools.md
-      - Appendix: appendix/appendix.md
-      - Contributing: contributing.md
-    - Takeaways: takeaways/takeaways.md
+- Home: index.md
+- Possibilities: possibilities/possibilities.md
+- Design:
+  - Conceptual Design: conceptual/conceptual.md
+  - Physical Design and Components: components/components.md
+  - Sizing: sizing/sizing.md
+- Infra Preparation:
+  - Jumphost VM: infra/infra_jumphost.md
+  - K8S NKE Clusters: infra/infra_nke.md
+  - K8S D2iQ Clusters: infra/infra_dkp.md
+- Solutions:
+  - LLM: llmmgmt/llmmgmt.md
+  - SupportGPT: supportgpt/supportgpt.md
+- References:
+  - Nutanix Components: ntxcomponents/ntxcomponents.md
+  - Tools used and why?: tools/tools.md
+  - Appendix: appendix/appendix.md
+  - Contributing: contributing.md
+- Takeaways: takeaways/takeaways.md
 
 
 # Repository
@@ -42,25 +43,25 @@ theme:
   #   - primary: deep purple
   #   - accent: black
 
-    # Palette toggle for automatic mode
-    - media: "(prefers-color-scheme)"
-      toggle:
-        icon: material/brightness-auto
-        name: Switch to light mode
+  # Palette toggle for automatic mode
+  - media: "(prefers-color-scheme)"
+    toggle:
+      icon: material/brightness-auto
+      name: Switch to light mode
 
-    # Palette toggle for light mode
-    - media: "(prefers-color-scheme: light)"
-      scheme: default 
-      toggle:
-        icon: material/brightness-7
-        name: Switch to dark mode
+  # Palette toggle for light mode
+  - media: "(prefers-color-scheme: light)"
+    scheme: default
+    toggle:
+      icon: material/brightness-7
+      name: Switch to dark mode
 
-    # Palette toggle for dark mode
-    - media: "(prefers-color-scheme: dark)"
-      scheme: slate
-      toggle:
-        icon: material/brightness-4
-        name: Switch to system preference
+  # Palette toggle for dark mode
+  - media: "(prefers-color-scheme: dark)"
+    scheme: slate
+    toggle:
+      icon: material/brightness-4
+      name: Switch to system preference
 
   name: material
   icon:
@@ -95,30 +96,30 @@ theme:
   - content.code.copy
 
 markdown_extensions:
-  - admonition
-  - pymdownx.details
-  - pymdownx.highlight:
-      anchor_linenums: true
-      line_spans: __span
-      pygments_lang_class: true
-  - pymdownx.inlinehilite
-  - pymdownx.snippets
-  - pymdownx.superfences
-  - pymdownx.emoji:
-      emoji_index: !!python/name:materialx.emoji.twemoji 
-      emoji_generator: !!python/name:materialx.emoji.to_svg
-  - pymdownx.tabbed:
-      alternate_style: true 
-  - attr_list
-  - md_in_html
+- admonition
+- pymdownx.details
+- pymdownx.highlight:
+    anchor_linenums: true
+    line_spans: __span
+    pygments_lang_class: true
+- pymdownx.inlinehilite
+- pymdownx.snippets
+- pymdownx.superfences
+- pymdownx.emoji:
+    emoji_index: !!python/name:materialx.emoji.twemoji
+    emoji_generator: !!python/name:materialx.emoji.to_svg
+- pymdownx.tabbed:
+    alternate_style: true
+- attr_list
+- md_in_html
 
 plugins:
-  - termynal:
-      prompt_literal_start:
-        - "$"
-        - ">"
-        - ">>>"
-  - search
+- termynal:
+    prompt_literal_start:
+    - "$"
+    - ">"
+    - ">>>"
+- search
 
 # # Style sheeting here
 # extra_css:
