@@ -10,13 +10,14 @@ nav:
 - Home: index.md
 - Possibilities: possibilities/possibilities.md
 - Design:
-  - Conceptual Design: conceptual/conceptual.md
-  - Physical Design and Components: components/components.md
+  - Conceptual Design and Components: conceptual/conceptual.md
   - Sizing: sizing/sizing.md
 - Infra Preparation:
   - Jumphost VM: infra/infra_jumphost.md
+  - Jumphost VM Tofu: infra/infra_jumphost_tofu.md
   - K8S NKE Clusters: infra/infra_nke.md
   - K8S D2iQ Clusters: infra/infra_dkp.md
+
 - Solutions:
   - LLM: llmmgmt/llmmgmt.md
   - SupportGPT: supportgpt/supportgpt.md
@@ -94,6 +95,7 @@ theme:
   - content.action.view
   - content.code.annotate
   - content.code.copy
+  - content.code.annotate 
 
 markdown_extensions:
 - admonition
@@ -106,8 +108,8 @@ markdown_extensions:
 - pymdownx.snippets
 - pymdownx.superfences
 - pymdownx.emoji:
-    emoji_index: !!python/name:materialx.emoji.twemoji
-    emoji_generator: !!python/name:materialx.emoji.to_svg
+    emoji_index: !!python/name:material.extensions.emoji.twemoji
+    emoji_generator: !!python/name:material.extensions.emoji.to_svg
 - pymdownx.tabbed:
     alternate_style: true
 - attr_list
