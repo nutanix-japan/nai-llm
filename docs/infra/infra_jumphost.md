@@ -12,46 +12,82 @@ Below is walkthrough for manually creating a Linux VM on Nutanix AHV to support 
 
 ## Jumphost VM Requirements
 
-- Supported OS:
-  - `Ubuntu 22.04 LTS`
+The following jumphost resrouces are recommended for the jumphost VM:
+
+- Supported OS: `Ubuntu 22.04 LTS`
 - Resources:
   - CPU: `2 vCPU`
   - Cores Per CPU: `4 Cores`
   - Memory: `16 GiB`
   - Storage: `300 GiB`
 
-### Upload Generic Cloud Image into Prism Central
+## Upload Generic Cloud Image into Prism Central
 
-- Navigate to Prism Central > Infrastructure > Compute & Storage > Images
-- On Select Image tab:
-  - Click Add Image > Select URL Button > Input Image URL:
-  `https://cloud-images.ubuntu.com/releases/22.04/release/ubuntu-22.04-server-cloudimg-amd64.img`
-  - Click Add URL > Click Next > Accept Remaining Defaults > Click Save
+- Navigate to **Prism Central > Infrastructure > Compute & Storage > Images**
+- On **Select Image** tab, Click **Add Image > Select URL Button > Input Image** 
+  
+    ```url
+    https://cloud-images.ubuntu.com/releases/22.04/release/ubuntu-22.04-server-cloudimg-amd64.img
+    ```
 
-### Generate a SSH Key on Linux
+- Click **Add URL > Click Next > Accept Remaining Defaults**  
+- Click on **Save**
 
-- Run the following command to generate an RSA key pair. `ssh-keygen -t rsa`
-- Accept the default file location as ~/.ssh/id_rsa
-- The publickey is available at `~/.ssh/id_rsa.pub` and the private key is available at `~/.ssh/id_rsa`
+## Generate a SSH Key on Linux
 
-### Create Linux VM using Prism Central
+- Run the following command to generate an RSA key pair.
+  
+    ```bash
+    ssh-keygen -t rsa
+    ```
+  
+- Accept the default file location as ``~/.ssh/id_rsa``
+  
+- The keys will be available in the following locations:
+    
+    ``` { .bash .no-copy }
+    ~/.ssh/id_rsa.pub 
+    ~/.ssh/id_rsa
+    ```
+
+## Create Linux VM using Prism Central
 
 Run following commands from Prism Central UI.
 
-- Select Infrastructure (via App Switcher Dropdown) > Click Compute & Storage > Click VMs > Click Create VM
+- Select **Infrastructure (via App Switcher Dropdown) > Click Compute & Storage > Click VMs > Click Create VM**
 - On Configuration Tab:
-  - Input Name (i.e., `nai-llm-jumphost`) > Number of VMs (i.e., 1) > Select Cluster > Update VM Properties (See [Jumphost VM Requirements](#jumphost-vm-requirements)) > Click Next
-- On Resources Tab:
-  - Under Disks > Attach Disk > Select Clone from Image > Select Image (ex. `ubuntu-22.04-server-cloudimg-amd64.img`) > Update Capacity (See [Jumphost VM Requirements](#jumphost-vm-requirements)) > Click Save
-  - Under Networks > Attach to Subnet > Select Subnet > Select DHCP Enabled Network > Select Assign with DHCP > Click Save
-  - Select Legacy Bios Mode > Click Next > Accept Remaining Defaults > Click Create VM
+  - Input Name (i.e., `nai-llm-jumphost`) 
+  - Number of VMs (i.e., 1) > Select **Cluster > Update VM Properties** (See [Jumphost VM Requirements](#jumphost-vm-requirements)) 
+- Click **Next** and enter the following details:
+    - **CPU:** `2 vCPU`
+    - **Cores Per CPU:** `4 Cores`
+    - **Memory:** `16 GiB`
+    - **Storage:**`300 GiB`
+
+- On the **Resources Tab:**, do the following:
+  
+    - Under Disks > Attach Disk > Select Clone from Image > Select Image (ex. `ubuntu-22.04-server-cloudimg-amd64.img`) > Update Capacity (See [Jumphost VM Requirements](#jumphost-vm-requirements)) > Click Save
+    - Under Networks > Attach to Subnet > Select Subnet > Select DHCP Enabled Network > Select Assign with DHCP > Click Save
+    - Select Legacy Bios Mode > Click Next > Accept Remaining Defaults > Click Create VM
 
 - On Management Tab:
-  - Under Guest Customization > Select `Cloud-Init (Linux)` on Script Type dropdown
-  - Copy and Paste cloud-init YAML config script (example below) > Accept Remaining Defaults > Create VM
+    - Under Guest Customization > Select `Cloud-Init (Linux)` on Script Type dropdown
+    - Copy and Paste cloud-init YAML config script (example below) > Accept Remaining Defaults
+  
+    ???tip
 
-    > NOTE: Make sure to update `hostname:` attribute, if needed and `<ssh-rsa-public-key>` line under `ssh-authorized-keys:` attribute.
+          When copying and pasting `<ssh-rsa-public-key>` from a terminal, make sure not to include any new lines. Consider the following command to removes new lines: 
+          
+          ```bash
+          cat ~/.ssh/id_rsa.pub | tr -d '\n'
+          ```
 
+    !!!warning
+          Make sure to update the following attributes of the VM:
+
+          - `hostname:`
+          - `<ssh-rsa-public-key>` line under `ssh-authorized-keys:` attribute
+  
     ```yaml
     #cloud-config
     hostname: nai-llm-jumphost
@@ -74,53 +110,72 @@ Run following commands from Prism Central UI.
         - <ssh-rsa-public-key>
     ```
 
-    > TIP: When copying and pasting `<ssh-rsa-public-key>` from a terminal, make sure not to include any new lines. Consider the following command to removes new lines: `cat ~/.ssh/id_rsa.pub | tr -d '\n'`
 
-- Once VM has been Created:
-  - Navigate to Prism Central > Select Infrastructure > Select Compute & Storage > Click on VMs
-  - Filter VM Name (i.e., `nai-llm-jumphost`) > Select VM > Actions > Power On
-  - Click on VM and Find IP Address
 
-- Validate that VM is accessible using ssh: `ssh -i ~/.ssh/id_rsa ubuntu@<ip-address>`
+-  Click on **Create VM**
 
-### Install nai-llm utilities
 
-- SSH into Linux VM `ssh -i ~/.ssh/id_rsa ubuntu@<ip-address>`
+Once the jumphost VM has been created:
 
-- Clone Git repo and change working directory
+- Navigate to **Prism Central > Select Infrastructure > Select Compute & Storage** 
+- Click on **VMs**
+- Filter VM Name (i.e., `nai-llm-jumphost`) 
+- Select **VM > Actions > Power On**
+- Click on **VM** and Find IP Address in the **NIC tab**
 
-  ```bash
-  git clone https://github.com/jesse-gonzalez/nai-llm-fleet-infra
-  cd $HOME/nai-llm-fleet-infra/
-  ```
-
-- Run Post VM Create - Workstation Bootstrapping Tasks
+- Validate that VM is accessible using ssh: 
   
-  ```bash
-  sudo snap install task --classic
-  task ws:install-packages ws:load-dotfiles --yes -d $HOME/nai-llm-fleet-infra/
-  source ~/.bashrc
-  ```
+    ```bash
+    ssh -i ~/.ssh/id_rsa ubuntu@<ip-address>
+    ```
 
-- Change working directory and see Task help
+## Install nai-llm utilities
+
+We have compiled a list of utilities that needs to be installed on the jumphost VM to use for the rest of the lab. We have affectionately called it as ``nai-llm`` utilities. Use the following method to install these utilities:
+
+1. SSH into Linux VM  
+
+    ```bash
+    ssh -i ~/.ssh/id_rsa ubuntu@<ip-address>
+    ```
+
+2. Clone Git repo and change working directory
+
+    ```bash
+    git clone https://github.com/jesse-gonzalez/nai-llm-fleet-infra
+    cd $HOME/nai-llm-fleet-infra/
+    ```
+
+3. Run Post VM Create - Workstation Bootstrapping Tasks
   
-  ```bash
-  $ cd $HOME/nai-llm-fleet-infra/ && task
-  task: bootstrap:silent
+    ```bash
+    sudo snap install task --classic
+    task ws:install-packages ws:load-dotfiles --yes -d $HOME/nai-llm-fleet-infra/
+    source ~/.bashrc
+    ```
 
-  Silently initializes cluster configs, git local/remote & fluxcd
+3. Change working directory and see ``Task`` help
+  
+    ```bash
+    $ cd $HOME/nai-llm-fleet-infra/ && task
+    ```
+    ``` { .bash .no-copy }
+    # command output
+    task: bootstrap:silent
 
-  See README.md for additional details on Getting Started
+    Silently initializes cluster configs, git local/remote & fluxcd
 
-  To see list of tasks, run `task --list` or `task --list-all`
+    See README.md for additional details on Getting Started
 
-  dependencies:
-  - bootstrap:default
+    To see list of tasks, run `task --list` or `task --list-all`
 
-  commands:
-  - Task: bootstrap:generate_local_configs
-  - Task: bootstrap:verify-configs
-  - Task: bootstrap:generate_cluster_configs
-  -  task nke:download-creds 
-  - Task: flux:init
-  ```
+    dependencies:
+    - bootstrap:default
+
+    commands:
+    - Task: bootstrap:generate_local_configs
+    - Task: bootstrap:verify-configs
+    - Task: bootstrap:generate_cluster_configs
+    - Task: nke:download-creds 
+    - Task: flux:init
+    ```
