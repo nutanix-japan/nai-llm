@@ -49,10 +49,10 @@ The prod cluster will have a GPU node pool.
 
     with the following content:
 
-    ```yaml
-    user: "admin"
-    password: "XXXXXX"
-    subnet_name: "subnet"
+    ```yaml title="nke_config.yaml"
+    user: "PC user"
+    password: "PC password"
+    subnet_name: "PE subnet"
     cluster_name: "PE Cluster Name"
     endpoint: "PC FQDN"
     storage_container: "default"
@@ -74,7 +74,7 @@ The prod cluster will have a GPU node pool.
 
     with the following content:
 
-    ```json
+    ```json title="mgt_cluster.tf"
     terraform {
     required_providers {
         nutanix = {
@@ -194,7 +194,7 @@ The DEV cluster will contain GPU node pool to deploy your AI apps.
     ```
     with the following content:
 
-    ```json
+    ```json title="dev_cluster.tf"
     terraform {
     resource "nutanix_karbon_cluster" "dev_cluster" {
     name       = "dev_cluster"
@@ -282,9 +282,12 @@ The DEV cluster will contain GPU node pool to deploy your AI apps.
 
 ### Adding NodePool with GPU
 
-In this section we will create a nodepool to host the AI apps with a GPU. At this time there is no `tofu` support for creating a nodepool with GPU parameters. We will use NKE's `karbonctl` tool. Once tofu nodepool resource is updated with gpu parameters, we will update this section. 
+In this section we will create a nodepool to host the AI apps with a GPU. 
 
-It is necessary to connect to Prism Central (PC) to be able to access the `karbonctl`
+!!!note
+       At this time there is no `tofu` support for creating a ``nodepool`` with GPU parameters. We will use NKE's `karbonctl` tool. Once tofu nodepool resource is updated with gpu parameters, we will update this section. 
+
+It is necessary to connect to Prism Central (PC) to be able to access the `karbonctl` tool.
 
 1. Login to the ssh session of PC
     
