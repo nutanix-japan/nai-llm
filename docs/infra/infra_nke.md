@@ -10,39 +10,59 @@ We will use Infrastructure as Code framework to deploy NKE kubernetes clusters.
 
 ## Pre-requisites
 
+- Prism Central is at version 2023.4
 - NKE is enabled on Nutanix Prism Central
-- NKE is at version 1.8 (updated through LCM)
-- NKE OS at version 1.5
+- NKE is at version 2.9 (updated through LCM)
+- NKE Node OS is at version ntnx-1.6.1
+- NKE Kubernetes is at version 1.25.6-1
+- Monitoring on each NKE Cluster is ENABLED
 
 ## NKE High Level Cluster Design
 
-We will create the following resources for a PROD and DEV NKE (kubernetes) cluster to deploy our AI applications:
+The `Management` NKE cluster will be a centralized cluster that the AI applications on each Workload NKE cluster will be leveraged for automation and obervability.
 
-We will create PROD and DEV clusters to deploy our application. Once DEV deployment is tested successful, we can deploy applications to PROD cluster.
+The `Workload` NKE cluster will be hosting the LLM model serving endpoints and AI application stack. This cluster and will require a dedicated GPU node pool.  
+
+We wll create a 1 x NKE cluster for Management and at min. 1 x NKE cluster for the DEV Workloads.
+
+Once DEV deployment has been tested successfully, we can deploy applications to optional PROD Workload cluster.
 
 ### Management Cluster
 
-| OCP Role   |  No. of Nodes (VM) | Operating System    |    vCPU    |  RAM         | Storage   | IOPS |           
-| -------------| ----| ---------------------- |  -------- | ----------- |  --------- |  -------- | 
-| Master    | 1 | NKE 1.5                 |  4       |  16 GB       | 100 GB    | 300 | 
-| ETCD       | 1 | NKE 1.5                 |  4        | 16 GB      |  100 GB   |  300 | 
-| Worker       | 1| NKE 1.5               |  8  |  16 GB      |  100 GB |    300 | 
+Since the Management Cluster will be essential to all AI application workloads, we will deploy an NKE cluster of type "Production".
 
-### Prod Cluster
+| Role   | No. of Nodes (VM) | vCPU | RAM   | Storage |
+| ------ | ----------------- | ---- | ----- | ------- |
+| Master | 2                 | 8    | 16 GB | 120 GB  |
+| ETCD   | 3                 | 4    | 8 GB  | 120 GB  |
+| Worker | 3                 | 12   | 16 GB | 300 GB  |
 
-The prod cluster will have a GPU node pool.
-  
-| OCP Role   |  No. of Nodes (VM) | Operating System    |    vCPU    |  RAM         | Storage   | IOPS |           
-| -------------| ----| ---------------------- |  -------- | ----------- |  --------- |  -------- | 
-| Master    | 1 | NKE 1.5                 |  4       |  16 GB       | 100 GB    | 300 | 
-| ETCD       | 1 | NKE 1.5                 |  4        | 16 GB      |  100 GB   |  300 | 
-| Worker       | 1| NKE 1.5               |  8  |  16 GB      |  100 GB |    300 | 
+### Dev Workload Cluster
 
+For Dev, we will deploy an NKE Cluster of type "Development".
+
+| Role   | No. of Nodes (VM) | vCPU | RAM   | Storage |
+| ------ | ----------------- | ---- | ----- | ------- |
+| Master | 1                 | 8    | 16 GB | 120 GB  |
+| ETCD   | 1                 | 4    | 8 GB  | 120 GB  |
+| Worker | 3                 | 12   | 16 GB | 300 GB  |
+| GPU    | 2                 | 12   | 40 GB | 300 GB  |
+
+### Prod Workload Cluster
+
+For Prod, we will deploy an NKE Cluster of type "Production".
+
+| Role   | No. of Nodes (VM) | vCPU | RAM   | Storage |
+| ------ | ----------------- | ---- | ----- | ------- |
+| Master | 2                 | 8    | 16 GB | 120 GB  |
+| ETCD   | 3                 | 4    | 8 GB  | 120 GB  |
+| Worker | 3                 | 12   | 16 GB | 300 GB  |
+| GPU    | 2                 | 12   | 40 GB | 300 GB  |
 
 ## Getting TOFU Setup to connect to Prism Central
 
 1. Create a config ``yaml`` file to define attributes for all NKE clusters
-   
+
     ```bash
     vi nke_config.yaml
     ```
@@ -56,118 +76,192 @@ The prod cluster will have a GPU node pool.
     cluster_name: "PE Cluster Name"
     endpoint: "PC FQDN"
     storage_container: "default"
-    nke_k8s_version: "1.26.8-0"
+    nke_k8s_version: "1.25.6-1"
     node_os_version: "ntnx-1.6.1"
     master_num_instances: 1
     etcd_num_instances: 1
     worker_num_instances: 1
     ```
 
-## Deploying Management Cluster
+## Create TOFU Manifest file
 
-1. Create the following tofu resource file for Management NKE cluster
-   
-     
+1. Create the following tofu resource file
+
     ```bash
-    vi mgt_cluster.tf
+    vi main.tf
     ```
 
     with the following content:
 
     ```json title="mgt_cluster.tf"
     terraform {
-    required_providers {
+      required_providers {
         nutanix = {
-        source  = "nutanix/nutanix"
-        version = "1.9.1"
+          source  = "nutanix/nutanix"
+          version = "1.9.1"
         }
+      }
     }
-    }
+
     locals {
-    config = yamldecode(file("${path.module}/nke_config.yaml"))
+      config = yamldecode(file("${path.module}/.env.${terraform.workspace}.yaml"))
     }
 
     data "nutanix_cluster" "cluster" {
-    name = local.config.cluster_name
+      name = local.config.prism_element.cluster_name
     }
+
     data "nutanix_subnet" "subnet" {
-    subnet_name = local.config.subnet_name
+      subnet_name = local.config.prism_element.subnet_name
     }
 
     provider "nutanix" {
-    username     = local.config.user
-    password     = local.config.password
-    endpoint     = local.config.endpoint
-    insecure     = false
-    wait_timeout = 60
+      username     = local.config.prism_central.user
+      password     = local.config.prism_central.password
+      endpoint     = local.config.prism_central.endpoint
+      insecure     = false
+      wait_timeout = 60
     }
-    resource "nutanix_karbon_cluster" "mgt_cluster" {
-    name       = "mgt_cluster"
-    version    = local.config.nke_k8s_version
-    storage_class_config {
+
+    resource "nutanix_karbon_cluster" "nke_cluster" {
+      name       = terraform.workspace
+      version    = local.config.nke.k8s_version
+      storage_class_config {
         reclaim_policy = "Delete"
         volumes_config {
-        file_system                = "ext4"
-        flash_mode                 = false
-        password                   = local.config.password
-        prism_element_cluster_uuid = data.nutanix_cluster.cluster.id
-        storage_container          = local.config.storage_container
-        username                   = local.config.user
+          file_system                = "ext4"
+          flash_mode                 = false
+          prism_element_cluster_uuid = data.nutanix_cluster.cluster.id
+          storage_container          = local.config.prism_element.storage_container
+          username                   = local.config.prism_element.user
+          password                   = local.config.prism_element.password
         }
-    }
-    cni_config {
+      }
+
+      cni_config {
         node_cidr_mask_size = 24
         pod_ipv4_cidr       = "172.20.0.0/16"
         service_ipv4_cidr   = "172.19.0.0/16"
-    }
-    worker_node_pool {
-        node_os_version = local.config.node_os_version 
-        num_instances   = local.config.worker_num_instances
+      }
+
+      worker_node_pool {
+        node_os_version = local.config.nke.node_os_version 
+        num_instances   = local.config.nke.worker.num_instances
         ahv_config {
-        network_uuid               = data.nutanix_subnet.subnet.id
-        prism_element_cluster_uuid = data.nutanix_cluster.cluster.id
+          cpu = local.config.nke.worker.cpu_count
+          memory_mib = local.config.nke.worker.memory_gb * 1024
+          disk_mib = local.config.nke.worker.disk_gb * 1024
+          network_uuid               = data.nutanix_subnet.subnet.id
+          prism_element_cluster_uuid = data.nutanix_cluster.cluster.id
         }
-    }
-    etcd_node_pool {
-        node_os_version = local.config.node_os_version 
-        num_instances   = local.config.etcd_num_instances
+      }
+
+      etcd_node_pool {
+        node_os_version = local.config.nke.node_os_version 
+        num_instances   = local.config.nke.etcd.num_instances
         ahv_config {
-        network_uuid               = data.nutanix_subnet.subnet.id
-        prism_element_cluster_uuid = data.nutanix_cluster.cluster.id
+          cpu = local.config.nke.etcd.cpu_count
+          memory_mib = local.config.nke.etcd.memory_gb * 1024
+          disk_mib = local.config.nke.etcd.disk_gb * 1024
+          network_uuid               = data.nutanix_subnet.subnet.id
+          prism_element_cluster_uuid = data.nutanix_cluster.cluster.id
         }
-    }
-    master_node_pool {
-        node_os_version = local.config.node_os_version 
-        num_instances   = local.config.master_num_instances
+      }
+
+      master_node_pool {
+        node_os_version = local.config.nke.node_os_version 
+        num_instances   = local.config.nke.master.num_instances
         ahv_config {
-        network_uuid               = data.nutanix_subnet.subnet.id
-        prism_element_cluster_uuid = data.nutanix_cluster.cluster.id
+          cpu = local.config.nke.master.cpu_count
+          memory_mib = local.config.nke.master.memory_gb * 1024
+          disk_mib = local.config.nke.master.disk_gb * 1024
+          network_uuid               = data.nutanix_subnet.subnet.id
+          prism_element_cluster_uuid = data.nutanix_cluster.cluster.id
         }
-    }
-    timeouts {
+      }
+      
+      timeouts {
         create = "1h"
         update = "30m"
         delete = "10m"
-        }
+      }
+
     }
     ```
 
-2. Validate your tofu code
+## Deploying Management Cluster
+
+1. Create TOFU workspace for Management NKE Cluster
+  
+    ```bash
+    tofu workspace new mgmt-cluster
+    ```
+
+2. Create the Management NKE cluster config.yaml
+
+    ```bash
+    vi .env.mgmt-cluster.yaml
+    ```
+
+    with the following content:
+
+    ```yaml title=".env.mgmt-cluster.yaml"
+    prism_central:
+      endpoint: <PC FQDN>
+      user: <PC user>
+      password: <PC password>
+
+    prism_element:
+      cluster_name: <PE Cluster Name>
+      storage_container: default
+      subnet_name: <PE Subnet>
+      user: <PE user>
+      password: <PE password>
+
+    nke:
+      k8s_version: 1.25.6-1
+      node_os_version: ntnx-1.6.1
+      master:
+        num_instances: 1
+        cpu_count: 8
+        memory_gb: 16
+        disk_gb: 300
+      etcd:
+        num_instances: 1
+        cpu_count: 4
+        memory_gb: 8
+        disk_gb: 300
+      worker:
+        num_instances: 3
+        cpu_count: 12
+        memory_gb: 16
+        disk_gb: 300
+    ```
+
+3. Initialize and Validate your tofu code
+
+    ```bash
+    tofu init -upgrade
+
+    # OpenTofu will initialize the Nutanix provider
+    ```
 
     ```bash
     tofu validate
+
+    # OpenTofu will validate configurations
     ```
 
-3.  Apply your tofu code to create NKE cluster, associated virtual machines and other resources
+4. Apply your tofu code to create NKE cluster, associated virtual machines and other resources
   
     ```bash
     tofu apply 
 
-    # Terraform will show you all resources that it will to create
+    # OpenTofu will show you all resources that it will to create
     # Type yes to confirm 
     ```
 
-4.  Run the Terraform state list command to verify what resources have been created
+5. Run the OpenTofu state list command to verify what resources have been created
 
     ``` bash
     tofu state list
@@ -187,83 +281,71 @@ The prod cluster will have a GPU node pool.
 
 The DEV cluster will contain GPU node pool to deploy your AI apps.
 
-1. Create the following tofu resource file for Dev NKE cluster
-   
+1. Create TOFU workspace for DEV NKE Cluster
+  
     ```bash
-    vi dev_cluster.tf
+    tofu workspace new dev-cluster
     ```
+
+2. Create the Management NKE cluster config.yaml
+
+    ```bash
+    vi .env.dev-cluster.yaml
+    ```
+
     with the following content:
 
-    ```json title="dev_cluster.tf"
-    terraform {
-    resource "nutanix_karbon_cluster" "dev_cluster" {
-    name       = "dev_cluster"
-    version    = var.nke_k8s_version
-    storage_class_config {
-        reclaim_policy = "Delete"
-        volumes_config {
-        file_system                = "ext4"
-        flash_mode                 = false
-        password                   = var.password
-        prism_element_cluster_uuid = data.nutanix_cluster.cluster.id
-        storage_container          = var.storage_container
-        username                   = var.user
-        }
-    }
-    cni_config {
-        node_cidr_mask_size = 24
-        pod_ipv4_cidr       = "172.20.0.0/16"
-        service_ipv4_cidr   = "172.19.0.0/16"
-    }
-    worker_node_pool {
-        node_os_version = var.node_os_version 
-        num_instances   = var.worker_num_instances
-        ahv_config {
-        network_uuid               = data.nutanix_subnet.subnet.id
-        prism_element_cluster_uuid = data.nutanix_cluster.cluster.id
-        }
-    }
-    etcd_node_pool {
-        node_os_version = var.node_os_version 
-        num_instances   = var.etcd_num_instances
-        ahv_config {
-        network_uuid               = data.nutanix_subnet.subnet.id
-        prism_element_cluster_uuid = data.nutanix_cluster.cluster.id
-        }
-    }
-    master_node_pool {
-        node_os_version = var.node_os_version 
-        num_instances   = var.master_num_instances
-        ahv_config {
-        network_uuid               = data.nutanix_subnet.subnet.id
-        prism_element_cluster_uuid = data.nutanix_cluster.cluster.id
-        }
-    }
-    timeouts {
-        create = "1h"
-        update = "30m"
-        delete = "10m"
-        }
-    }
-        
+    ```yaml title=".env.dev-cluster.yaml"
+    prism_central:
+      endpoint: <PC FQDN>
+      user: <PC user>
+      password: <PC password>
+
+    prism_element:
+      cluster_name: <PE Cluster Name>
+      storage_container: default
+      subnet_name: <PE Subnet>
+      user: <PE user>
+      password: <PE password>
+
+    nke:
+      k8s_version: 1.25.6-1
+      node_os_version: ntnx-1.6.1
+      master:
+        num_instances: 1
+        cpu_count: 8
+        memory_gb: 16
+        disk_gb: 300
+      etcd:
+        num_instances: 1
+        cpu_count: 4
+        memory_gb: 8
+        disk_gb: 300
+      worker:
+        num_instances: 1
+        cpu_count: 12
+        memory_gb: 16
+        disk_gb: 300
     ```
 
-2. Validate your tofu code
+3. Validate your tofu code
 
     ```bash
     tofu validate
+
+    # OpenTofu will validate configurations
     ```
 
-3.  Apply your tofu code to create NKE cluster, associated virtual machines and other resources
+4. Apply your tofu code to create NKE cluster, associated virtual machines and other resources
   
     ```bash
-    tofu apply 
+    tofu apply
 
-    # Terraform will show you all resources that it will to create
+    # OpenTofu will show you all resources that it will to create
     # Type yes to confirm 
     ```
 
-4.  Run the Terraform state list command to verify what resources have been created
+5. Run the Terraform state list command to verify what resources have been created
 
     ``` bash
     tofu state list
@@ -276,8 +358,8 @@ The DEV cluster will contain GPU node pool to deploy your AI apps.
     data.nutanix_subnet.subnet                # < This is your existing primary subnet
     nutanix_image.jumphost-image              # < This is the image file for jump host VM
     nutanix_virtual_machine.nai-llm-jumphost  # < This is the jump host VM
-    nutanix_karbon_cluster.mgt_cluster        # < This is your Management NKE cluster
-    nutanix_karbon_cluster.dev_cluster        # < This is your Dev NKE cluster
+    nutanix_karbon_cluster.mgt-cluster        # < This is your Management NKE cluster
+    nutanix_karbon_cluster.dev-cluster        # < This is your Dev NKE cluster
     ```
 
 ### Adding NodePool with GPU
@@ -285,28 +367,29 @@ The DEV cluster will contain GPU node pool to deploy your AI apps.
 In this section we will create a nodepool to host the AI apps with a GPU. 
 
 !!!note
-       At this time there is no `tofu` support for creating a ``nodepool`` with GPU parameters. We will use NKE's `karbonctl` tool. Once tofu nodepool resource is updated with gpu parameters, we will update this section. 
+       At this time there is no `tofu` support for creating a ``nodepool`` with GPU parameters. We will use NKE's `karbonctl` tool. Once tofu nodepool resource is updated with gpu parameters, we will update this section.
 
 It is necessary to connect to Prism Central (PC) to be able to access the `karbonctl` tool.
 
 1. Login to the ssh session of PC
-    
+
     ```bash
     ssh -l admin pc.example.com
     ```
 
 2. Login to NKE control plane using karbonctl tool
-   
+
     ```bash
     alias karbonctl=/home/nutanix/karbon/karbonctl
     karbonctl login --pc-username admin
     ```
 
 3. Check the number of available GPUs for Dev NKE cluster
-   
+
     ```bash
     karbonctl cluster gpu-inventory list --cluster-name dev_cluster
     ```
+
     ```bash title="Command execution"
     PCVM:~$ karbonctl cluster gpu-inventory list --cluster-name dev_cluster
     Name            Total Count    Assignable Count
@@ -314,7 +397,7 @@ It is necessary to connect to Prism Central (PC) to be able to access the `karbo
     ```
 
 4. Create a new gpu nodepool and assing it 1 GPU
-   
+
     ```bash
     karbonctl cluster node-pool add --cluster-name dev_cluster --count 1 --memory 12 --gpu-count 1 --gpu-name "Lovelace 40S" --node-pool-name gpu
     ```
@@ -325,17 +408,16 @@ It is necessary to connect to Prism Central (PC) to be able to access the `karbo
     I acknowledge that GPU enablement requires installation of NVIDIA datacenter driver software governed by NVIDIA licensing terms. Y/[N]:Y
     
     Successfully submitted request to add a node pool: [POST /karbon/v1-alpha.1/k8s/clusters/{name}/add-node-pool][202] addK8sClusterNodePoolAccepted  &{TaskUUID:0xc001168e50}
-    ``` 
+    ```
 
 5. Monitor PC tasks to confirm creation on VM and allocation of GPU to the VM
-   
+
 6. Once nodepool is created, go to **PC > Kubernetes Management > dev_cluster > Node Pools** and select **gpu** nodepool
-   
+
 7. Click on update in the drop-down menu
-   
+
 8. You should see that one GPU is assigned to node pool
-   
+
     ![](images/gpu_nodepool.png)
 
 We now have a node that can be used to deploy AI applications and use the GPU.
-   

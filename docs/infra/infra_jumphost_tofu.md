@@ -1,6 +1,6 @@
-# Creating Ubuntu Linux jump host VM on Nutanix AHV
+# Create Ubuntu Linux jump host VM on Nutanix AHV using OpenTofu
 
-Below is walkthrough for manually creating a Linux VM on Nutanix AHV to support the various deployment scenarios.
+Below is walkthrough for creating a Linux VM on Nutanix AHV using OpenTofu to support the various deployment scenarios.
 
 ## Prerequisites
 
@@ -22,7 +22,7 @@ The following jump host resources are recommended for the jump host VM:
   - Memory: `16 GiB`
   - Storage: `300 GiB`
   
-## Install OpenTofu 
+## Install OpenTofu
 
 Install OpenTofu for Infrastructure as Code requirement
 

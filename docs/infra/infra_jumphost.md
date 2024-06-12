@@ -1,4 +1,4 @@
-# Creating Ubuntu Linux Jumphost VM on Nutanix AHV
+# Manually Creating Ubuntu Linux Jumphost VM on Nutanix AHV
 
 Below is walkthrough for manually creating a Linux VM on Nutanix AHV to support the various deployment scenarios.
 
