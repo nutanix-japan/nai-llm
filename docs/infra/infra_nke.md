@@ -59,30 +59,6 @@ For Prod, we will deploy an NKE Cluster of type "Production".
 | Worker | 3                 | 12   | 16 GB | 300 GB  |
 | GPU    | 2                 | 12   | 40 GB | 300 GB  |
 
-## Getting TOFU Setup to connect to Prism Central
-
-1. Create a config ``yaml`` file to define attributes for all NKE clusters
-
-    ```bash
-    vi nke_config.yaml
-    ```
-
-    with the following content:
-
-    ```yaml title="nke_config.yaml"
-    user: "PC user"
-    password: "PC password"
-    subnet_name: "PE subnet"
-    cluster_name: "PE Cluster Name"
-    endpoint: "PC FQDN"
-    storage_container: "default"
-    nke_k8s_version: "1.25.6-1"
-    node_os_version: "ntnx-1.6.1"
-    master_num_instances: 1
-    etcd_num_instances: 1
-    worker_num_instances: 1
-    ```
-
 ## Create TOFU Manifest file
 
 1. Create the following tofu resource file
