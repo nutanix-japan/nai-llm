@@ -41,93 +41,40 @@ The prod cluster will have a GPU node pool.
 
 ## Getting TOFU Setup to connect to Prism Central
 
-1. Create the variables definitions file
+1. Create a config ``yaml`` file to define attributes for all NKE clusters
    
     ```bash
-    cat << EOF > variables.tf
-    variable "cluster_name" {
-    type = string
-    }
-    variable "subnet_name" {
-    type = string
-    }
-    variable "password" {
-    description = "nutanix cluster password"
-    type      = string
-    sensitive = true
-    }
-    variable "endpoint" {
-    type = string
-    }
-    variable "user" {
-    description = "nutanix cluster username"
-    type      = string
-    sensitive = true
-    }
-    variable "storage_container"{
-    type = string
-    }
-    variable "nke_k8s_version" {
-    type = string
-    }
-    variable "node_os_version" {
-    type = string
-    
-    }
-    variable "master_num_instances"{
-    type = number
-    }
-    variable "etcd_num_instances"{
-    type = number
-    }
-    variable "worker_num_instances"{
-    type = number
-    }
-    EOF
+    vi nke_config.yaml
     ```
 
-2. Create the variables file and modify the values to suit your Nutanix environment
-   
-    ```bash
-    vi terraform.tfvars
+    with the following content:
+
+    ```yaml
+    user: "admin"
+    password: "XXXXXX"
+    subnet_name: "subnet"
+    cluster_name: "PE Cluster Name"
+    endpoint: "PC FQDN"
+    storage_container: "default"
+    nke_k8s_version: "1.26.8-0"
+    node_os_version: "ntnx-1.6.1"
+    master_num_instances: 1
+    etcd_num_instances: 1
+    worker_num_instances: 1
     ```
-    
-    === "Template file"
 
-        ```bash
-        cluster_name         = "Prism Element Name" # << Change this
-        subnet_name          = "your AHV network's name"  # << Change this
-        user                 = "admin"             # << Change this
-        password             = "XXXXXXX"           # << Change this
-        endpoint             = "Prism Central IP"  # << Change this
-        storage_container    = "default"           # << Change this to desired storage container
-        nke_k8s_version      = "1.x.x-x"           # << Change this
-        node_os_version      = "ntnx-x.x.x"        # << Change this
-        master_num_instances = 1                   # << Change this  
-        etcd_num_instances   = 1                   # << Change this
-        worker_num_instances = 1                   # << Change this
-        ```
+## Deploying Management Cluster
 
-    === "Example file with values"
-
-        ```bash 
-        cluster_name         = "MY_PE"
-        subnet_name          = "User1"
-        user                 = "admin"
-        password             = "XXXXXXXX"
-        endpoint             = "pc.example.com"
-        storage_container    = "default"
-        nke_k8s_version      = "1.26.8-0"
-        node_os_version      = "ntnx-1.6.1"
-        master_num_instances = 1
-        etcd_num_instances   = 1
-        worker_num_instances = 1
-        ```
-    
-3. Create ``main.tf`` file to initialize nutanix provider
+1. Create the following tofu resource file for Management NKE cluster
    
+     
     ```bash
-    cat << EOF > main.tf
+    vi mgt_cluster.tf
+    ```
+
+    with the following content:
+
+    ```json
     terraform {
     required_providers {
         nutanix = {
@@ -136,34 +83,121 @@ The prod cluster will have a GPU node pool.
         }
     }
     }
-
-    data "nutanix_cluster" "cluster" {
-    name = var.cluster_name
+    locals {
+    config = yamldecode(file("${path.module}/nke_config.yaml"))
     }
 
+    data "nutanix_cluster" "cluster" {
+    name = local.config.cluster_name
+    }
     data "nutanix_subnet" "subnet" {
-    subnet_name = var.subnet_name
+    subnet_name = local.config.subnet_name
     }
 
     provider "nutanix" {
-    username     = var.user
-    password     = var.password
-    endpoint     = var.endpoint
-    port         = var.port
-    insecure     = true
+    username     = local.config.user
+    password     = local.config.password
+    endpoint     = local.config.endpoint
+    insecure     = false
     wait_timeout = 60
     }
-    EOF
-    ```
-
-## Deploying Management Cluster
-
-1. Create the following tofu resource file for Management NKE cluster
-
-    ```json
-    cat << EOF > nke-mgt.tf
     resource "nutanix_karbon_cluster" "mgt_cluster" {
     name       = "mgt_cluster"
+    version    = local.config.nke_k8s_version
+    storage_class_config {
+        reclaim_policy = "Delete"
+        volumes_config {
+        file_system                = "ext4"
+        flash_mode                 = false
+        password                   = local.config.password
+        prism_element_cluster_uuid = data.nutanix_cluster.cluster.id
+        storage_container          = local.config.storage_container
+        username                   = local.config.user
+        }
+    }
+    cni_config {
+        node_cidr_mask_size = 24
+        pod_ipv4_cidr       = "172.20.0.0/16"
+        service_ipv4_cidr   = "172.19.0.0/16"
+    }
+    worker_node_pool {
+        node_os_version = local.config.node_os_version 
+        num_instances   = local.config.worker_num_instances
+        ahv_config {
+        network_uuid               = data.nutanix_subnet.subnet.id
+        prism_element_cluster_uuid = data.nutanix_cluster.cluster.id
+        }
+    }
+    etcd_node_pool {
+        node_os_version = local.config.node_os_version 
+        num_instances   = local.config.etcd_num_instances
+        ahv_config {
+        network_uuid               = data.nutanix_subnet.subnet.id
+        prism_element_cluster_uuid = data.nutanix_cluster.cluster.id
+        }
+    }
+    master_node_pool {
+        node_os_version = local.config.node_os_version 
+        num_instances   = local.config.master_num_instances
+        ahv_config {
+        network_uuid               = data.nutanix_subnet.subnet.id
+        prism_element_cluster_uuid = data.nutanix_cluster.cluster.id
+        }
+    }
+    timeouts {
+        create = "1h"
+        update = "30m"
+        delete = "10m"
+        }
+    }
+    ```
+
+2. Validate your tofu code
+
+    ```bash
+    tofu validate
+    ```
+
+3.  Apply your tofu code to create NKE cluster, associated virtual machines and other resources
+  
+    ```bash
+    tofu apply 
+
+    # Terraform will show you all resources that it will to create
+    # Type yes to confirm 
+    ```
+
+4.  Run the Terraform state list command to verify what resources have been created
+
+    ``` bash
+    tofu state list
+    ```
+
+    ``` { .bash .no-copy }
+    # Sample output for the above command
+
+    data.nutanix_cluster.cluster              # < This is your existing Prism Element cluster
+    data.nutanix_subnet.subnet                # < This is your existing primary subnet
+    nutanix_image.jumphost-image              # < This is the image file for jump host VM
+    nutanix_virtual_machine.nai-llm-jumphost  # < This is the jump host VM
+    nutanix_karbon_cluster.mgt_cluster        # < This is your Management NKE cluster
+    ```
+
+## Deploying DEV cluster
+
+The DEV cluster will contain GPU node pool to deploy your AI apps.
+
+1. Create the following tofu resource file for Dev NKE cluster
+   
+    ```bash
+    vi dev_cluster.tf
+    ```
+    with the following content:
+
+    ```json
+    terraform {
+    resource "nutanix_karbon_cluster" "dev_cluster" {
+    name       = "dev_cluster"
     version    = var.nke_k8s_version
     storage_class_config {
         reclaim_policy = "Delete"
@@ -211,7 +245,7 @@ The prod cluster will have a GPU node pool.
         delete = "10m"
         }
     }
-    EOF
+        
     ```
 
 2. Validate your tofu code
@@ -238,99 +272,12 @@ The prod cluster will have a GPU node pool.
     ``` { .bash .no-copy }
     # Sample output for the above command
 
-    data.nutanix_cluster.cluster            # < This is your existing Prism Element cluster
-    data.nutanix_subnet.subnet              # < This is your existing primary subnet
-    nutanix_karbon_cluster.mgt_cluster      # < This is your Management NKE cluster
-    ```
-
-## Deploying DEV cluster
-
-The DEV cluster will contain GPU node pool to deploy your AI apps.
-
-1. Create the following tofu resource file for Dev NKE cluster
-
-    ```json
-    cat << EOF > nke-dev.tf
-        terraform {
-        resource "nutanix_karbon_cluster" "dev_cluster" {
-        name       = "dev_cluster"
-        version    = var.nke_k8s_version
-        storage_class_config {
-            reclaim_policy = "Delete"
-            volumes_config {
-            file_system                = "ext4"
-            flash_mode                 = false
-            password                   = var.password
-            prism_element_cluster_uuid = data.nutanix_cluster.cluster.id
-            storage_container          = var.storage_container
-            username                   = var.user
-            }
-        }
-        cni_config {
-            node_cidr_mask_size = 24
-            pod_ipv4_cidr       = "172.20.0.0/16"
-            service_ipv4_cidr   = "172.19.0.0/16"
-        }
-        worker_node_pool {
-            node_os_version = var.node_os_version 
-            num_instances   = var.worker_num_instances
-            ahv_config {
-            network_uuid               = data.nutanix_subnet.subnet.id
-            prism_element_cluster_uuid = data.nutanix_cluster.cluster.id
-            }
-        }
-        etcd_node_pool {
-            node_os_version = var.node_os_version 
-            num_instances   = var.etcd_num_instances
-            ahv_config {
-            network_uuid               = data.nutanix_subnet.subnet.id
-            prism_element_cluster_uuid = data.nutanix_cluster.cluster.id
-            }
-        }
-        master_node_pool {
-            node_os_version = var.node_os_version 
-            num_instances   = var.master_num_instances
-            ahv_config {
-            network_uuid               = data.nutanix_subnet.subnet.id
-            prism_element_cluster_uuid = data.nutanix_cluster.cluster.id
-            }
-        }
-        timeouts {
-            create = "1h"
-            update = "30m"
-            delete = "10m"
-            }
-        }
-        EOF
-    ```
-
-2. Validate your tofu code
-
-    ```bash
-    tofu validate
-    ```
-
-3.  Apply your tofu code to create NKE cluster, associated virtual machines and other resources
-  
-    ```bash
-    tofu apply 
-
-    # Terraform will show you all resources that it will to create
-    # Type yes to confirm 
-    ```
-
-4.  Run the Terraform state list command to verify what resources have been created
-
-    ``` bash
-    tofu state list
-    ```
-
-    ``` { .bash .no-copy }
-    # Sample output for the above command
-
-    data.nutanix_cluster.cluster            # < This is your existing Prism Element cluster
-    data.nutanix_subnet.subnet              # < This is your existing primary subnet
-    nutanix_karbon_cluster.dev_cluster      # < This is your Management NKE cluster
+    data.nutanix_cluster.cluster              # < This is your existing Prism Element cluster
+    data.nutanix_subnet.subnet                # < This is your existing primary subnet
+    nutanix_image.jumphost-image              # < This is the image file for jump host VM
+    nutanix_virtual_machine.nai-llm-jumphost  # < This is the jump host VM
+    nutanix_karbon_cluster.mgt_cluster        # < This is your Management NKE cluster
+    nutanix_karbon_cluster.dev_cluster        # < This is your Dev NKE cluster
     ```
 
 ### Adding NodePool with GPU
