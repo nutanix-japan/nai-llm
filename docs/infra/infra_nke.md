@@ -69,7 +69,7 @@ For Prod, we will deploy an NKE Cluster of type "Production".
 
     with the following content:
 
-    ```json title="mgt_cluster.tf"
+    ```json title="main.tf"
     terraform {
       required_providers {
         nutanix = {
