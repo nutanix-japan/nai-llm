@@ -1,4 +1,7 @@
-## Install OpenTofu on Linux
+# Appendix
+
+## Preparing OpenTofu
+### Install OpenTofu on Linux
 
 On your Linux workstation run the following scripts to install OpenTofu. See [here]for latest instructions and other platform information. 
 
@@ -12,7 +15,7 @@ chmod +x install-opentofu.sh
 ./install-opentofu.sh --install-method rpm
 ```
 
-## Install OpenTofu on Windows
+### Install OpenTofu on Windows
 
 On your Windows workstation run the following scripts to install OpenTofu.
 

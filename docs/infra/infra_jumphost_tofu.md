@@ -33,58 +33,31 @@ Follow the [instructions](../appendix/appendix.md#preparing-opentofu) here to ge
 
        Once jump host VM is installed, install OpenTofu on the jump host VM as well. 
 
+## Generate a SSH Key on Linux/Mac
+
+1. Run the following command to generate an RSA key pair.
+  
+    ```bash
+    ssh-keygen -t rsa
+    ```
+  
+2. Accept the default file location as ``~/.ssh/id_rsa``
+  
+3. The keys will be available in the following locations:
+    
+    ``` { .bash .no-copy }
+    ~/.ssh/id_rsa.pub 
+    ~/.ssh/id_rsa
+    ```
+
+    !!!tip
+          On Windows machine, See [Generate a SSH Key on Windows](https://portal.nutanix.com/page/documents/details?targetId=Self-Service-Admin-Operations-Guide-v3_8_0:nuc-app-mgmt-generate-ssh-key-windows-t.html) example.
 
 ## Create Jump Host VM
 
-1. Create Tofu variables file 
+We will create a jump host VM using OpenTofu. 
 
-    !!!note
-           There are some extra variables defined here. These will be used in the later parts of the lab to create NKE infrastructure.
-   
-    ```bash
-    cat << EOF > variables.tf
-    variable "cluster_name" {
-    type = string
-    }
-    variable "subnet_name" {
-    type = string
-    }
-    variable "password" {
-    description = "nutanix cluster password"
-    type      = string
-    sensitive = true
-    }
-    variable "endpoint" {
-    type = string
-    }
-    variable "user" {
-    description = "nutanix cluster username"
-    type      = string
-    sensitive = true
-    }
-    variable "storage_container"{
-    type = string
-    }
-    variable "nke_k8s_version" {
-    type = string
-    }
-    variable "node_os_version" {
-    type = string
-    
-    }
-    variable "master_num_instances"{
-    type = number
-    }
-    variable "etcd_num_instances"{
-    type = number
-    }
-    variable "worker_num_instances"{
-    type = number
-    }
-    EOF
-    ```
-
-2. Create a ``jumphostvm_cloudinit.yaml`` file using the following contents
+1. Create a ``cloudinit`` file using the following contents
    
     ```bash
     vi jumphostvm_cloudinit.yaml
@@ -116,19 +89,37 @@ Follow the [instructions](../appendix/appendix.md#preparing-opentofu) here to ge
         - ssh-rsa XXXXXX.... # (1)    
     ```
 
-    1.  :material-fountain-pen-tip: copy and paste the contents of your ``~/.ssh/id_rsa.pub ``file or any public key file that you wish to use.
+    1.  :material-fountain-pen-tip: Copy and paste the contents of your ``~/.ssh/id_rsa.pub ``file or any public key file that you wish to use. 
    
+          ---
+
+          If you are using a Mac, the command ``pbcopy``can be used to copy the contents of a file to clipboard. 
+
+          ```bash
+          cat ~/.ssh/id_rsa.pub | tr -d '\n' | pbcopy
+          ```
+
+          ++cmd+"v"++ will paste the contents of clipboard to the console.
+
 
     !!!warning
           Make sure to paste the value of the RSA public key in the ``jumphostvm_cloudinit.yaml`` file.
-
-1. Create a base64 decode for your cloudinit yaml file
+          
+2. Create a base64 decode for your cloudinit yaml file
    
     ```bash
-    cat jumphostvm_cloudinit.yaml | base64 | tr -d '\n'
+    cat jumphostvm_cloudinit.yaml | base64 | tr -d '\n' # (1)
     ```
+    
+    1.  If you are using a Mac, the command ``pbcopy``can be used to copy the contents of a file to clipboard. 
 
-2. Create a config ``yaml`` file to define attributes for all your jump host VM
+        ```bash
+        cat jumphostvm_cloudinit.yaml | base64 | tr -d '\n' | pbcopy
+        ```
+
+        ++cmd+"v"++ will paste the contents of clipboard to the console.
+
+3. Create a config ``yaml`` file to define attributes for all your jump host VM
    
     ```bash
     vi jumphostvm_config.yaml
@@ -137,27 +128,46 @@ Follow the [instructions](../appendix/appendix.md#preparing-opentofu) here to ge
     with the following content:
 
     ```yaml
+    user: "admin"
+    password: "XXXXXX"
+    subnet_name: "subnet"
+    cluster_name: "PE Cluster Name"
+    endpoint: "PC FQDN"
+    storage_container: "default"
+    nke_k8s_version: "1.26.8-0"
+    node_os_version: "ntnx-1.6.1"
+    master_num_instances: 1
+    etcd_num_instances: 1
+    worker_num_instances: 1
     name: "nai-llm-jumphost"
     num_vcpus_per_socket: "1"
     num_sockets: "2"
     memory_size_mib: 4096
+    guest_customization_cloud_init_user_data: ""
     disk_list:
       - data_source_reference:
           kind: "image"
           uuid: "nutanix_image.jumpvmimage.id"
+    disk_size_mib: 40960  # 40 GB in MiB for jump vm host OS disk
     nic_list:
       - subnet_uuid: "data.nutanix_subnet.subnet.id"
     source_uri: "https://cloud-images.ubuntu.com/releases/22.04/release/ubuntu-22.04-server-cloudimg-amd64.img"
     guest_customization_cloud_init_user_data: "I2Nsb3VkLWNvbmZpZw....." # (1)
     ```
 
-    1.  :material-fountain-pen-tip: copy and paste the output of the command c``at jumphostvm_cloudinit.yaml | base64 | tr -d '\n'``
+    1.  :material-fountain-pen-tip: copy and paste the output of the command ``cat jumphostvm_cloudinit.yaml | base64 | tr -d '\n'``
+         
+        ---
+        If you are using a Mac and ``pbcopy`` utility as suggested in the previous command's tip window, ++cmd+"v"++ will paste the contents of clipboard to the console.
 
     !!!warning
           Make sure to paste the output of the command ``cat jumphostvm_cloudinit.yaml | base64 | tr -d '\n'``
+    
+    !!!note
+           There are other variables in the local config file. These will be used in the later part of the lab to create NKE clusters.
 
 
-3. Create an image and a VM resource file with 
+4. Create an image and a VM resource file with 
   
     ```bash
     vi jumphostvm.tf
@@ -166,11 +176,35 @@ Follow the [instructions](../appendix/appendix.md#preparing-opentofu) here to ge
     with the following content:
 
     ```json
-    locals {
-      config = yamldecode(file("${path.module}/jumphostvm_config.yaml"))
+    terraform {
+      required_providers {
+        nutanix = {
+          source  = "nutanix/nutanix"
+          version = "1.9.5"
+        }
+      }
     }
 
-    resource "nutanix_image" "jumpvmimage" {
+    locals {
+      config = yamldecode(file("${path.module}/vm_config.yaml"))
+    }
+
+    data "nutanix_cluster" "cluster" {
+      name = local.config.cluster_name
+    }
+    data "nutanix_subnet" "subnet" {
+      subnet_name = local.config.subnet_name
+    }
+
+    provider "nutanix" {
+      username     = local.config.user
+      password     = local.config.password
+      endpoint     = local.config.endpoint
+      insecure     = false
+      wait_timeout = 60
+    }
+
+    resource "nutanix_image" "jumphost-image" {
       name        = "jumpvmimage"
       description = "Jumphost VM image"
       source_uri  = local.config.source_uri
@@ -188,6 +222,7 @@ Follow the [instructions](../appendix/appendix.md#preparing-opentofu) here to ge
           kind = "image"
           uuid = nutanix_image.jumpvmimage.id
         }
+        disk_size_mib = local.config.disk_size_mib
       }
       nic_list {
         subnet_uuid = data.nutanix_subnet.subnet.id
@@ -196,13 +231,13 @@ Follow the [instructions](../appendix/appendix.md#preparing-opentofu) here to ge
       depends_on = [nutanix_image.jumpvmimage]
     }
 
-    output "jumpvm_ip_address" {
-      value = nutanix_virtual_machine.testingconfigfilevm.*.nic_list
+    output "nai-llm-jumphost-ip-address" {
+      value = nutanix_virtual_machine.nai-llm-jumphost.*.nic_list
       description = "Mac address of the jump host vm"
     }
     ```
 
-4. Apply your tofu code to create jump host VM 
+5. Apply your tofu code to create jump host VM 
   
     ```bash
     tofu validate
@@ -233,7 +268,7 @@ Follow the [instructions](../appendix/appendix.md#preparing-opentofu) here to ge
     ]
     ```
 
-5.  Run the Terraform state list command to verify what resources have been created
+7.  Run the Terraform state list command to verify what resources have been created
 
     ``` bash
     tofu state list
@@ -244,7 +279,7 @@ Follow the [instructions](../appendix/appendix.md#preparing-opentofu) here to ge
 
     data.nutanix_cluster.cluster              # < This is your existing Prism Element cluster
     data.nutanix_subnet.subnet                # < This is your existing primary subnet
-    nutanix_image.jumpvmimage                 # < This is the image file for jump host VM
+    nutanix_image.jumphost-image              # < This is the image file for jump host VM
     nutanix_virtual_machine.nai-llm-jumphost  # < This is the jump host VM
     ```
 
@@ -283,7 +318,7 @@ We have compiled a list of utilities that needs to be installed on the jump host
 3. Change working directory and see ``Task`` help
   
     ```bash
-    $ cd $HOME/nai-llm-fleet-infra/ && task
+    cd $HOME/nai-llm-fleet-infra/ && task
     ```
     ``` { .bash .no-copy }
     # command output
@@ -305,3 +340,5 @@ We have compiled a list of utilities that needs to be installed on the jump host
     - Task: nke:download-creds 
     - Task: flux:init
     ```
+
+We have a jumphost VM now that we will be using to perform the rest of the labs. 
