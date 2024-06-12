@@ -66,7 +66,7 @@ We will create a jump host VM using OpenTofu.
     with the following content:
 
    
-    ```yaml
+    ```yaml title="jumphostvm_cloudinit.yaml"
     #cloud-config
     hostname: nai-llm-jumphost
     package_update: true
@@ -127,28 +127,21 @@ We will create a jump host VM using OpenTofu.
 
     with the following content:
 
-    ```yaml
-    user: "admin"
-    password: "XXXXXX"
-    subnet_name: "subnet"
+    ```yaml title="jumphostvm_config.yaml"
+    user: "PC user"
+    password: "PC password"
+    subnet_name: "PE subnet"
     cluster_name: "PE Cluster Name"
     endpoint: "PC FQDN"
-    storage_container: "default"
-    nke_k8s_version: "1.26.8-0"
-    node_os_version: "ntnx-1.6.1"
-    master_num_instances: 1
-    etcd_num_instances: 1
-    worker_num_instances: 1
     name: "nai-llm-jumphost"
     num_vcpus_per_socket: "1"
     num_sockets: "2"
     memory_size_mib: 4096
-    guest_customization_cloud_init_user_data: ""
     disk_list:
       - data_source_reference:
           kind: "image"
           uuid: "nutanix_image.jumpvmimage.id"
-    disk_size_mib: 40960  # 40 GB in MiB for jump vm host OS disk
+    disk_size_mib: 40960
     nic_list:
       - subnet_uuid: "data.nutanix_subnet.subnet.id"
     source_uri: "https://cloud-images.ubuntu.com/releases/22.04/release/ubuntu-22.04-server-cloudimg-amd64.img"
@@ -175,7 +168,7 @@ We will create a jump host VM using OpenTofu.
 
     with the following content:
 
-    ```json
+    ```json title-"jumphostvm.tf"
     terraform {
       required_providers {
         nutanix = {
