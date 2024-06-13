@@ -5,7 +5,7 @@ Below is walkthrough for creating a Linux VM on Nutanix AHV using OpenTofu to su
 ## Prerequisites
 
 - Existing Nutanix AHV Subnet configured with IPAM
-- Existing Linux OS machine image (i.e., `Ubuntu 22.04 LTS` ) with cloud-init service enabled. If not existing, See [Upload Generic Cloud Image into Prism Central](#upload-generic-cloud-image-into-prism-central) example.
+- Existing Linux OS machine image (i.e., `Ubuntu 22.04 LTS` ) with cloud-init service enabled. If not existing, See [Upload Generic Cloud Image into Prism Central](#generate-a-ssh-key-on-linuxmac) example.
 - SSH Private Key for inital `cloud-init` bootstrapping. If not existing:
   - On MacOS/Linux machine, See [Generate a SSH Key on Linux](#generate-a-ssh-key-on-linux) example.
   - On Windows machine, See [Generate a SSH Key on Windows](https://portal.nutanix.com/page/documents/details?targetId=Self-Service-Admin-Operations-Guide-v3_8_0:nuc-app-mgmt-generate-ssh-key-windows-t.html) example.
@@ -168,7 +168,7 @@ We will create a jump host VM using OpenTofu.
 
     with the following content:
 
-    ```json title-"jumphostvm.tf"
+    ```json title="jumphostvm.tf"
     terraform {
       required_providers {
         nutanix = {

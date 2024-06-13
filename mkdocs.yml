@@ -81,6 +81,9 @@ theme:
       quote: octicons/quote-16
   features:
   - navigation.instant
+  - navigation.instant.progress
+  - navigation.path
+  - navigation.footer
   - navigation.tracking
   - navigation.sections
   - navigation.expand
