@@ -10,12 +10,12 @@ We will use Infrastructure as Code framework to deploy NKE kubernetes clusters.
 
 ## Pre-requisites
 
-- Prism Central is at version 2023.4
+- Prism Central is at least version ``2023.4``
 - NKE is enabled on Nutanix Prism Central
-- NKE is at version 2.9 (updated through LCM)
-- NKE Node OS is at version ntnx-1.6.1
-- NKE Kubernetes is at version 1.25.6-1
-- Monitoring on each NKE Cluster is ENABLED
+- NKE is at at least version ``2.9`` (updated through LCM)
+- NKE Node OS is at least version `ntnx-1.6.1`
+- NKE Kubernetes is at least version `1.25.6-1`
+- Monitoring on each NKE Cluster is **ENABLED**
 
 ## NKE High Level Cluster Design
 
@@ -37,7 +37,7 @@ Since the Management Cluster will be essential to all AI application workloads, 
 | ETCD   | 3                 | 4    | 8 GB  | 120 GB  |
 | Worker | 3                 | 12   | 16 GB | 300 GB  |
 
-### Dev Workload Cluster
+### Dev Workload Clusterq
 
 For Dev, we will deploy an NKE Cluster of type "Development".
 
@@ -61,7 +61,7 @@ For Prod, we will deploy an NKE Cluster of type "Production".
 
 ## Create TOFU Manifest file
 
-1. Create the following tofu resource file
+1. Create the following tofu manifest file
 
     ```bash
     vi main.tf
