@@ -19,11 +19,11 @@ We will use Infrastructure as Code framework to deploy NKE kubernetes clusters.
 
 ## NKE High Level Cluster Design
 
-The `Management` NKE cluster will be a centralized cluster that the AI applications on each Workload NKE cluster will be leveraged for automation and obervability.
+The `Management` NKE cluster will be a centralized cluster that the AI applications on each Workload NKE cluster will be leveraged for automation and observability.
 
 The `Workload` NKE cluster will be hosting the LLM model serving endpoints and AI application stack. This cluster and will require a dedicated GPU node pool.  
 
-We wll create a 1 x NKE cluster for Management and at min. 1 x NKE cluster for the DEV Workloads.
+We will create a 1 x NKE cluster for Management and at min. 1 x NKE cluster for the DEV Workloads.
 
 Once DEV deployment has been tested successfully, we can deploy applications to optional PROD Workload cluster.
 
@@ -37,7 +37,7 @@ Since the Management Cluster will be essential to all AI application workloads, 
 | ETCD   | 3                 | 4    | 8 GB  | 120 GB  |
 | Worker | 3                 | 12   | 16 GB | 300 GB  |
 
-### Dev Workload Clusterq
+### Dev Workload Cluster
 
 For Dev, we will deploy an NKE Cluster of type "Development".
 
@@ -181,7 +181,7 @@ For Prod, we will deploy an NKE Cluster of type "Production".
 
     with the following content:
 
-    ```yaml title=".env.mgmt-cluster.yaml"
+    ```yaml hl_lines="27" title=".env.mgmt-cluster.yaml"
     prism_central:
       endpoint: <PC FQDN>
       user: <PC user>
@@ -263,7 +263,14 @@ The DEV cluster will contain GPU node pool to deploy your AI apps.
     tofu workspace new dev-cluster
     ```
 
-2. Create the Management NKE cluster config.yaml
+2. Create the Management NKE cluster config.yaml 
+   
+    ???tip
+          The previous ``.env.mgmt-cluster.yaml`` could be copied to just change the number of worker nodes to 1 to save some time.
+
+          ```bash
+          cp .env.mgmt-cluster.yaml .env.dev-cluster.yaml
+          ```
 
     ```bash
     vi .env.dev-cluster.yaml
@@ -271,7 +278,7 @@ The DEV cluster will contain GPU node pool to deploy your AI apps.
 
     with the following content:
 
-    ```yaml title=".env.dev-cluster.yaml"
+    ```yaml hl_lines="27" title=".env.dev-cluster.yaml - change highlighted line"
     prism_central:
       endpoint: <PC FQDN>
       user: <PC user>
