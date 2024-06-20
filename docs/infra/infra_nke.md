@@ -278,7 +278,7 @@ The DEV cluster will contain GPU node pool to deploy your AI apps.
 
     with the following content:
 
-    ```yaml hl_lines="27" title=".env.dev-cluster.yaml - change highlighted line"
+    ```yaml hl_lines="27" title=".env.dev-cluster.yaml"
     prism_central:
       endpoint: <PC FQDN>
       user: <PC user>
