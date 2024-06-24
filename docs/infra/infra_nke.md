@@ -80,10 +80,10 @@ For Prod, we will deploy an NKE Cluster of type "Production".
 
 1. In VSC, change to the ``tofu`` folder
   
-2. In the ``tofu`` folder, create a tofu manifest file in VSC explorer pane
+2. In the ``tofu`` folder, create a tofu manifest file ``main.tf`` in VSC explorer pane
 
     ```bash
-    vi main.tf
+    main.tf
     ```
 
     with the following content:
@@ -192,10 +192,10 @@ For Prod, we will deploy an NKE Cluster of type "Production".
     tofu workspace new mgmt-cluster
     ```
 
-2. Create the Management NKE cluster config.yaml
+2. In VSC, Create the Management NKE cluster config file
 
     ```bash
-    vi .env.mgmt-cluster.yaml
+    .env.mgmt-cluster.yaml
     ```
 
     with the following content:
@@ -285,14 +285,14 @@ The DEV cluster will contain GPU node pool to deploy your AI apps.
 2. Create the Management NKE cluster config.yaml 
    
     ???tip
-          The previous ``.env.mgmt-cluster.yaml`` could be copied to just change the number of worker nodes to 1 to save some time.
+          The previous ``.env.mgmt-cluster.yaml`` could be copied 
 
           ```bash
           cp .env.mgmt-cluster.yaml .env.dev-cluster.yaml
           ```
 
     ```bash
-    vi .env.dev-cluster.yaml
+    .env.dev-cluster.yaml
     ```
 
     with the following content:
