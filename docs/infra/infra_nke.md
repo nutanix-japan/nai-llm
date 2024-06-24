@@ -61,7 +61,9 @@ For Prod, we will deploy an NKE Cluster of type "Production".
 
 ## Create TOFU Manifest file
 
-1. Create the following tofu manifest file
+1. In VSC, change to the ``tofu`` folder
+  
+2. In the ``tofu`` folder, create a tofu manifest file in VSC explorer pane
 
     ```bash
     vi main.tf
@@ -305,7 +307,7 @@ The DEV cluster will contain GPU node pool to deploy your AI apps.
         memory_gb: 8
         disk_gb: 300
       worker:
-        num_instances: 1
+        num_instances: 3
         cpu_count: 12
         memory_gb: 16
         disk_gb: 300
@@ -370,11 +372,11 @@ It is necessary to connect to Prism Central (PC) to be able to access the `karbo
 3. Check the number of available GPUs for Dev NKE cluster
 
     ```bash
-    karbonctl cluster gpu-inventory list --cluster-name dev_cluster
+    karbonctl cluster gpu-inventory list --cluster-name dev-cluster
     ```
 
     ```bash title="Command execution"
-    PCVM:~$ karbonctl cluster gpu-inventory list --cluster-name dev_cluster
+    PCVM:~$ karbonctl cluster gpu-inventory list --cluster-name dev-cluster
     Name            Total Count    Assignable Count
     Lovelace 40S    8              2
     ```
@@ -382,11 +384,11 @@ It is necessary to connect to Prism Central (PC) to be able to access the `karbo
 4. Create a new gpu nodepool and assing it 1 GPU
 
     ```bash
-    karbonctl cluster node-pool add --cluster-name dev_cluster --count 1 --memory 12 --gpu-count 1 --gpu-name "Lovelace 40S" --node-pool-name gpu
+    karbonctl cluster node-pool add --cluster-name dev-cluster --count 2 --cpu 12 --memory 40 --gpu-count 1 --gpu-name "Lovelace 40S" --node-pool-name gpu
     ```
 
     ```bash title="Command execution"
-    PCVM:~$ karbonctl cluster node-pool add --cluster-name dev_cluster --count 2 --memory 12 --gpu-count 1 --gpu-name "Lovelace 40S" --node-pool-name gpu
+    PCVM:~$ karbonctl cluster node-pool add --cluster-name dev-cluster --count 2 --cpu 12 --memory 40 --gpu-count 1 --gpu-name "Lovelace 40S" --node-pool-name gpu
     
     I acknowledge that GPU enablement requires installation of NVIDIA datacenter driver software governed by NVIDIA licensing terms. Y/[N]:Y
     
@@ -395,7 +397,7 @@ It is necessary to connect to Prism Central (PC) to be able to access the `karbo
 
 5. Monitor PC tasks to confirm creation on VM and allocation of GPU to the VM
 
-6. Once nodepool is created, go to **PC > Kubernetes Management > dev_cluster > Node Pools** and select **gpu** nodepool
+6. Once nodepool is created, go to **PC > Kubernetes Management > dev-cluster > Node Pools** and select **gpu** nodepool
 
 7. Click on update in the drop-down menu
 

@@ -5,11 +5,13 @@ Below is walkthrough for creating a Linux VM on Nutanix AHV using OpenTofu to su
 ## Prerequisites
 
 - Existing Nutanix AHV Subnet configured with IPAM
-- Existing Linux OS machine image (i.e., `Ubuntu 22.04 LTS` ) with cloud-init service enabled. If not existing, See [Upload Generic Cloud Image into Prism Central](#generate-a-ssh-key-on-linuxmac) example.
-- SSH Private Key for inital `cloud-init` bootstrapping. If not existing:
-  - On MacOS/Linux machine, See [Generate a SSH Key on Linux](#generate-a-ssh-key-on-linux) example.
-  - On Windows machine, See [Generate a SSH Key on Windows](https://portal.nutanix.com/page/documents/details?targetId=Self-Service-Admin-Operations-Guide-v3_8_0:nuc-app-mgmt-generate-ssh-key-windows-t.html) example.
-- OpenTofu installation - see [instructions](../appendix/appendix.md#preparing-opentofu) here.
+  
+- SSH Private Key for inital `cloud-init` bootstrapping
+  
+   - On MacOS/Linux machine, see [Generate a SSH Key on Linux](workstation.md#generate-a-rsa-key-pair) example.
+   - On Windows machine, see [Generate a SSH Key on Windows](workstation.md#generate-a-rsa-key-pair) example.
+  
+- OpenTofu installations, see [instructions](workstation.md#install-opentofu) here.
 
 ## Jump Host VM Requirements
 
@@ -21,50 +23,21 @@ The following jump host resources are recommended for the jump host VM:
   - Cores Per CPU: `4 Cores`
   - Memory: `16 GiB`
   - Storage: `300 GiB`
-  
-## Install OpenTofu
-
-Install OpenTofu for Infrastructure as Code requirement
-
-Follow the [instructions](../appendix/appendix.md#preparing-opentofu) here to get it installed on your workstation.
-
-!!!note
-       This is the only binary that you will need to install on your workstation or any other OS to get the jump host VM running. 
-
-       Once jump host VM is installed, install OpenTofu on the jump host VM as well. 
-
-## Generate a SSH Key on Linux/Mac
-
-1. Run the following command to generate an RSA key pair.
-  
-    ```bash
-    ssh-keygen -t rsa
-    ```
-  
-2. Accept the default file location as ``~/.ssh/id_rsa``
-  
-3. The keys will be available in the following locations:
-    
-    ``` { .bash .no-copy }
-    ~/.ssh/id_rsa.pub 
-    ~/.ssh/id_rsa
-    ```
-
-    !!!tip
-          On Windows machine, See [Generate a SSH Key on Windows](https://portal.nutanix.com/page/documents/details?targetId=Self-Service-Admin-Operations-Guide-v3_8_0:nuc-app-mgmt-generate-ssh-key-windows-t.html) example.
 
 ## Create Jump Host VM
 
 We will create a jump host VM using OpenTofu. 
 
-1. Create a ``cloudinit`` file using the following contents
+1. In VSC, create a new folder called ``tofu``
    
+2. In the ``tofu`` folder, create a file in VSC explorer pane
+   
+  
     ```bash
-    vi jumphostvm_cloudinit.yaml
-    ```
-
-    with the following content:
-
+    jumphostvm_cloudinit.yaml
+    ``` 
+   
+3. Paste the following contents:
    
     ```yaml title="jumphostvm_cloudinit.yaml"
     #cloud-config
@@ -105,7 +78,9 @@ We will create a jump host VM using OpenTofu.
     !!!warning
           Make sure to paste the value of the RSA public key in the ``jumphostvm_cloudinit.yaml`` file.
           
-2. Create a base64 decode for your cloudinit yaml file
+2. Open a terminal within VSC, **Terminal > New Terminal**
+   
+3. Create a base64 decode for your ``jumphostvm_cloudinit.yaml``  yaml file from the VSC terminal
    
     ```bash
     cat jumphostvm_cloudinit.yaml | base64 | tr -d '\n' # (1)
@@ -117,15 +92,15 @@ We will create a jump host VM using OpenTofu.
         cat jumphostvm_cloudinit.yaml | base64 | tr -d '\n' | pbcopy
         ```
 
-        ++cmd+"v"++ will paste the contents of clipboard to the console.
+        ++cmd+"v"++ will paste the contents of clipboard to the console/VSC.
 
-3. Create a config ``yaml`` file to define attributes for all your jump host VM
+4. Create a config ``jumphostvm_config.yaml`` file 
    
     ```bash
-    vi jumphostvm_config.yaml
+    jumphostvm_config.yaml
     ```
 
-    with the following content:
+    to define attributes for all your jump host VM with the following content:
 
     ```yaml title="jumphostvm_config.yaml"
     user: "PC user"
@@ -155,15 +130,11 @@ We will create a jump host VM using OpenTofu.
 
     !!!warning
           Make sure to paste the output of the command ``cat jumphostvm_cloudinit.yaml | base64 | tr -d '\n'``
-    
-    !!!note
-           There are other variables in the local config file. These will be used in the later part of the lab to create NKE clusters.
 
-
-4. Create an image and a VM resource file with 
+5. Create an image and a VM resource file 
   
     ```bash
-    vi jumphostvm.tf
+    jumphostvm.tf
     ```
 
     with the following content:
@@ -230,18 +201,19 @@ We will create a jump host VM using OpenTofu.
     }
     ```
 
-5. Apply your tofu code to create jump host VM 
+6. Apply your tofu code to create jump host VM 
   
     ```bash
     tofu validate
     tofu apply 
-
+    ```
+    ``` { .bash .no-copy } 
     # Terraform will show you all resources that it will to create
     # Type yes to confirm 
     # Check the output to get the IP address of the VM
     ```
 
-6. Obtain the IP address of the jump host VM from the Tofu output
+7. Obtain the IP address of the jump host VM from the Tofu output
   
     ``` { .bash .no-copy }
     # Command output
@@ -261,7 +233,7 @@ We will create a jump host VM using OpenTofu.
     ]
     ```
 
-7.  Run the Terraform state list command to verify what resources have been created
+8.  Run the Terraform state list command to verify what resources have been created
 
     ``` bash
     tofu state list
@@ -277,30 +249,93 @@ We will create a jump host VM using OpenTofu.
     ```
 
 
-6. Validate that VM is accessible using ssh: 
+6. Validate that VM is accessible using **VSC > Terminal** 
   
     ```bash
     ssh -i ~/.ssh/id_rsa ubuntu@<ip-address-from-tofu-output>
     ```
 
-## Install nai-llm utilities
+### Create a connection to Jumpbox using VSC
+
+1. From your workstation, open **Visual Studio Code**.
+
+2. Click **View > Command Palette...**.
+
+    ![](images/1.png)
+
+3. Click on **+ Add New SSH Host...** and t
+   
+    ![](images/2.png)
+
+4. Type ``ssh ubuntu@jumphost_VM-IP-ADDRESS>``and hit **Enter**.
+
+    ![](images/2b.png)
+
+4. Select the location to update the config file.
+    
+    === "Mac/Linux"
+
+        ```bash
+        /Users/<your-username>/.ssh/config
+        ```
+
+    === "Windows"
+       
+        ```PowerShell
+        C:\\Users\\<your-username>\\.ssh\\config
+        ```
+    
+5. Open the ssh config file on your workstation to verify the contents. It should be similar to the following content
+   
+    ```yaml
+    Host jumphost
+        HostName 10.x.x.x # (1)
+        IdentityFile ~/.ssh/id_rsa # (2)
+        User ubuntu
+    ```
+
+    1. :material-fountain-pen-tip: This is Jumphost VM IP address
+
+    2.  :material-fountain-pen-tip: This would be the RSA key pair generated in the previous [JumpHost](infra_jumphost_tofu.md/#generate-a-ssh-key-on-linuxmac) section
+
+    Now that we have saved the ssh credentials, we are able to connect to the jumphost VM
+
+### Connect to you Jumpbox using VSC
+
+6. On VS Code, Click **View > Command Palette** and **Connect to Host**
+
+7.  Select the IP address of your jumphost VM
+
+8.  A new Visual Studio Code window will open
+    
+9.  Click the **Explorer** button from the left-hand toolbar and select **Open Folder**.
+
+    ![](images/4.png)
+
+10. Provide the ``/home/ubuntu/`` as the folder you want to open and click on **OK**.
+    
+    !!!note
+           Ensure that **bin** is NOT highlighted otherwise the editor will attempt to autofill ``/bin/``. You can avoid this by clicking in the path field *before* clicking **OK**.
+    
+    !!!warning
+           The connection may take up to 1 minute to display the root folder structure of the jumphost VM.
+
+11. Accept any warning message about trusting the author of the folder
+
+    ![](images/6.png)
+
+### Install nai-llm utilities
 
 We have compiled a list of utilities that needs to be installed on the jump host VM to use for the rest of the lab. We have affectionately called it as ``nai-llm`` utilities. Use the following method to install these utilities:
 
-1. SSH into Linux VM  
-
-    ```bash
-    ssh -i ~/.ssh/id_rsa ubuntu@<ip-address>
-    ```
-
-2. Clone Git repo and change working directory
+1. From VSC terminal, clone Git repo and change working directory
 
     ```bash
     git clone https://github.com/jesse-gonzalez/nai-llm-fleet-infra
     cd $HOME/nai-llm-fleet-infra/
     ```
 
-3. Run Post VM Create - Workstation Bootstrapping Tasks
+2. Run Post VM Create - Workstation Bootstrapping Tasks
   
     ```bash
     sudo snap install task --classic
