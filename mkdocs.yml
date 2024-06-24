@@ -12,7 +12,8 @@ nav:
 - Design:
   - Conceptual Design and Components: conceptual/conceptual.md
   - Sizing: sizing/sizing.md
-- Infra Preparation:
+- Infra Preparation: 
+  - Getting Started: infra/infra_home.md
   - Workstation Setup: infra/workstation.md
   - Jumphost VM Tofu: infra/infra_jumphost_tofu.md
   - K8S NKE Clusters: infra/infra_nke.md
