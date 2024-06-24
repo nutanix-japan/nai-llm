@@ -1,8 +1,25 @@
-# Introduction
+# Deploy NKE Clusters
 
 This section will take you through install NKE(Kubernetes) on Nutanix cluster as we will be deploying AI applications on these kubernetes clusters. 
 
 This section will expand to other available Kubernetes implementations on Nutanix.
+
+```mermaid
+stateDiagram-v2
+    direction LR
+    
+    state DeployK8S {
+        [*] --> CreateTofuWorkspaces
+        CreateTofuWorkspaces --> CreateMgtK8SCluster
+        CreateMgtK8SCluster --> CreateDevK8SCluster
+        CreateDevK8SCluster --> [*]
+    }
+
+    PrepWorkstation --> DeployJumpHost 
+    DeployJumpHost --> DeployK8S 
+    DeployK8S --> DeployAIApps : Next section
+```
+
 
 ## NKE Setup
 

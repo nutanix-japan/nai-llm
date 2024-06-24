@@ -1,15 +1,33 @@
-# Create Ubuntu Linux jump host VM on Nutanix AHV using OpenTofu
+# Deploy Jumphost
 
-Below is walkthrough for creating a Linux VM on Nutanix AHV using OpenTofu to support the various deployment scenarios.
+We will go through three phases in this section to deploy jumphost VM which you will use to deploy AI applications. 
+
+1. **Create ClouInit:** to install tools and bootstrap the jumphost VM using OpenTofu
+2. **Create jumphost VM:** to deploy and manage AI applications using OpenTofu
+3. **Deploy Nutanis AI Utilitities:** to bootstrap, deploy and troubleshoot AI applications 
+
+```mermaid
+stateDiagram-v2
+    direction LR
+    
+    state DeployJumpHost {
+        [*] --> CreateCloudInit
+        CreateCloudInit --> CreteTofuVM
+        CreteTofuVM --> DeployNaiLLMUtilities
+        DeployNaiLLMUtilities --> [*]
+    }
+
+    PrepWorkstation --> DeployJumpHost 
+    DeployJumpHost --> DeployK8S : Next section
+```
 
 ## Prerequisites
 
 - Existing Nutanix AHV Subnet configured with IPAM
   
 - SSH Private Key for inital `cloud-init` bootstrapping
-  
-   - On MacOS/Linux machine, see [Generate a SSH Key on Linux](workstation.md#generate-a-rsa-key-pair) example.
-   - On Windows machine, see [Generate a SSH Key on Windows](workstation.md#generate-a-rsa-key-pair) example.
+  - On MacOS/Linux machine, see [Generate a SSH Key on Linux](workstation.md#generate-a-rsa-key-pair) example.
+  - On Windows machine, see [Generate a SSH Key on Windows](workstation.md#generate-a-rsa-key-pair) example.
   
 - OpenTofu installations, see [instructions](workstation.md#install-opentofu) here.
 

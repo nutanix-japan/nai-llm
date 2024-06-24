@@ -14,27 +14,9 @@ stateDiagram-v2
         InstallTofu --> InstallVSCode
         InstallVSCode --> [*]
     }
-    state DeployJumpHost {
-        [*] --> CreateCloudInit
-        CreateCloudInit --> CreteTofuVM
-        CreteTofuVM --> [*]
-    }
-    state DeployK8S {
-        [*] --> CreateWorkspaces
-        CreateWorkspaces --> CreateK8SCluster
-        CreateK8SCluster --> [*]
-    }
-    state DeployAIApps {
-        [*] --> BootstrapK8S
-        BootstrapK8S --> DeplyAIApps
-        DeplyAIApps --> [*]
-    }
 
-    [*] --> PrepWorkstation
-    PrepWorkstation --> DeployJumpHost
-    DeployJumpHost --> DeployK8S
-    DeployK8S --> DeployAIApps
-    DeployAIApps --> [*]
+    [*] --> PrepWorkstation 
+    PrepWorkstation --> DeployJumpHost : Next section
 ```
 
 !!!note
