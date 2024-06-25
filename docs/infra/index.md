@@ -1,4 +1,4 @@
-# Prepare your Infrastructure
+# Getting Started
 
 We will go through four phases in this section to prepare infrastructure on which you can deploy AI applications. 
 
@@ -42,3 +42,7 @@ stateDiagram-v2
     DeployK8S --> DeployAIApps
     DeployAIApps --> [*]
 ```
+
+
+
+
