@@ -1,6 +1,5 @@
-# Deploy LLM on Nutanix 
+# Getting Started
 
-## Getting Started
 In this part of the lab we will deploy LLM on GPU nodes.
 
 We have deployed two Kubernetes clusters so far as per the NVD [design requirements](../conceptual/conceptual.md#management-kubernetes-cluster)
@@ -15,7 +14,7 @@ We will deploy the following applications one after the other
 
 The following is the flow of the applications lab:
 
-<div><center>
+
 ```mermaid
 stateDiagram-v2
     direction LR
@@ -31,7 +30,6 @@ stateDiagram-v2
     [*] --> DeployLLMV1
     DeployLLMV1 --> [*]
 ```
-</center></div>
 
 ## Pre-requisites for MGMT and DEV Cluster
 
@@ -130,4 +128,11 @@ We will need a total of four IPs for the following:
          acli net.add_to_ip_blacklist User1 \
          ip_list=10.x.x.214,10.x.x.215,10.x.x.216,10.x.x.217
          ```
-    
+
+### Create Buckets in Nutanix Objects
+
+Create buckets for gpt app ``documents_bucket_name`` and milvus ``mgmt-cluster-milvus``
+
+### Create Nutanix Files Share
+
+Create NFS share for hosting the LLM model file ``llama-2-13b-chat`` and model archive file
