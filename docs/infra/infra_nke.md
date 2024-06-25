@@ -78,9 +78,9 @@ For Prod, we will deploy an NKE Cluster of type "Production".
 
 ## Create TOFU Manifest file
 
-1. In VSC, change to the ``tofu`` folder
+1. In VSC, make sure you are in the ``tofu`` folder
   
-2. In the ``tofu`` folder, create a tofu manifest file ``main.tf`` in VSC explorer pane
+2. In the ``tofu`` folder, create a tofu manifest file ``main.tf`` 
 
     ```bash
     main.tf
@@ -233,7 +233,13 @@ For Prod, we will deploy an NKE Cluster of type "Production".
         disk_gb: 300
     ```
 
-3. Initialize and Validate your tofu code
+3. In VSC Terminal, change to the tofu folder
+   
+    ```bash
+    cd tofu
+    ```
+
+4. Initialize and Validate your tofu code
 
     ```bash
     tofu init -upgrade
@@ -247,7 +253,7 @@ For Prod, we will deploy an NKE Cluster of type "Production".
     # OpenTofu will validate configurations
     ```
 
-4. Apply your tofu code to create NKE cluster, associated virtual machines and other resources
+5. Apply your tofu code to create NKE cluster, associated virtual machines and other resources
   
     ```bash
     tofu apply 
@@ -256,7 +262,7 @@ For Prod, we will deploy an NKE Cluster of type "Production".
     # Type yes to confirm 
     ```
 
-5. Run the OpenTofu state list command to verify what resources have been created
+6. Run the OpenTofu state list command to verify what resources have been created
 
     ``` bash
     tofu state list

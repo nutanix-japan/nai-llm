@@ -46,16 +46,17 @@ The following jump host resources are recommended for the jump host VM:
 
 We will create a jump host VM using OpenTofu. 
 
-1. In VSC, create a new folder called ``tofu``
+1. In VSC Explorer pange, Click on **New Folder** :material-folder-plus-outline:
    
-2. In the ``tofu`` folder, create a file in VSC explorer pane
+2. Create a new folder called ``tofu``
    
+3. In the ``tofu`` folder, click on **New File** :material-file-plus-outline: with the following name
   
     ```bash
     jumphostvm_cloudinit.yaml
     ``` 
    
-3. Paste the following contents:
+4. Paste the following contents inside the file:
    
     ```yaml title="jumphostvm_cloudinit.yaml"
     #cloud-config
@@ -96,12 +97,12 @@ We will create a jump host VM using OpenTofu.
     !!!warning
           Make sure to paste the value of the RSA public key in the ``jumphostvm_cloudinit.yaml`` file.
           
-2. Open a terminal within VSC, **Terminal > New Terminal**
+2. Open a terminal within VSC, **Terminal > New Terminal** :octicons-terminal-16:
    
-3. Create a base64 decode for your ``jumphostvm_cloudinit.yaml``  yaml file from the VSC terminal
+3. In the terminal, create a base64 decode for your ``jumphostvm_cloudinit.yaml``  yaml file from the VSC terminal
    
     ```bash
-    cat jumphostvm_cloudinit.yaml | base64 | tr -d '\n' # (1)
+    cat jumphostvm_cloudinit.yaml | base64 | tr -d '\n' # (1)!
     ```
     
     1.  If you are using a Mac, the command ``pbcopy``can be used to copy the contents of a file to clipboard. 
@@ -112,7 +113,7 @@ We will create a jump host VM using OpenTofu.
 
         ++cmd+"v"++ will paste the contents of clipboard to the console/VSC.
 
-4. Create a config ``jumphostvm_config.yaml`` file 
+4. In VSC Explorer, create a config ``jumphostvm_config.yaml`` file with the following name:
    
     ```bash
     jumphostvm_config.yaml
@@ -120,36 +121,65 @@ We will create a jump host VM using OpenTofu.
 
     to define attributes for all your jump host VM with the following content:
 
-    ```yaml title="jumphostvm_config.yaml"
-    user: "PC user"
-    password: "PC password"
-    subnet_name: "PE subnet"
-    cluster_name: "PE Cluster Name"
-    endpoint: "PC FQDN"
-    name: "nai-llm-jumphost"
-    num_vcpus_per_socket: "1"
-    num_sockets: "2"
-    memory_size_mib: 4096
-    disk_list:
-      - data_source_reference:
-          kind: "image"
-          uuid: "nutanix_image.jumpvmimage.id"
-    disk_size_mib: 40960
-    nic_list:
-      - subnet_uuid: "data.nutanix_subnet.subnet.id"
-    source_uri: "https://cloud-images.ubuntu.com/releases/22.04/release/ubuntu-22.04-server-cloudimg-amd64.img"
-    guest_customization_cloud_init_user_data: "I2Nsb3VkLWNvbmZpZw....." # (1)
-    ```
+    **Also fill in your Nutanix environment access details.** See example file for details
+    
+    === "Template file"
 
-    1.  :material-fountain-pen-tip: copy and paste the output of the command ``cat jumphostvm_cloudinit.yaml | base64 | tr -d '\n'``
+        ```yaml title="jumphostvm_config.yaml"
+        user: "PC user"                  
+        password: "PC password"          
+        subnet_name: "PE subnet"         
+        cluster_name: "PE Cluster Name"
+        endpoint: "PC FQDN"
+        name: "nai-llm-jumphost"
+        num_vcpus_per_socket: "1"
+        num_sockets: "2"
+        memory_size_mib: 4096
+        disk_list:
+          - data_source_reference:
+              kind: "image"
+              uuid: "nutanix_image.jumpvmimage.id"
+        disk_size_mib: 40960
+        nic_list:
+          - subnet_uuid: "data.nutanix_subnet.subnet.id"
+        source_uri: "https://cloud-images.ubuntu.com/releases/22.04/release/ubuntu-22.04-server-cloudimg-amd64.img"
+        guest_customization_cloud_init_user_data: "I2Nsb3VkLWNvbmZpZw....." # (1)!
+        ```
+
+        1.  :material-fountain-pen-tip: copy and paste the output of the command ``cat jumphostvm_cloudinit.yaml | base64 | tr -d '\n'``
+
+    === "Example file"
+
+        ```yaml title="jumphostvm_config.yaml"
+        user: "user01"                # < Change this to your >
+        password: "XXXXXXXX"
+        subnet_name: "VLAN.20"
+        cluster_name: "mypecluster"
+        endpoint: "pc.example.com"
+        name: "nai-llm-jumphost"
+        num_vcpus_per_socket: "1"
+        num_sockets: "2"
+        memory_size_mib: 4096
+        disk_list:
+          - data_source_reference:
+              kind: "image"
+              uuid: "nutanix_image.jumpvmimage.id"
+        disk_size_mib: 40960
+        nic_list:
+          - subnet_uuid: "data.nutanix_subnet.subnet.id"
+        source_uri: "https://cloud-images.ubuntu.com/releases/22.04/release/ubuntu-22.04-server-cloudimg-amd64.img"
+        guest_customization_cloud_init_user_data: "I2Nsb3VkLWNvbmZpZw....." # (1)!
+        ```
+
+        2.  :material-fountain-pen-tip: copy and paste the output of the command ``cat jumphostvm_cloudinit.yaml | base64 | tr -d '\n'``
          
-        ---
-        If you are using a Mac and ``pbcopy`` utility as suggested in the previous command's tip window, ++cmd+"v"++ will paste the contents of clipboard to the console.
+    !!!tip
+          If you are using a Mac and ``pbcopy`` utility as suggested in the previous command's tip window, ++cmd+"v"++ will paste the contents of clipboard to the console.
 
     !!!warning
-          Make sure to paste the output of the command ``cat jumphostvm_cloudinit.yaml | base64 | tr -d '\n'``
+          Make sure to paste the output of the command ``cat jumphostvm_cloudinit.yaml | base64 | tr -d '\n'`` to the ``uest_customization_cloud_init_user_data`` value field
 
-5. Create an image and a VM resource file 
+5. In VSC Explorer, create an image and a VM resource file with the following name
   
     ```bash
     jumphostvm.tf
@@ -277,11 +307,11 @@ We will create a jump host VM using OpenTofu.
 
 1. From your workstation, open **Visual Studio Code**.
 
-2. Click **View > Command Palette...**.
+2. Click **View > Command Palette**.
 
     ![](images/1.png)
 
-3. Click on **+ Add New SSH Host...** and t
+3. Click on **+ Add New SSH Host** and t
    
     ![](images/2.png)
 
@@ -307,20 +337,20 @@ We will create a jump host VM using OpenTofu.
    
     ```yaml
     Host jumphost
-        HostName 10.x.x.x # (1)
-        IdentityFile ~/.ssh/id_rsa # (2)
+        HostName 10.x.x.x # (1)!
+        IdentityFile ~/.ssh/id_rsa # (2)!
         User ubuntu
     ```
 
     1. :material-fountain-pen-tip: This is Jumphost VM IP address
 
-    2.  :material-fountain-pen-tip: This would be the RSA key pair generated in the previous [JumpHost](infra_jumphost_tofu.md/#generate-a-ssh-key-on-linuxmac) section
+    2.  :material-fountain-pen-tip: This would be the path to RSA private key generated in the previous [JumpHost](infra_jumphost_tofu.md/#generate-a-ssh-key-on-linuxmac) section
 
     Now that we have saved the ssh credentials, we are able to connect to the jumphost VM
 
 ### Connect to you Jumpbox using VSC
 
-6. On VS Code, Click **View > Command Palette** and **Connect to Host**
+6.  On VS Code, Click **View > Command Palette** and **Connect to Host**
 
 7.  Select the IP address of your jumphost VM
 
