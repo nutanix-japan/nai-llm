@@ -152,7 +152,7 @@ Create buckets for gpt app ``documents_bucket_name`` and milvus ``mgmt-cluster-m
 
 In this section we will provision Nutanix Objects based S3 storage to serve as a storage for all OpenShift image registry containers. 
 
-### Generating Access Keys for Buckets
+#### Generating Access Keys for Buckets
 
 !!!note
        Follow instructions [here](https://portal.nutanix.com/page/documents/details?targetId=Objects-v4_4:top-object-store-deployment-t.html) to create a Nutanix Objects Store (if you do not have it)
@@ -188,7 +188,7 @@ In this section we will provision Nutanix Objects based S3 storage to serve as a
 
 11. Store the access key and secret key in a safe place for access 
 
-### Create Buckets
+#### Create Buckets
 
 We will create a bucket for backup destination
 
@@ -204,7 +204,7 @@ We will create a bucket for backup destination
    
 6.  Follow the same steps to create another bucket called **documents01**
 
-### Provide Access to Buckets
+#### Provide Access to Buckets
 
 7.  In the list of buckets, click on the **mgmt-cluster-milvus** bucket
 
