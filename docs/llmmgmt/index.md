@@ -12,6 +12,21 @@ We will deploy the following applications one after the other
 1. LLM NVD v1 - backed by llama2 model with RAG in Milvus database
 2. Support GPT 
 
+```mermaid
+graph TD
+    A[UI / Chatbot] -->|2 create Embedding of Query| C[Embedding Model Serving Endpoint]
+    A -->|4 prompt| B[LLM Model Serving Endpoint]
+    B -->|5 result| A
+    A -->|5 result| A
+
+    subgraph Serverless Framework (Knative)
+        C -->|2 Embed Document| D[Doc Ingest]
+    end
+
+    D -->|1B Content| C
+
+```
+
 The following is the flow of the applications lab:
 
 
@@ -131,7 +146,77 @@ We will need a total of four IPs for the following:
 
 ### Create Buckets in Nutanix Objects
 
+We will create access keys to buckets that we will be using in the project.
+
 Create buckets for gpt app ``documents_bucket_name`` and milvus ``mgmt-cluster-milvus``
+
+In this section we will provision Nutanix Objects based S3 storage to serve as a storage for all OpenShift image registry containers. 
+
+### Generating Access Keys for Buckets
+
+!!!note
+       Follow instructions [here](https://portal.nutanix.com/page/documents/details?targetId=Objects-v4_4:top-object-store-deployment-t.html) to create a Nutanix Objects Store (if you do not have it)
+
+       We are assuming that the name of the Objects Store is ``ntnx-objects``.
+
+1.  Go to **Prism Central** > **Objects** > **ntnx-objects**
+
+2.  On the right-hand pane, click on **Access Keys**
+
+3.  Click on **+ Add people**
+
+4.  Select **Add people not in a directory service**
+
+5.  Enter an email ``llm-admin@example.com`` and name `llm-admin`
+
+6.  Click on **Next**
+
+7.  Click on **Generate Keys**
+
+8.  Once generated, click on **Download Keys**
+
+9.  Once downloaded, click on **Close**
+
+10. Open the downloaded file to verify contents
+
+    ``` { .text .no-copy}
+    Username: llm-admin@example.com
+    Access Key: 1xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+    Secret Key: gxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+    Display Name: milvus-user
+    ```
+
+11. Store the access key and secret key in a safe place for access 
+
+### Create Buckets
+
+We will create a bucket for backup destination
+
+1.  On the top menu, click on **Object Stores**
+
+2.  Click on **ntnx-objects**
+   
+3.  Click on **Create Bucket**
+
+4.  Enter **mgmt-cluster-milvus** as the bucket name
+
+5.  Click on **Create**
+   
+6.  Follow the same steps to create another bucket called **documents01**
+
+### Provide Access to Buckets
+
+7.  In the list of buckets, click on the **mgmt-cluster-milvus** bucket
+
+8.  Click on **User Access** menu and **Edit User Access**
+
+9.  In the **mgmt-cluster-milvus** window, type in the ``llm-admin@example.com`` email that you configured in the [Generating Access Keys for Buckets](#generating-access-keys-for-s3-bucket) section
+
+10. Give **Full Access** permissions
+
+11. Click on **Save**
+    
+12. Follow the same steps to give **Full Access** to the ``llm-admin@example.com`` email for **documents01** bucket
 
 ### Create Nutanix Files Share
 
