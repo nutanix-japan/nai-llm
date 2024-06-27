@@ -21,7 +21,7 @@ nav:
 - Tutorials:
   - LLM on Nutanix:
     - Getting Started: llmmgmt/index.md
-    - Prerequsites: llmmgmt/llm_pre_reqs.md
+    - Prerequisites: llmmgmt/llm_pre_reqs.md
     - DeployLLM: llmmgmt/llm_deploy.md
   - SupportGPT: supportgpt/supportgpt.md
 - References:
@@ -137,6 +137,12 @@ plugins:
     - ">"
     - ">>>"
 - search
+- git-revision-date-localized:
+    enable_creation_date: true
+- git-authors
+- git-committers:
+    repository: nutanix-japan/nai-llm
+    branch: main
 
 # # Style sheeting here
 # extra_css:
