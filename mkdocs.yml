@@ -12,15 +12,17 @@ nav:
 - Design:
   - Conceptual Design and Components: conceptual/conceptual.md
   - Sizing: sizing/sizing.md
-- Infra Preparation: 
+- Infra Preparation:
   - infra/index.md
   - Workstation Setup: infra/workstation.md
   - Jumphost VM Tofu: infra/infra_jumphost_tofu.md
   - K8S NKE Clusters: infra/infra_nke.md
   - K8S D2iQ Clusters: infra/infra_dkp.md
-- Solutions:
-  - llmmgmt/index.md
-  - LLM: llmmgmt/llmmgmt.md
+- Tutorials:
+  - LLM on Nutanix:
+    - Getting Started: llmmgmt/index.md
+    - Prerequsites: llmmgmt/llm_pre_reqs.md
+    - DeployLLM: llmmgmt/llm_deploy.md
   - SupportGPT: supportgpt/supportgpt.md
 - References:
   - Nutanix Components: ntxcomponents/ntxcomponents.md
@@ -35,6 +37,7 @@ nav:
 
 repo_name: nutanix-japan/nai-llm
 repo_url: https://github.com/nutanix-japan/nai-llm
+edit_uri: edit/main/docs/
 
 # Copyright
 copyright: Copyright &copy; 2016 - 2024 Nutanix
@@ -87,8 +90,9 @@ theme:
   - navigation.path
   - navigation.footer
   - navigation.tracking
-  - navigation.sections
-  - navigation.expand
+  # - navigation.sections
+  - navigation.tabs
+  # - navigation.expand
   - navigation.top
   - navigation.integrate
   - search.highlight
@@ -100,7 +104,7 @@ theme:
   - content.action.view
   - content.code.annotate
   - content.code.copy
-  - content.code.annotate 
+  - content.code.annotate
   - content.tabs.link
 
 markdown_extensions:
@@ -114,9 +118,9 @@ markdown_extensions:
 - pymdownx.snippets
 - pymdownx.superfences:
     custom_fences:
-      - name: mermaid
-        class: mermaid
-        format: !!python/name:pymdownx.superfences.fence_code_format
+    - name: mermaid
+      class: mermaid
+      format: !!python/name:pymdownx.superfences.fence_code_format
 - pymdownx.emoji:
     emoji_index: !!python/name:material.extensions.emoji.twemoji
     emoji_generator: !!python/name:material.extensions.emoji.to_svg
