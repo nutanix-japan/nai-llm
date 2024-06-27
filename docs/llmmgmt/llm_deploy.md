@@ -1,5 +1,23 @@
 # Deploying GPT-in-a-Box NVD Reference Application using GitOps (FluxCD)
 
+```mermaid
+stateDiagram-v2
+    direction LR
+    
+    state DeployLLMV1 {
+        [*] --> BootStrapMgmtCluster
+        BootStrapMgmtCluster -->  BootStrapDevCluster
+        BootStrapDevCluster --> MonitorResourcesDeployment
+        MonitorResourcesDeployment --> [*]
+    }
+
+    [*] --> PreRequisites
+    PreRequisites --> DeployLLMV1 
+    DeployLLMV1 --> TestLLMApp : next section
+    TestLLMApp --> [*]
+```
+
+
 ## Bootstrap Management Cluster
 
 A ``.env ``file is provided at   ``/home/ubuntu/nainai-llm-fleet-infra`` folder for ease of configuration. We need to make copies of this for mgmt-cluster and dev-cluster kubernetes clusters that you deployed in the previous sections. 

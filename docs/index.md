@@ -70,7 +70,7 @@ This site follows **Design > Deploy** model.
 
 <div class="grid cards" markdown>
 
--   :material-clock-fast:{ .lg .middle } __Set up LLM on Nutanix in 5 minutes__
+-   :material-clock-fast:{ .lg .middle } __Set up LLM with RAG on Nutanix in 10 minutes__
 
     ---
 
@@ -78,7 +78,7 @@ This site follows **Design > Deploy** model.
 
     This site will also take you through implementation.
 
-    [:octicons-arrow-right-24: Start](#)
+    [:octicons-arrow-right-24: Start](llmmgmt/index.md)
 
 -   :material-clock-fast:{ .lg .middle } __Set up Support GPT in 15 minutes__
 
