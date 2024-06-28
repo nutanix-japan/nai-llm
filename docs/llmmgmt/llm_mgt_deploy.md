@@ -150,8 +150,8 @@ Nutanix Objects store will send a message to kafka endpoint if an object gets st
 3. Login to **Prism Central**, go to **Objects** and choose the **ntnx-objects** store (Objects store name could be different for you)
 4. Go to **Settings > Notification Endpoints**
 5. Choose the **Kafka** tab
-6. Toggle the Enable button to enabled :material-toggle-switch-outline:
-
+6. Toggle the **Enable** button :material-toggle-switch-outline: to enabled
+ 
 7. Paste the ingress endpoint of your Kafka instance
 
     ![](images/notification_ep.png)

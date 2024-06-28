@@ -122,7 +122,7 @@ We will need a total of four IPs for the following:
 
 We will use nip.io address to assign FQDNs for our Nginx Ingress and Istio by using the 4 IPs that we just reserved in the previous section for use in the next section. We will leverage the ``NIP.IO`` with the vip and self-signed certificates.
 
-We will need a total of three/four IPs for the following:
+We will need a total of four IPs for the following:
 
 ### Management Cluster
   
@@ -133,6 +133,11 @@ Assign the first two reserved IPs to Management cluster.
 | Nginx Ingress | `vip`| ``10.x.x.214``  |
 |  Nginx Ingress   | ``wildcard_ingress_subdomain``| ``mgmt-cluster.10.x.x.214.nip.io``    | 
 |  Nginx Ingress   |  ``management_cluster_ingress_subdomain``| ``mgmt-cluster.10.x.x.214.nip.io``     | 
+| Reserved for future | `troubleshooting or debugging`| ``10.x.x.215``  |
+
+!!!note
+       We only need 1 IP for Management cluster. However, KubeVIP needs a range of at least two IPs. We will reserve the second IP for future use and/or troubleshooting purposes. 
+       
 
 ### Dev Cluster
 
@@ -219,7 +224,7 @@ We will create buckets for Milvus database store and document store for uploaded
     
 12. Follow the same steps to give **Full Access** to the ``llm-admin@example.com`` email for **documents01** bucket
 
-### Create Nutanix Files Share
+## Create Nutanix Files Share
 
 Create NFS share for hosting the LLM model file ``llama-2-13b-chat`` and model archive file
 
@@ -299,7 +304,7 @@ We will use this token in the next section.
 
 Docker hub credentials are required to prevent rate limits on image downloads. 
 
-If you do not have docker account, please create it here. 
+If you do not have docker account, please create it [here](https://www.docker.com/). 
 
 Store the docker username and password securely for use in the next section.
 
