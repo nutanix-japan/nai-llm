@@ -24,6 +24,7 @@ nav:
     - Pre-requisites: llmmgmt/llm_pre_reqs.md
     - Deploy Management Cluster: llmmgmt/llm_mgt_deploy.md
     - Deploy Dev Cluster: llmmgmt/llm_dev_deploy.md
+    - Test LLM App: llmmgmt/llm_test.md
   - SupportGPT: supportgpt/supportgpt.md
 - References:
   - Nutanix Components: ntxcomponents/ntxcomponents.md
