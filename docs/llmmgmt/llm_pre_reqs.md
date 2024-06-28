@@ -184,7 +184,7 @@ We will create access keys to buckets that we will be using in the project.
     Username: llm-admin@example.com
     Access Key: 1xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
     Secret Key: gxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
-    Display Name: milvus-user
+    Display Name: llm-admin
     ```
 
 11. Store the access key and secret key in a safe place for access 
@@ -309,14 +309,14 @@ We have compiled a list of utilities that needs to be installed on the jumphost 
 
 1. Using VSC, open Terminal on the jumphost VM
 
-2. From the ``$HOME`` directory Clone Git repo and change working directory
+2. From the ``$HOME`` directory, clone Git repo and change working directory
 
     ```bash
     git clone https://github.com/<your_github_org>/nai-llm-fleet-infra.git
     cd $HOME/nai-llm-fleet-infra/
     ```
 
-3. Run Post VM Create - Workstation Bootstrapping Tasks
+3. Run Post VM Create - Workstation Bootstrapping tasks
   
     ```bash
     sudo snap install task --classic
