@@ -34,9 +34,9 @@ This project uses [devbox](https://github.com/jetpack-io/devbox) to manage its d
 
 8.  A new Visual Studio Code window will open
     
-9.  Click the **Explorer** button from the left-hand toolbar and select **Open Folder**.
+9.  Click the **Explorer** button from the left-hand toolbar and select **Open Folder**
 
-10. Provide the ``/home/ubuntu/nainai-llm-fleet-infra`` as the folder you want to open and click on **OK**.
+10. Provide the ``/home/ubuntu/nainai-llm-fleet-infra`` as the folder you want to open and click on **OK**
  
 11. Install `devbox` using the following command and accept all defaults
 
