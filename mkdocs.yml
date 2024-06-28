@@ -8,7 +8,7 @@ theme:
 
 nav:
 - Home: index.md
-- Possibilities: possibilities/possibilities.md
+#- Possibilities: possibilities/possibilities.md
 - Design:
   - Conceptual Design and Components: conceptual/conceptual.md
   - Sizing: sizing/sizing.md
@@ -21,8 +21,9 @@ nav:
 - Tutorials:
   - LLM on Nutanix:
     - Getting Started: llmmgmt/index.md
-    - Prerequisites: llmmgmt/llm_pre_reqs.md
-    - DeployLLM: llmmgmt/llm_deploy.md
+    - Pre-requisites: llmmgmt/llm_pre_reqs.md
+    - Deploy Management Cluster: llmmgmt/llm_mgt_deploy.md
+    - Deploy Dev Cluster: llmmgmt/llm_dev_deploy.md
   - SupportGPT: supportgpt/supportgpt.md
 - References:
   - Nutanix Components: ntxcomponents/ntxcomponents.md
@@ -92,7 +93,8 @@ theme:
   - navigation.tracking
   # - navigation.sections
   - navigation.tabs
-  # - navigation.expand
+  - navigation.tabs.sticky
+  - navigation.expand
   - navigation.top
   - navigation.integrate
   - search.highlight
@@ -137,15 +139,30 @@ plugins:
     - ">"
     - ">>>"
 - search
+#- git-authors
 - git-revision-date-localized:
     enable_creation_date: true
-- git-authors
-- git-committers:
-    repository: nutanix-japan/nai-llm
-    branch: main
+    enabled: !ENV [CI, false]
+# - git-committers:
+#     repository: nutanix-japan/nai-llm
+#     branch: main
+#     enabled: !ENV [CI, false]
 
 # # Style sheeting here
 # extra_css:
 #   - stylesheets/extra.css
 
+# Additional configuration
+extra:
+  status:
+    new: Recently added
+    deprecated: Deprecated
+  # analytics:
+  #   provider: google
+  #   property: !ENV GOOGLE_ANALYTICS_KEY
+  social:
+  - icon: fontawesome/brands/github
+    link: https://github.com/nutanix-japan
+  - icon: fontawesome/brands/github
+    link: https://github.com/jesse-gonzalez
 
