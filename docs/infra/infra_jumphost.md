@@ -59,20 +59,19 @@ Run following commands from Prism Central UI.
   - Input Name (i.e., `nai-llm-jumphost`) 
   - Number of VMs (i.e., 1) > Select **Cluster > Update VM Properties** (See [Jumphost VM Requirements](#jumphost-vm-requirements)) 
 - Click **Next** and enter the following details:
-    - **CPU:** `2 vCPU`
-    - **Cores Per CPU:** `4 Cores`
-    - **Memory:** `16 GiB`
-    - **Storage:**`300 GiB`
+  - **CPU:** `2 vCPU`
+  - **Cores Per CPU:** `4 Cores`
+  - **Memory:** `16 GiB`
+  - **Storage:**`300 GiB`
 
 - On the **Resources Tab:**, do the following:
-  
-    - Under Disks > Attach Disk > Select Clone from Image > Select Image (ex. `ubuntu-22.04-server-cloudimg-amd64.img`) > Update Capacity (See [Jumphost VM Requirements](#jumphost-vm-requirements)) > Click Save
-    - Under Networks > Attach to Subnet > Select Subnet > Select DHCP Enabled Network > Select Assign with DHCP > Click Save
-    - Select Legacy Bios Mode > Click Next > Accept Remaining Defaults > Click Create VM
+  - Under Disks > Attach Disk > Select Clone from Image > Select Image (ex. `ubuntu-22.04-server-cloudimg-amd64.img`) > Update Capacity (See [Jumphost VM Requirements](#jumphost-vm-requirements)) > Click Save
+  - Under Networks > Attach to Subnet > Select Subnet > Select DHCP Enabled Network > Select Assign with DHCP > Click Save
+  - Select Legacy Bios Mode > Click Next > Accept Remaining Defaults > Click Create VM
 
 - On Management Tab:
-    - Under Guest Customization > Select `Cloud-Init (Linux)` on Script Type dropdown
-    - Copy and Paste cloud-init YAML config script (example below) > Accept Remaining Defaults
+  - Under Guest Customization > Select `Cloud-Init (Linux)` on Script Type dropdown
+  - Copy and Paste cloud-init YAML config script (example below) > Accept Remaining Defaults
   
     ???tip
 
