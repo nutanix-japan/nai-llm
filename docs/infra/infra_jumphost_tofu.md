@@ -103,44 +103,42 @@ We will create a jump host VM using OpenTofu.
 7. In the terminal, create a base64 decode for your ``jumphostvm_cloudinit.yaml``  yaml file from the VSC terminal
 
     ```bash
-    cat jumphostvm_cloudinit.yaml | base64 | tr -d '\n' # (1)!
+    cat jumphost-tofu/jumphostvm_cloudinit.yaml | base64 | tr -d '\n' # (1)!
     ```
 
     1. If you are using a Mac, the command ``pbcopy``can be used to copy the contents of a file to clipboard.
 
         ```bash
-        cat jumphostvm_cloudinit.yaml | base64 | tr -d '\n' | pbcopy
+        cat jumphost-tofu/jumphostvm_cloudinit.yaml | base64 | tr -d '\n' | pbcopy
         ```
 
         ++cmd+"v"++ will paste the contents of clipboard to the console/VSC.
 
-8. In VSC Explorer, create a config ``jumphostvm_config.yaml`` file with the following name:
+8. In VSC Explorer, within the ``jumphost-tofu`` folder, click on **New File** :material-file-plus-outline: and create a config file with the following name:
 
     ```bash
     jumphostvm_config.yaml
     ```
 
-    to define attributes for all your jump host VM with the following content:
-
-    **Also fill in your Nutanix environment access details.** See example file for details
+    **Update Nutanix environment access details along with any jump host VM configurations.** See example file for details
 
     === "Template file"
 
-          ```yaml title="jumphostvm_config.yaml"
+          ```yaml hl_lines="1-6" title="jumphostvm_config.yaml"       
+          endpoint: "PC FQDN"
           user: "PC user"                  
           password: "PC password"          
-          subnet_name: "PE subnet"         
-          cluster_name: "PE Cluster Name"
-          endpoint: "PC FQDN"
+          cluster_name: "PE Cluster Name"  
+          subnet_name: "PE subnet"  
           name: "nai-llm-jumphost"
-          num_vcpus_per_socket: "1"
+          num_vcpus_per_socket: "4"
           num_sockets: "2"
-          memory_size_mib: 4096
+          memory_size_mib: 16384
           disk_list:
             - data_source_reference:
                 kind: "image"
                 uuid: "nutanix_image.jumpvmimage.id"
-          disk_size_mib: 40960
+          disk_size_mib: 307200
           nic_list:
             - subnet_uuid: "data.nutanix_subnet.subnet.id"
           source_uri: "https://cloud-images.ubuntu.com/releases/22.04/release/ubuntu-22.04-server-cloudimg-amd64.img"
@@ -151,28 +149,29 @@ We will create a jump host VM using OpenTofu.
 
     === "Example file"
 
-          ```yaml title="jumphostvm_config.yaml"
-          user: "user01"                # < Change this to your >
-          password: "XXXXXXXX"
-          subnet_name: "VLAN.20"
-          cluster_name: "mypecluster"
-          endpoint: "pc.example.com"
-          name: "nai-llm-jumphost"
-          num_vcpus_per_socket: "1"
+          ```yaml hl_lines="1-6" title="jumphostvm_config.yaml"
+          endpoint: "pc.example.com"    # < Change to PC endpoint >
+          user: "user01"                # < Change to PC admin user> 
+          password: "XXXXXXXX"          # < Change to PC admin pass>
+          cluster_name: "mypecluster"   # < Change to PE element cluster name >
+          subnet_name: "VLAN.20"        # < Change to PE element subnet name >
+          name: "nai-llm-jumphost"      # (1)!
+          num_vcpus_per_socket: "4"
           num_sockets: "2"
-          memory_size_mib: 4096
+          memory_size_mib: 16384
           disk_list:
             - data_source_reference:
                 kind: "image"
                 uuid: "nutanix_image.jumpvmimage.id"
-          disk_size_mib: 40960
+          disk_size_mib: 307200
           nic_list:
             - subnet_uuid: "data.nutanix_subnet.subnet.id"
           source_uri: "https://cloud-images.ubuntu.com/releases/22.04/release/ubuntu-22.04-server-cloudimg-amd64.img"
-          guest_customization_cloud_init_user_data: "I2Nsb3VkLWNvbmZpZw....." # (1)!
+          guest_customization_cloud_init_user_data: "I2Nsb3VkLWNvbmZpZw....." # (2)!
           ```
 
-          2. :material-fountain-pen-tip: copy and paste the output of the command ``cat jumphostvm_cloudinit.yaml | base64 | tr -d '\n'``
+          1. :material-vector-difference: make sure to update `hostname` with same name defined within `jumphostvm_cloudinit.yaml`.
+          2. :material-fountain-pen-tip: copy and paste the output of the command ``cat jumphost-tofu/jumphostvm_cloudinit.yaml | base64 | tr -d '\n'``
 
     !!!tip
           If you are using a Mac and ``pbcopy`` utility as suggested in the previous command's tip window, ++cmd+"v"++ will paste the contents of clipboard to the console.
@@ -180,8 +179,8 @@ We will create a jump host VM using OpenTofu.
     !!!warning
           Make sure to paste the output of the command ``cat jumphostvm_cloudinit.yaml | base64 | tr -d '\n'`` to the ``guest_customization_cloud_init_user_data`` value field
 
-9.  In VSC Explorer, create an image and a VM resource file with the following name
-  
+9. In VSC Explorer, within the ``jumphost-tofu`` folder, click on **New File** :material-file-plus-outline: and create a opentofu manifest file with the following name:
+
     ```bash
     jumphostvm.tf
     ```
@@ -199,7 +198,7 @@ We will create a jump host VM using OpenTofu.
     }
 
     locals {
-      config = yamldecode(file("${path.module}/vm_config.yaml"))
+      config = yamldecode(file("${path.module}/jumhostvm_config.yaml"))
     }
 
     data "nutanix_cluster" "cluster" {
@@ -253,9 +252,11 @@ We will create a jump host VM using OpenTofu.
 10. Apply your tofu code to create jump host VM 
   
     ```bash
-    tofu validate
-    tofu apply 
+    tofu -chdir=jumphost-tofu validate
+    tofu -chdir=jumphost-tofu init
+    tofu -chdir=jumphost-tofu apply 
     ```
+
     ``` { .bash .no-copy } 
     # Terraform will show you all resources that it will to create
     # Type yes to confirm 
