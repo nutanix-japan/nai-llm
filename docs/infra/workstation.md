@@ -1,8 +1,6 @@
-
 # Workstation Setup
 
 We will be going through creating resources and installing tools on your PC/Mac. 
-
 
 ```mermaid
 stateDiagram-v2
@@ -28,11 +26,9 @@ stateDiagram-v2
 
 ## Generate a RSA Key Pair
 
-Select your workstation OS and follow these instuctions to 
+Based on your local workstation OS, follow these instuctions to:
 
 === "Mac/Linux"
-
-    
 
     1. Run the following command to generate an RSA key pair.
     
@@ -40,9 +36,9 @@ Select your workstation OS and follow these instuctions to
         ssh-keygen -t rsa
         ```
     
-    2. Accept the default file location as ``~/.ssh/id_rsa``
+    2. [Optional] Modify or Accept the default file location as ``~/.ssh/id_rsa``
     
-    3. The keys will be available in the following locations:
+    3. If the default file location was accepted, the keys will be in the following location:
         
         ``` { .bash .no-copy }
         ~/.ssh/id_rsa.pub 
