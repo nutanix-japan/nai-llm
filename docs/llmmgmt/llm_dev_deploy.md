@@ -76,21 +76,36 @@ A ``.env ``file is provided at   ``/home/ubuntu/nainai-llm-fleet-infra`` folder 
     task sops:decrypt
     ```
 
-6. Select New (or Switching to Existing) Cluster and Download NKE Creds
+6. Select New (or Switching to Existing) Cluster and Download NKE creds for ``dev-cluster``
 
     ```bash
     eval $(task nke:switch-shell-env) && \
     task nke:download-creds && \
     kubectl get nodes
     ```
-7.  Taint the GPU nodes
+
+    ``` { .text, .no-copy}
+    # command execution example
+
+    $ eval $(task nke:switch-shell-env) && \
+    task nke:download-creds && \
+    kubectl get nodes
+    Select existing cluster instance to load from .local/ directory.
+
+    > dev-cluster                  <<< choose dev-cluster                          
+      mgmt-cluster
+    ```
+7. Taint the GPU nodes. 
     
     ```bash
     task kubectl:taint_gpu_nodes
-    # if gpu are over utilised
-    # task kubectl:drain_gpu_nodes
     ```
+    If gpu are over utilised, drain the gpu_nodes of workloads
 
+    ```bash
+    task kubectl:drain_gpu_nodes
+    ```
+    
 8.  Run Flux Bootstrapping - `task bootstrap:silent`
 
     ```bash

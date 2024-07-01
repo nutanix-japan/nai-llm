@@ -76,19 +76,34 @@ A ``.env ``file is provided at   ``/home/ubuntu/nainai-llm-fleet-infra`` folder 
     task sops:decrypt
     ```
 
-6. Select New (or Switching to Existing) Cluster and Download NKE Creds
+6. Select New (or Switching to Existing) Cluster and Download NKE creds for ``mgmt-cluster``
 
     ```bash
     eval $(task nke:switch-shell-env) && \
     task nke:download-creds && \
     kubectl get nodes
     ```
+    ``` { .text, .no-copy}
+    # command execution example
+
+    $ eval $(task nke:switch-shell-env) && \
+    task nke:download-creds && \
+    kubectl get nodes
+    Select existing cluster instance to load from .local/ directory.
+
+      dev-cluster                                        
+    > mgmt-cluster         <<< choose mgmt-cluster    
+    ```
+
 7.  Taint the GPU nodes
     
     ```bash
     task kubectl:taint_gpu_nodes
-    # if gpu are over utilised
-    # task kubectl:drain_gpu_nodes
+    ```
+    If gpu are over utilised, drain the gpu_nodes of workloads
+
+    ```bash
+    task kubectl:drain_gpu_nodes
     ```
 
 8.  Run Flux Bootstrapping - `task bootstrap:silent`
@@ -179,6 +194,7 @@ To make sure Milvus database and associated components are running.
     attu.mgmt-cluster.10.x.x.214.nip.io
     ```
 
-3. Paste the URL in the browser and you should be able to see Milvus database management page
+3. Paste the URL in the browser and you should be able to see Milvus database management page. 
+4. There is no user name and password for Milvus database as this is a test environment. Feel free to update password for ``root`` user in the user settings.
    
     ![](images/attu.png)
