@@ -1,12 +1,12 @@
 # Getting Started
 
-We will go through four phases in this section to prepare infrastructure on which you can deploy AI applications. 
+We will go through four phases in this section to prepare infrastructure on which you can deploy AI applications.
 
-1. Preparing your Workstation (Mac/Windows)
+1. Preparing your Local Workstation (Mac/Windows)
 2. Deploying Jumphost VM
 3. Deploying Kuberenetes
    1. Managment Cluster
-   2. Dev cluster
+   2. Dev Workload cluster
 
 ```mermaid
 stateDiagram-v2
@@ -42,7 +42,3 @@ stateDiagram-v2
     DeployK8S --> DeployAIApps
     DeployAIApps --> [*]
 ```
-
-
-
-

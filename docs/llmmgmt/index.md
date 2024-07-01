@@ -9,7 +9,7 @@ We have deployed two Kubernetes clusters so far as per the NVD [design requireme
 
 We will deploy the following applications one after the other
 
-1. LLM NVD v1 - backed by llama2 model with RAG in Milvus database
+1. GPT-in-a-Box v1 NVD Reference App - backed by llama2 model with RAG in Milvus database
 2. Support GPT
 
 The following is the flow of the applications lab:

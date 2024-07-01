@@ -65,3 +65,8 @@ tmp
 # IDEs & Editors
 .idea
 *~
+
+# Staging Folders
+.staging
+.todo
+tofu-workspace/**
