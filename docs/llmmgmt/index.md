@@ -4,8 +4,8 @@ In this part of the lab we will deploy LLM on GPU nodes.
 
 We have deployed two Kubernetes clusters so far as per the NVD [design requirements](../conceptual/conceptual.md#management-kubernetes-cluster)
 
-1. Management cluster: to host the management workloads like flux, kafka, etc
-2. Dev cluster: to host the dev LLM and ChatBot application - this will use GPU passed through to the kubernetes worker nodes 
+1. **Management cluster**: to host the management workloads like flux, kafka, etc
+2. **Dev cluster**: to host the dev LLM and ChatBot application - this will use GPU passed through to the kubernetes worker nodes 
 
 We will deploy the following applications one after the other
 
