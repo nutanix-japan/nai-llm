@@ -4,7 +4,7 @@ We will go through three phases in this section to deploy jumphost VM which you 
 
 1. **Create CloudInit:** to install tools and bootstrap the jumphost VM using OpenTofu
 2. **Create Jumphost VM:** to deploy and manage AI applications using OpenTofu
-3. **Deploy Nutanis AI Utilitities:** to bootstrap, deploy and troubleshoot AI applications
+3. **Deploy Nutanix AI Utilitities:** to bootstrap, deploy and troubleshoot AI applications
 
 ```mermaid
 stateDiagram-v2
@@ -25,7 +25,7 @@ stateDiagram-v2
 
 - Existing Nutanix AHV Subnet configured with IPAM
   
-- SSH Private Key for inital `cloud-init` bootstrapping
+- SSH Private Key for initial `cloud-init` bootstrapping
   - On MacOS/Linux machine, see [Generate a SSH Key on Linux](workstation.md#generate-a-rsa-key-pair) example.
   - On Windows machine, see [Generate a SSH Key on Windows](workstation.md#generate-a-rsa-key-pair) example.
   
