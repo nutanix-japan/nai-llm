@@ -31,7 +31,7 @@ We will use Infrastructure as Code framework to deploy NKE kubernetes clusters.
 - NKE is enabled on Nutanix Prism Central
 - NKE is at at least version ``2.9`` (updated through LCM)
 - NKE Node OS is at least version `ntnx-1.6.1`
-- NKE Kubernetes is at least version `1.25.6-1`
+- NKE Kubernetes is at least version `1.26.8-0`
 - Monitoring on each NKE Cluster is **ENABLED**
 
 ## NKE High Level Cluster Design
@@ -214,7 +214,7 @@ For Prod, we will deploy an NKE Cluster of type "Production".
       password: <PE password>
 
     nke:
-      k8s_version: 1.25.6-1
+      k8s_version: 1.26.8-0
       node_os_version: ntnx-1.6.1
       master:
         num_instances: 1
@@ -317,7 +317,7 @@ The DEV cluster will contain GPU node pool to deploy your AI apps.
       password: <PE password>
 
     nke:
-      k8s_version: 1.25.6-1
+      k8s_version: 1.26.8-0
       node_os_version: ntnx-1.6.1
       master:
         num_instances: 1
@@ -407,11 +407,11 @@ It is necessary to connect to Prism Central (PC) to be able to access the `karbo
 4. Create a new gpu nodepool and assing it 1 GPU
 
     ```bash
-    karbonctl cluster node-pool add --cluster-name dev-cluster --count 2 --cpu 12 --memory 40 --gpu-count 1 --gpu-name "Lovelace 40S" --node-pool-name gpu
+    karbonctl cluster node-pool add --cluster-name dev-cluster --count 2 --cpu 12 --memory 40 --disk-size 300 --gpu-count 1 --gpu-name "Lovelace 40S" --node-pool-name gpu
     ```
 
     ```bash title="Command execution"
-    PCVM:~$ karbonctl cluster node-pool add --cluster-name dev-cluster --count 2 --cpu 12 --memory 40 --gpu-count 1 --gpu-name "Lovelace 40S" --node-pool-name gpu
+    PCVM:~$ karbonctl cluster node-pool add --cluster-name dev-cluster --count 2 --cpu 12 --memory 40 ---disk-size 300 -gpu-count 1 --gpu-name "Lovelace 40S" --node-pool-name gpu
     
     I acknowledge that GPU enablement requires installation of NVIDIA datacenter driver software governed by NVIDIA licensing terms. Y/[N]:Y
     
