@@ -134,18 +134,9 @@ We will create a jump host VM using OpenTofu.
           num_vcpus_per_socket: "4"
           num_sockets: "2"
           memory_size_mib: 16384
-          disk_list:
-            - data_source_reference:
-                kind: "image"
-                uuid: "nutanix_image.jumpvmimage.id"
           disk_size_mib: 307200
-          nic_list:
-            - subnet_uuid: "data.nutanix_subnet.subnet.id"
           source_uri: "https://cloud-images.ubuntu.com/releases/22.04/release/ubuntu-22.04-server-cloudimg-amd64.img"
-          guest_customization_cloud_init_user_data: "I2Nsb3VkLWNvbmZpZw....." # (1)!
           ```
-
-          1. :material-fountain-pen-tip: copy and paste the output of the command ``cat jumphostvm_cloudinit.yaml | base64 | tr -d '\n'``
 
     === "Example file"
 
@@ -159,25 +150,14 @@ We will create a jump host VM using OpenTofu.
           num_vcpus_per_socket: "4"
           num_sockets: "2"
           memory_size_mib: 16384
-          disk_list:
-            - data_source_reference:
-                kind: "image"
-                uuid: "nutanix_image.jumpvmimage.id"
           disk_size_mib: 307200
-          nic_list:
-            - subnet_uuid: "data.nutanix_subnet.subnet.id"
           source_uri: "https://cloud-images.ubuntu.com/releases/22.04/release/ubuntu-22.04-server-cloudimg-amd64.img"
-          guest_customization_cloud_init_user_data: "I2Nsb3VkLWNvbmZpZw....." # (2)!
           ```
 
           1. :material-vector-difference: make sure to update `hostname` with same name defined within `jumphostvm_cloudinit.yaml`.
-          2. :material-fountain-pen-tip: copy and paste the output of the command ``cat jumphost-tofu/jumphostvm_cloudinit.yaml | base64 | tr -d '\n'``
 
     !!!tip
           If you are using a Mac and ``pbcopy`` utility as suggested in the previous command's tip window, ++cmd+"v"++ will paste the contents of clipboard to the console.
-
-    !!!warning
-          Make sure to paste the output of the command ``cat jumphostvm_cloudinit.yaml | base64 | tr -d '\n'`` to the ``guest_customization_cloud_init_user_data`` value field
 
 9. In VSC Explorer, within the ``jumphost-tofu`` folder, click on **New File** :material-file-plus-outline: and create a opentofu manifest file with the following name:
 
@@ -216,9 +196,9 @@ We will create a jump host VM using OpenTofu.
       wait_timeout = 60
     }
 
-    resource "nutanix_image" "jumphost-image" {
-      name        = "jumpvmimage"
-      description = "Jumphost VM image"
+    resource "nutanix_image" "machine-image" {
+      name        = element(split("/", local.config.source_uri), length(split("/", local.config.source_uri)) - 1)
+      description = "opentofu managed image"
       source_uri  = local.config.source_uri
     }
 
@@ -228,11 +208,11 @@ We will create a jump host VM using OpenTofu.
       num_vcpus_per_socket = local.config.num_vcpus_per_socket
       num_sockets          = local.config.num_sockets
       memory_size_mib      = local.config.memory_size_mib
-      guest_customization_cloud_init_user_data = local.config.guest_customization_cloud_init_user_data
+      guest_customization_cloud_init_user_data = base64encode(file("${path.module}/jumphostvm_cloudinit.yaml"))
       disk_list {
         data_source_reference = {
           kind = "image"
-          uuid = nutanix_image.jumpvmimage.id
+          uuid = nutanix_image.machine-image.id
         }
         disk_size_mib = local.config.disk_size_mib
       }
@@ -240,24 +220,24 @@ We will create a jump host VM using OpenTofu.
         subnet_uuid = data.nutanix_subnet.subnet.id
       }
 
-      depends_on = [nutanix_image.jumpvmimage]
+      depends_on = [nutanix_image.machine-image]
     }
 
     output "nai-llm-jumphost-ip-address" {
-      value = nutanix_virtual_machine.nai-llm-jumphost.*.nic_list
-      description = "Mac address of the jump host vm"
+      value = nutanix_virtual_machine.nai-llm-jumphost.nic_list_status[0].ip_endpoint_list[0].ip
+      description = "IP address of the jump host vm"
     }
     ```
 
-10. Apply your tofu code to create jump host VM 
+10. Apply your tofu code to create jump host VM
   
     ```bash
-    tofu -chdir=jumphost-tofu validate
     tofu -chdir=jumphost-tofu init
-    tofu -chdir=jumphost-tofu apply 
+    tofu -chdir=jumphost-tofu validate
+    tofu -chdir=jumphost-tofu apply
     ```
 
-    ``` { .bash .no-copy } 
+    ``` { .bash .no-copy }
     # Terraform will show you all resources that it will to create
     # Type yes to confirm 
     # Check the output to get the IP address of the VM
@@ -268,19 +248,11 @@ We will create a jump host VM using OpenTofu.
     ``` { .bash .no-copy }
     # Command output
 
-    Apply complete! Resources: 1 added, 0 changed, 0 destroyed.
+    Apply complete! Resources: 2 added, 0 changed, 0 destroyed.
 
     Outputs:
 
-    jumpvm_ip_address = [
-      tolist([
-        {
-          "ip_endpoint_list" = tolist([
-            {
-              "ip" = "10.x.x.x"             ## << This is your jump host VM's IP
-              "type" = "ASSIGNED"
-            },
-    ]
+    nai-llm-jumphost-ip-address = "10.x.x.x"
     ```
 
 12. Run the Terraform state list command to verify what resources have been created
@@ -294,12 +266,11 @@ We will create a jump host VM using OpenTofu.
 
     data.nutanix_cluster.cluster              # < This is your existing Prism Element cluster
     data.nutanix_subnet.subnet                # < This is your existing primary subnet
-    nutanix_image.jumphost-image              # < This is the image file for jump host VM
+    nutanix_image.machine-image              # < This is the image file for jump host VM
     nutanix_virtual_machine.nai-llm-jumphost  # < This is the jump host VM
     ```
 
-
-6. Validate that VM is accessible using **VSC > Terminal** 
+13. Validate that VM is accessible using **VSC > Terminal** 
   
     ```bash
     ssh -i ~/.ssh/id_rsa ubuntu@<ip-address-from-tofu-output>
@@ -314,15 +285,15 @@ We will create a jump host VM using OpenTofu.
     ![](images/1.png)
 
 3. Click on **+ Add New SSH Host** and t
-   
+
     ![](images/2.png)
 
 4. Type ``ssh ubuntu@jumphost_VM-IP-ADDRESS>``and hit **Enter**.
 
     ![](images/2b.png)
 
-4. Select the location to update the config file.
-    
+5. Select the location to update the config file.
+
     === "Mac/Linux"
 
         ```bash
@@ -330,13 +301,13 @@ We will create a jump host VM using OpenTofu.
         ```
 
     === "Windows"
-       
+
         ```PowerShell
         C:\\Users\\<your-username>\\.ssh\\config
         ```
-    
-5. Open the ssh config file on your workstation to verify the contents. It should be similar to the following content
-   
+
+6. Open the ssh config file on your workstation to verify the contents. It should be similar to the following content
+
     ```yaml
     Host jumphost
         HostName 10.x.x.x # (1)!
@@ -346,31 +317,31 @@ We will create a jump host VM using OpenTofu.
 
     1. :material-fountain-pen-tip: This is Jumphost VM IP address
 
-    2.  :material-fountain-pen-tip: This would be the path to RSA private key generated in the previous [JumpHost](infra_jumphost_tofu.md/#generate-a-ssh-key-on-linuxmac) section
+    2. :material-fountain-pen-tip: This would be the path to RSA private key generated in the previous [JumpHost](infra_jumphost_tofu.md/#generate-a-ssh-key-on-linuxmac) section
 
     Now that we have saved the ssh credentials, we are able to connect to the jumphost VM
 
 ### Connect to you Jumpbox using VSC
 
-6.  On VS Code, Click **View > Command Palette** and **Connect to Host**
+1. On VS Code, Click **View > Command Palette** and **Connect to Host**
 
-7.  Select the IP address of your jumphost VM
+2. Select the IP address of your jumphost VM
 
-8.  A new Visual Studio Code window will open
-    
-9.  Click the **Explorer** button from the left-hand toolbar and select **Open Folder**.
+3. A new Visual Studio Code window will open
+
+4. Click the **Explorer** button from the left-hand toolbar and select **Open Folder**.
 
     ![](images/4.png)
 
-10. Provide the ``/home/ubuntu/`` as the folder you want to open and click on **OK**.
-    
+5. Provide the ``/home/ubuntu/`` as the folder you want to open and click on **OK**.
+
     !!!note
            Ensure that **bin** is NOT highlighted otherwise the editor will attempt to autofill ``/bin/``. You can avoid this by clicking in the path field *before* clicking **OK**.
-    
+
     !!!warning
            The connection may take up to 1 minute to display the root folder structure of the jumphost VM.
 
-11. Accept any warning message about trusting the author of the folder
+6. Accept any warning message about trusting the author of the folder
 
     ![](images/6.png)
 
@@ -398,6 +369,7 @@ We have compiled a list of utilities that needs to be installed on the jump host
     ```bash
     cd $HOME/nai-llm-fleet-infra/ && task
     ```
+
     ``` { .bash .no-copy }
     # command output
     task: bootstrap:silent
@@ -419,4 +391,4 @@ We have compiled a list of utilities that needs to be installed on the jump host
     - Task: flux:init
     ```
 
-We have a jumphost VM now that we will be using to perform the rest of the labs. 
+We have a jumphost VM now that we will be using to perform the rest of the labs.
