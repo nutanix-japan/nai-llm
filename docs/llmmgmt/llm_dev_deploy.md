@@ -20,7 +20,7 @@ stateDiagram-v2
 
 ## Bootstrap Dev Cluster
 
-A ``.env ``file is provided at   ``/home/ubuntu/nainai-llm-fleet-infra`` folder for ease of configuration. We need to make copies of this for m dev-cluster kubernetes cluster.
+A ``.env ``file is provided at   ``/home/ubuntu/nai-llm-fleet-infra`` folder for ease of configuration. We need to make copies of this for m dev-cluster kubernetes cluster.
 
 1. Set ``K8S_CLUSTER_NAME`` environment variable and make a copy of `./.env.sample.yaml` for ``dev-cluster`` kubernetes cluster
 
