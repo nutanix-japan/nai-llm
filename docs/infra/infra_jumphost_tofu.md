@@ -178,7 +178,7 @@ We will create a jump host VM using OpenTofu.
     }
 
     locals {
-      config = yamldecode(file("${path.module}/jumhostvm_config.yaml"))
+      config = yamldecode(file("${path.module}/jumphostvm_config.yaml"))
     }
 
     data "nutanix_cluster" "cluster" {
