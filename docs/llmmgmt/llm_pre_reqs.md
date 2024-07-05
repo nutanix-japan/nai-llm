@@ -246,7 +246,125 @@ Create NFS share for hosting the LLM model file ``llama-2-13b-chat`` and model a
     - **Squash** - Root Squash
 
 5. Click on **Create**
+   
 6. Copy the Share/Export Path from the list of shares and note it down for later use (e.g: ``/llm-model-store``)
+
+## Extract the Model Archive file to Files Share
+
+The LLM application will use the model archive file (MAR) stored in the file share. A few commands need to be executed to download and extract the model file from Hugging Face to the Files share. 
+
+!!!note
+       The following steps are directly from [opendocs.nutanix.com](https://opendocs.nutanix.com/gpt-in-a-box/kubernetes/v0.2/generating_mar/) GPT-in-a-Box documentation.
+
+1. Logon to the jumphost VM you created in the previous section
+   
+    ```bash
+    ssh -l ubuntu <jumphost vm IP>
+    ```
+
+2. Download nutanix [package](https://github.com/nutanix/nai-llm-k8s/releases/tag/v0.2.2) and extract it. 
+   
+    ```bash
+    curl -LO https://github.com/nutanix/nai-llm-k8s/archive/refs/tags/v0.2.2.tar.gz
+    tar xvf v0.2.2.tar.gz --strip-components=1
+    ```
+
+3. Install pip
+   
+    ```bash
+    sudo apt-get install python3-pip
+    ```
+
+4. Install the python library requirements
+   
+    ```bash
+    cd llm
+    pip install -r requirements.txt
+    ```
+
+5. Mount the file share created in the previous section
+   
+    === "Template command"
+
+          ```bash
+          sudo mount -t nfs <files server fqdn>:<share path> <NFS_LOCAL_MOUNT_LOCATION>
+          ```
+    
+    === "Example command"
+ 
+          ```bash
+          sudo mount -t nfs ntnx-files.pe.example.com:/llm-model-store /mnt/llm-model-store
+          ```
+6. Download and extract the model file to the local mount of file share
+    
+    === "Template command"
+
+          ```bash
+          python3 generate.py [--hf_token <HUGGINGFACE_HUB_TOKEN> \
+          --repo_version <REPO_COMMIT_ID>] --model_name <MODEL_NAME> \
+          --output <NFS_LOCAL_MOUNT_LOCATION>
+          ```
+    
+    === "Example command"
+ 
+          ```bash
+          python3 generate.py --model_name llama2_7b_chat \
+          --output /mnt/llm-model-store \
+          --hf_token hf_xxxxxxxxxxxxxxxxxxxxxxxxxxx 
+          ```
+    
+    ```{ .text, .no-copy}
+    # Sample output
+
+    ## Starting model files download
+
+    Deleted all contents from '/mnt/llm-model-store/llama2_7b_chat/94b07a6e30c3292b8265ed32ffdeccfdadf434a8/download' 
+
+    The new directory is created! - /mnt/llm-model-store/llama2_7b_chat/94b07a6e30c3292b8265ed32ffdeccfdadf434a8/download 
+
+    The new directory is created! - /mnt/llm-model-store/llama2_7b_chat/94b07a6e30c3292b8265ed32ffdeccfdadf434a8/download/tmp_hf_cache 
+
+    generation_config.json: 100%|██████████████████████████████████████████████████████████████████████| 188/188 [00:00<00:00, 1.15MB/s]
+    config.json: 100%|█████████████████████████████████████████████████████████████████████████████████| 614/614 [00:00<00:00, 7.51MB/s]
+    LICENSE.txt: 100%|█████████████████████████████████████████████████████████████████████████████| 7.02k/7.02k [00:00<00:00, 81.3MB/s]
+    USE_POLICY.md: 100%|███████████████████████████████████████████████████████████████████████████| 4.77k/4.77k [00:00<00:00, 11.2MB/s]
+    .gitattributes: 100%|██████████████████████████████████████████████████████████████████████████| 1.52k/1.52k [00:00<00:00, 10.1MB/s]
+    README.md: 100%|████████████████████████████████████████████████████████████████████████████████| 10.4k/10.4k [00:00<00:00, 113MB/s]
+    tokenizer_config.json: 100%|███████████████████████████████████████████████████████████████████| 1.62k/1.62k [00:00<00:00, 13.5MB/s]
+    special_tokens_map.json: 100%|█████████████████████████████████████████████████████████████████████| 414/414 [00:00<00:00, 1.22MB/s]
+    model.safetensors.index.json: 100%|████████████████████████████████████████████████████████████| 26.8k/26.8k [00:00<00:00, 13.5MB/s]
+    pytorch_model.bin.index.json: 100%|████████████████████████████████████████████████████████████| 26.8k/26.8k [00:00<00:00, 12.4MB/s]
+    tokenizer.model: 100%|███████████████████████████████████████████████████████████████████████████| 500k/500k [00:00<00:00, 6.12MB/s]
+    tokenizer.json: 100%|██████████████████████████████████████████████████████████████████████████| 1.84M/1.84M [00:00<00:00, 7.42MB/s]
+    model-00002-of-00002.safetensors: 100%|█████████████████████████████████████████████████████████| 3.50G/3.50G [00:23<00:00, 149MB/s]
+    model-00001-of-00002.safetensors: 100%|█████████████████████████████████████████████████████████| 9.98G/9.98G [01:01<00:00, 163MB/s]
+    Fetching 14 files: 100%|████████████████████████████████████████████████████████████████████████████| 14/14 [01:02<00:00,  4.47s/it]
+    Deleted all contents from '/mnt/llm-model-store/llama2_7b_chat/94b07a6e30c3292b8265ed32ffdeccfdadf434a8/download/tmp_hf_cache' MB/s]
+
+    ## Successfully downloaded model_files
+
+
+    ## Generating MAR file for custom model files: llama2_7b_chat 
+
+    The new directory is created! - /mnt/llm-model-store/llama2_7b_chat/94b07a6e30c3292b8265ed32ffdeccfdadf434a8/model-store 
+
+    ## Generating MAR file, will take few mins.
+    ## Successfully generated MAR files
+
+    ## Generating MAR file, will take few mins.
+
+    Model Archive File is Generating...
+
+    Creating Model Archive:  42%|███████████████████████████▉                                      | 4.97G/11.7G [10:40<12:56, 8.69MB/s]Creating Model Archive: 100%|██████████████████████████████████████████████████████████████████| 11.7G/11.7G [21:01<00:00, 9.29MB/s]
+
+    Model Archive file size: 9.66 GB
+
+    ## llama2_7b_chat.mar is generated.
+
+    The new directory is created! - /mnt/llm-model-store/llama2_7b_chat/94b07a6e30c3292b8265ed32ffdeccfdadf434a8/config 
+    ```
+
+
 
 ## Prepare Github Repository and API Token
 
