@@ -136,52 +136,16 @@ A ``.env ``file is provided at   ``/home/ubuntu/nai-llm-fleet-infra`` folder for
     ## taint gpu nodes with label nvidia.com/gpu.present=true
     task kubectl:taint_gpu_nodes
 
-    ## view taint configurations on all nodes
+    ## to view taint configurations on all nodes
     kubectl get nodes -o='custom-columns=NodeName:.metadata.name,TaintKey:.spec.taints[*].key,TaintValue:.spec.taints[*].value,TaintEffect:.spec.taints[*].effect'
     ```
 
-## Accessing LLM Frontend
+!!!tip
+      In case you need to untaint the nodes to schedule workloads, use the following commands
 
-Once the bootstrapping is done in the previous section. We can access and test our LLM application.
-
-1. In VSC Terminal, check the status of inferencing service
-   
-    ```bash
-    k get isvc -A
-    ```
-    ``` { .text .no-copy }
-    NAMESPACE   NAME      URL                                                READY   PREV   LATEST   PREVROLLEDOUTREVISION   LATESTREADYREVISION       AGE
-    llm         llm-llm   http://llm-llm.llm.dev-cluster.10.x.x.217.nip.io   True           100                              llm-llm-predictor-00001   4h9m
-    ```
-
-2. Access the URL to check status and make sure it is alive and well 
-   
-    ```bash
-    $ curl http://llm-llm.llm.dev-cluster.10.x.x.217.nip.io
-    ```
-    ``` { .text .no-copy }
-    $ curl http://llm-llm.llm.dev-cluster.10.x.x.217.nip.io
-    {"status":"alive"} 
-    ```
-   
-3. On VSC terminal, get the LLM Frontend ingress endpoints
-   
-    ```bash
-    k get ingress -A | grep frontend
-    ```
-
-    ``` { .text .no-copy }
-    k get ingress -A | grep frontend
-    NAMESPACE              NAME                                                      CLASS   HOSTS                                      ADDRESS        PORTS     AGE
-    gptnvd-reference-app   gptnvd-reference-app-gptnvd-ref-app-gptnvd-referenceapp   nginx   frontend.dev-cluster.10.x.x.216.nip.io   10.x.x.216   80, 443   4h9m      
-    ```
-
-4. Copy the HOSTS address ``frontend.dev-cluster.10.x.x.216.nip.io `` from the above output and paste it in your browser. You should be able to see the LLM chat interface. Start asking away. 
-   
-    ![](images/llm_fe.png)
-
-## Testing LLM Frontend Chat App
-
-1. Type any question in the chat box. For example: *give me a python program to print the fibonacci series?*
-   
-    ![](images/llm_answer.png)
+      ```bash
+      task kubectl:untaint_gpu_nodes
+      #
+      # to view taint configurations on all nodes
+      kubectl get nodes -o='custom-columns=NodeName:.metadata.name,TaintKey:.spec.taints[*].key,TaintValue:.spec.taints[*].value,TaintEffect:.spec.taints[*].effect'
+      ```
