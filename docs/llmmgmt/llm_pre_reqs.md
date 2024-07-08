@@ -337,9 +337,7 @@ The LLM application will use the model archive file (MAR) stored in the file sha
 
     The new directory is created! - /mnt/llm-model-store/llama2_7b_chat/94b07a6e30c3292b8265ed32ffdeccfdadf434a8/config 
     ```
-
-
-
+    
 ## Prepare Github Repository and API Token
 
 We need to fork this projects Github repository to you github organization(hadle). This repository will be used to hold the flux files for GitOps sections. 
@@ -400,7 +398,7 @@ If you do not have docker account, please create it [here](https://www.docker.co
 
 Store the docker username and password securely for use in the next section.
 
-## Install nai-llm Utilities on Jumphost VM
+## Install Utilities on Jumphost VM
 
 We have compiled a list of utilities that needs to be installed on the jumphost VM to use for the rest of the lab. We have affectionately called it as ``nai-llm`` utilities. Use the following method to install these utilities:
 
@@ -458,3 +456,12 @@ We have compiled a list of utilities that needs to be installed on the jumphost 
     - Task: nke:download-creds 
     - Task: flux:init
     ```
+
+6. Finally set your github config
+   
+    ```bash
+    git config --user.email "your_github_email"
+    git config --user.name "your_github_username"
+    ```
+
+The jumphost VM is now ready to deploy the LLM app.
