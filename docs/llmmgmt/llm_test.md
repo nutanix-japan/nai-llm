@@ -17,8 +17,7 @@ stateDiagram-v2
     TestLLMApp --> [*]
 ```
 
-
-## Accessing and Testing LLM
+## Accessing LLM Frontend
 
 Once the bootstrapping is done in the previous section. We can access and test our LLM application.
 
@@ -58,4 +57,8 @@ Once the bootstrapping is done in the previous section. We can access and test o
    
     ![](images/llm_fe.png)
 
-Congratulations. You have deployed your LLM app. 
+## Testing LLM Frontend Chat App
+
+1. Type any question in the chat box. For example: *give me a python program to print the fibonacci series?*
+   
+    ![](images/llm_answer.png)
