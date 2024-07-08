@@ -24,32 +24,6 @@ stateDiagram-v2
 
 Prepare the following pre-requisites for mgmt-cluster and dev-cluster kubernetes clusters. 
 
-## Using Devbox NIX Shell
-
-This project uses [devbox](https://github.com/jetpack-io/devbox) to manage its development environment.
-
-6.  On VS Code, Click **View > Command Palette** and **Connect to Host**
-
-7.  Select the IP address of your jumphost VM
-
-8.  A new Visual Studio Code window will open
-    
-9.  Click the **Explorer** button from the left-hand toolbar and select **Open Folder**
-
-10. Provide the ``/home/ubuntu/nainai-llm-fleet-infra`` as the folder you want to open and click on **OK**
- 
-11. Install `devbox` using the following command and accept all defaults
-
-    ```sh
-    curl -fsSL https://get.jetpack.io/devbox | bash
-    ```
-
-12. Start the `devbox shell` and if `nix` isn't available, you will be prompted to install:
-
-    ```sh
-    devbox shell
-    ```
-
 ## Reserve Ingress and Istio Endpoint IPs 
 
 Nutanix AHV IPAM network allows you to black list IPs that needs to be reserved for specific application endpoints. We will use this feature to find and reserve two IPs. 
@@ -394,7 +368,7 @@ A ``repo_api_token`` needs to be created to allow for git changes.
 7. **Configure Token**:
     - **Give your token a descriptive name**: `for nai-llm-fleet-infra actions`
     - **Expiration**: choose an expiration period of ``7 days``
-    - **Scopes**: under `repo`, select the **public repo** (full control of public repositories)
+    - **Scopes**: select `repo` (and every option under it) and ``write:packages`` scopes
 
 8. **Generate Token**:
    after selecting the scopes, click on the **Generate token** button at the bottom of the page.
@@ -431,15 +405,27 @@ Store the docker username and password securely for use in the next section.
 We have compiled a list of utilities that needs to be installed on the jumphost VM to use for the rest of the lab. We have affectionately called it as ``nai-llm`` utilities. Use the following method to install these utilities:
 
 1. Using VSC, open Terminal on the jumphost VM
+   
+2. Install `devbox` using the following command and accept all defaults
 
-2. From the ``$HOME`` directory, clone Git repo and change working directory
+    ```sh
+    curl -fsSL https://get.jetpack.io/devbox | bash
+    ```
+
+4. From the ``$HOME`` directory, clone Git repo and change working directory
 
     ```bash
     git clone https://github.com/<your_github_org>/nai-llm-fleet-infra.git
     cd $HOME/nai-llm-fleet-infra/
     ```
+3. Start the `devbox shell` and if `nix` isn't available, you will be prompted to install:
 
-3. Run Post VM Create - Workstation Bootstrapping tasks
+    ```sh
+    devbox init
+    devbox shell
+    ```
+
+5. Run Post VM Create - Workstation Bootstrapping tasks
   
     ```bash
     sudo snap install task --classic
@@ -447,7 +433,7 @@ We have compiled a list of utilities that needs to be installed on the jumphost 
     source ~/.bashrc
     ```
 
-4. Change working directory and see ``Task`` help
+6. Change working directory and see ``Task`` help
   
     ```bash
     $ cd $HOME/nai-llm-fleet-infra/ && task
@@ -472,5 +458,3 @@ We have compiled a list of utilities that needs to be installed on the jumphost 
     - Task: nke:download-creds 
     - Task: flux:init
     ```
-
-We have now completed all of the pre-requisites for hte LLM deployment on Nutanix. 
