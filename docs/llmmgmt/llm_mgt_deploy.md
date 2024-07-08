@@ -70,7 +70,7 @@ A ``.env ``file is provided at   ``/home/ubuntu/nainai-llm-fleet-infra`` folder 
     cat clusters/${K8S_CLUSTER_NAME}/platform/cluster-configs.yaml
     ```
 
-5. Validate Encrypted Secrets and make sure the values you entered in ``.env.mgmt-cluster.yaml`` file
+5. Validate Encrypted Secrets and make sure the values match what you entered in ``.env.mgmt-cluster.yaml`` file
 
     ```bash
     task sops:decrypt
@@ -90,9 +90,8 @@ A ``.env ``file is provided at   ``/home/ubuntu/nainai-llm-fleet-infra`` folder 
     task nke:download-creds && \
     kubectl get nodes
     Select existing cluster instance to load from .local/ directory.
-
-      dev-cluster                                        
-    > mgmt-cluster         <<< choose mgmt-cluster    
+                                 
+    > mgmt-cluster                          <<< choose mgmt-cluster.   
     ```
 
 7.  Taint the GPU nodes

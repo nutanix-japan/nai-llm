@@ -95,6 +95,7 @@ A ``.env ``file is provided at   ``/home/ubuntu/nai-llm-fleet-infra`` folder for
     > dev-cluster                  <<< choose dev-cluster                          
       mgmt-cluster
     ```
+
 7. Taint the GPU nodes. 
     
     ```bash
@@ -112,7 +113,7 @@ A ``.env ``file is provided at   ``/home/ubuntu/nai-llm-fleet-infra`` folder for
     task bootstrap:silent
     ```
     !!!note
-           If there are any issues, troubleshot using `task ts:flux-collect`. You can re-run task `bootstrap:silent` as many times needed
+           If there are any issues, troubleshoot using `task ts:flux-collect`. You can re-run task `bootstrap:silent` as many times as needed.
 
 9.  Monitor on New Terminal to make sure ``READY`` status is ``TRUE`` for all resources using the following command
 
@@ -139,7 +140,7 @@ A ``.env ``file is provided at   ``/home/ubuntu/nai-llm-fleet-infra`` folder for
     kubectl get nodes -o='custom-columns=NodeName:.metadata.name,TaintKey:.spec.taints[*].key,TaintValue:.spec.taints[*].value,TaintEffect:.spec.taints[*].effect'
     ```
 
-## Accessing and Testing LLM
+## Accessing LLM Frontend
 
 Once the bootstrapping is done in the previous section. We can access and test our LLM application.
 
@@ -178,3 +179,9 @@ Once the bootstrapping is done in the previous section. We can access and test o
 4. Copy the HOSTS address ``frontend.dev-cluster.10.x.x.216.nip.io `` from the above output and paste it in your browser. You should be able to see the LLM chat interface. Start asking away. 
    
     ![](images/llm_fe.png)
+
+## Testing LLM Frontend Chat App
+
+1. Type any question in the chat box. For example: *give me a python program to print the fibonacci series?*
+   
+    ![](images/llm_answer.png)
