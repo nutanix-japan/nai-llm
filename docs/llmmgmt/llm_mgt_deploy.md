@@ -144,7 +144,7 @@ After successful bootstrap of the ``mgmt-cluster``, get the Kafka ingress endpoi
 
 Nutanix Objects store will send a message to kafka endpoint if an object gets stored in the bucket.
 
-1. On VSC terminal, get the ingress endpoints
+1. On VSC terminal on the jumpbox VM, get the ingress endpoints
    
     ```bash
     k get ingress -A | grep kafka
@@ -161,22 +161,42 @@ Nutanix Objects store will send a message to kafka endpoint if an object gets st
     kafka.mgmt-cluster.10.x.x.214.nip.io:9096
     ```
 
-3. Login to **Prism Central**, go to **Objects** and choose the **ntnx-objects** store (Objects store name could be different for you)
-4. Go to **Settings > Notification Endpoints**
-5. Choose the **Kafka** tab
-6. Toggle the **Enable** button :material-toggle-switch-outline: to enabled
+3. Check if the Kafka endpoint is alive and well
+   
+    ```bash
+    nc -zv kafka.mgmt-cluster.10.x.x.214.nip.io 9096
+    ```
+    ```{ .text, .no-copy}
+    # command output
+    Connection to kafka.mgmt-cluster.10.x.x.214.nip.io port 9096 [tcp/*] succeeded!`
+    ```
+
+4. Login to **Prism Central**, go to **Objects** and choose the **ntnx-objects** store (Objects store name could be different for you)
+5. Go to **Settings > Notification Endpoints**
+6. Choose the **Kafka** tab
+7. Toggle the **Enable** button :material-toggle-switch-outline: to enabled
  
-7. Paste the ingress endpoint of your Kafka instance
+8. Paste the ingress endpoint of your Kafka instance
 
     ![](images/notification_ep.png)
 
-8. Click on **Save**
+9.  Click on **Save**
 
 ## Check Milvus Database Status
 
 To make sure Milvus database and associated components are running. 
 
-1. On VSC terminal, get the Milvus ingress endpoint
+1. On VSC terminal, check if the Kafka endpoint is alive and well
+   
+    ```bash
+    nc -zv milvus.mgmt-cluster.10.x.x.214.nip.io 19530
+    ```
+    ```{ .text, .no-copy}
+    # command output
+    Connection to milvus.mgmt-cluster.10.x.x.214.nip.io port 19530 [tcp/*] succeeded!`
+    ```
+
+2. Get the Milvus ingress endpoint
    
     ```bash
     k get ingress -A | grep attu
@@ -192,8 +212,9 @@ To make sure Milvus database and associated components are running.
     ``` { .text .no-copy }
     attu.mgmt-cluster.10.x.x.214.nip.io
     ```
+    
+2. Paste the URL in the browser and you should be able to see Milvus database management page. 
 
-3. Paste the URL in the browser and you should be able to see Milvus database management page. 
-4. There is no user name and password for Milvus database as this is a test environment. Feel free to update password for ``root`` user in the user settings.
+3. There is no user name and password for Milvus database as this is a test environment. Feel free to update password for ``root`` user in the user settings.
    
     ![](images/attu.png)

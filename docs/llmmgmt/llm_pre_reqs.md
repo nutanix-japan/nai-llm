@@ -434,7 +434,7 @@ We have compiled a list of utilities that needs to be installed on the jumphost 
 6. Change working directory and see ``Task`` help
   
     ```bash
-    $ cd $HOME/nai-llm-fleet-infra/ && task
+    cd $HOME/nai-llm-fleet-infra/ && task
     ```
     ``` { .bash .no-copy }
     # command output
