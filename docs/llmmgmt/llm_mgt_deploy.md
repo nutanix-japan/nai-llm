@@ -175,12 +175,21 @@ Nutanix Objects store will send a message to kafka endpoint if an object gets st
 5. Go to **Settings > Notification Endpoints**
 6. Choose the **Kafka** tab
 7. Toggle the **Enable** button :material-toggle-switch-outline: to enabled
- 
 8. Paste the ingress endpoint of your Kafka instance
 
     ![](images/notification_ep.png)
-
 9.  Click on **Save**
+
+### Configure documents01 Bucket to send Messages to Kafka Endpoint
+
+1. Go to Buckets
+2. Click on ``documents01`` bucket and choose **Data Event Notification** from the top menu
+3. Click on ``Add Rule`` 
+4. Choose the following:
+   - **Endpoint** - Kafka
+   - **Scope** - All Objects
+   - **Data Events** - All Events
+5. Click on **Save**
 
 ## Check Milvus Database Status
 
