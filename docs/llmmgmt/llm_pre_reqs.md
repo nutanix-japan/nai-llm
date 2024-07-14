@@ -471,6 +471,8 @@ We have compiled a list of utilities that needs to be installed on the jumphost 
     ```
 
     ```{ .text, .no-copy }
+    # Execution example
+    
     ❯ gh auth login                                                                                                               ─╯
     ? What account do you want to log into? GitHub.com
     ? What is your preferred protocol for Git operations on this host? HTTPS 
