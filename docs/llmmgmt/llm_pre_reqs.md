@@ -366,7 +366,11 @@ A ``repo_api_token`` needs to be created to allow for git changes.
 7. **Configure Token**:
     - **Give your token a descriptive name**: `for nai-llm-fleet-infra actions`
     - **Expiration**: choose an expiration period of ``7 days``
-    - **Scopes**: select `repo` (and every option under it) and ``write:packages`` scopes
+    - **Scopes**: 
+      - Select `repo` (and every option under it) 
+      - Select ``write:packages`` and ``read:packages``
+      - Select ``admin:org`` and ``read:org`` under it
+      - Select ``gist``
 
 8. **Generate Token**:
    after selecting the scopes, click on the **Generate token** button at the bottom of the page.
@@ -382,11 +386,6 @@ A ``repo_api_token`` needs to be created to allow for git changes.
        - **Create a Dedicated GitHub User**:
        
         Create a new GitHub user specifically for accessing the repository. Invite this user to your repository with the necessary permissions, then generate a PAT for this user.
-<!--         
-       - **Use Repository Deploy Keys**:
-       
-        Deploy keys are SSH keys that give access to a single repository. They can be read-only or read/write. Deploy keys are more restrictive than PATs but can be an alternative if you only need repository-specific access. -->
-
 
 We will use this token in the next section. 
 
@@ -464,7 +463,7 @@ We have compiled a list of utilities that needs to be installed on the jumphost 
     git config --user.name "your_github_username"
     ```
 
-7. Login to your Github account using the following command
+7. Login to your Github account using the following command and use the same token from the [Prepare Github Repository and API Token](#prepare-github-repository-and-api-token) section
    
     ```bash
     gh auth login
@@ -472,7 +471,7 @@ We have compiled a list of utilities that needs to be installed on the jumphost 
 
     ```{ .text, .no-copy }
     # Execution example
-    
+
     ❯ gh auth login                                                                                                               ─╯
     ? What account do you want to log into? GitHub.com
     ? What is your preferred protocol for Git operations on this host? HTTPS 
@@ -483,38 +482,4 @@ We have compiled a list of utilities that needs to be installed on the jumphost 
 
     Successfully logged in to Github.
     ```
-
-    ???tip "No GitHub authentication token?"
-          Use the following instructions to create a GitHub authentication token.
-
-          **Step 1:** Log in to GitHub
-
-          1. Open your web browser and go to [GitHub](https://github.com/).
-          2. Log in to your GitHub account if you are not already logged in.
-
-          **Step 2:** Navigate to Developer Settings
-
-          3. Click on your profile picture in the upper-right corner of the page.
-          4. From the dropdown menu, select **Settings**.
-          5. In the left sidebar, scroll down and click on **Developer settings**.
-
-          **Step 3:** Create a New Personal Access Token
-          
-          1. In the left sidebar, click on **Personal access tokens**.
-          2. Click the **Tokens (classic)** tab.
-          3. Click the **Generate new token** button.
-          4. Optionally, you may be prompted to confirm your password.
-
-          **Step 4:** Configure Your New Token
-
-          1.  **Note**: GitHub is encouraging the use of fine-grained tokens, which offer more granular permissions and are more secure. However, as of the latest update, `gh auth login` primarily supports classic tokens. Fine-grained tokens may require additional configurations.
-          2.  **Token description**: Enter a descriptive name for the token, such as "GitHub CLI Token".
-          3.  **Expiration**: Select an expiration date for the token. It's recommended to choose a shorter period for better security.
-          4.  **Select scopes**: Choose the scopes or permissions you want the token to have. For `gh auth login`, the `repo`, `read:org`, and `gist` scopes are often sufficient.
-
-          **Step 5:** Generate and Copy the Token
-
-          1.  Scroll to the bottom of the page and click the **Generate token** button.
-          2.  Once the token is generated, copy it. **Important**: This is the only time you will see the token. Make sure to copy and store it securely.
-
 The jumphost VM is now ready to deploy the LLM app.
