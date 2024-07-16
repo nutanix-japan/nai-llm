@@ -482,4 +482,5 @@ We have compiled a list of utilities that needs to be installed on the jumphost 
 
     Successfully logged in to Github.
     ```
+    
 The jumphost VM is now ready to deploy the LLM app.
