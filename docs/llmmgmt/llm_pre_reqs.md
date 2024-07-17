@@ -26,7 +26,7 @@ Prepare the following pre-requisites for mgmt-cluster and dev-cluster kubernetes
 
 ## Reserve Ingress and Istio Endpoint IPs 
 
-Nutanix AHV IPAM network allows you to black list IPs that needs to be reserved for specific application endpoints. We will use this feature to find and reserve two IPs. 
+Nutanix AHV IPAM network allows you to black list IPs that needs to be reserved for specific application endpoints. We will use this feature to find and reserve four IPs. 
 
 We will need a total of four IPs for the following:
 
@@ -43,14 +43,16 @@ We will need a total of four IPs for the following:
     ```
 
 2. From VSC, logon to your jumpbox VM (if not already done)
+3. Open Terminal
 
-3. Install ``nmap`` tool 
+4. Install ``nmap`` tool (if not already done)
    
     ```bash
+    cd /home/ubuntu/nai-llm-fleet-infra
     devbox add nmap
     ```
 
-4. Find four unused static IP addresses in the subnet
+5. Find four unused static IP addresses in the subnet
 
     === "Template command"
     
@@ -73,7 +75,7 @@ We will need a total of four IPs for the following:
     Host is up (-0.098s latency).
     ```
 
-5. Logon to any CVM in your Nutanix cluster and execute the following to add chosen static IPs to the **Primary** IPAM network
+6. Logon to any CVM in your Nutanix cluster and execute the following to add chosen static IPs to the AHV IPAM network
 
     - **Username:** nutanix
     - **Password:** your Prism Element password 
