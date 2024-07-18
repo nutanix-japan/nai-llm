@@ -327,11 +327,11 @@ We are now ready to install the workload ``DEV`` cluster
     --ssh-public-key-file ${SSH_PUBLIC_KEY} --kubernetes-service-load-balancer-ip-range ${METALLB_IP_RANGE}
 
     > Generating cluster resources
-    > cluster.cluster.x-k8s.io/nkplb created
-    > secret/nkplb-pc-credentials created
-    > secret/nkplb-pc-credentials-for-csi created
-    > configmap/kommander-bootstrap-configuration created
-    > secret/nutanix-license created
+    cluster.cluster.x-k8s.io/nkplb created
+    secret/nkplb-pc-credentials created
+    secret/nkplb-pc-credentials-for-csi created
+    configmap/kommander-bootstrap-configuration created
+    secret/nutanix-license created
     > ✓ Waiting for cluster infrastructure to be ready 
     > ✓ Waiting for cluster control-planes to be ready 
     > ✓ Waiting for machines to be ready
@@ -455,7 +455,7 @@ We are now ready to install the workload ``DEV`` cluster
 7. Change to workload ``DEV`` cluster context
    
     ```bash
-    kubectx _your_workload_cluster_context
+    kubectx ${NKP_CLUSTER_NAME}-admin@${NKP_CLUSTER_NAME}
     ```
 
 8. Check nodes status in workload ``DEV`` cluster and note the gpu worker node
