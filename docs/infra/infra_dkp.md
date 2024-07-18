@@ -19,7 +19,7 @@ stateDiagram-v2
     DeployJumpHost --> DeployK8S 
     DeployK8S --> DeployAIApps : Next section
 ```
-## DKP High Level Cluster Design
+## NKP High Level Cluster Design
 
 The `Bootstrap` NKP cluster will be a temporary [kind](https://kind.sigs.k8s.io/) cluster that will be used to deploy the DEV cluster.
 
@@ -41,25 +41,21 @@ For Dev, we will deploy an NKE Cluster of type "Development".
 | Role   | No. of Nodes (VM) | vCPU | RAM   | Storage |
 | ------ | ----------------- | ---- | ----- | ------- |
 | Master | 3                 | 4    | 16 GB | 80 GB  |
-| Worker | 3                 | 8   | 32 GB | 80 GB  |
-| GPU    | 2                 | 16   | 64 GB | 200 GB  |
+| Worker | 4                | 8   | 32 GB | 80 GB  |
+| GPU    | 1                 | 16   | 64 GB | 200 GB  |
 
 
-## Pre-requisites for DKP Deployment
+## Pre-requisites for NKP Deployment
 
 1. Download and install dkp and dkp-image-builder binaries (will be documented soon)
 2. Find and reserve 3 IPs for control plane and MetalLB access from AHV network
-3. Create a base image to use with DKP nodes using ``dkp-image-builder``
-4. Create a bootstrap cluster on jumphost VM
-5. Create a DKP cluster with control and worker nodes
-6. Deploy GPU nodes
-7. Move CAPI components from bootstrap cluster to DKP cluster (optional)
+3. Create a base image to use with NKP nodes using ``dkp-image-builder``
 
-## Install NKP Binaries
+### Install NKP Binaries
 
 To be documented.
 
-## Reserve Control Plane and MetalLB Endpoint IPs 
+### Reserve Control Plane and MetalLB Endpoint IPs 
 
 Nutanix AHV IPAM network allows you to black list IPs that needs to be reserved for specific application endpoints. We will use this feature to find and reserve three IPs. 
 
@@ -126,23 +122,42 @@ We will need a total of three IPs for the following:
          ip_list=10.x.x.214,10.x.x.215,10.x.x.216
          ```
 
+### Setup Docker on Jumphost
+
+1. From VSC, logon to your jumpbox VM
+2. Open VSC Terminal
+3. Run the following commands to install ``docker`` binaries
+   
+    ```bash
+    cd /home/ubuntu/nai-llm-fleet-infra/; devbox init; devbox shell
+    task workstation:install-docker
+    ```
+
+    !!! tip
+        
+        Restart the jumpbox host if ``ubuntu`` user has permission issues using ``docker`` commands.
+
+4. Login to docker with your docker credentials to pull images to avoid any image pull rate limits
+   
+    ```bash
+    docker login -u _your_docker_username -p _your_docker_password
+    ```
+
 ## Create Base Image for NKP
 
 In this section we will go through creating a base image for all the control plane and worker node VMs on Nutanix.
 
+1. In VSC Explorer pane, Click on **New Folder** :material-folder-plus-outline:
 
-1. From VSC, logon to your jumpbox VM
+2. Call the folder ``dkp`` under ``/home/ubuntu`` directory
    
-2. In VSC Explorer pane, Click on **New Folder** :material-folder-plus-outline:
-
-3. Call the folder ``dkp`` under ``/home/ubuntu`` directory
-4. In the ``dkp`` folder, click on **New File** :material-file-plus-outline: with the following name
+3. In the ``dkp`` folder, click on **New File** :material-file-plus-outline: with the following name
   
     ```bash
     .env
     ```
 
-5. Fill the following values inside the ``.env`` file
+7. Fill the following values inside the ``.env`` file
 
     === "Template file"
     
@@ -176,13 +191,14 @@ In this section we will go through creating a base image for all the control pla
         export METALLB_IP_RANGE=10.x.x.215-10.x.x.216
         ```
 
-6. Load the environment variables and its values
+8. Using VSC Terminal, load the environment variables and its values
    
     ```bash
+    cd /home/ubuntu/dkp
     source .env
     ```
 
-7. Create the base image and upload to Prism Central using the following command. 
+9. Create the base image and upload to Prism Central using the following command. 
    
     ```bash
     dkp-image-builder create image nutanix ubuntu-22.04 --endpoint ${NUTANIX_ENDPOINT} --cluster ${NUTANIX_CLUSTER} --subnet ${NUTANIX_SUBNET_NAME}
@@ -206,24 +222,6 @@ In this section we will go through creating a base image for all the control pla
     ==> nutanix.kib_image: Creating Packer Builder virtual machine...
         nutanix.kib_image: Virtual machine nkp-ubuntu-22.04-1.29.6-20240717082720 created
         nutanix.kib_image: Found IP for virtual machine: 10.122.7.234
-    ==> nutanix.kib_image: Using SSH communicator to connect: 10.122.7.234
-    ==> nutanix.kib_image: Waiting for SSH to become available...
-
-    <-----
-    Output snipped
-    ----->
-
-        nutanix.kib_image: PLAY RECAP *********************************************************************
-        nutanix.kib_image: default                    : ok=154  changed=86   unreachable=0    failed=0    skipped=344  rescued=0    ignored=0
-        nutanix.kib_image:
-    ==> nutanix.kib_image: Gracefully halting virtual machine...
-    ==> nutanix.kib_image: Creating image(s) from virtual machine nkp-ubuntu-22.04-1.29.6-20240717082720...
-        nutanix.kib_image: Found disk to copy: SCSI:0
-        nutanix.kib_image: Image successfully created: nkp-ubuntu-22.04-1.29.6-20240717082720 (0e97abeb-be7d-4c6c-95b6-47449caae678)
-    ==> nutanix.kib_image: Deleting virtual machine...
-        nutanix.kib_image: Virtual machine successfully deleted
-    ==> nutanix.kib_image: Running post-processor: custom-post-processor (type shell-local)
-    ==> nutanix.kib_image (shell-local): Running local shell script: /tmp/packer-shell4259654918
     ==> nutanix.kib_image: Running post-processor: packer-manifest (type manifest)
     
     ---> 100%
@@ -235,29 +233,32 @@ In this section we will go through creating a base image for all the control pla
     --> nutanix.kib_image: nkp-ubuntu-22.04-1.29.6-20240717082720
     ```
 
-9.  An image would be created in Prism Central if the previous command ran successfully. This will be used as base image for NKP cluster
-   
-     ```bash
-     nkp-ubuntu-22.04-1.29.6-20240717082720 # (1)!
-     ```
+    !!! info inline end "Image name"
+        
+        Note image name from the previous ``dkp-image-builder`` command output (the last line)
 
-     1. :material-fountain-pen-tip: This image name will be different for every execution
+        ```text hl_lines="2"
+        ==> Builds finished. The artifacts of successful builds are:
+        --> nutanix.kib_image: nkp-ubuntu-22.04-1.29.6-20240717082720
+        --> nutanix.kib_image: nkp-ubuntu-22.04-1.29.6-20240717082720
+        ```
 
-10. Populate the ``.env`` file with the NKP image details 
+10. Populate the ``.env`` file with the NKP image name 
 
     === "Template command"
     
         ```text
-        echo "export NKP_IMAGE=nkp-image-name" >> .env
+        echo -e "export NKP_IMAGE=nkp-image-name" >> .env
         source .env
         ```
 
     === "Sample command"
 
          ```text
-         echo "export NKP_IMAGE=nkp-ubuntu-22.04-1.29.6-20240717082720" >> .env
+         echo -e "export NKP_IMAGE=nkp-ubuntu-22.04-1.29.6-20240717082720" >> .env
          source .env
          ```
+    Make sure to use image name that is generated in your environment.
 
 ## Create a Bootstrap K8S Cluster
 
@@ -279,38 +280,73 @@ In this section we will create a bootstrap cluster which will be used to deploy 
     > ✓ Initializing new CAPI components 
     > ✓ Creating ClusterClass resources
     ```
+2. Store kubeconfig file for bootstrap cluster
+   
+    ```bash
+    cp /home/ubuntu/.kube/config bs.cfg
+    export KUBECONFIG=bs.cfg
+    ```
 
-2. Check the status of bootstrap K8S cluster
+3. Check the status of bootstrap K8S cluster
 
     ```bash
-    kubectl --kubeconfig=/home/ubuntu/.kube/config get nodes
+    kubectl get nodes --kubeconfig=bs.cfg
     ```
     
     <!-- termynal -->
 
     ```bash
-    $ kubectl --kubeconfig=/home/ubuntu/.kube/config get nodes
+    $ kubectl get nodes --kubeconfig=bs.cfg
     NAME                                     STATUS   ROLES           AGE     VERSION
     konvoy-capi-bootstrapper-control-plane   Ready    control-plane   7m15s   v1.29.6
     ```
 
 We are now ready to install the workload ``DEV`` cluster
 
-## Create DKP Workload Cluster
+## Create NKP Workload Cluster
 
 1. In VSC, open Terminal, enter the following command to create the workload cluster
    
     ```bash
-    nkp create cluster nutanix -c ${NKP_CLUSTER_NAME} --control-plane-endpoint-ip ${CONTROLPLANE_VIP} \
-    --control-plane-prism-element-cluster ${NUTANIX_CLUSTER}  --control-plane-subnets ${NUTANIX_SUBNET_NAME} \ 
+    dkp create cluster nutanix -c ${NKP_CLUSTER_NAME} --control-plane-endpoint-ip ${CONTROLPLANE_VIP} \
+    --control-plane-prism-element-cluster ${NUTANIX_CLUSTER}  --control-plane-subnets ${NUTANIX_SUBNET_NAME} \
     --control-plane-vm-image ${NKP_IMAGE} --csi-storage-container ${STORAGE_CONTAINER} \
     --endpoint https://${NUTANIX_ENDPOINT}:9440 --worker-prism-element-cluster ${NUTANIX_CLUSTER} \
     --worker-subnets ${NUTANIX_SUBNET_NAME} --worker-vm-image ${NKP_IMAGE} \
     --ssh-public-key-file ${SSH_PUBLIC_KEY} --kubernetes-service-load-balancer-ip-range ${METALLB_IP_RANGE}
     ```
 
+    <!-- termynal -->
+
+    ```bash
+    $ dkp create cluster nutanix -c ${NKP_CLUSTER_NAME} --control-plane-endpoint-ip ${CONTROLPLANE_VIP} \
+    --control-plane-prism-element-cluster ${NUTANIX_CLUSTER}  --control-plane-subnets ${NUTANIX_SUBNET_NAME} \
+    --control-plane-vm-image ${NKP_IMAGE} --csi-storage-container ${STORAGE_CONTAINER} \
+    --endpoint https://${NUTANIX_ENDPOINT}:9440 --worker-prism-element-cluster ${NUTANIX_CLUSTER} \
+    --worker-subnets ${NUTANIX_SUBNET_NAME} --worker-vm-image ${NKP_IMAGE} \
+    --ssh-public-key-file ${SSH_PUBLIC_KEY} --kubernetes-service-load-balancer-ip-range ${METALLB_IP_RANGE}
+
+    > Generating cluster resources
+    > cluster.cluster.x-k8s.io/nkplb created
+    > secret/nkplb-pc-credentials created
+    > secret/nkplb-pc-credentials-for-csi created
+    > configmap/kommander-bootstrap-configuration created
+    > secret/nutanix-license created
+    > ✓ Waiting for cluster infrastructure to be ready 
+    > ✓ Waiting for cluster control-planes to be ready 
+    > ✓ Waiting for machines to be ready
+    ```
+
 2. Observe the events in the shell and in Prism Central events
-3. Run the following command to check K8S status
+
+3. Store kubeconfig files for the workload cluster
+   
+    ```bash
+    dkp get kubeconfig -c ${NKP_CLUSTER_NAME} > ${NKP_CLUSTER_NAME}.cfg
+    export KUBECONFIG=${PWD}/${NKP_CLUSTER_NAME}.cfg
+    ```
+
+4. Run the following command to check K8S status
     
     ```bash
     kubectl get nodes
@@ -319,7 +355,7 @@ We are now ready to install the workload ``DEV`` cluster
 
     ```bash
     $ kubectl get nodes
-    
+
     NAME                                  STATUS   ROLES           AGE     VERSION
     nkp3-md-0-x948v-hvxtj-9r698           Ready    <none>          4h49m   v1.29.6
     nkp3-md-0-x948v-hvxtj-fb75c           Ready    <none>          4h50m   v1.29.6
@@ -329,3 +365,120 @@ We are now ready to install the workload ``DEV`` cluster
     nkp3-r4fwl-jf2s8                      Ready    control-plane   4h51m   v1.29.6
     nkp3-r4fwl-q888c                      Ready    control-plane   4h49m   v1.29.6
     ```
+
+## Create NKP GPU Workload Pool
+
+1. Combine the bootstrap and workload clusters ``KUBECONFIG`` file so that we can use it with ``kubectx``
+   
+    ```bash
+    export KUBECONFIG=bs.cfg:${NKP_CLUSTER_NAME}.cfg
+    kubectl config view --flatten > all-in-one-kubeconfig.yaml
+    export KUBECONFIG=all-in-one-kubeconfig.yaml
+    ```
+
+2. Change KUBECONFIG context to use bootstrap cluster
+   
+    ```bash
+    kubectx kind-konvoy-capi-bootstrapper
+    ```
+
+3. Run the following command to create a GPU nodepool manifest
+   
+    ```bash
+    dkp create nodepool nutanix \
+    --cluster-name ${NKP_CLUSTER_NAME} \
+    --prism-element-cluster ${NUTANIX_CLUSTER} \
+    --subnets ${NUTANIX_SUBNET_NAME} \
+    --vm-image ${NKP_IMAGE} \
+    --disk-size 200 \
+    --memory 64 \
+    --vcpu-sockets 2 \
+    --vcpus-per-socket 8 \
+    gpu-nodepool  --dry-run -o yaml > gpu-nodepool.yaml
+    ```
+
+    !!! note
+       
+        Right now there is no switch for GPU in ``dkp`` command so we need to do dry-run into file and then add the necessary GPU specifications
+
+4. Add the necessary gpu section to our new ``gpu-nodepool.yaml`` using ``yq`` command
+
+   
+    ```bash
+    yq e '(.spec.topology.workers.machineDeployments[] | select(.name == "gpu-nodepool").variables.overrides[] | select(.name == "workerConfig").value.nutanix.machineDetails) += {"gpus": [{"type": "name", "name": strenv(GPU_NAME)}]}' -i gpu-nodepool.yaml
+    ```
+
+    ??? success "Successful addtion of GPU specs?"
+        
+        You would be able to see the added gpu section at the end of the ``gpu-nodepool.yaml`` file
+
+        ```yaml hl_lines="29"
+        apiVersion: cluster.x-k8s.io/v1beta1
+        kind: Cluster
+
+        <snip>
+
+          name: gpu-nodepool
+          variables:
+            overrides:
+              - name: workerConfig
+                value:
+                  nutanix:
+                    machineDetails:
+                      bootType: legacy
+                      cluster:
+                        name: romanticism
+                        type: name
+                      image:
+                        name: nkp-ubuntu-22.04-1.29.6-20240718055804
+                        type: name
+                      memorySize: 64Gi
+                      subnets:
+                        - name: User1
+                          type: name
+                      systemDiskSize: 200Gi
+                      vcpuSockets: 2
+                      vcpusPerSocket: 8
+                      gpus:
+                        - type: name
+                          name: Lovelace 40S
+        ```
+
+5. Apply the ``gpu-nodepool.yaml`` file to the workload cluster 
+   
+    ```bash
+    kubectl apply -f gpu-nodepool.yaml
+    ```
+
+6. Monitor the progress of the command and check Prism Central events for creation of the GPU worker node
+
+7. Change to workload ``DEV`` cluster context
+   
+    ```bash
+    kubectx _your_workload_cluster_context
+    ```
+
+8. Check nodes status in workload ``DEV`` cluster and note the gpu worker node
+ 
+    ```bash
+    kubectl get nodes
+    ```
+
+    <!-- termynal -->
+    
+    ```bash
+    $ kubectl get nodes
+
+    NAME                                   STATUS   ROLES           AGE     VERSION
+    nkplb-gpu-nodepool-7g4jt-2p7l7-49wvd   Ready    <none>          5m57s   v1.29.6
+    nkplb-md-0-q679c-khl2n-9k7jk           Ready    <none>          74m     v1.29.6
+    nkplb-md-0-q679c-khl2n-9nk6h           Ready    <none>          74m     v1.29.6
+    nkplb-md-0-q679c-khl2n-nf9p6           Ready    <none>          73m     v1.29.6
+    nkplb-md-0-q679c-khl2n-qgxp9           Ready    <none>          74m     v1.29.6
+    nkplb-ncnww-2dg7h                      Ready    control-plane   73m     v1.29.6
+    nkplb-ncnww-bbm4s                      Ready    control-plane   72m     v1.29.6
+    nkplb-ncnww-hldm9                      Ready    control-plane   75m     v1.29.6
+    ```
+
+
+## Installing Kommander
