@@ -47,7 +47,7 @@ In the following section, we will create a `Jump Host` VM on Nutanix AHV using b
 
 1. Open `VS Code`, Go to File -> **New Window** :material-dock-window:, Click on **Open Folder** :material-folder-open: and create new workspace (i.e., ``tofu-workspace``) folder.
 
-2. In `VS Code` Explorer pane, Click on **New Folder** :material-folder-plus-outline: and create a new folder called ``jumphost-vm``
+2. In `VS Code` Explorer pane, Click on **New Folder** :material-folder-plus-outline: and name it: ``jumphost-vm``
 
 3. In the ``jumphost-vm`` folder, click on **New File** :material-file-plus-outline: with the following name
   
