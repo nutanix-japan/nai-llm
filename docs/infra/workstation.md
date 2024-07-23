@@ -49,9 +49,9 @@ Based on your local workstation OS, follow these instuctions to:
 
     On Windows machine, See [Generate a RSA key pair on Windows](https://portal.nutanix.com/page/documents/details?targetId=Self-Service-Admin-Operations-Guide-v3_8_0:nuc-app-mgmt-generate-ssh-key-windows-t.html) example.
 
-## Install OpenTofu 
+## Install OpenTofu
 
-Install OpenTofu for Infrastructure as Code (IaC) requirement.
+Install OpenTofu, used to simplify provisioning resources on Nutanix following Infrastructure as Code (IaC) practices.
 
 === "Mac/Linux"
 
