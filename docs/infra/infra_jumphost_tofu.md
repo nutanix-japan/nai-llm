@@ -121,7 +121,7 @@ We will create a jump host VM using OpenTofu.
           num_sockets: "2"
           memory_size_mib: 16384
           disk_size_mib: 307200
-          source_uri: "https://cloud-images.ubuntu.com/releases/focal/release/ubuntu-20.04-server-cloudimg-amd64.img"
+          source_uri: "https://cloud-images.ubuntu.com/releases/22.04/release/ubuntu-22.04-server-cloudimg-amd64.img"
           ```
 
     === "Example file"
@@ -137,7 +137,7 @@ We will create a jump host VM using OpenTofu.
           num_sockets: "2"
           memory_size_mib: 16384
           disk_size_mib: 307200
-          source_uri: "https://cloud-images.ubuntu.com/releases/focal/release/ubuntu-20.04-server-cloudimg-amd64.img"
+          source_uri: "https://cloud-images.ubuntu.com/releases/22.04/release/ubuntu-22.04-server-cloudimg-amd64.img"
           ```
 
           1. :material-vector-difference: make sure to update `hostname` with same name defined within `jumphostvm_cloudinit.yaml`.

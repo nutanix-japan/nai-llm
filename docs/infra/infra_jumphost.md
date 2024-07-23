@@ -27,7 +27,7 @@ The following jumphost resrouces are recommended for the jumphost VM:
 - On **Select Image** tab, Click **Add Image > Select URL Button > Input Image** 
   
     ```url
-    https://cloud-images.ubuntu.com/releases/focal/release/ubuntu-20.04-server-cloudimg-amd64.img
+    https://cloud-images.ubuntu.com/releases/22.04/release/ubuntu-22.04-server-cloudimg-amd64.img
     ```
 
 - Click **Add URL > Click Next > Accept Remaining Defaults**  
