@@ -100,21 +100,7 @@ We will create a jump host VM using OpenTofu.
 
 6. Open a terminal within VSC, **Terminal > New Terminal** :octicons-terminal-16:
 
-7. In the terminal, create a base64 decode for your ``jumphostvm_cloudinit.yaml``  yaml file from the VSC terminal
-
-    ```bash
-    cat jumphost-tofu/jumphostvm_cloudinit.yaml | base64 | tr -d '\n' # (1)!
-    ```
-
-    1. If you are using a Mac, the command ``pbcopy``can be used to copy the contents of a file to clipboard.
-
-        ```bash
-        cat jumphost-tofu/jumphostvm_cloudinit.yaml | base64 | tr -d '\n' | pbcopy
-        ```
-
-        ++cmd+"v"++ will paste the contents of clipboard to the console/VSC.
-
-8. In VSC Explorer, within the ``jumphost-tofu`` folder, click on **New File** :material-file-plus-outline: and create a config file with the following name:
+7. In VSC Explorer, within the ``jumphost-tofu`` folder, click on **New File** :material-file-plus-outline: and create a config file with the following name:
 
     ```bash
     jumphostvm_config.yaml
@@ -135,7 +121,7 @@ We will create a jump host VM using OpenTofu.
           num_sockets: "2"
           memory_size_mib: 16384
           disk_size_mib: 307200
-          source_uri: "https://cloud-images.ubuntu.com/releases/22.04/release/ubuntu-22.04-server-cloudimg-amd64.img"
+          source_uri: "https://cloud-images.ubuntu.com/releases/focal/release/ubuntu-20.04-server-cloudimg-amd64.img"
           ```
 
     === "Example file"
@@ -151,7 +137,7 @@ We will create a jump host VM using OpenTofu.
           num_sockets: "2"
           memory_size_mib: 16384
           disk_size_mib: 307200
-          source_uri: "https://cloud-images.ubuntu.com/releases/22.04/release/ubuntu-22.04-server-cloudimg-amd64.img"
+          source_uri: "https://cloud-images.ubuntu.com/releases/focal/release/ubuntu-20.04-server-cloudimg-amd64.img"
           ```
 
           1. :material-vector-difference: make sure to update `hostname` with same name defined within `jumphostvm_cloudinit.yaml`.
@@ -159,7 +145,7 @@ We will create a jump host VM using OpenTofu.
     !!!tip
           If you are using a Mac and ``pbcopy`` utility as suggested in the previous command's tip window, ++cmd+"v"++ will paste the contents of clipboard to the console.
 
-9. In VSC Explorer, within the ``jumphost-tofu`` folder, click on **New File** :material-file-plus-outline: and create a opentofu manifest file with the following name:
+8. In VSC Explorer, within the ``jumphost-tofu`` folder, click on **New File** :material-file-plus-outline: and create a opentofu manifest file with the following name:
 
     ```bash
     jumphostvm.tf
@@ -229,7 +215,7 @@ We will create a jump host VM using OpenTofu.
     }
     ```
 
-10. Apply your tofu code to create jump host VM
+9.  Apply your tofu code to create jump host VM
   
     ```bash
     tofu -chdir=jumphost-tofu init
@@ -243,7 +229,7 @@ We will create a jump host VM using OpenTofu.
     # Check the output to get the IP address of the VM
     ```
 
-11. Obtain the IP address of the jump host VM from the Tofu output
+10. Obtain the IP address of the jump host VM from the Tofu output
   
     ``` { .bash .no-copy }
     # Command output
@@ -255,7 +241,7 @@ We will create a jump host VM using OpenTofu.
     nai-llm-jumphost-ip-address = "10.x.x.x"
     ```
 
-12. Run the Terraform state list command to verify what resources have been created
+11. Run the Terraform state list command to verify what resources have been created
 
     ``` bash
     tofu state list
@@ -270,7 +256,7 @@ We will create a jump host VM using OpenTofu.
     nutanix_virtual_machine.nai-llm-jumphost  # < This is the jump host VM
     ```
 
-13. Validate that VM is accessible using **VSC > Terminal** 
+12. Validate that VM is accessible using **VSC > Terminal** 
   
     ```bash
     ssh -i ~/.ssh/id_rsa ubuntu@<ip-address-from-tofu-output>

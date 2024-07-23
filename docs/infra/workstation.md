@@ -110,6 +110,3 @@ Follow these steps to get VSCode installed
         ```
 
 We will proceed to deploying jumphost VM.
-
-
-   
