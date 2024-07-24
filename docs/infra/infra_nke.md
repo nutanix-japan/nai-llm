@@ -29,9 +29,9 @@ We will use Infrastructure as Code framework to deploy NKE kubernetes clusters.
 
 - Prism Central is at least version ``2023.4``
 - NKE is enabled on Nutanix Prism Central
-- NKE is at at least version ``2.9`` (updated through LCM)
-- NKE Node OS is at least version `ntnx-1.6.1`
-- NKE Kubernetes is at least version `1.26.8-0`
+- NKE is at at least version ``2.10`` (updated through LCM)
+- NKE Node OS is at least version `ntnx-1.7`
+- NKE Kubernetes is at least version `1.26.11-0`
 - Monitoring on each NKE Cluster is **ENABLED**
 
 ## NKE High Level Cluster Design
@@ -78,9 +78,13 @@ For Prod, we will deploy an NKE Cluster of type "Production".
 
 ## Create TOFU Manifest file
 
-1. In VSC, make sure you are in the ``tofu`` folder
-  
-2. In the ``tofu`` folder, create a tofu manifest file ``main.tf`` 
+1. If you haven't already done so, Open new VSC window, Click on **Open Folder** :material-folder-open: and open workspace (i.e., ``tofu-workspace``) folder.
+
+2. In VSC Explorer pane, Click on **New Folder** :material-folder-plus-outline:
+
+3. Create a new folder called ``nke-tofu``
+
+4. In the ``nke-tofu`` folder, click on **New File** :material-file-plus-outline: and create a tofu manifest file with following name
 
     ```bash
     main.tf
@@ -93,7 +97,7 @@ For Prod, we will deploy an NKE Cluster of type "Production".
       required_providers {
         nutanix = {
           source  = "nutanix/nutanix"
-          version = "1.9.1"
+          version = "1.9.5"
         }
       }
     }
@@ -186,13 +190,19 @@ For Prod, we will deploy an NKE Cluster of type "Production".
 
 ## Deploying Management Cluster
 
-1. Create TOFU workspace for Management NKE Cluster
-  
+1. In VSC Terminal, change to the `nke-tofu` folder
+
     ```bash
-    tofu workspace new mgmt-cluster
+    cd nke-tofu
     ```
 
-2. In VSC, Create the Management NKE cluster config file
+2. Create TOFU workspace for Management NKE Cluster
+  
+    ```bash
+    tofu workspace select -or-create mgmt-cluster
+    ```
+
+3. In VSC, Create the Management NKE cluster config file
 
     ```bash
     .env.mgmt-cluster.yaml
@@ -214,8 +224,8 @@ For Prod, we will deploy an NKE Cluster of type "Production".
       password: <PE password>
 
     nke:
-      k8s_version: 1.26.8-0
-      node_os_version: ntnx-1.6.1
+      k8s_version: 1.26.11-0
+      node_os_version: ntnx-1.7
       master:
         num_instances: 1
         cpu_count: 8
@@ -231,12 +241,6 @@ For Prod, we will deploy an NKE Cluster of type "Production".
         cpu_count: 12
         memory_gb: 16
         disk_gb: 300
-    ```
-
-3. In VSC Terminal, change to the tofu folder
-   
-    ```bash
-    cd tofu
     ```
 
 4. Initialize and Validate your tofu code
@@ -285,7 +289,7 @@ The DEV cluster will contain GPU node pool to deploy your AI apps.
 1. Create TOFU workspace for DEV NKE Cluster
   
     ```bash
-    tofu workspace new dev-cluster
+    tofu workspace select -or-create dev-cluster
     ```
 
 2. Create the Management NKE cluster config.yaml 
@@ -317,8 +321,8 @@ The DEV cluster will contain GPU node pool to deploy your AI apps.
       password: <PE password>
 
     nke:
-      k8s_version: 1.26.8-0
-      node_os_version: ntnx-1.6.1
+      k8s_version: 1.26.11-0
+      node_os_version: ntnx-1.7
       master:
         num_instances: 1
         cpu_count: 8

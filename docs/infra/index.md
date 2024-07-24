@@ -20,9 +20,9 @@ stateDiagram-v2
     }
     state DeployJumpHost {
         [*] --> CreateCloudInit
-        CreateCloudInit --> CreteTofuVM
-        CreteTofuVM --> DeployNaiLLMUtilities
-        DeployNaiLLMUtilities --> [*]
+        CreateCloudInit --> CreateJumpHostVM
+        CreateJumpHostVM --> DeployNaiUtils
+        DeployNaiUtils --> [*]
     }
     state DeployK8S {
         [*] --> CreateTofuWorkspaces
