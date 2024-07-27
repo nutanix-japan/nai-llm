@@ -57,10 +57,24 @@ A ``.env ``file is provided at   ``/home/ubuntu/nainai-llm-fleet-infra`` folder 
         --8<-- ".env.mgmt-cluster.yaml"
         ```
 
-4. Generate and Validate Configurations
+4. Install the workstation tools and export ``krew`` command to PATH
+   
+    ```bash
+    task workstation:install-packages
+    ```
+    ```bash
+    export PATH="${KREW_ROOT:-$HOME/.krew}/bin:$PATH"
+    ```
+
+5. Generate and Validate Configurations
   
     ```bash
     task bootstrap:generate_cluster_configs
+    ```
+    ```bash
+    export K8S_CLUSTER_NAME=mgmt-cluster
+    cp ./.env.sample.yaml ./.env.${K8S_CLUSTER_NAME}.yaml
+    task workstation:install-packages
     ```
 
     Verify the generated cluster configs
@@ -70,13 +84,13 @@ A ``.env ``file is provided at   ``/home/ubuntu/nainai-llm-fleet-infra`` folder 
     cat clusters/${K8S_CLUSTER_NAME}/platform/cluster-configs.yaml
     ```
 
-5. Validate Encrypted Secrets and make sure the values match what you entered in ``.env.mgmt-cluster.yaml`` file
+6. Validate Encrypted Secrets and make sure the values match what you entered in ``.env.mgmt-cluster.yaml`` file
 
     ```bash
     task sops:decrypt
     ```
 
-6. Select New (or Switching to Existing) Cluster and Download NKE creds for ``mgmt-cluster``
+7. Select New (or Switching to Existing) Cluster and Download NKE creds for ``mgmt-cluster``
 
     ```bash
     eval $(task nke:switch-shell-env) && \
@@ -94,7 +108,7 @@ A ``.env ``file is provided at   ``/home/ubuntu/nainai-llm-fleet-infra`` folder 
     > mgmt-cluster                          <<< choose mgmt-cluster.   
     ```
 
-7.  Taint the GPU nodes
+8.  Taint the GPU nodes
     
     ```bash
     task kubectl:taint_gpu_nodes
@@ -105,7 +119,7 @@ A ``.env ``file is provided at   ``/home/ubuntu/nainai-llm-fleet-infra`` folder 
     task kubectl:drain_gpu_nodes
     ```
 
-8.  Run Flux Bootstrapping - `task bootstrap:silent`
+9.  Run Flux Bootstrapping - `task bootstrap:silent`
 
     ```bash
     task bootstrap:silent
@@ -115,7 +129,7 @@ A ``.env ``file is provided at   ``/home/ubuntu/nainai-llm-fleet-infra`` folder 
 
            If there are any issues, update local git repo, push up changes and run `task flux:reconcile`
 
-9.  Monitor on New Terminal to make sure ``READY`` status is ``TRUE`` for all resources using the following command
+10. Monitor on New Terminal to make sure ``READY`` status is ``TRUE`` for all resources using the following command
 
     ```bash
     eval $(task nke:switch-shell-env) && \
@@ -125,7 +139,7 @@ A ``.env ``file is provided at   ``/home/ubuntu/nainai-llm-fleet-infra`` folder 
     !!!note
            If there are any issues, update local git repo, push up changes and run `task flux:reconcile`
 
-10. [Optional] Post Install - Taint GPU Nodepool with dedicated=gpu:NoSchedule
+11. [Optional] Post Install - Taint GPU Nodepool with dedicated=gpu:NoSchedule
 
     !!!note
            If undesired workloads already running on gpu nodepools, drain nodes using `task kubectl:drain_gpu_nodes`
