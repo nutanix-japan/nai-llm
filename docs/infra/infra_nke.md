@@ -78,13 +78,13 @@ For Prod, we will deploy an NKE Cluster of type "Production".
 
 ## Create TOFU Manifest file
 
-1. If you haven't already done so, Open new VSC window, Click on **Open Folder** :material-folder-open: and open workspace (i.e., ``tofu-workspace``) folder.
+1. If you haven't already done so, Open new `VSCode` window
 
-2. In VSC Explorer pane, Click on **New Folder** :material-folder-plus-outline:
+2. In `VSCode` Explorer pane, Click on existing ``tofu-workspace`` **Folder** :material-folder-open:
 
-3. Create a new folder called ``nke-tofu``
+3. Click on **New Folder** :material-folder-plus-outline: name it: ``nke-tofu``
 
-4. In the ``nke-tofu`` folder, click on **New File** :material-file-plus-outline: and create a tofu manifest file with following name
+4. On `VSCode` Explorer plane, click the ``tofu-workspace/nke-tofu`` folder, click on **New File** :material-file-plus-outline: and create a tofu manifest file with following name:
 
     ```bash
     main.tf
@@ -190,69 +190,106 @@ For Prod, we will deploy an NKE Cluster of type "Production".
 
 ## Deploying Management Cluster
 
-1. In VSC Terminal, change to the `nke-tofu` folder
+1. In `VSCode` Terminal, change working directory to the `nke-tofu` folder
 
     ```bash
-    cd nke-tofu
+    cd tofu-workspace/nke-tofu/
     ```
 
-2. Create TOFU workspace for Management NKE Cluster
+2. In `VSCode` Terminal, Create Tofu `workspace` for target NKE Management Cluster
   
     ```bash
     tofu workspace select -or-create mgmt-cluster
     ```
 
-3. In VSC, Create the Management NKE cluster config file
+3. On `VSCode` Explorer plane, click the ``tofu-workspace/nke-tofu`` folder, click on **New File** :material-file-plus-outline: and create a environment config file for target Management Cluster with following name:
 
     ```bash
     .env.mgmt-cluster.yaml
     ```
 
-    with the following content:
+    **Update Nutanix environment access details along with any NKE specific configurations.** See example file for details
 
-    ```yaml hl_lines="27" title=".env.mgmt-cluster.yaml"
-    prism_central:
-      endpoint: <PC FQDN>
-      user: <PC user>
-      password: <PC password>
+    === "Management Cluster Config file"
 
-    prism_element:
-      cluster_name: <PE Cluster Name>
-      storage_container: default
-      subnet_name: <PE Subnet>
-      user: <PE user>
-      password: <PE password>
+          ```yaml hl_lines="2 3 4 7 8 9 10 11" title=".env.mgmt-cluster.yaml"
+          prism_central:
+            endpoint: <PC FQDN>
+            user: <PC admin user>
+            password: <PC admin password>
 
-    nke:
-      k8s_version: 1.26.11-0
-      node_os_version: ntnx-1.7
-      master:
-        num_instances: 1
-        cpu_count: 8
-        memory_gb: 16
-        disk_gb: 300
-      etcd:
-        num_instances: 1
-        cpu_count: 4
-        memory_gb: 8
-        disk_gb: 300
-      worker:
-        num_instances: 3
-        cpu_count: 12
-        memory_gb: 16
-        disk_gb: 300
-    ```
+          prism_element:
+            cluster_name: <PE Cluster Name>
+            storage_container: default
+            subnet_name: <PE Subnet>
+            user: <PE admin user>
+            password: <PE admin password>
+
+          nke:
+            k8s_version: 1.26.11-0
+            node_os_version: ntnx-1.7
+            master:
+              num_instances: 1
+              cpu_count: 8
+              memory_gb: 16
+              disk_gb: 300
+            etcd:
+              num_instances: 1
+              cpu_count: 4
+              memory_gb: 8
+              disk_gb: 300
+            worker:
+              num_instances: 3
+              cpu_count: 12
+              memory_gb: 16
+              disk_gb: 300
+          ```
+
+    === "Management Cluster Example file"
+
+          ```yaml hl_lines="2 3 4 7 8 9 10 11" title=".env.mgmt-cluster.yaml"
+          prism_central:
+            endpoint: "pc.example.com"    # < Change to PC endpoint >
+            user: "admin"                 # < Change to PC admin user> 
+            password: "XXXXXXXX"          # < Change to PC admin pass>
+
+          prism_element:
+            cluster_name: "mypecluster"   # < Change to PE element cluster name >
+            storage_container: default    # < Change to PE element cluster storage container name >
+            subnet_name: "VLAN.20"        # < Change to PE element subnet name >
+            user: "admin"                 # < Change to PE admin user> 
+            password: "XXXXXXXX"          # < Change to PE admin pass> 
+
+          nke:
+            k8s_version: 1.26.11-0
+            node_os_version: ntnx-1.7
+            master:
+              num_instances: 1
+              cpu_count: 8
+              memory_gb: 16
+              disk_gb: 300
+            etcd:
+              num_instances: 1
+              cpu_count: 4
+              memory_gb: 8
+              disk_gb: 300
+            worker:
+              num_instances: 3
+              cpu_count: 12
+              memory_gb: 16
+              disk_gb: 300
+          ```
 
 4. Initialize and Validate your tofu code
 
     ```bash
-    tofu init -upgrade
+    tofu -chdir=tofu-workspace/nke-tofu init -upgrade
 
     # OpenTofu will initialize the Nutanix provider
     ```
 
     ```bash
-    tofu validate
+    tofu -chdir=tofu-workspace/nke-tofu validate
 
     # OpenTofu will validate configurations
     ```
@@ -260,7 +297,7 @@ For Prod, we will deploy an NKE Cluster of type "Production".
 5. Apply your tofu code to create NKE cluster, associated virtual machines and other resources
   
     ```bash
-    tofu apply 
+    tofu -chdir=tofu-workspace/nke-tofu apply 
 
     # OpenTofu will show you all resources that it will to create
     # Type yes to confirm 
@@ -269,7 +306,7 @@ For Prod, we will deploy an NKE Cluster of type "Production".
 6. Run the OpenTofu state list command to verify what resources have been created
 
     ``` bash
-    tofu state list
+    tofu -chdir=tofu-workspace/nke-tofu state list
     ```
 
     ``` { .bash .no-copy }
@@ -293,7 +330,7 @@ The DEV cluster will contain GPU node pool to deploy your AI apps.
     ```
 
 2. Create the Management NKE cluster config.yaml 
-   
+
     ???tip
           The previous ``.env.mgmt-cluster.yaml`` could be copied 
 

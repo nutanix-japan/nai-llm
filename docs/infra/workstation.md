@@ -49,15 +49,11 @@ Based on your local workstation OS, follow these instuctions to:
 
     On Windows machine, See [Generate a RSA key pair on Windows](https://portal.nutanix.com/page/documents/details?targetId=Self-Service-Admin-Operations-Guide-v3_8_0:nuc-app-mgmt-generate-ssh-key-windows-t.html) example.
 
-<<<<<<< HEAD
-## Install OpenTofu 
-
-Install OpenTofu for Infrastructure as Code (IaC) requirement.
-=======
 ## Install OpenTofu
 
-Install OpenTofu, used to simplify provisioning resources on Nutanix following Infrastructure as Code (IaC) practices.
->>>>>>> origin/main
+[OpenTofu](https://opentofu.org/) is a fork of Terraform that is open-source, community-driven, and managed by the Linux Foundation and is used to simplify provisioning resources using the [Nutanix Terraform Provider](https://registry.terraform.io/providers/nutanix/nutanix/latest/docs) while following Infrastructure as Code (IaC) practices.
+
+To [Install OpenTofu](https://opentofu.org/docs/intro/install/standalone/), follow the steps below for your respective local workstation:
 
 === "Mac/Linux"
 
@@ -83,13 +79,13 @@ Install OpenTofu, used to simplify provisioning resources on Nutanix following I
     Remove-Item install-opentofu.ps1
     ```
 
-## Install Visual Studio Code (VSC)
+## Install Visual Studio Code (VSCode)
 
-We will be doing all the labs by connecting to your jump host using VSCode remote shell environment. This allows for easy browsing and editing of configuration files. 
+We will be doing all the labs by connecting to your jump host using `VSCode` remote shell environment. This allows for easy browsing and editing of configuration files. For additional details, see [Visual Studio Code](https://code.visualstudio.com/)
 
 Having a rich text editor capable of integrating with the rest of our tools, and providing markup to the different source code file types will provide significant value in upcoming exercises and is a much simpler experience for most users compared to command line text editors.
 
-Follow these steps to get VSCode installed
+If you don't already have `VSCode` installed on your local, you can either [Download and Install VSCode](https://code.visualstudio.com/download) or choose to follow one of the steps belows:
 
 === "Mac/Linux"
 
@@ -97,7 +93,7 @@ Follow these steps to get VSCode installed
     brew install --cask visual-studio-code # (1)
     ```
 
-    1.  :material-fountain-pen-tip:  If you do not have ``brew`` package manager installed, use the following command to install it in ``Terminal``. 
+    1.  :material-fountain-pen-tip:  If you do not have ``brew`` macOS package manager installed, use the following command to install it in ``Terminal``. For additional details, see [HomeBrew Installation Docs](https://docs.brew.sh/Installation).
    
         ```bash
         /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
@@ -109,16 +105,12 @@ Follow these steps to get VSCode installed
     choco install vscode # (1)
     ```
 
-    1.  :material-fountain-pen-tip:  If you do not have ``choco`` package manager installed, use the following command to install it in ``PowerShell``
+    1.  :material-fountain-pen-tip:  If you do not have ``choco`` Windows package manager installed, use the following command to install it in ``PowerShell``. For additional details, see [Chocolatey Installation Docs](https://chocolatey.org/install).
    
         ```PowerShell
         Set-ExecutionPolicy Bypass -Scope Process -Force; [System.Net.ServicePointManager]::SecurityProtocol = [System.Net.ServicePointManager]::SecurityProtocol -bor 3072; iex ((New-Object System.Net.WebClient).DownloadString('https://community.chocolatey.org/install.ps1'))
         ```
 
+The steps above leverage [HomeBrew Package Manager for macOS](https://brew.sh/) and [Chocolatey Package Manager for Windows](https://chocolatey.org/) respectively to install `VSCode`, click on links to see additional details.
+
 We will proceed to deploying jumphost VM.
-<<<<<<< HEAD
-
-
-   
-=======
->>>>>>> origin/main

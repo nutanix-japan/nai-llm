@@ -43,11 +43,11 @@ Minimum System Requirements:
 
 ## Create Jump Host VM
 
-In the following section, we will create a `Jump Host` VM on Nutanix AHV using both `Visual Studio Code (VS Code)` and `OpenTofu`.
+In the following section, we will create a `Jump Host` VM on Nutanix AHV using both `Visual Studio Code (VSCode)` and `OpenTofu`.
 
-1. Open `VS Code`, Go to File -> **New Window** :material-dock-window:, Click on **Open Folder** :material-folder-open: and create new workspace (i.e., ``tofu-workspace``) folder.
+1. Open `VSCode`, Go to File -> **New Window** :material-dock-window:, Click on **Open Folder** :material-folder-open: and create new workspace folder (i.e., ``tofu-workspace``).
 
-2. In `VS Code` Explorer pane, Click on **New Folder** :material-folder-plus-outline: and name it: ``jumphost-vm``
+2. In `VSCode` Explorer pane, Click on **New Folder** :material-folder-plus-outline: and name it: ``jumphost-vm``
 
 3. In the ``jumphost-vm`` folder, click on **New File** :material-file-plus-outline: with the following name
   
@@ -57,7 +57,7 @@ In the following section, we will create a `Jump Host` VM on Nutanix AHV using b
 
 4. Paste the following contents inside the file:
 
-    ```yaml hl_lines="2" title="cloud-init.yaml"
+    ```yaml hl_lines="2 19" title="cloud-init.yaml"
     #cloud-config
     hostname: nai-llm-jumphost
     package_update: true
@@ -94,9 +94,7 @@ In the following section, we will create a `Jump Host` VM on Nutanix AHV using b
     !!!warning
           If needed, make sure to update the target `hostname` and copy / paste the value of the RSA public key in the ``cloudinit.yaml`` file.
 
-5. Open a terminal within `VS Code`, **Terminal > New Terminal** :octicons-terminal-16:
-
-6. In `VS Code` Explorer, within the ``jumphost-vm`` folder, click on **New File** :material-file-plus-outline: and create a config file with the following name:
+5. In `VSCode` Explorer, within the ``jumphost-vm`` folder, click on **New File** :material-file-plus-outline: and create a config file with the following name:
 
     ```bash
     jumphostvm_config.yaml
@@ -128,7 +126,7 @@ In the following section, we will create a `Jump Host` VM on Nutanix AHV using b
           password: "XXXXXXXX"          # < Change to PC admin pass>
           cluster_name: "mypecluster"   # < Change to PE element cluster name >
           subnet_name: "VLAN.20"        # < Change to PE element subnet name >
-          name: "nai-llm-jumphost"      # (1)!
+          name: "nai-llm-jumphost" # (1)!
           num_vcpus_per_socket: "4"
           num_sockets: "2"
           memory_size_mib: 16384
@@ -141,7 +139,7 @@ In the following section, we will create a `Jump Host` VM on Nutanix AHV using b
     !!!tip
           If you are using a Mac and ``pbcopy`` utility as suggested in the previous command's tip window, ++cmd+"v"++ will paste the contents of clipboard to the console.
 
-7. In `VS Code` Explorer pane, navigate to the ``jumphost-vm`` folder, click on **New File** :material-file-plus-outline: and create a opentofu manifest file with the following name:
+6. In `VSCode` Explorer pane, navigate to the ``jumphost-vm`` folder, click on **New File** :material-file-plus-outline: and create a opentofu manifest file with the following name:
 
     ```bash
     jumphostvm.tf
@@ -190,7 +188,7 @@ In the following section, we will create a `Jump Host` VM on Nutanix AHV using b
       num_vcpus_per_socket = local.config.num_vcpus_per_socket
       num_sockets          = local.config.num_sockets
       memory_size_mib      = local.config.memory_size_mib
-      guest_customization_cloud_init_user_data = base64encode(file("${path.module}/cloudinit.yaml"))
+      guest_customization_cloud_init_user_data = base64encode(file("${path.module}/cloud-init.yaml"))
       disk_list {
         data_source_reference = {
           kind = "image"
@@ -211,12 +209,29 @@ In the following section, we will create a `Jump Host` VM on Nutanix AHV using b
     }
     ```
 
-8. Apply your tofu code to create Jump Host VM
+7. Open a terminal within `VSCode`, **Terminal > New Terminal** :octicons-terminal-16:
+
+8. Initialize and Validate your tofu code
+
+    ```bash
+    tofu -chdir=tofu-workspace/jumphost-vm init -upgrade
+
+    # OpenTofu will initialize the Nutanix provider
+    ```
+
+    ```bash
+    tofu -chdir=tofu-workspace/jumphost-vm validate
+
+    # OpenTofu will validate configurations
+    ```
+
+9. Apply your tofu code to create Jump Host VM
   
     ```bash
-    tofu -chdir=jumphost-vm init
-    tofu -chdir=jumphost-vm validate
-    tofu -chdir=jumphost-vm apply
+    tofu -chdir=tofu-workspace/jumphost-vm apply 
+
+    # OpenTofu will show you all resources that it will to create
+    # Type yes to confirm
     ```
 
     ``` { .bash .no-copy }
@@ -225,7 +240,7 @@ In the following section, we will create a `Jump Host` VM on Nutanix AHV using b
     # Check the output to get the IP address of the VM
     ```
 
-9. Obtain the IP address of the `Jump Host` VM from the Tofu output
+10. Obtain the IP address of the `Jump Host` VM from the Tofu output
   
     ``` { .bash .no-copy }
     # Command output
@@ -237,7 +252,7 @@ In the following section, we will create a `Jump Host` VM on Nutanix AHV using b
     nai-llm-jumphost-ip-address = "10.x.x.x"
     ```
 
-10. Run the Terraform state list command to verify what resources have been created
+11. Run the Terraform state list command to verify what resources have been created
 
     ``` bash
     tofu state list
@@ -252,15 +267,15 @@ In the following section, we will create a `Jump Host` VM on Nutanix AHV using b
     nutanix_virtual_machine.nai-llm-jumphost  # < This is the `Jump Host` VM
     ```
 
-11. Validate that the `Jump Host` VM is accessible using **VS Code > Terminal** :octicons-terminal-24:
+12. Validate that the `Jump Host` VM is accessible using **VSCode > Terminal** :octicons-terminal-24:
   
     ```bash
     ssh -i ~/.ssh/id_rsa ubuntu@<ip-address-from-tofu-output>
     ```
 
-### Initiate Remote-SSH Connection to Jumpbox using VS Code
+### Initiate Remote-SSH Connection to Jumpbox using VSCode
 
-If you are unfamiliar with using the [Remote-SSH Extension in VS Code Marketplace](https://code.visualstudio.com/docs/remote/ssh-tutorial), make sure to walkthrough the tutorial on installing and using this extension.
+If you are unfamiliar with using the [Remote-SSH Extension in VSCode Marketplace](https://code.visualstudio.com/docs/remote/ssh-tutorial), make sure to walkthrough the tutorial on installing and using this extension.
 
 1. From your workstation, open **Visual Studio Code**.
 
@@ -305,13 +320,13 @@ If you are unfamiliar with using the [Remote-SSH Extension in VS Code Marketplac
 
     Now that we have saved the ssh credentials, we are able to connect to the jumphost VM
 
-### Connect to you Jumpbox using VS Code
+### Connect to you Jumpbox using VSCode
 
-1. On VS Code, Click **View > Command Palette** and **Connect to Host**
+1. On `VSCode`, Click **View > Command Palette** and **Connect to Host**
 
 2. Select the IP address of your `Jump Host` VM
 
-3. A **New Window** :material-dock-window: will open in VS Code
+3. A **New Window** :material-dock-window: will open in `VSCode`
 
 4. Click the **Explorer** button from the left-hand toolbar and select **Open Folder**.
 
@@ -333,7 +348,7 @@ If you are unfamiliar with using the [Remote-SSH Extension in VS Code Marketplac
 
 We have compiled a list of utilities that needs to be installed on the jumphost VM to use for the rest of the lab. We have affectionately called it as ``nai-llm`` utilities. Use the following method to install these utilities:
 
-1. Using `VS Code`, open `Terminal` :octicons-terminal-24: on the `Jump Host` VM
+1. Using `VSCode`, open `Terminal` :octicons-terminal-24: on the `Jump Host` VM
 
 2. Install `devbox` using the following command and accept all defaults
 
@@ -341,13 +356,14 @@ We have compiled a list of utilities that needs to be installed on the jumphost 
     curl -fsSL https://get.jetpack.io/devbox | bash
     ```
 
-4. From the ``$HOME`` directory, clone Git repo and change working directory
+3. From the ``$HOME`` directory, clone Git repo and change working directory
 
     ```bash
     git clone https://github.com/<your_github_org>/nai-llm-fleet-infra.git
     cd $HOME/nai-llm-fleet-infra/
     ```
-3. Start the `devbox shell` and if `nix` isn't available, you will be prompted to install:
+
+4. Start the `devbox shell` and if `nix` isn't available, you will be prompted to install:
 
     ```sh
     devbox init
@@ -367,6 +383,7 @@ We have compiled a list of utilities that needs to be installed on the jumphost 
     ```bash
     cd $HOME/nai-llm-fleet-infra/ && task
     ```
+
     ``` { .bash .no-copy }
     # command output
     task: bootstrap:silent
@@ -388,14 +405,14 @@ We have compiled a list of utilities that needs to be installed on the jumphost 
     - Task: flux:init
     ```
 
-6. Finally set your github config
-   
+7. Finally set your github config
+
     ```bash
     git config --user.email "your_github_email"
     git config --user.name "your_github_username"
     ```
 
-7. Login to your Github account using the following command and use the same token from the [Prepare Github Repository and API Token](#prepare-github-repository-and-api-token) section
+8. Login to your Github account using the following command and use the same token from the [Prepare Github Repository and API Token](#prepare-github-repository-and-api-token) section
    
     ```bash
     gh auth login
@@ -415,4 +432,4 @@ We have compiled a list of utilities that needs to be installed on the jumphost 
     Successfully logged in to Github.
     ```
 
-Now the jumphost VM is ready for deploying our app. We will do this in the next section. 
+Now the jumphost VM is ready for deploying our app. We will do this in the next section.
