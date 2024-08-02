@@ -101,7 +101,7 @@ A ``.env ``file is provided at   ``/home/ubuntu/nai-llm-fleet-infra`` folder for
     ```bash
     task kubectl:taint_gpu_nodes
     ```
-    If gpu are over utilised, drain the gpu_nodes of workloads
+    [Optional] - If gpu are over utilised, drain the gpu_nodes of workloads
 
     ```bash
     task kubectl:drain_gpu_nodes
@@ -127,7 +127,7 @@ A ``.env ``file is provided at   ``/home/ubuntu/nai-llm-fleet-infra`` folder for
 
            If there are any issues, update local git repo, push up changes and run `task flux:reconcile`
 
-10. [Optional] Post Install - Taint GPU Nodepool with dedicated=gpu:NoSchedule
+10. [Optional] Post Install - Taint GPU Nodepool with ``dedicated=gpu:NoSchedule``
 
     !!!note
            If undesired workloads already running on gpu nodepools, drain nodes using `task kubectl:drain_gpu_nodes`
@@ -140,8 +140,7 @@ A ``.env ``file is provided at   ``/home/ubuntu/nai-llm-fleet-infra`` folder for
     kubectl get nodes -o='custom-columns=NodeName:.metadata.name,TaintKey:.spec.taints[*].key,TaintValue:.spec.taints[*].value,TaintEffect:.spec.taints[*].effect'
     ```
 
-!!!tip
-      In case you need to untaint the nodes to schedule workloads, use the following commands
+11. Once all workloads are in ``TRUE`` state except GPT based workloads, untaint the GPU nodes to schedule GPU based workloads, use the following commands.
 
       ```bash
       task kubectl:untaint_gpu_nodes
@@ -149,3 +148,4 @@ A ``.env ``file is provided at   ``/home/ubuntu/nai-llm-fleet-infra`` folder for
       # to view taint configurations on all nodes
       kubectl get nodes -o='custom-columns=NodeName:.metadata.name,TaintKey:.spec.taints[*].key,TaintValue:.spec.taints[*].value,TaintEffect:.spec.taints[*].effect'
       ```
+Wait for all GPU based services are in TRUE state, we are ready to test LLM App. 

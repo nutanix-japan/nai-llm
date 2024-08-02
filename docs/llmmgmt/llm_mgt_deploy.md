@@ -104,18 +104,7 @@ A ``.env ``file is provided at   ``/home/ubuntu/nainai-llm-fleet-infra`` folder 
     > mgmt-cluster                          <<< choose mgmt-cluster.   
     ```
 
-8.  Taint the GPU nodes
-    
-    ```bash
-    task kubectl:taint_gpu_nodes
-    ```
-    If gpu are over utilised, drain the gpu_nodes of workloads
-
-    ```bash
-    task kubectl:drain_gpu_nodes
-    ```
-
-9.  Run Flux Bootstrapping - `task bootstrap:silent`
+8.  Run Flux Bootstrapping - `task bootstrap:silent`
 
     ```bash
     task bootstrap:silent
@@ -125,7 +114,7 @@ A ``.env ``file is provided at   ``/home/ubuntu/nainai-llm-fleet-infra`` folder 
 
            If there are any issues, update local git repo, push up changes and run `task flux:reconcile`
 
-10. Monitor on New Terminal to make sure ``READY`` status is ``TRUE`` for all resources using the following command
+9.  Monitor on New Terminal to make sure ``READY`` status is ``TRUE`` for all resources using the following command
 
     ```bash
     eval $(task nke:switch-shell-env) && \
@@ -134,19 +123,6 @@ A ``.env ``file is provided at   ``/home/ubuntu/nainai-llm-fleet-infra`` folder 
 
     !!!note
            If there are any issues, update local git repo, push up changes and run `task flux:reconcile`
-
-11. [Optional] Post Install - Taint GPU Nodepool with dedicated=gpu:NoSchedule
-
-    !!!note
-           If undesired workloads already running on gpu nodepools, drain nodes using `task kubectl:drain_gpu_nodes`
-
-    ```bash
-    ## taint gpu nodes with label nvidia.com/gpu.present=true
-    task kubectl:taint_gpu_nodes
-
-    ## view taint configurations on all nodes
-    kubectl get nodes -o='custom-columns=NodeName:.metadata.name,TaintKey:.spec.taints[*].key,TaintValue:.spec.taints[*].value,TaintEffect:.spec.taints[*].effect'
-    ```
 
 ## Set Kafka Endpoint in Nutanix Objects
 
