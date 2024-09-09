@@ -228,7 +228,7 @@ In this section we will go through creating a base image for all the control pla
 
 7. Fill the following values inside the ``.env`` file
 
-    === "Template file"
+    === "Template .env"
     
         ```text
         export NUTANIX_USER=_your_nutanix_username
@@ -244,7 +244,7 @@ In this section we will go through creating a base image for all the control pla
         export GPU_NAME=_gpu_name_from_previous_section
         ```
 
-    === "Sample file"
+    === "Sample .env"
     
         ```text
         export NUTANIX_USER=admin
@@ -373,7 +373,7 @@ We are now ready to install the workload ``nkpdev`` cluster
 
 1. Open .env file in VSC and add (append) the following environment variables to your ``.env`` file and save it
    
-    === "Template file"
+    === "Template .env"
     
         ```text
         export CSI_FILESYSTEM=_preferred_filesystem_ext4/xfs
@@ -383,7 +383,7 @@ We are now ready to install the workload ``nkpdev`` cluster
         export NUTANIX_PROJECT_NAME=_your_pc_project_name
         ```
 
-    === "Sample file"
+    === "Sample .env"
     
         ```text
         export CSI_FILESYSTEM=ext4
@@ -703,14 +703,14 @@ In this section we will create a nodepool to host the AI apps with a GPU.
 
 2. Open .env file in VSC and add (append) the following environment variables to your ``.env`` file and save it
    
-    === "Template file"
+    === "Template .env"
     
         ```text
         export GPU_REPLICA_COUNT=_no_of_gpu_worker_nodes
         export GPU_POOL=_name_of_gpu_pool
         ```
 
-    === "Sample file"
+    === "Sample .env"
     
         ```text
         export GPU_NAME="Lovelace 40S"
