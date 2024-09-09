@@ -108,7 +108,7 @@ theme:
   - content.code.annotate
   - content.code.copy
   - content.code.annotate
-  - content.tabs.link
+  #- content.tabs.link
 
 markdown_extensions:
 - admonition

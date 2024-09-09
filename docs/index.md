@@ -47,21 +47,21 @@ This site follows **Design > Deploy** model.
 
 <div class="grid cards" markdown>
 
--   :material-kubernetes:{ .lg .middle } __Set up Nutanix Karbon Engine in 10 minutes__
+-   :material-kubernetes:{ .lg .middle } __Set up Nutanix Karbon Engine [ NKE ] in 10 minutes__
 
     ---
 
-    You can setup a Nutanix cluster in under an hour using Foundation to prepare your infrastructure.
+    Setup a Nutanix cluster in under an hour using Foundation to prepare your infrastructure.
 
     [:octicons-arrow-right-24: Setup Nutanix Karbon Engine](infra/infra_nke.md)
 
--   :material-kubernetes:{ .lg .middle } __Set up D2iQ Kubernetes Platform in 30 minutes__
+-   :material-kubernetes:{ .lg .middle } __Set up Nutanix Kubernetes Platform [ NKP ] in 30 minutes__
 
     ---
 
-    You can setup a Nutanix cluster in under an hour using Foundation to prepare your infrastructure.
+    Setup a Nutanix cluster in under an hour using Foundation to prepare your infrastructure.
 
-    [:octicons-arrow-right-24: Setup  D2iQ Kubernetes Platform](infra/infra_dkp.md)
+    [:octicons-arrow-right-24: Setup Nutanix Kubernetes Platform](infra/infra_nkp.md)
 
 </div>
 

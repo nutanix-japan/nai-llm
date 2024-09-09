@@ -263,7 +263,7 @@ In the following section, we will create a `Jump Host` VM on Nutanix AHV using b
 
     data.nutanix_cluster.cluster              # < This is your existing Prism Element cluster
     data.nutanix_subnet.subnet                # < This is your existing primary subnet
-    nutanix_image.machine-image              # < This is the image file for `Jump Host` VM
+    nutanix_image.machine-image               # < This is the image file for `Jump Host` VM
     nutanix_virtual_machine.nai-llm-jumphost  # < This is the `Jump Host` VM
     ```
 
