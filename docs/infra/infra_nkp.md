@@ -367,7 +367,7 @@ In this section we will create a bootstrap cluster which will be used to deploy 
     konvoy-capi-bootstrapper-control-plane   Ready    control-plane   7m15s   v1.29.6
     ```
 
-We are now ready to install the workload ``nkpdev`` cluster -->
+We are now ready to install the workload ``nkpdev`` cluster
 
 ## Create NKP Workload Cluster
 
@@ -392,6 +392,7 @@ We are now ready to install the workload ``nkpdev`` cluster -->
         export DOCKER_PASSWORD=_your_docker_password
         export NUTANIX_PROJECT_NAME=dev-lab
         ```
+
 2.  Source the new variables and values to the environment
      
      ```bash
@@ -525,6 +526,12 @@ We are now ready to install the workload ``nkpdev`` cluster -->
         > Cluster was created successfully! Get the dashboard details with:
         > nkp get dashboard --kubeconfig="/home/ubuntu/nkp/nkpdev.conf"
         ```
+
+    ??? info "Self-Manged Cluster??"
+
+        The ``--self-managed`` argument of the ``nkp create cluster nutanix`` command will deploy bootstrap, and Kommander management automatically. 
+        
+        However, we are specifically **not using** it here in this lab, to run through Kommander installation later. 
 
 5. Observe the events in the shell and in Prism Central events
 
