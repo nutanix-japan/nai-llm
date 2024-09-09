@@ -83,7 +83,7 @@ For ``nkpdev``, we will deploy an NKE Cluster of type "Development".
     
     === "Command output"
       
-        ```bash
+        ```{ .bash .no-copy }
         cd /home/ubuntu/nkp
         curl -o nkp_v2.12.0_linux_amd64.tar.gz "https://download.nutanix.com/downloads/nkp/v2.12.0/nkp_v2.12.0_linux_amd64.tar.gz?Expires=1725570039&Key-Pair-Id=APKAJTTNCWPEI42QKMSA&Signature=PsF83rd5uzGF0NSonzCCEVy-ORp7nCTa6O6odV3r0tKLYYvwyjF2jbFlKLf9q8wf-k4mVpMvnC5ifMiBJLnCx5UYzg80nAAvuEVvwgqEPQMmhWXNR~XYHAQq9T-qKVis49MbLz0RHWS6QN~Xit3s3JRpmVtIzEy37TJnImuhHE1JakjAfRelvdMWEX1Q5kYNa90U-REhPUGNJcgI3h8J6zHVDnfeerAVtuLG95ScDz4XnRu2g1A4uD5wEtkfHDzOyb-0DtUm8OopgIEtNmBG2AYZTblNot3g7pv53ErneOBpwqnXEa6OqiToBYC1W2wwKBOjw3yHVAzWd4tlgfrJTg__)"
         gunzip nkp_v2.12.0_linux_amd64.tar.gz
@@ -107,7 +107,7 @@ For ``nkpdev``, we will deploy an NKE Cluster of type "Development".
 
     === "Command output"
       
-        ```bash
+        ```{ .bash .no-copy }
         $ nkp version
         diagnose: v0.10.1
         imagebuilder: v0.13.1
@@ -304,7 +304,7 @@ In this section we will go through creating a base image for all the control pla
 
     !!! info inline end "Image name"
         
-        Note image name from the previous ``nkp`` create imagecommand output (the last line)
+        Note image name from the previous ``nkp`` create image command output (the last line)
 
         ```text hl_lines="2"
         ==> Builds finished. The artifacts of successful builds are:
@@ -436,7 +436,7 @@ We are now ready to install the workload ``nkpdev`` cluster
         source .env
         ```
 
-        Then rerun the ``echo nkp`` command to verify the values again before running the ``nkp`` command.
+        Then rerun the ``echo nkp`` command to verify the values again before running the ``nkp create cluster nutanix`` command.
    
     === "Command"
     
@@ -467,9 +467,7 @@ We are now ready to install the workload ``nkpdev`` cluster
 
     === "Command output"
 
-        <!-- termynal -->
-
-        ```bash
+        ```{ .bash .no-copy }
         > ✓ Creating a bootstrap cluster 
         ✓ Upgrading CAPI components 
         ✓ Waiting for CAPI components to be upgraded 
@@ -541,7 +539,7 @@ We are now ready to install the workload ``nkpdev`` cluster
     nkp get kubeconfig -c ${NKP_CLUSTER_NAME} > ${NKP_CLUSTER_NAME}.cfg
     export KUBECONFIG=${PWD}/${NKP_CLUSTER_NAME}.cfg
     ```
-4. Combine the bootstrap and workload clusters ``KUBECONFIG`` file so that we can use it with ``kubectx`` to change context between clusters
+7. Combine the bootstrap and workload clusters ``KUBECONFIG`` file so that we can use it with ``kubectx`` to change context between clusters
    
     ```bash
     export KUBECONFIG=bs.cfg:${NKP_CLUSTER_NAME}.cfg
@@ -649,7 +647,7 @@ In this section we will install Kommander managment components to the ``nkpdev``
 
     === "Command output"
     
-        ```text
+        ```{ .bash .no-copy }
         nkp install kommander --installer-config kommander.yaml
 
         ✓ Running pre-flight checks
@@ -685,7 +683,7 @@ In this section we will install Kommander managment components to the ``nkpdev``
 
     === "Command output"
 
-        ```bash
+        ```{ .bash .no-copy }
         nkp get dashboard
 
         Username: recursing_xxxxxxxxx
@@ -812,7 +810,7 @@ In this section we will create a nodepool to host the AI apps with a GPU.
 
     === "Command output"
 
-        ```bash
+        ```{ .bash .no-copy }
         $ kubectl get nodes
 
         NAME                                   STATUS   ROLES           AGE     VERSION
@@ -842,7 +840,7 @@ Optionally, cleanup the workloads on nkp cluster by deleting it after deploying 
 
     === "Command output"
 
-        ```bash
+        ```{ .bash .no-copy }
         nkp delete cluster -c nkpdev --self-managed
 
         ✓ Upgrading CAPI components 
@@ -869,7 +867,7 @@ Optionally, cleanup the workloads on nkp cluster by deleting it after deploying 
 
     === "Command output"
 
-        ```bash
+        ```{ .bash .no-copy }
         nkp delete bootstrap
 
         ✓ Deleting bootstrap cluster
