@@ -28,9 +28,6 @@ The ``nkpdev`` cluster will be hosting the LLM model serving endpoints and AI ap
 
 Once ``nkpnkpdev`` deployment has been tested successfully, we can deploy applications to optional PROD Workload cluster.
 
-!!!info
-       The ``Bootstrap`` cluster's [Cluster API (CAPI)](https://cluster-api.sigs.k8s.io/) components can be migrated to the ``nkpdev`` cluster and the bootstrap cluster can be deleted.
-
 ### Bootstrap Cluster
 
 Since the Bootstrap Cluster will be essential to deploying a workload nkpdev cluster. We will use ``kind`` cluster packaged by Nutanix. ``kind`` is already installed on the jumphost VM and be accessed using ``devbox shell``.
@@ -45,19 +42,18 @@ For ``nkpdev``, we will deploy an NKE Cluster of type "Development".
 | Worker | 4                | 8   | 32 GB | 150 GB  |
 | GPU    | 1                 | 16   | 64 GB | 200 GB  |
 
-
 ## Pre-requisites for NKP Deployment
 
 1. Download and install ``nkp`` binary from Nutanix Portal
 2. Find and reserve 3 IPs for control plane and MetalLB access from AHV network
-3. Create a base image to use with NKP nodes using ``nkp`` command
+3. Find GPU details from Nutanix cluster
+4. Create a base image to use with NKP nodes using ``nkp`` command
 
 ### Install NKP Binaries
 
 1. Login to [Nutanix Portal](https://portal.nutanix.com/page/downloads?product=nkp) using your credentials
 2. Go to **Downloads** > **Nutanix Kubernetes Platform (NKP)**
 3. Select NKP for Linux and copy the download link to the ``.tar.gz`` file
-   
 4. If you haven't already done so, Open new `VSCode` window
 
 5. In `VSCode` Explorer pane, Click on existing ``tofu-workspace`` **Folder** :material-folder-open:
@@ -70,26 +66,12 @@ For ``nkpdev``, we will deploy an NKE Cluster of type "Development".
    
 9. Run the following command to download and unpack the NKP binaries
     
-    === "Commands"
-
-        ```bash
-        cd /home/ubuntu/nkp
-        curl -o nkp_v2.12.0_linux_amd64.tar.gz "copied link from Nutanix Portal"
-        gunzip nkp_v2.12.0_linux_amd64.tar.gz
-        tar -xvf nkp_v2.12.0_linux_amd64.tar
-        ```
-        !!! note
-            The download link will be different for each user and will expire after some time.
-    
-    === "Command output"
-      
-        ```{ .bash .no-copy }
-        cd /home/ubuntu/nkp
-        curl -o nkp_v2.12.0_linux_amd64.tar.gz "https://download.nutanix.com/downloads/nkp/v2.12.0/nkp_v2.12.0_linux_amd64.tar.gz?Expires=1725570039&Key-Pair-Id=APKAJTTNCWPEI42QKMSA&Signature=PsF83rd5uzGF0NSonzCCEVy-ORp7nCTa6O6odV3r0tKLYYvwyjF2jbFlKLf9q8wf-k4mVpMvnC5ifMiBJLnCx5UYzg80nAAvuEVvwgqEPQMmhWXNR~XYHAQq9T-qKVis49MbLz0RHWS6QN~Xit3s3JRpmVtIzEy37TJnImuhHE1JakjAfRelvdMWEX1Q5kYNa90U-REhPUGNJcgI3h8J6zHVDnfeerAVtuLG95ScDz4XnRu2g1A4uD5wEtkfHDzOyb-0DtUm8OopgIEtNmBG2AYZTblNot3g7pv53ErneOBpwqnXEa6OqiToBYC1W2wwKBOjw3yHVAzWd4tlgfrJTg__)"
-        gunzip nkp_v2.12.0_linux_amd64.tar.gz
-        tar -xvf nkp_v2.12.0_linux_amd64.tar
-        ```
-        
+    ```bash
+    cd /home/ubuntu/nkp
+    curl -o nkp_v2.12.0_linux_amd64.tar.gz "copied link from Nutanix Portal"
+    gunzip nkp_v2.12.0_linux_amd64.tar.gz
+    tar -xvf nkp_v2.12.0_linux_amd64.tar
+    ```
 
 10. Move the ``nkp`` binary to a directory that is included in your ``PATH`` environment variable
 
