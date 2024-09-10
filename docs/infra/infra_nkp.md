@@ -64,11 +64,15 @@ For ``nkpdev``, we will deploy an NKE Cluster of type "Development".
 
 8. On `VSCode` menu, select ``Terminal`` > ``New Terminal``
    
-9. Run the following command to download and unpack the NKP binaries
+9. Run the following commands to download and unpack the NKP binaries
     
     ```bash
     cd /home/ubuntu/nkp
+    ```
+    ```bash
     curl -o nkp_v2.12.0_linux_amd64.tar.gz "copied link from Nutanix Portal"
+    ```
+    ```bash
     gunzip nkp_v2.12.0_linux_amd64.tar.gz
     tar -xvf nkp_v2.12.0_linux_amd64.tar
     ```
@@ -81,7 +85,7 @@ For ``nkpdev``, we will deploy an NKE Cluster of type "Development".
 
 11. Verify the ``nkp`` binary is installed correctly. Ensure that the version is 2.12.0
 
-    === "Commands"
+    === "Command"
 
         ```bash
         nkp version
@@ -202,7 +206,7 @@ In this section we will go through creating a base image for all the control pla
 
 2. Call the folder ``nkp`` under ``/home/ubuntu`` directory
    
-3. In the ``nkp`` folder, click on **New File** :material-file-plus-outline: with the following name
+3. In the ``nkp`` folder, click on **New File** :material-file-plus-outline: and create new file with the following name:
   
     ```bash
     .env
@@ -286,7 +290,7 @@ In this section we will go through creating a base image for all the control pla
 
     !!! info inline end "Image name"
         
-        Note image name from the previous ``nkp`` create image command output (the last line)
+        Note image name from the previous ``nkp`` create image command output
 
         ```text hl_lines="2"
         ==> Builds finished. The artifacts of successful builds are:
@@ -309,7 +313,7 @@ In this section we will go through creating a base image for all the control pla
          echo -e "export NKP_IMAGE=nkp-ubuntu-22.04-1.29.6-20240717082720" >> .env
          source .env
          ```
-    Make sure to use image name that is generated in your environment.
+    Make sure to use image name that is generated in your environment for the next steps.
 
 ## Create a Bootstrap K8S Cluster
 
@@ -579,7 +583,7 @@ In this section we will install Kommander managment components to the ``nkpdev``
     nkp install kommander --init > kommander.yaml
     ```
 
-    ??? tip "Kommander resources sizing tip"
+    ??? tip "Kommander resources' sizing tip"
         
         Kommander component resources reservations and limits can be individually configured like so
 
@@ -647,7 +651,8 @@ In this section we will install Kommander managment components to the ``nkpdev``
         ✓ Deploying AppDeployments for enabled applications 
         ✓ Waiting for Kommander core to be installed 
         ✓ Deploying configured catalog repositories
-        ✓ Waiting for 22 enabled applications to be ready [==================================>22/22] (time elapsed 4m33s) 
+        ✓ Waiting for 22 enabled applications to be ready [==================================>22/22] 
+        (time elapsed 4m33s) 
         ```
 
     !!! note
