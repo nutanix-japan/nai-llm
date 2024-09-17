@@ -26,6 +26,9 @@ nav:
     - Deploy Dev Cluster: llmmgmt/llm_dev_deploy.md
     - Test LLM App: llmmgmt/llm_test.md
       # - SupportGPT: supportgpt/supportgpt.md
+  - GPT-in-a-Box v2 NVD Reference App:
+    - Getting Started: iep/index.md
+    - Pre-requisites: iep/iep_pre_reqs.md
 - References:
   - Nutanix Components: ntxcomponents/ntxcomponents.md
   - Tools used and why?: tools/tools.md
