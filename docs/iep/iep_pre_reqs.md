@@ -61,9 +61,9 @@ We will be testing ``LLama-3-8B`` model with the following configurations:
 +---------------+-------------------+---------------+-----------------+-----------+--------------+
 | Worker        | 4                 | 8             | 32              | 24        | 128 GB       |
 +---------------+-------------------+---------------+-----------------+-----------+--------------+
-| Base GPU      | 1                 | 8             | 24              | 8         |  32 GB       |
+| Base GPU   +  | 1                 | 8             | 24              | 8         | 32 GB        |
 |               |                   |               |                 |           |              |
-| IEP           |                   | 8             | 16              | 8         |  16 GB       |
+| IEP           |                   | 8             | 16              | 8         | 6 GB         |
 +---------------+-------------------+---------------+-----------------+-----------+--------------+
 | Totals        |                   |               |                 | 60        | 224 GB       |
 +---------------+-------------------+---------------+-----------------+-----------+--------------+
@@ -102,8 +102,9 @@ To generate a license for the NKP cluster.
 8. Select Apply to cluster
 9. Choose Non-production license and Save
 10. Select the cluster name and click on **Next**
-11. Input the number of vCPU and click on **Save**
-12. Download the csv file and store it in a safe place
+11. Input the number of vCPU (60) from our calculations in the previous [section](#calculate-the-number-of-vcpus)
+12. Click on **Save** 
+13. Download the csv file and store it in a safe place
 
 ### Apply License for NKP Cluster
 

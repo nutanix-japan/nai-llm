@@ -135,6 +135,7 @@ markdown_extensions:
 - attr_list
 - md_in_html
 - pymdownx.keys
+- markdown_grid_tables
 
 plugins:
 - termynal:
