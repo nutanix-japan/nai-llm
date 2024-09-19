@@ -355,6 +355,7 @@ We have compiled a list of utilities that needs to be installed on the jumphost 
     ```sh
     curl -fsSL https://get.jetpack.io/devbox | bash
     ```
+
 3. Open the following URL and fork the repo to your Github org
    
     ```url
@@ -363,14 +364,24 @@ We have compiled a list of utilities that needs to be installed on the jumphost 
 
 4. From the ``$HOME`` directory, clone the fork of your ``nai-llm-fleet-infra`` git repo and change working directory
 
-    ```bash
-    git clone https://github.com/<your_github_org>/nai-llm-fleet-infra.git
-    cd $HOME/nai-llm-fleet-infra/
-    ```
+    === "Command Template"
 
-5. Start the `devbox shell` and if `nix` isn't available, you will be prompted to install:
+        ```bash
+        cd $HOME
+        git clone https://github.com/_your_github_org/nai-llm-fleet-infra.git
+        ```
+
+    === "Command Sample"
+      
+        ```bash
+        cd $HOME
+        git clone https://github.com/rahuman/nai-llm-fleet-infra.git
+        ```
+
+5. Start the `devbox shell`. If `nix` isn't available, you will be prompted to install:
 
     ```sh
+    cd $HOME/nai-llm-fleet-infra/
     devbox init
     devbox shell
     ```
