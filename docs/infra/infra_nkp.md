@@ -34,7 +34,7 @@ Since the Bootstrap Cluster will be essential to deploying a workload nkpdev clu
 
 ### Dev Workload Cluster
 
-For ``nkpdev``, we will deploy an NKE Cluster of type "Development".
+For ``nkpdev``, we will deploy an NKP Cluster of type "Development".
 
 | Role   | No. of Nodes (VM) | vCPU | RAM   | Storage |
 | ------ | ----------------- | ---- | ----- | ------- |
@@ -54,13 +54,13 @@ For ``nkpdev``, we will deploy an NKE Cluster of type "Development".
 1. Login to [Nutanix Portal](https://portal.nutanix.com/page/downloads?product=nkp) using your credentials
 2. Go to **Downloads** > **Nutanix Kubernetes Platform (NKP)**
 3. Select NKP for Linux and copy the download link to the ``.tar.gz`` file
-4. If you haven't already done so, Open new `VSCode` window
+4. If you haven't already done so, Open new `VSCode` window on your jumphost VM
 
-5. In `VSCode` Explorer pane, Click on existing ``tofu-workspace`` **Folder** :material-folder-open:
+5. In `VSCode` Explorer pane, Click on existing ``/home/ubuntu`` folder
 
 6. Click on **New Folder** :material-folder-plus-outline: name it: ``nkp``
 
-7. On `VSCode` Explorer plane, click the ``/home/ubuntu/nke`` folder
+7. On `VSCode` Explorer plane, click the ``/home/ubuntu/nkp`` folder
 
 8. On `VSCode` menu, select ``Terminal`` > ``New Terminal``
    
@@ -83,7 +83,11 @@ For ``nkpdev``, we will deploy an NKE Cluster of type "Development".
     sudo mv nkp /usr/local/bin/
     ```
 
-11. Verify the ``nkp`` binary is installed correctly. Ensure that the version is 2.12.0
+11. Verify the ``nkp`` binary is installed correctly. Ensure the version is latest
+    
+    !!! note
+        
+        At the time of writing this lab nkp version is v2.12.0
 
     === "Command"
 
@@ -185,7 +189,9 @@ We will need a total of three IPs for the following:
          ip_list=10.x.x.214,10.x.x.215,10.x.x.216
          ```
 
-### Find GPU Details
+### Optional - Find GPU Details
+
+If there is a requirement to deploy workloads that rquire GPU, find the GPU details in your Nutanix cluster.
 
 Find the details of GPU on the Nutanix cluster while still connected to Prism Central (PC).
 
