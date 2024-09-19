@@ -12,16 +12,16 @@ stateDiagram-v2
         [*] --> CalculateNumberOfVCPU
         CalculateNumberOfVCPU --> GenerateLicense
         GenerateLicense --> InstallNAIPreReqs  
-        InstallNAIPreReqs --> DeployNAIIEP
-        DeployNAIIEP --> InstallNAIPostReqs
+        InstallNAIPreReqs --> DeployNAINAI
+        DeployNAINAI --> InstallNAIPostReqs
         InstallNAIPostReqs --> [*]
     }
   
 
     [*] --> PreRequisites
-    PreRequisites --> DeployIEP : next section
-    DeployIEP --> TestIEP
-    TestIEP --> [*]
+    PreRequisites --> DeployNAI : next section
+    DeployNAI --> TestNAI
+    TestNAI --> [*]
 ```
 
 Prepare the following pre-requisites for mgmt-cluster and dev-cluster kubernetes clusters.
@@ -50,7 +50,7 @@ Calculate the number of vCPU for the NKP cluster.
 
 We will be testing ``LLama-3-8B`` model with the following configurations:
 
-- ``LLama-3-8B`` model is about 5 GB in size
+- ``LLama-3-8B`` model is about 27 GB in size (along with the model archive files)
 - ``LLama-3-8B`` will be deployed on a single worker GPU worker node
 - ``LLama-3-8B`` inference endpoint will be deployed on the same GPU worker node
 
@@ -63,7 +63,7 @@ We will be testing ``LLama-3-8B`` model with the following configurations:
 +---------------+-------------------+---------------+-----------------+-----------+--------------+
 | Base GPU   +  | 1                 | 8             | 24              | 8         | 32 GB        |
 |               |                   |               |                 |           |              |
-| IEP           |                   | 8             | 16              | 8         | 6 GB         |
+| NAI           |                   | 8             | 16              | 8         | 6 GB         |
 +---------------+-------------------+---------------+-----------------+-----------+--------------+
 | Totals        |                   |               |                 | 60        | 224 GB       |
 +---------------+-------------------+---------------+-----------------+-----------+--------------+
@@ -108,6 +108,38 @@ To generate a license for the NKP cluster.
 
 ### Apply License for NKP Cluster
 
+??? tip "Install License in Commandline"
+
+    === "Command"
+
+        Create license secret
+
+        ```bash
+        kubectl create secret generic my-license-secret --from-literal=jwt=MY_LICENSE -n kommander
+        kubectl label secret my-license-secret kommanderType=License -n kommander
+        ```
+
+        Apply the license secret to the cluster
+        
+        ```bash
+        cat <<EOF | kubectl apply -f -
+        apiVersion: kommander.mesosphere.io/v1beta1
+        kind: License
+        metadata:
+        name: my-license
+        namespace: kommander
+        spec:
+        licenseRef:
+            name: my-license-secret
+        EOF
+        ```
+
+    === "Command output"
+
+        ```{ .bash .no-copy }
+        License created
+        ```
+
 1. Login to the Kommander URL for ``nkpdev`` cluster with the generated credentials that you generated in the previous [section](../infra/infra_nkp.md#install-kommander-management). The following commands will give you the credentials and URL.
    
     === "Command"
@@ -131,11 +163,98 @@ To generate a license for the NKP cluster.
 4. Click on **Add License**, choose Nutanix platform and paste the license key from the previous [section](#generate-license-for-nkp-cluster)
 5. Click on **Save**
 6. Confirm the license is applied to the cluster by cheking the **License Status** in the **License** menu
-7. The license will be applied to the cluster and the license status will reflect NKP Pro in the top right corner of the dashboard
+7. The license will be applied to the cluster and the license status will reflect NKP Pro in the top right corner of the dashboard   
+
+## Enable GPU Operator
+
+We will need to enable GPU operator for deploying NKP application. 
+
+1. In the NKP GUI, Go to **Clusters**
+2. Click on **Kommander Host**
+3. Go to **Applications** 
+4. Search for **NVIDIA GPU Operator**
+5. Click on **Enable**
+6. Click on **Configuration** and click on **Workspace Configuration**
+7. Inside the yaml editor, paste the following yaml content 
+   
+    ```yaml
+    driver:
+      enabled: true
+    ```
+
+8. Click on **Enable** on the top right-hand corner to enable GPU driver on the Ubuntu GPU nodes
+9. Check GPU operator resources and make sure they are running
+    
+    === "Command"
+    
+        ```bash
+        kubectl get po -A | grep -i nvidia
+        ```
+
+    === "Command output"
+   
+        ```{ .text, no-copy}
+        kubectl get po -A | grep -i nvidia
+
+        nvidia-container-toolkit-daemonset-fjzbt                          1/1     Running     0          28m
+        nvidia-cuda-validator-f5dpt                                       0/1     Completed   0          26m
+        nvidia-dcgm-exporter-9f77d                                        1/1     Running     0          28m
+        nvidia-dcgm-szqnx                                                 1/1     Running     0          28m
+        nvidia-device-plugin-daemonset-gzpdq                              1/1     Running     0          28m
+        nvidia-driver-daemonset-dzf55                                     1/1     Running     0          28m
+        nvidia-operator-validator-w48ms                                   1/1     Running     0          28m
+        ```
+
+10. Run a sample GPU workload to confirm GPU operations
+    
+    === "Command"
+
+        ```bash
+        kubectl apply -f - <<EOF
+        apiVersion: v1
+        kind: Pod
+        metadata:
+        name: cuda-vector-add
+        spec:
+        restartPolicy: OnFailure
+        containers:
+        - name: cuda-vector-add
+            image: k8s.gcr.io/cuda-vector-add:v0.1
+            resources:
+            limits:
+                nvidia.com/gpu: 1
+        EOF
+        ```
+
+    === "Command output"
+    
+        ```{ .text, no-copy}
+        pod/cuda-vector-add created
+        ```
+
+11. Follow the logs to check if the GPU operations are successful
+    
+    === "Command"
+
+        ```bash
+        k logs cuda-vector-add
+        ```
+
+    === "Command output"
+    
+        ```{ .text, no-copy}
+        k logs cuda-vector-add
+        [Vector addition of 50000 elements]
+        Copy input data from the host memory to the CUDA device
+        CUDA kernel launch with 196 blocks of 256 threads
+        Copy output data from the CUDA device to the host memory
+        Test PASSED
+        Done
+        ```
 
 ## Install NAI Pre-requisites
 
-In this section we will install the following pre-requisites for the IEP application
+In this section we will install the following pre-requisites for the NAI application
 
 1. Login to VSC on the jumphost VM, go to **Terminal** :octicons-terminal-24: and run the following commands
    
@@ -202,7 +321,7 @@ In this section we will install the following pre-requisites for the IEP applica
 
 
 
-## Deploy IEP
+## Deploy NAI
 
 1. Login to VSC on the jumphost VM, go to **Terminal** :octicons-terminal-24: and run the following commands
    
@@ -239,3 +358,29 @@ In this section we will install the following pre-requisites for the IEP applica
         TEST SUITE: None
         ```
 
+2. Verify that the NAI Core Pods are running and healthy
+    
+    === "Command"
+
+        ```bash
+        kubectl get pods -n nai-system
+        ```
+    === "Command output"
+
+        ```bash
+        k get po,deploy
+
+        NAME                                            READY   STATUS      RESTARTS   AGE
+        pod/nai-api-55c665dd67-746b9                    1/1     Running     0          5d1h
+        pod/nai-api-db-migrate-fdz96-xtmxk              0/1     Completed   0          40h
+        pod/nai-db-789945b4df-lb4sd                     1/1     Running     0          43h
+        pod/nai-iep-model-controller-84ff5b5b87-6jst9   1/1     Running     0          5d8h
+        pod/nai-ui-7fc65fc6ff-clcjl                     1/1     Running     0          5d8h
+        pod/prometheus-nai-0                            2/2     Running     0          43h
+
+        NAME                                       READY   UP-TO-DATE   AVAILABLE   AGE
+        deployment.apps/nai-api                    1/1     1            1           5d8h
+        deployment.apps/nai-db                     1/1     1            1           5d8h
+        deployment.apps/nai-iep-model-controller   1/1     1            1           5d8h
+        deployment.apps/nai-ui                     1/1     1            1           5d8h
+        ```

@@ -362,6 +362,14 @@ We are now ready to install the workload ``nkpdev`` cluster
     === "Template .env"
     
         ```text
+        export CONTROL_PLANE_REPLICAS=_no_of_control_plane_replicas
+        export CONTROL_PLANE_VCPUS=_no_of_control_plane_vcpus
+        export CONTROL_PLANE_CORES_PER_VCPU=_no_of_control_plane_cores_per_vcpu
+        export CONTROL_PLANE_MEMORY_GIB=_no_of_control_plane_memory_gib
+        export WORKER_REPLICAS=_no_of_worker_replicas
+        export WORKER_VCPUS=_no_of_worker_vcpus
+        export WORKER_CORES_PER_VCPU=_no_of_worker_cores_per_vcpu
+        export WORKER_MEMORY_GIB=_no_of_worker_memory_gib
         export CSI_FILESYSTEM=_preferred_filesystem_ext4/xfs
         export CSI_HYPERVISOR_ATTACHED=_true/false
         export DOCKER_USERNAME=_your_docker_username
@@ -372,6 +380,14 @@ We are now ready to install the workload ``nkpdev`` cluster
     === "Sample .env"
     
         ```text
+        export CONTROL_PLANE_REPLICAS=3
+        export CONTROL_PLANE_VCPUS=4
+        export CONTROL_PLANE_CORES_PER_VCPU=1
+        export CONTROL_PLANE_MEMORY_GIB=16
+        export WORKER_REPLICAS=4
+        export WORKER_VCPUS=8 
+        export WORKER_CORES_PER_VCPU=1
+        export WORKER_MEMORY_GIB=32
         export CSI_FILESYSTEM=ext4
         export CSI_HYPERVISOR_ATTACHED=true
         export DOCKER_USERNAME=_your_docker_username
@@ -405,7 +421,7 @@ We are now ready to install the workload ``nkpdev`` cluster
                 --ssh-public-key-file ${SSH_PUBLIC_KEY} \
                 --kubernetes-service-load-balancer-ip-range ${LB_IP_RANGE} \
                 --control-plane-disk-size 150 --control-plane-memory 16 --control-plane-vcpus 8 --control-plane-cores-per-vcpu 1 \
-                --worker-disk-size 150 --worker-memory 64 --worker-vcpus 16 --worker-cores-per-vcpu 1 \
+                --worker-disk-size 150 --worker-memory 32 --worker-vcpus 16 --worker-cores-per-vcpu 1 \
                 --csi-file-system ${CSI_FILESYSTEM} \
                 --csi-hypervisor-attached-volumes=${CSI_HYPERVISOR_ATTACHED} \
                 --registry-mirror-url "https://registry-1.docker.io" \
@@ -682,10 +698,10 @@ In this section we will install Kommander managment components to the ``nkpdev``
 
 In this section we will create a nodepool to host the AI apps with a GPU.
 
-1. Change KUBECONFIG context to use the workload ``nkpdev`` cluster
+1. Change KUBECONFIG context to use the workload ``bootstrap`` cluster
    
     ```bash
-    kubectx nkpdev
+    kubectx kind-konvoy-capi-bootstrapper
     ```
 
 2. Open .env file in VSC and add (append) the following environment variables to your ``.env`` file and save it
@@ -720,7 +736,7 @@ In this section we will create a nodepool to host the AI apps with a GPU.
         --subnets ${NUTANIX_SUBNET_NAME} \
         --vm-image ${NKP_IMAGE} \
         --disk-size 200 \
-        --memory 64 \
+        --memory 40 \
         --vcpus 16 \
         --replicas ${GPU_REPLICA_COUNT} \
         --wait \
@@ -780,8 +796,8 @@ In this section we will create a nodepool to host the AI apps with a GPU.
     ```
 
 7.  Monitor the progress of the command and check Prism Central events for creation of the GPU worker node
-
-8.  Change to workload ``nkpdev`` cluster context
+    
+    Change to workload ``nkpdev`` cluster context
    
     ```bash
     kubectx ${NKP_CLUSTER_NAME}-admin@${NKP_CLUSTER_NAME}
@@ -792,12 +808,12 @@ In this section we will create a nodepool to host the AI apps with a GPU.
     === "Command"
 
         ```bash
-        kubectl get nodes
+        kubectl get nodes -w
         ```
 
     === "Command output"
 
-        ```{ .bash .no-copy }
+        ```bash hl_lines="4"
         $ kubectl get nodes
 
         NAME                                   STATUS   ROLES           AGE     VERSION
@@ -817,7 +833,13 @@ Now we are ready to deploy our AI workloads.
 
 Optionally, cleanup the workloads on nkp cluster by deleting it after deploying and testing your AI/ML application. 
 
-1. Delete the workload cluster
+1. Change cluster context to use the workload ``bootstrap`` cluster
+   
+    ```bash
+    kubectx kind-konvoy-capi-bootstrapper
+    ```
+
+2. Delete the workload cluster
 
     === "Command"
 
@@ -844,7 +866,7 @@ Optionally, cleanup the workloads on nkp cluster by deleting it after deploying 
         Deleted default/nkpdev cluster
         ```
 
-2. Delete the Bootstrap cluster
+3. Delete the Bootstrap cluster
    
     === "Command"
 

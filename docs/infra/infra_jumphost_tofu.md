@@ -355,22 +355,27 @@ We have compiled a list of utilities that needs to be installed on the jumphost 
     ```sh
     curl -fsSL https://get.jetpack.io/devbox | bash
     ```
+3. Open the following URL and fork the repo to your Github org
+   
+    ```url
+    https://github.com/jesse-gonzalez/nai-llm-fleet-infra
+    ```
 
-3. From the ``$HOME`` directory, clone Git repo and change working directory
+4. From the ``$HOME`` directory, clone the fork of your ``nai-llm-fleet-infra`` git repo and change working directory
 
     ```bash
     git clone https://github.com/<your_github_org>/nai-llm-fleet-infra.git
     cd $HOME/nai-llm-fleet-infra/
     ```
 
-4. Start the `devbox shell` and if `nix` isn't available, you will be prompted to install:
+5. Start the `devbox shell` and if `nix` isn't available, you will be prompted to install:
 
     ```sh
     devbox init
     devbox shell
     ```
 
-5. Run Post VM Create - Workstation Bootstrapping tasks
+6. Run Post VM Create - Workstation Bootstrapping tasks
   
     ```bash
     sudo snap install task --classic
@@ -378,7 +383,7 @@ We have compiled a list of utilities that needs to be installed on the jumphost 
     source ~/.bashrc
     ```
 
-6. Change working directory and see ``Task`` help
+7. Change working directory and see ``Task`` help
   
     ```bash
     cd $HOME/nai-llm-fleet-infra/ && task
@@ -405,14 +410,14 @@ We have compiled a list of utilities that needs to be installed on the jumphost 
     - Task: flux:init
     ```
 
-7. Finally set your github config
+8. Finally set your github config
 
     ```bash
     git config --user.email "your_github_email"
     git config --user.name "your_github_username"
     ```
 
-8. Login to your Github account using the following command and use the same token from the [Prepare Github Repository and API Token](#prepare-github-repository-and-api-token) section
+9.  Login to your Github account using the following command and use the same token from the [Prepare Github Repository and API Token](#prepare-github-repository-and-api-token) section
    
     ```bash
     gh auth login
