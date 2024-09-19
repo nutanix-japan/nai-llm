@@ -271,6 +271,7 @@ The LLM application will use the model archive file (MAR) stored in the file sha
           ```bash
           sudo mount -t nfs ntnx-files.pe.example.com:/llm-model-store /mnt/llm-model-store
           ```
+          
 6. Download and extract the model file to the local mount of file share
     
     === "Template command"

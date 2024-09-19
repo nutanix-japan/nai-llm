@@ -364,14 +364,14 @@ We have compiled a list of utilities that needs to be installed on the jumphost 
 
 4. From the ``$HOME`` directory, clone the fork of your ``nai-llm-fleet-infra`` git repo and change working directory
 
-    === "Command Template"
+    === "Command"
 
         ```bash
         cd $HOME
         git clone https://github.com/_your_github_org/nai-llm-fleet-infra.git
         ```
 
-    === "Command Sample"
+    === "Sample command"
       
         ```bash
         cd $HOME

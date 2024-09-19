@@ -56,7 +56,7 @@ For ``nkpdev``, we will deploy an NKP Cluster of type "Development".
 3. Select NKP for Linux and copy the download link to the ``.tar.gz`` file
 4. If you haven't already done so, Open new `VSCode` window on your jumphost VM
 
-5. In `VSCode` Explorer pane, Click on existing ``/home/ubuntu`` folder
+5. In `VSCode` Explorer pane, click on existing ``/home/ubuntu`` folder
 
 6. Click on **New Folder** :material-folder-plus-outline: name it: ``nkp``
 
@@ -835,7 +835,7 @@ In this section we will create a nodepool to host the AI apps with a GPU.
 
 Now we are ready to deploy our AI workloads.
 
-## Cleanup
+## Optional - Cleanup
 
 Optionally, cleanup the workloads on nkp cluster by deleting it after deploying and testing your AI/ML application. 
 

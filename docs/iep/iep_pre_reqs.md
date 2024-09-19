@@ -50,7 +50,7 @@ Calculate the number of vCPU for the NKP cluster.
 
 We will be testing ``LLama-3-8B`` model with the following configurations:
 
-- ``LLama-3-8B`` model is about 27 GB in size (along with the model archive files)
+- ``LLama-3-8B`` model is about 10 GB in size (along with the model archive files)
 - ``LLama-3-8B`` will be deployed on a single worker GPU worker node
 - ``LLama-3-8B`` inference endpoint will be deployed on the same GPU worker node
 
@@ -108,7 +108,7 @@ To generate a license for the NKP cluster.
 
 ### Apply License for NKP Cluster
 
-??? tip "Install License in Commandline"
+<!-- ??? tip "Install License in Commandline"
 
     === "Command"
 
@@ -138,7 +138,7 @@ To generate a license for the NKP cluster.
 
         ```{ .bash .no-copy }
         License created
-        ```
+        ``` -->
 
 1. Login to the Kommander URL for ``nkpdev`` cluster with the generated credentials that you generated in the previous [section](../infra/infra_nkp.md#install-kommander-management). The following commands will give you the credentials and URL.
    
@@ -252,135 +252,188 @@ We will need to enable GPU operator for deploying NKP application.
         Done
         ```
 
-## Install NAI Pre-requisites
+## Create Nutanix Files Storage Class
 
-In this section we will install the following pre-requisites for the NAI application
-
-1. Login to VSC on the jumphost VM, go to **Terminal** :octicons-terminal-24: and run the following commands
-   
-2. Intiate devbox shell (if not already done)
-   
+1. Run the following command to check K8S status of the ``nkpdev`` cluster
+    
     ```bash
-    cd /home/ubuntu/nai-llm-fleet-infra/; devbox shell
+    kubectx ${NKP_CLUSTER_NAME}-admin@${NKP_CLUSTER_NAME} 
+    kubectl get nodes
     ```
 
-3. Clone the following github repository
+2. Add (append) the following environment variable to  ``/home/ubuntu/nkp/.env`` file
+   
+    === "Template .env"
+    
+        ```text
+        export FILES_CREDENTIAILS_STRING='_prism_element_ip_addres:9440:admin:_your_password'
+        ```
+
+    === "Sample .env"
+    
+        ```text
+        export FILES_CREDENTIAILS_STRING='10.x.x.37:9440:admin:password'
+        ```
+
+3. Source the .env file to load the latest $FILES_CREDENTIAILS_STRING environment variable
    
     ```bash
-    cd /home/ubuntu/
-    git clone https://github.com/jesse-gonzalez/sol-cnai-infra.git
+    source $HOME/nkp/.env
     ```
 
-4. Change to ``sol-cnai-infra`` directory and run the following commands to install pre-requisites
+4. Create a secret for Nutanix Files CSI Driver
+
+    ```bash
+    kubectl create secret generic nutanix-csi-credentials-files \
+    -n ntnx-system --from-literal=key=${FILES_CREDENTIAILS_STRING} \
+    --dry-run -o yaml | kubectl apply -f -
+    ```
+
+5. In VSC Explorer, go to ``/home/ubuntu/`` folder click on **New File** :material-file-plus-outline: and create a config file with the following name:
+
+    ```bash
+    nai-nfs-storage.yaml
+    ```
+
+     Add the following content and replace the IP address with the IP address of ingress gateway.
+    
+    === "Template YAML"
+    
+        ```yaml hl_lines="9"
+        kind: StorageClass
+        apiVersion: storage.k8s.io/v1
+        metadata:
+            name: nai-nfs-storage
+        provisioner: csi.nutanix.com
+        parameters:
+          dynamicProv: ENABLED
+          nfsServerName: files
+          nfsServer: _your_nutanix_files_server_fqdn
+          csi.storage.k8s.io/provisioner-secret-name: nutanix-csi-credentials-files
+          csi.storage.k8s.io/provisioner-secret-namespace: ntnx-system
+          csi.storage.k8s.io/node-publish-secret-name: nutanix-csi-credentials-files
+          csi.storage.k8s.io/node-publish-secret-namespace: ntnx-system
+          csi.storage.k8s.io/controller-expand-secret-name: nutanix-csi-credentials-files
+          csi.storage.k8s.io/controller-expand-secret-namespace: ntnx-system
+          storageType: NutanixFiles
+          description: iep-dev$(date +%d%m%y)
+        allowVolumeExpansion: true
+        ```
+
+    === "Sample YAML"
+    
+        ```yaml hl_lines="9"
+        kind: StorageClass
+        apiVersion: storage.k8s.io/v1
+        metadata:
+            name: nai-nfs-storage
+        provisioner: csi.nutanix.com
+        parameters:
+          dynamicProv: ENABLED
+          nfsServerName: files
+          nfsServer: files.example.com
+          csi.storage.k8s.io/provisioner-secret-name: nutanix-csi-credentials-files
+          csi.storage.k8s.io/provisioner-secret-namespace: ntnx-system
+          csi.storage.k8s.io/node-publish-secret-name: nutanix-csi-credentials-files
+          csi.storage.k8s.io/node-publish-secret-namespace: ntnx-system
+          csi.storage.k8s.io/controller-expand-secret-name: nutanix-csi-credentials-files
+          csi.storage.k8s.io/controller-expand-secret-namespace: ntnx-system
+          storageType: NutanixFiles
+          description: iep-dev$(date +%d%m%y)
+        allowVolumeExpansion: true
+        ```
+
+6. Create the storage class
+    
+    ```bash
+    kubectl apply -f storageclass.yaml
+    ```
+
+7. Check storage classes in the cluster for the Nutanix Files storage class
    
     === "Command"
-
+       
         ```bash
-        cd /home/ubuntu/sol-cnai-infra
-        /home/ubuntu/sol-cnai-infra/scripts/nai/nai-prepare.sh
+        k get sc
         ```
-
-    === "Command output"
-        
-        ```{ .text .no-copy }
-        /home/ubuntu/sol-cnai-infra/scripts/nai/nai-prepare.sh
-
-        # output snipped
-        
-        NAME: istio-base
-        LAST DEPLOYED: Fri Sep 13 04:13:19 2024
-
-        NAME: istiod
-        LAST DEPLOYED: Fri Sep 13 04:13:20 2024
-
-        NAME: istio-ingressgateway
-        LAST DEPLOYED: Fri Sep 13 04:13:22 2024
-
-        NAME: knative-serving-crds
-        LAST DEPLOYED: Fri Sep 13 04:13:23 2024
-
-        NAME: knative-istio-controller
-        LAST DEPLOYED: Fri Sep 13 04:13:31 2024
-
-        NAME: kserve-crd
-        LAST DEPLOYED: Fri Sep 13 04:13:33 2024
-
-        NAME: kserve
-        LAST DEPLOYED: Fri Sep 13 04:13:36 2024
-        ```
-!!! warning "Check services before proceeding"
-
-    Repeat services checks for all resources in ``istio-system`` and ``knative-serving``, namespaces like so
-
-    ```bash
-    kubectx istio-system; kubectl get all
-    ```
-    ```bash
-    kubectx knative-serving; kubectl get all
-    ```
-
-
-
-## Deploy NAI
-
-1. Login to VSC on the jumphost VM, go to **Terminal** :octicons-terminal-24: and run the following commands
-   
-    === "Command"
-
-        ```bash
-        cd /home/ubuntu/nai-llm-fleet-infra/; devbox shell
-        /home/ubuntu/sol-cnai-infra/scripts/nai/nai-deploy.sh 
-        ```
+  
     === "Command output"
       
-        ```{ .text .no-copy }
-        /home/ubuntu/sol-cnai-infra/scripts/nai/nai-deploy.sh 
+        ```bash hl_lines="5"
+        k get sc
 
-        + set -o pipefail
-        + helm repo add ntnx-charts https://nutanix.github.io/helm-releases
-        "ntnx-charts" already exists with the same configuration, skipping
-        + helm repo update ntnx-charts
-        Hang tight while we grab the latest from your chart repositories...
-        ...Successfully got an update from the "ntnx-charts" chart repository
-        Update Complete. ⎈Happy Helming!⎈
-        helm upgrade --install nai-core ntnx-charts/nai-core --version=$NAI_CORE_VERSION -n nai-system --create-namespace --wait \
-        --set imagePullSecret.credentials.username=$DOCKER_USERNAME \
-        --set imagePullSecret.credentials.email=$DOCKER_EMAIL \
-        --set imagePullSecret.credentials.password=$DOCKER_PASSWORD \
-        --insecure-skip-tls-verify \
-        -f /home/ubuntu/sol-cnai-infra/scripts/nai/iep-values-nkp.yaml
-        Release "nai-core" has been upgraded. Happy Helming!
-        NAME: nai-core
-        LAST DEPLOYED: Mon Sep 16 22:07:24 2024
-        NAMESPACE: nai-system
-        STATUS: deployed
-        REVISION: 7
-        TEST SUITE: None
+        NAME                       PROVISIONER                     RECLAIMPOLICY   VOLUMEBINDINGMODE      ALLOWVOLUMEEXPANSION   AGE
+        dkp-object-store           kommander.ceph.rook.io/bucket   Delete          Immediate              false                  28h
+        nai-nfs-storage            csi.nutanix.com                 Delete          Immediate              true                   24h
+        nutanix-volume (default)   csi.nutanix.com                 Delete          WaitForFirstConsumer   false                  28h
         ```
-
-2. Verify that the NAI Core Pods are running and healthy
     
-    === "Command"
+   
+## Request Access to Model on Hugging Face
 
-        ```bash
-        kubectl get pods -n nai-system
-        ```
-    === "Command output"
+Follow these steps to request access to the `meta-llama/Meta-Llama-3.1-8B-Instruct` model:
 
-        ```bash
-        k get po,deploy
+1. **Sign in to your Hugging Face account**:  
+   
+      - Visit [Hugging Face](https://huggingface.co) and log in to your account.
 
-        NAME                                            READY   STATUS      RESTARTS   AGE
-        pod/nai-api-55c665dd67-746b9                    1/1     Running     0          5d1h
-        pod/nai-api-db-migrate-fdz96-xtmxk              0/1     Completed   0          40h
-        pod/nai-db-789945b4df-lb4sd                     1/1     Running     0          43h
-        pod/nai-iep-model-controller-84ff5b5b87-6jst9   1/1     Running     0          5d8h
-        pod/nai-ui-7fc65fc6ff-clcjl                     1/1     Running     0          5d8h
-        pod/prometheus-nai-0                            2/2     Running     0          43h
+2. **Navigate to the model page**:  
+   
+      - Go to the [Meta-Llama-3.1-8B-Instruct model page](https://huggingface.co/meta-llama/Meta-Llama-3.1-8B-Instruct).
 
-        NAME                                       READY   UP-TO-DATE   AVAILABLE   AGE
-        deployment.apps/nai-api                    1/1     1            1           5d8h
-        deployment.apps/nai-db                     1/1     1            1           5d8h
-        deployment.apps/nai-iep-model-controller   1/1     1            1           5d8h
-        deployment.apps/nai-ui                     1/1     1            1           5d8h
-        ```
+3. **Request access**:
+   
+      - On the model page, you will see a section or button labeled **Request Access** (this is usually near the top of the page or near the "Files and versions" section).
+      - Click **Request Access**.
+
+4. **Complete the form**:
+   
+      - You may be prompted to fill out a form or provide additional details about your intended use of the model.
+      - Complete the required fields and submit the request.
+
+5. **Wait for approval**:
+   
+      - After submitting your request, you will receive a notification or email once your access is granted.
+      - This process can take some time depending on the approval workflow.
+
+Once access is granted, there will be an email notification.
+
+!!! note
+    
+    Email from Hugging Face can take a few minutes or hours before it arrives.
+
+## Create a Hugging Face Token with Read Permissions
+
+Follow these steps to create a Hugging Face token with read permissions:
+
+1. **Sign in to your Hugging Face account**:  
+   
+      - Visit [Hugging Face](https://huggingface.co) and log in to your account.
+
+2. **Access your account settings**:
+      - Click on your profile picture in the top-right corner.
+      - From the dropdown, select **Settings**.
+
+3. **Navigate to the "Access Tokens" section**:
+    
+      - In the sidebar, click on **Access Tokens**.
+      - You will see a page where you can create and manage tokens.
+
+4. **Create a new token**:
+
+      - Click the **New token** button.
+      - Enter a name for your token (e.g., `read-only-token`).
+
+5. **Set token permissions**:
+   
+      - Under the permissions dropdown, select **Read**.
+
+6. **Create and copy the token**:
+   
+      - After selecting the permissions, click **Create**.
+      - Your token will be generated and displayed only once, so make sure to copy it and store it securely.
+
+Use this token for accessing Hugging Face resources with read-only permissions.
+
+
+Now we can proceed to deploy NAI.
