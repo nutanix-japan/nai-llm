@@ -244,4 +244,118 @@ We will download and user llama3 8B model which we sized for in the previous sec
         ```
 The model is downloaded to the Nutanix Files ``pvc`` volume.
 
-## Create Inference Endpoint
+After a successful model import, you will see it in **Active** status in the NAI UI under **Models** menu
+
+![](images/downloaded_model.png)
+
+## Create and Test Inference Endpoint
+
+In this section we will create an inference endpoint using the downloaded model.
+
+1. Navigate to **Inference Endpoints** menu and click on **Create Endpoint** button
+2. Fill the following details:
+   
+    - **Endpoint Name**: ``llama-8b``
+    - **Model Instance Name**: ``Meta-LLaMA-8B-Instruct``
+    - **Use GPUs for running the models** : ``Checked``
+    - **No of GPUs (per instance)**:
+    - **GPU Card**: ``NVIDIA-L40S`` (or other available GPU)
+    - **No of Instances**: ``1``
+    - **API Keys**: Create a new API key or use an existing one
+
+3. Click on **Create**
+4. Monitor the ``nai-admin`` namespace to check if the services are coming up
+   
+    === "Command"
+
+        ```bash
+        kubens
+        kubectl get po,deploy
+        ```
+
+    === "Command output"
+        
+        ```bash
+        kubens
+        get po,deploy
+        NAME                                                     READY   STATUS        RESTARTS   AGE
+        pod/llama8b-predictor-00001-deployment-9ffd786db-6wkzt   2/2     Running       0          71m
+
+        NAME                                                 READY   UP-TO-DATE   AVAILABLE   AGE
+        deployment.apps/llama8b-predictor-00001-deployment   1/1     1            0           3d17h
+        ```
+
+5. Once the services are running, check the status of the inference service
+   
+    === "Command"
+
+        ```bash
+        kubectl get isvc
+        ```
+
+    === "Command output"
+        
+        ```bash
+        kubectl get isvc
+
+        NAME      URL                                          READY   PREV   LATEST   PREVROLLEDOUTREVISION   LATESTREADYREVISION       AGE
+        llama8b   http://llama8b.nai-admin.svc.cluster.local   True           100                              llama8b-predictor-00001   3d17h
+        ```
+
+6. In the NAI GUI, under **Endpoints**, click on the **llama8b** and choose test endpoint
+
+7. Provide a sample prompt and check the output
+   
+    ![](images/test_iep.png)
+
+We have a successful NAI deployment.
+
+## Sample Chat Application
+
+Nutanix also provides a sample chat application that uses NAI to provide chatbot capabilities. We will install and use the chat application in this section. 
+
+1. Run the following command to deploy the chat application.
+   
+    ```bash
+    code /home/ubuntu/sol-cnai-infra/scripts/nai/chat.yaml
+    ```
+
+2. Change this line to point to the IP address of your NAI cluster for the ``VirtualService`` resource
+   
+3. Insert ``chat`` as the subdomain in the ``nai.10.122.7.216.nip.io`` main domain.
+   
+    Example: complete URL
+
+    ```url
+    chat.nai.10.122.7.216.nip.io
+    ```
+   
+    ```yaml hl_lines="9"
+    apiVersion: networking.istio.io/v1beta1
+    kind: VirtualService
+    metadata:
+      name: nai-chat
+    spec:
+      gateways:
+      - knative-serving/knative-ingress-gateway
+      hosts:
+      - chat.nai.10.122.7.216.nip.io
+      http:
+      - match:
+        - uri:
+            prefix: /
+        route:
+        - destination:
+            host: nai-chatapp
+            port:
+            number: 8502
+    ```
+
+4. We should be able to see the chat application running on the NAI cluster.
+   
+    ![](images/chat-iep.png)
+
+We have successfully deployed the following:
+ 
+ - Inferencing endpoint
+ - A sample chat application that uses NAI to provide chatbot capabilities

@@ -254,6 +254,8 @@ We will need to enable GPU operator for deploying NKP application.
 
 ## Create Nutanix Files Storage Class
 
+We will create Nutanix Files storage class which will be used to create a pvc that will store the ``LLama-3-8B`` model files.
+
 1. Run the following command to check K8S status of the ``nkpdev`` cluster
     
     ```bash
