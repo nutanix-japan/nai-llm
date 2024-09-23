@@ -355,6 +355,8 @@ Nutanix also provides a sample chat application that uses NAI to provide chatbot
    
     ![](images/chat-iep.png)
 
+5. Input the endpoint URL and API key to start chatting with the LLM.
+
 We have successfully deployed the following:
  
  - Inferencing endpoint
