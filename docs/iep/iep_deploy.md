@@ -322,12 +322,12 @@ Nutanix also provides a sample chat application that uses NAI to provide chatbot
 
 2. Change this line to point to the IP address of your NAI cluster for the ``VirtualService`` resource
    
-3. Insert ``chat`` as the subdomain in the ``nai.10.122.7.216.nip.io`` main domain.
+3. Insert ``chat`` as the subdomain in the ``nai.10.x.x.216.nip.io`` main domain.
    
     Example: complete URL
 
     ```url
-    chat.nai.10.122.7.216.nip.io
+    chat.nai.10.x.x.216.nip.io
     ```
    
     ```yaml hl_lines="9"

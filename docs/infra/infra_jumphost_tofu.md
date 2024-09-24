@@ -172,7 +172,7 @@ In the following section, we will create a `Jump Host` VM on Nutanix AHV using b
       username     = local.config.user
       password     = local.config.password
       endpoint     = local.config.endpoint
-      insecure     = false
+      insecure     = true
       wait_timeout = 60
     }
 
@@ -215,38 +215,23 @@ In the following section, we will create a `Jump Host` VM on Nutanix AHV using b
 
     ```bash
     tofu -chdir=tofu-workspace/jumphost-vm init -upgrade
-
-    # OpenTofu will initialize the Nutanix provider
     ```
 
     ```bash
     tofu -chdir=tofu-workspace/jumphost-vm validate
-
-    # OpenTofu will validate configurations
     ```
 
 9. Apply your tofu code to create Jump Host VM
   
     ```bash
     tofu -chdir=tofu-workspace/jumphost-vm apply 
-
-    # OpenTofu will show you all resources that it will to create
-    # Type yes to confirm
     ```
 
-    ``` { .bash .no-copy }
-    # Terraform will show you all resources that it will to create
-    # Type yes to confirm 
-    # Check the output to get the IP address of the VM
-    ```
+    Type ``yes`` to confirm
 
 10. Obtain the IP address of the `Jump Host` VM from the Tofu output
   
     ``` { .bash .no-copy }
-    # Command output
-
-    Apply complete! Resources: 2 added, 0 changed, 0 destroyed.
-
     Outputs:
 
     nai-llm-jumphost-ip-address = "10.x.x.x"
@@ -269,29 +254,40 @@ In the following section, we will create a `Jump Host` VM on Nutanix AHV using b
 
 12. Validate that the `Jump Host` VM is accessible using **VSCode > Terminal** :octicons-terminal-24:
   
-    ```bash
-    ssh -i ~/.ssh/id_rsa ubuntu@<ip-address-from-tofu-output>
-    ```
+    === "Command"
+        
+        ```bash
+        ssh -i ~/.ssh/id_rsa ubuntu@<ip-address-from-tofu-output>
+        ``` 
+    === "Command Sample"
+        
+        ```bash
+        ssh -i ~/.ssh/id_rsa ubuntu@10.x.x.171
+        ```     
 
 ### Initiate Remote-SSH Connection to Jumpbox using VSCode
 
-If you are unfamiliar with using the [Remote-SSH Extension in VSCode Marketplace](https://code.visualstudio.com/docs/remote/ssh-tutorial), make sure to walkthrough the tutorial on installing and using this extension.
 
-1. From your workstation, open **Visual Studio Code**.
+1. In VSCode, click on Settings menu icon (gear icon) :gear: > **Settings** > **Extensions** 
+2. In the search window search for **Remote SSH**
+3. Install the [Remote-SSH Extension](https://marketplace.visualstudio.com/items?itemName=ms-vscode-remote.remote-ssh) from VSCode Marketplace
+4. click on the **Install** button for the extenstion.
 
-2. Click **View > Command Palette**.
+5. From your workstation, open **Visual Studio Code**.
+
+6. Click **View > Command Palette**.
 
     ![](images/1.png)
 
-3. Click on **+ Add New SSH Host** and t
+7. Click on **+ Add New SSH Host** and t
 
     ![](images/2.png)
 
-4. Type ``ssh ubuntu@jumphost_VM-IP-ADDRESS>``and hit **Enter**.
+8. Type ``ssh ubuntu@jumphost_VM-IP-ADDRESS>``and hit **Enter**.
 
     ![](images/2b.png)
 
-5. Select the location to update the config file.
+9. Select the location to update the config file.
 
     === "Mac/Linux"
 
@@ -305,7 +301,7 @@ If you are unfamiliar with using the [Remote-SSH Extension in VSCode Marketplace
         C:\\Users\\<your-username>\\.ssh\\config
         ```
 
-6. Open the ssh config file on your workstation to verify the contents. It should be similar to the following content
+10. Open the ssh config file on your workstation to verify the contents. It should be similar to the following content
 
     ```yaml
     Host jumphost
