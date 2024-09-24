@@ -11,10 +11,10 @@ stateDiagram-v2
     state PreRequisites {
         [*] --> CalculateNumberOfVCPU
         CalculateNumberOfVCPU --> GenerateLicense
-        GenerateLicense --> InstallNAIPreReqs  
-        InstallNAIPreReqs --> DeployNAINAI
-        DeployNAINAI --> InstallNAIPostReqs
-        InstallNAIPostReqs --> [*]
+        GenerateLicense --> InstallLicense
+        InstallLicense --> CreateFilesShare  
+        CreateFilesShare --> PrepareHuggingFace
+        PrepareHuggingFace --> [*]
     }
   
 

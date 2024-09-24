@@ -4,17 +4,18 @@
 stateDiagram-v2
     direction LR
     
-    state DeployLLMV1 {
-        [*] --> BootStrapMgmtCluster
-        BootStrapMgmtCluster -->  BootStrapDevCluster
-        BootStrapDevCluster --> MonitorResourcesDeployment
-        MonitorResourcesDeployment --> [*]
+    state DeployNAI {
+        [*] --> DeployNAIAdmin
+        DeployNAIAdmin -->  InstallSSLCert
+        InstallSSLCert --> DownloadModel
+        DownloadModel --> CreateIEP
+        CreateIEP --> [*]
     }
 
     [*] --> PreRequisites
-    PreRequisites --> DeployLLMV1 
-    DeployLLMV1 --> TestLLMApp : next section
-    TestLLMApp --> [*]
+    PreRequisites --> DeployNAI 
+    DeployNAI --> TestNAI : next section
+    TestNAI --> [*]
 ```
 
 ## Deploy NAI

@@ -20,26 +20,25 @@ stateDiagram-v2
 
     state PreRequisites {
         [*] --> ReserveIPs
-        ReserveIPs --> CreateBuckets
-        CreateBuckets --> CreateFilesShare
+        ReserveIPs --> CreateFilesShare
         CreateFilesShare --> [*]
     }
     
-    state DeployLLMV1 {
-        [*] --> BootStrapMgmtCluster
-        BootStrapMgmtCluster -->  BootStrapDevCluster
+    state DeployNAI {
+        [*] --> BootStrapDevCluster
         BootStrapDevCluster --> MonitorResourcesDeployment
         MonitorResourcesDeployment --> [*]
     }
 
     state TestLLMApp {
         [*] --> TestQueryLLM
-        TestQueryLLM --> TestRAG
-        TestRAG -->  [*]
+        TestQueryLLM --> TestChatApp
+        TestChatApp --> [*]
     }
 
     [*] --> PreRequisites
-    PreRequisites --> DeployLLMV1
-    DeployLLMV1 --> TestLLMApp
+    PreRequisites --> DeployNAI
+    DeployNAI --> TestLLMApp
     TestLLMApp --> [*]
 ```
+
