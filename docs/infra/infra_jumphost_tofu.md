@@ -23,11 +23,11 @@ stateDiagram-v2
 
 ## Prerequisites
 
+- [OpenTofu](https://opentofu.org/) cli, see [installation instructions](workstation.md#install-opentofu) here.
 - Existing Nutanix AHV Subnet configured with IPAM
 - SSH Public Key needed for initial `cloud-init` bootstrapping
     - On MacOS/Linux machine, see [Generate a SSH Key on Linux](workstation.md#generate-a-rsa-key-pair) example.
     - On Windows machine, see [Generate a SSH Key on Windows](workstation.md#generate-a-rsa-key-pair) example.
-- [OpenTofu](https://opentofu.org/) cli, see [installation instructions](workstation.md#install-opentofu) here.
 
 ## Jump Host VM Requirements
 

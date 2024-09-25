@@ -26,7 +26,7 @@ The `Bootstrap` NKP cluster will be a temporary [kind](https://kind.sigs.k8s.io/
 
 The ``nkpdev`` cluster will be hosting the LLM model serving endpoints and AI application stack. This cluster and will require a dedicated GPU node pool.
 
-Once ``nkpnkpdev`` deployment has been tested successfully, we can deploy applications to optional PROD Workload cluster.
+Once ``nkpdev`` deployment has been tested successfully, we can deploy applications to optional PROD Workload cluster.
 
 ### Bootstrap Cluster
 
@@ -44,10 +44,12 @@ For ``nkpdev``, we will deploy an NKP Cluster of type "Development".
 
 ## Pre-requisites for NKP Deployment
 
-1. Download and install ``nkp`` binary from Nutanix Portal
-2. Find and reserve 3 IPs for control plane and MetalLB access from AHV network
-3. Find GPU details from Nutanix cluster
-4. Create a base image to use with NKP nodes using ``nkp`` command
+1. Existing Jumphost VM. See here for installation [steps](../infra/infra_jumphost_tofu.md)
+2. Download and install ``nkp`` binary from Nutanix Portal
+3. Find and reserve 3 IPs for control plane and MetalLB access from AHV network
+4. Find GPU details from Nutanix cluster
+5. Create a base image to use with NKP nodes using ``nkp`` command
+
 
 ### Install NKP Binaries
 
