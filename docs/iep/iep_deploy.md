@@ -18,30 +18,151 @@ stateDiagram-v2
     TestNAI --> [*]
 ```
 
-## Deploy NAI
+## Prepare for NAI Deployment
 
-1. Login to VSC on the jumphost VM, go to **Terminal** :octicons-terminal-24: and run the following commands
-   
-    ```bash
-    cd $HOME/nai-llm-fleet-infra/; devbox shell
-    cd $HOME
-    git clone https://github.com/jesse-gonzalez/sol-cnai-infra
-    ```
-
-2. Source the environment variables 
+1. Login to VSC on the jumphost VM, go to **Terminal** :octicons-terminal-24: and run the following commands to source the environment variables
 
     ```bash
     source $HOME/nkp/.env
     ```
 
-3. Run the following command to deploy NAI
+2. In `VSCode` Explorer pane, browse to ``/home/ubuntu/`` folder
+   
+3. Click on **New Folder** :material-folder-plus-outline: and name it: ``nai``
+   
+4. In ``VSCode``, change to ``/home/ubuntu/nai`` folder, click on **New File** :material-file-plus-outline: and create a config file with the following name:
+
+    ```bash
+    nai-prepare.sh
+    ```
+    with the following content:
+   
+    ```bash
+    #!/usr/bin/env bash
+
+    set -ex
+    set -o pipefail
+
+    ## Deploy Istio 1.20.8
+    helm upgrade --install istio-base base --repo https://istio-release.storage.googleapis.com/charts --version=1.20.8 -n istio-system --create-namespace --wait
+    helm upgrade --install istiod istiod --repo https://istio-release.storage.googleapis.com/charts --version=1.20.8 -n istio-system --wait \
+        --set gateways.securityContext.runAsUser=0 \
+        --set gateways.securityContext.runAsGroup=0 
+    helm upgrade --install istio-ingressgateway gateway --repo https://istio-release.storage.googleapis.com/charts --version=1.20.8 -n istio-system \
+        --set securityContext.runAsUser=0 --set securityContext.runAsGroup=0 \
+        --set containerSecurityContext.runAsUser=0 --set containerSecurityContext.runAsGroup=0 --wait
+
+    ## Deploy Knative 1.13.1 
+    helm upgrade --install knative-serving-crds nai-knative-serving-crds --repo https://nutanix.github.io/helm-releases  --version=1.13.1 -n knative-serving --create-namespace --wait
+    helm upgrade --install knative-serving nai-knative-serving --repo https://nutanix.github.io/helm-releases -n knative-serving --version=1.13.1 --wait
+    helm upgrade --install knative-istio-controller nai-knative-istio-controller --repo https://nutanix.github.io/helm-releases -n knative-serving --version=1.13.1 --wait
+
+    kubectl patch configmap config-features -n knative-serving --patch '{"data":{"kubernetes.podspec-nodeselector":"enabled"}}'
+    kubectl patch configmap config-autoscaler -n knative-serving --patch '{"data":{"enable-scale-to-zero":"false"}}'
+
+    ## Deploy Kserve 0.13.1
+    helm upgrade --install kserve-crd oci://ghcr.io/kserve/charts/kserve-crd --version=v0.13.1 -n kserve --create-namespace --wait
+    helm upgrade --install kserve oci://ghcr.io/kserve/charts/kserve --version=v0.13.1 -n kserve --wait \
+    --set kserve.modelmesh.enabled=false --set kserve.controller.image=docker.io/nutanix/nai-kserve-controller \
+    --set kserve.controller.tag=v0.13.1
+    ```
+
+4. Run the script from the Terminal
+   
+    === "Command"
+
+        ```bash
+        chmod +x nai-prepare.sh
+        bash nai-prepare.sh
+        ```
+    === "Command output"
+
+        ```bash
+        Installing...
+        Release "nai-admin" has been upgraded. Happy Helming!
+        NAME: nai-admin
+        LAST DEPLOYED: Mon Sep 16 22:07:24 2024
+        NAMESPACE: nai-admin
+        STATUS: deployed
+        REVISION: 7
+        TEST SUITE: None
+        ```
+
+## Deploy NAI
+
+!!! warning
+    This ``Deploy NAI`` section requires installation of a release candidate. Reach out to a Nutanix representative for download token for containers in this helm chart. This will have to be done until the solution becomes generally available. 
+
+    The following Docker based environment variable values will be different from your own Docker environment variables.
+
+    - ``$DOCKER_USERNAME``
+    - ``$DOCKER_PASSWORD``
+    - ``$DOCKER_EMAIL``
+  
+1. Create a new ``.env`` file in ``/home/unbuntu/nai`` directory
+   
+2. Open .env file in VSC and add (append) the following environment variables to your ``.env`` file and save it
+   
+    === "Template .env"
+    
+        ```text
+        export DOCKER_USERNAME=_release_candidate_docker_username
+        export DOCKER_PASSWORD=_release_candidate_your_docker_password
+        export DOCKER_EMAIL=_release_candidate_docker_email
+        export NAI_CORE_VERSION=_release_candidate_nai_core_version
+        ```
+
+    === "Sample .env"
+    
+        ```text
+        export DOCKER_USERNAME=ntnx-xxx
+        export DOCKER_PASSWORD=xxxxxxx
+        export DOCKER_EMAIL=email@domain.com
+        export NAI_CORE_VERSION=1.0.0-xxx
+        ```
+
+3. Source the environment variables (if not done so already)
+
+    ```bash
+    source $HOME/nai/.env
+    ```
+
+4. In `VSCode` Explorer pane, browse to ``/home/ubuntu/`` folder
+   
+5. Click on **New Folder** :material-folder-plus-outline: and name it: ``nai``
+   
+6. In ``VSCode``, change to ``/home/ubuntu/nai`` folder, click on **New File** :material-file-plus-outline: and create a config file with the following name:
+
+    ```bash
+    nai-deploy.sh
+    ```
+    with the following content:
+   
+    ```bash
+    #!/usr/bin/env bash
+
+    set -ex
+    set -o pipefail
+
+    helm repo add ntnx-charts https://nutanix.github.io/helm-releases
+    helm repo update ntnx-charts
+
+    #NAI-core
+    helm upgrade --install nai-core ntnx-charts/nai-core --version=$NAI_CORE_VERSION -n nai-system --create-namespace --wait \
+    --set imagePullSecret.credentials.username=$DOCKER_USERNAME \
+    --set imagePullSecret.credentials.email=$DOCKER_EMAIL \
+    --set imagePullSecret.credentials.password=$DOCKER_PASSWORD \
+    --insecure-skip-tls-verify \
+    -f scripts/nai/iep-values-nkp.yaml
+    ```
+   
+7. Run the following command to deploy NAI
    
     === "Command"
 
         ```bash
         cd $HOME/nai-llm-fleet-infra/; devbox shell
-        source $HOME/nkp/.env
-        $HOME/sol-cnai-infra/scripts/nai/nai-deploy.sh 
+        $HOME/nai/nai-deploy.sh
         ```
 
     === "Command output"
@@ -71,7 +192,7 @@ stateDiagram-v2
         TEST SUITE: None
         ```
 
-4. Verify that the NAI Core Pods are running and healthy
+8. Verify that the NAI Core Pods are running and healthy
     
     === "Command"
 

@@ -436,5 +436,14 @@ Follow these steps to create a Hugging Face token with read permissions:
 
 Use this token for accessing Hugging Face resources with read-only permissions.
 
+## Prepare Download Credentials for Release Candidate
+
+Contact your Nutanix team to obtain the credentials required to download the release candidate. The following information will be required:
+
+- ``$DOCKER_USERNAME``
+- ``$DOCKER_PASSWORD``
+- ``$DOCKER_EMAIL``
+
+Once NAI is Generally available. This procedure will change to possibly use general customer Docker credentials. This is not yet confirmed.
 
 Now we can proceed to deploy NAI.
