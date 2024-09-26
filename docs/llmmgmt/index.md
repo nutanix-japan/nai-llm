@@ -7,6 +7,22 @@ We have deployed two Kubernetes clusters so far as per the NVD [design requireme
 1. **Management cluster**: to host the management workloads like flux, kafka, etc
 2. **Dev cluster**: to host the dev LLM and ChatBot application - this will use GPU passed through to the kubernetes worker nodes 
 
+Deploy the two clusters using the instructions below. 
+
+---
+
+<div class="grid cards" markdown>
+
+-   :material-kubernetes:{ .lg .middle } __Set up Nutanix Karbon Engine [ NKE ] in 10 minutes__
+
+    ---
+
+    Setup a Nutanix cluster in under an hour using Foundation to prepare your infrastructure.
+
+    [:octicons-arrow-right-24: Setup Nutanix Karbon Engine](infra/infra_nke.md)
+
+</div>
+
 We will deploy the following applications one after the other
 
 1. GPT-in-a-Box v1 NVD Reference App - backed by llama2 model with RAG in Milvus database

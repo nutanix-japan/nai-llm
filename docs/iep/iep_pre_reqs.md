@@ -26,7 +26,7 @@ stateDiagram-v2
 
 Prepare the following pre-requisites for mgmt-cluster and dev-cluster kubernetes clusters.
 
-## Calculate the number of vCPUs
+## Calculate the Required vCPUs
 
 Calculate the number of vCPU for the NKP cluster.
 
@@ -61,9 +61,9 @@ We will be testing ``LLama-3-8B`` model with the following configurations:
 +---------------+-------------------+---------------+-----------------+-----------+--------------+
 | Worker        | 4                 | 8             | 32              | 24        | 128 GB       |
 +---------------+-------------------+---------------+-----------------+-----------+--------------+
-| Base GPU   +  | 1                 | 8             | 24              | 8         | 32 GB        |
+| Base GPU > +  | 1                 | 8             | 24              | 8         | 32 GB        |
 |               |                   |               |                 |           |              |
-| NAI           |                   | 8             | 16              | 8         | 6 GB         |
+| NAI      >    |                   | 8             | 16              | 8         | 6 GB         |
 +---------------+-------------------+---------------+-----------------+-----------+--------------+
 | Totals        |                   |               |                 | 60        | 224 GB       |
 +---------------+-------------------+---------------+-----------------+-----------+--------------+
@@ -77,7 +77,7 @@ We will be testing ``LLama-3-8B`` model with the following configurations:
 |               | One, two cell | Red & blue cell |
 +---------------+---------------+-----------------+ -->
 
-We need to generate a license for the NKP cluster which totals to 60 vCPU.
+We need to generate a license for the NKP cluster which totals to ``60`` vCPU.
 
 ## Licensing
 
@@ -86,11 +86,10 @@ We need to generate a license for the NKP cluster which totals to 60 vCPU.
 To generate a license for the NKP cluster. 
 
 !!! note
-    Follow instructions [here](https://portal.nutanix.com/page/documents/details?targetId=Licensing-v5_0:top-licensing-overview-t.html) to generate a license for the NKP cluster.
 
-    > Nutanix Internal users should logon using Nutanix SSO
+    Nutanix Internal users should logon using Nutanix SSO
 
-    > Nutanix Partners/Customers should logon to Portal using their Nutanix Portal account credentials
+    Nutanix Partners/Customers should logon to Portal using their Nutanix Portal account credentials
 
 1. Login to [Nutanix Portal](https://portal.nutanix.com/page/licensing) using your credentials
 2. Go to **Licensing** > **License Summary**
@@ -102,7 +101,7 @@ To generate a license for the NKP cluster.
 8. Select Apply to cluster
 9. Choose Non-production license and Save
 10. Select the cluster name and click on **Next**
-11. Input the number of vCPU (60) from our calculations in the previous [section](#calculate-the-number-of-vcpus)
+11. Input the number of vCPU (``60``) from our calculations in the previous [section](#calculate-the-number-of-vcpus)
 12. Click on **Save** 
 13. Download the csv file and store it in a safe place
 

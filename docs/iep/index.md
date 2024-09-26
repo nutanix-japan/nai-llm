@@ -24,10 +24,10 @@ Confirm that the kubernetes cluster has the following components installed:
 
 - 3 x Control plane nodes
 - 4 x Worker nodes 
-- 1 x GPU node (with a minimum of 40GB of RAM and 16 vCPUs)
+- 1 x GPU node (with a minimum of 40GB of RAM and 16 vCPUs based on ``llama3-8B`` LLM model)
 
 
-We will deploy the GPT-in-a-Box v2 NVD Reference App - backed by llama3-8B model.
+We will deploy the GPT-in-a-Box v2 NVD Reference App - backed by ``llama3-8B`` model.
 
 The following is the flow of the NAI lab:
 
