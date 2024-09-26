@@ -72,9 +72,10 @@ stateDiagram-v2
     === "Command"
 
         ```bash
-        chmod +x nai-prepare.sh
-        bash nai-prepare.sh
+        chmod +x $HOME/nai/nai-deploy.sh
+        $HOME/nai/nai-deploy.sh
         ```
+        
     === "Command output"
 
         ```bash
