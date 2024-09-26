@@ -31,6 +31,8 @@ nav:
     - Pre-requisites: iep/iep_pre_reqs.md
     - Deploy NAI: iep/iep_deploy.md
     - Test NAI: iep/iep_test.md
+- Appendix:
+  - NKP The Hard Way: infra/infra_nkp_hard_way.md
 - References:
   - Nutanix Components: ntxcomponents/ntxcomponents.md
   - Tools used and why?: tools/tools.md

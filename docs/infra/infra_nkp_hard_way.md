@@ -22,7 +22,7 @@ stateDiagram-v2
 ```
 ## NKP High Level Cluster Design
 
-The `Bootstrap` NKP cluster will be a temporary [kind](https://kind.sigs.k8s.io/) cluster that will be used to deploy the ``nkpdev`` cluster. This will be deployed during the install automatically when the ``nkp create cluster nutanix`` command is run with the ``--self-managed`` option
+The `Bootstrap` NKP cluster will be a temporary [kind](https://kind.sigs.k8s.io/) cluster that will be used to deploy the ``nkpdev`` cluster.
 
 The ``nkpdev`` cluster will be hosting the LLM model serving endpoints and AI application stack. This cluster and will require a dedicated GPU node pool.
 
@@ -271,38 +271,30 @@ In this section we will go through creating a base image for all the control pla
            Image creation will take up to 5 minutes.
 
 
-    === "Command"
+    <!-- termynal -->
 
-        ```bash
-        nkp create image nutanix ubuntu-22.04 \ 
-        --endpoint ${NUTANIX_ENDPOINT} --cluster ${NUTANIX_CLUSTER} \
-        --subnet ${NUTANIX_SUBNET_NAME} 
-        ```
+    ```bash
+    nkp create image nutanix ubuntu-22.04 \ 
+    --endpoint ${NUTANIX_ENDPOINT} --cluster ${NUTANIX_CLUSTER} \
+    --subnet ${NUTANIX_SUBNET_NAME} 
+    
+    > Provisioning and configuring image
+    Manifest files extracted to /home/ubuntu/nkp/.nkp-image-builder-3243021807
+    nutanix.kib_image: output will be in this color.
 
-    === "Command output"
+    ==> nutanix.kib_image: Creating Packer Builder virtual machine...
+        nutanix.kib_image: Virtual machine nkp-ubuntu-22.04-1.29.6-20240717082720 created
+        nutanix.kib_image: Found IP for virtual machine: 10.x.x.234
+    ==> nutanix.kib_image: Running post-processor: packer-manifest (type manifest)
+    
+    ---> 100%
+    Build 'nutanix.kib_image' finished after 4 minutes 55 seconds.
+    ==> Wait completed after 4 minutes 55 seconds
 
-        ```bash
-        nkp create image nutanix ubuntu-22.04 \ 
-        --endpoint ${NUTANIX_ENDPOINT} --cluster ${NUTANIX_CLUSTER} \
-        --subnet ${NUTANIX_SUBNET_NAME} 
-        
-        > Provisioning and configuring image
-        Manifest files extracted to /home/ubuntu/nkp/.nkp-image-builder-3243021807
-        nutanix.kib_image: output will be in this color.
-
-        ==> nutanix.kib_image: Creating Packer Builder virtual machine...
-            nutanix.kib_image: Virtual machine nkp-ubuntu-22.04-1.29.6-20240717082720 created
-            nutanix.kib_image: Found IP for virtual machine: 10.x.x.234
-        ==> nutanix.kib_image: Running post-processor: packer-manifest (type manifest)
-        
-        ---> 100%
-        Build 'nutanix.kib_image' finished after 4 minutes 55 seconds.
-        ==> Wait completed after 4 minutes 55 seconds
-
-        ==> Builds finished. The artifacts of successful builds are:
-        --> nutanix.kib_image: nkp-ubuntu-22.04-1.29.6-20240717082720
-        --> nutanix.kib_image: nkp-ubuntu-22.04-1.29.6-20240717082720
-        ```
+    ==> Builds finished. The artifacts of successful builds are:
+    --> nutanix.kib_image: nkp-ubuntu-22.04-1.29.6-20240717082720
+    --> nutanix.kib_image: nkp-ubuntu-22.04-1.29.6-20240717082720
+    ```
 
     !!! info inline end "Image name"
         
@@ -330,6 +322,44 @@ In this section we will go through creating a base image for all the control pla
          source .env
          ```
     Make sure to use image name that is generated in your environment for the next steps.
+
+## Create a Bootstrap K8S Cluster
+
+In this section we will create a bootstrap cluster which will be used to deploy the workload ``nkpdev`` cluster.
+
+1. In VSC, open Terminal, enter the following command
+   
+    ```bash
+    nkp create bootstrap
+    ```
+
+    ```bash
+    $ nkp create bootstrap
+    > ✓ Creating a bootstrap cluster 
+    > ✓ Initializing new CAPI components 
+    > ✓ Creating ClusterClass resources
+    ```
+
+2. Store kubeconfig file for bootstrap cluster
+   
+    ```bash
+    cp /home/ubuntu/.kube/config bs.cfg
+    export KUBECONFIG=bs.cfg
+    ```
+
+3. Check the status of bootstrap K8S cluster
+
+    ```bash
+    kubectl get nodes --kubeconfig=bs.cfg
+    ```
+    
+    <!-- termynal -->
+
+    ```bash
+    $ kubectl get nodes --kubeconfig=bs.cfg
+    NAME                                     STATUS   ROLES           AGE     VERSION
+    konvoy-capi-bootstrapper-control-plane   Ready    control-plane   7m15s   v1.29.6
+    ```
 
 We are now ready to install the workload ``nkpdev`` cluster
 
@@ -407,7 +437,6 @@ We are now ready to install the workload ``nkpdev`` cluster
                 --registry-mirror-password ${DOCKER_PASSWORD} \
                 --control-plane-pc-project ${NUTANIX_PROJECT_NAME} \
                 --worker-pc-project ${NUTANIX_PROJECT_NAME} \
-                --self-managed \
                 --insecure"
         ```
 
@@ -421,7 +450,7 @@ We are now ready to install the workload ``nkpdev`` cluster
    
     === "Command"
     
-        ```bash hl_lines="22"
+        ```bash
         nkp create cluster nutanix -c ${NKP_CLUSTER_NAME} \
             --control-plane-endpoint-ip ${CONTROLPLANE_VIP} \
             --control-plane-prism-element-cluster ${NUTANIX_CLUSTER} \
@@ -443,7 +472,6 @@ We are now ready to install the workload ``nkpdev`` cluster
             --registry-mirror-password ${DOCKER_PASSWORD} \
             --control-plane-pc-project ${NUTANIX_PROJECT_NAME} \
             --worker-pc-project ${NUTANIX_PROJECT_NAME} \
-            --self-managed \
             --insecure
         ```
 
@@ -511,19 +539,8 @@ We are now ready to install the workload ``nkpdev`` cluster
 
         The ``--self-managed`` argument of the ``nkp create cluster nutanix`` command will deploy bootstrap, and Kommander management automatically. 
         
-        The appendix section has information on how to deploy a cluster without using the ``--self-managed`` option. 
+        However, we are specifically **not using** it here in this lab, to run through Kommander installation later. 
 
-        Usually preferred by customer DevOps teams to have more control over the deployment process. This way the customer can do the following:
-        
-        - Deploy bootstrap (``kind``) cluster
-        - Deploy NKP Management cluster
-        - Choose to migrate the CAPI components over to NKP Management cluster
-        - Choose to customize Kommander Managment component instllation
-        - Choose to deploy workload clusters from NKP Kommander GUI or
-        - Choose to deploy workload clusters using scripts if they wish to automate the process
-        
-        See [Appendix](../infra/infra_nkp_hard_way.md) for more information for customizable NKP cluster deployments. 
-  
 5. Observe the events in the shell and in Prism Central events
 
 6. Store kubeconfig files for the workload cluster
@@ -532,29 +549,158 @@ We are now ready to install the workload ``nkpdev`` cluster
     nkp get kubeconfig -c ${NKP_CLUSTER_NAME} > ${NKP_CLUSTER_NAME}.cfg
     export KUBECONFIG=${PWD}/${NKP_CLUSTER_NAME}.cfg
     ```
+7. Combine the bootstrap and workload clusters ``KUBECONFIG`` file so that we can use it with ``kubectx`` to change context between clusters
+   
+    ```bash
+    export KUBECONFIG=bs.cfg:${NKP_CLUSTER_NAME}.cfg
+    kubectl config view --flatten > all-in-one-kubeconfig.yaml
+    export KUBECONFIG=all-in-one-kubeconfig.yaml
+    ```
 
-7. Run the following command to check K8S status of the ``nkpdev`` cluster
+   1. Run the following command to check K8S status of the ``nkpdev`` cluster
+    
+    ```bash
+    kubectx ${NKP_CLUSTER_NAME}-admin@${NKP_CLUSTER_NAME} 
+    kubectl get nodes
+    ```
+    <!-- termynal -->
+
+    ```bash
+    $ kubectl get nodes
+
+    NAME                                  STATUS   ROLES           AGE     VERSION
+    nkp3-md-0-x948v-hvxtj-9r698           Ready    <none>          4h49m   v1.29.6
+    nkp3-md-0-x948v-hvxtj-fb75c           Ready    <none>          4h50m   v1.29.6
+    nkp3-md-0-x948v-hvxtj-mdckn           Ready    <none>          4h49m   v1.29.6
+    nkp3-md-0-x948v-hvxtj-shxc8           Ready    <none>          4h49m   v1.29.6
+    nkp3-r4fwl-8q4ch                      Ready    control-plane   4h50m   v1.29.6
+    nkp3-r4fwl-jf2s8                      Ready    control-plane   4h51m   v1.29.6
+    nkp3-r4fwl-q888c                      Ready    control-plane   4h49m   v1.29.6
+    ```
+
+## Install Kommander Management
+
+In this section we will install Kommander managment components to the ``nkpdev`` cluster.
+
+1. Ensure that ``nkpdev`` cluster context is active
+   
+    ```bash
+    kubectx ${NKP_CLUSTER_NAME}-admin@${NKP_CLUSTER_NAME} 
+    kubectl get nodes
+    ```
+
+2. Install cert-manager as a pre-requisite
+   
+    ```bash
+    kubectl apply -f https://github.com/cert-manager/cert-manager/releases/download/v1.15.3/cert-manager.yaml
+    ```
+
+3. Make sure all cert-manager resources are up and running 
  
+    ```bash
+    kubens cert-manager
+    kubectl get all 
+    ```
+4. Generate NKP Kommander components manifest which will present a GUI to manage all of the nkpdev clusters additional packages and components.
+   
+    ```bash
+    nkp install kommander --init > kommander.yaml
+    ```
+
+    ??? tip "Kommander resources' sizing tip"
+        
+        Kommander component resources reservations and limits can be individually configured like so
+
+        ```yaml 
+        apiVersion: config.kommander.mesosphere.io/v1alpha1
+        kind: Installation
+        apps:
+        centralized-grafana:
+            values: |
+            grafana:
+                resources:
+                limits:
+                    cpu: 150m
+                    memory: 100Mi
+                requests:
+                    cpu: 100m
+                    memory: 50Mi
+        ```
+
+5. Install NKP Kommander components 
+   
+    !!! warning
+       
+        Ensure that the Storage Class using Nutanix CSI is installed and working on the ``nkpdev`` cluster before proceding
+
+        === "Command"
+    
+            ```bash
+            kubectl get sc
+            ```
+
+        === "Command output"
+        
+            ```bash hl_lines="5"
+            kubectl get sc
+
+            NAME                       PROVISIONER                     RECLAIMPOLICY   VOLUMEBINDINGMODE      ALLOWVOLUMEEXPANSION   AGE
+            dkp-object-store           kommander.ceph.rook.io/bucket   Delete          Immediate              false                  31m
+            nutanix-volume (default)   csi.nutanix.com                 Delete          WaitForFirstConsumer   false                  67m
+            ```
+
+    === "Command"
+    
+        ```bash
+        nkp install kommander --installer-config kommander.yaml
+        ```
+
+    === "Command output"
+    
+        ```{ .bash .no-copy }
+        nkp install kommander --installer-config kommander.yaml
+
+        ✓ Running pre-flight checks
+        ✓ Fetching applications repository 
+        ✓ Deploying base resources
+        ✓ Deploying Flux 
+        ✓ Deploying Kommander root CA 
+        ✓ Deploying Git Operator 
+        ✓ Deploying Ingress certificate
+        ✓ Pushing application definitions to Git repository 
+        ✓ Bootstrapping management Git repository
+        ✓ Deploying Flux configuration
+        ✓ Deploying Kommander Operator 
+        ✓ Creating Management Config Overrides ConfigMaps for relevant applications
+        ✓ Deploying AppDeployments for enabled applications 
+        ✓ Waiting for Kommander core to be installed 
+        ✓ Deploying configured catalog repositories
+        ✓ Waiting for 22 enabled applications to be ready [==================================>22/22] 
+        (time elapsed 4m33s) 
+        ```
+
+    !!! note
+    
+        Installing Kommander will take about 5 minutes.
+    
+
+6. Get dashboard URL and login credentials
+   
     === "Command"
 
-         ```bash
-         kubectl get nodes
-         ```
-         
+        ```bash
+        nkp get dashboard
+        ```
+
     === "Command output"
 
-         ```bash
-         kubectl get nodes
+        ```{ .bash .no-copy }
+        nkp get dashboard
 
-         NAME                                  STATUS   ROLES           AGE     VERSION
-         nkp3-md-0-x948v-hvxtj-9r698           Ready    <none>          4h49m   v1.29.6
-         nkp3-md-0-x948v-hvxtj-fb75c           Ready    <none>          4h50m   v1.29.6
-         nkp3-md-0-x948v-hvxtj-mdckn           Ready    <none>          4h49m   v1.29.6
-         nkp3-md-0-x948v-hvxtj-shxc8           Ready    <none>          4h49m   v1.29.6
-         nkp3-r4fwl-8q4ch                      Ready    control-plane   4h50m   v1.29.6
-         nkp3-r4fwl-jf2s8                      Ready    control-plane   4h51m   v1.29.6
-         nkp3-r4fwl-q888c                      Ready    control-plane   4h49m   v1.29.6
-         ```
+        Username: recursing_xxxxxxxxx
+        Password: YHbPsslIDB7p7rqwnfxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+        URL: https://10.x.x.215/dkp/kommander/dashboard
+        ```
 
 ## Create NKP GPU Workload Pool
 
@@ -693,42 +839,42 @@ Now we are ready to deploy our AI workloads.
 
 ## Optional - Cleanup
 
-Optionally, cleanup the workloads on nkp cluster by deleting it **after deploying and testing your AI/ML application**. 
+Optionally, cleanup the workloads on nkp cluster by deleting it after deploying and testing your AI/ML application. 
 
-<!-- 1. Change cluster context to use the workload ``bootstrap`` cluster
+1. Change cluster context to use the workload ``bootstrap`` cluster
    
     ```bash
     kubectx kind-konvoy-capi-bootstrapper
-    ``` -->
-
-Delete the workload cluster
-
-=== "Command"
-
-    ```bash
-    nkp delete cluster -c ${NKP_CLUSTER_NAME}
     ```
 
-=== "Command output"
+2. Delete the workload cluster
 
-    ```{ .bash .no-copy }
-    nkp delete cluster -c nkpdev --self-managed
+    === "Command"
 
-    ✓ Upgrading CAPI components 
-    ✓ Waiting for CAPI components to be upgraded 
-    ✓ Initializing new CAPI components 
-    ✓ Creating ClusterClass resources 
-    ✓ Creating ClusterClass resources
-    ✓ Moving cluster resources 
-    ✓ Waiting for cluster infrastructure to be ready 
-    ✓ Waiting for cluster control-planes to be ready
-    ✓ Waiting for machines to be ready
-    ✓ Deleting cluster resources
-    ✓ Waiting for cluster to be fully deleted 
-    Deleted default/nkpdev cluster
-    ```
+        ```bash
+        nkp delete cluster -c ${NKP_CLUSTER_NAME}
+        ```
 
-<!-- 1. Delete the Bootstrap cluster
+    === "Command output"
+
+        ```{ .bash .no-copy }
+        nkp delete cluster -c nkpdev --self-managed
+
+        ✓ Upgrading CAPI components 
+        ✓ Waiting for CAPI components to be upgraded 
+        ✓ Initializing new CAPI components 
+        ✓ Creating ClusterClass resources 
+        ✓ Creating ClusterClass resources
+        ✓ Moving cluster resources 
+        ✓ Waiting for cluster infrastructure to be ready 
+        ✓ Waiting for cluster control-planes to be ready
+        ✓ Waiting for machines to be ready
+        ✓ Deleting cluster resources
+        ✓ Waiting for cluster to be fully deleted 
+        Deleted default/nkpdev cluster
+        ```
+
+3. Delete the Bootstrap cluster
    
     === "Command"
 
@@ -742,11 +888,8 @@ Delete the workload cluster
         nkp delete bootstrap
 
         ✓ Deleting bootstrap cluster
-        ``` -->
+        ```
 
 !!! info
 
     If the workload cluster was created as self-managed, then the following command will delete the cluster by creating a small bootstrap cluster. This bootstrap cluster will also be deleted automatically after the workload cluster is deleted.
-
-
-
