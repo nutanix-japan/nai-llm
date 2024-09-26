@@ -312,7 +312,7 @@ In the following section, we will create a `Jump Host` VM on Nutanix AHV using b
 
     1. :material-fountain-pen-tip: This is Jumphost VM IP address
 
-    2. :material-fountain-pen-tip: This would be the path to RSA private key generated in the previous [JumpHost](infra_jumphost_tofu.md/#generate-a-ssh-key-on-linuxmac) section
+    2. :material-fountain-pen-tip: This would be the path to RSA private key generated in the previous [JumpHost](../infra/workstation.md#generate-a-rsa-key-pair) section
 
     Now that we have saved the ssh credentials, we are able to connect to the jumphost VM
 
@@ -424,7 +424,7 @@ We have compiled a list of utilities that needs to be installed on the jumphost 
     git config --user.name "your_github_username"
     ```
 
-9.  Login to your Github account using the following command and use the same token from the [Prepare Github Repository and API Token](#prepare-github-repository-and-api-token) section
+9.  In ``VSCode`` > ``Terminal`` Login to your Github account using the following command 
    
     ```bash
     gh auth login

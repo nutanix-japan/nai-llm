@@ -101,7 +101,7 @@ To generate a license for the NKP cluster.
 8. Select Apply to cluster
 9. Choose Non-production license and Save
 10. Select the cluster name and click on **Next**
-11. Input the number of vCPU (``60``) from our calculations in the previous [section](#calculate-the-number-of-vcpus)
+11. Input the number of vCPU (``60``) from our calculations in the previous [section](#calculate-the-required-vcpus)
 12. Click on **Save** 
 13. Download the csv file and store it in a safe place
 
@@ -139,7 +139,7 @@ To generate a license for the NKP cluster.
         License created
         ``` -->
 
-1. Login to the Kommander URL for ``nkpdev`` cluster with the generated credentials that you generated in the previous [section](../infra/infra_nkp.md#install-kommander-management). The following commands will give you the credentials and URL.
+1. Login to the Kommander URL for ``nkpdev`` cluster with the generated credentials that was generated in the previous [section](../infra/infra_nkp.md#create-nkp-workload-cluster). The following commands will give you the credentials and URL.
    
     === "Command"
 

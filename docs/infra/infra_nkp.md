@@ -22,7 +22,7 @@ stateDiagram-v2
 ```
 ## NKP High Level Cluster Design
 
-The `Bootstrap` NKP cluster will be a temporary [kind](https://kind.sigs.k8s.io/) cluster that will be used to deploy the ``nkpdev`` cluster. This will be deployed during the install automatically when the ``nkp create cluster nutanix`` command is run with the ``--self-managed`` option
+The `Bootstrap` NKP cluster will be a [kind](https://kind.sigs.k8s.io/) cluster that will be used to deploy the ``nkpdev`` cluster. This will be deployed during the install automatically when the ``nkp create cluster nutanix`` command is run with the ``--self-managed`` option
 
 The ``nkpdev`` cluster will be hosting the LLM model serving endpoints and AI application stack. This cluster and will require a dedicated GPU node pool.
 
@@ -193,7 +193,7 @@ We will need a total of three IPs for the following:
 
 ### Optional - Find GPU Details
 
-If there is a requirement to deploy workloads that rquire GPU, find the GPU details in your Nutanix cluster.
+If there is a requirement to deploy workloads that require GPU, find the GPU details in your Nutanix cluster.
 
 Find the details of GPU on the Nutanix cluster while still connected to Prism Central (PC).
 
@@ -522,7 +522,7 @@ We are now ready to install the workload ``nkpdev`` cluster
         - Choose to deploy workload clusters from NKP Kommander GUI or
         - Choose to deploy workload clusters using scripts if they wish to automate the process
         
-        See [Appendix](../infra/infra_nkp_hard_way.md) for more information for customizable NKP cluster deployments. 
+        See [Appendix](../appendix/infra_nkp_hard_way.md) for more information for customizable NKP cluster deployments. 
   
 5. Observe the events in the shell and in Prism Central events
 
@@ -560,13 +560,7 @@ We are now ready to install the workload ``nkpdev`` cluster
 
 In this section we will create a nodepool to host the AI apps with a GPU.
 
-1. Change KUBECONFIG context to use the workload ``bootstrap`` cluster
-   
-    ```bash
-    kubectx kind-konvoy-capi-bootstrapper
-    ```
-
-2. Open .env file in VSC and add (append) the following environment variables to your ``.env`` file and save it
+1. Open .env file in VSC and add (append) the following environment variables to your ``.env`` file and save it
    
     === "Template .env"
     
@@ -583,13 +577,13 @@ In this section we will create a nodepool to host the AI apps with a GPU.
         export GPU_POOL=gpu-nodepool
         ```
 
-3.  Source the new variables and values to the environment
+2.  Source the new variables and values to the environment
      
      ```bash
      source .env
      ```
 
-4. Run the following command to create a GPU nodepool manifest
+3. Run the following command to create a GPU nodepool manifest
    
     ```bash
     nkp create nodepool nutanix \
@@ -609,7 +603,7 @@ In this section we will create a nodepool to host the AI apps with a GPU.
        
         Right now there is no switch for GPU in ``nkp`` command. We need to do dry-run the output into a file and then add the necessary GPU specifications
 
-5. Add the necessary gpu section to our new ``gpu-nodepool.yaml`` using ``yq`` command
+4. Add the necessary gpu section to our new ``gpu-nodepool.yaml`` using ``yq`` command
    
     ```bash
     yq e '(.spec.topology.workers.machineDeployments[] | select(.name == "gpu-nodepool").variables.overrides[] | select(.name == "workerConfig").value.nutanix.machineDetails) += {"gpus": [{"type": "name", "name": strenv(GPU_NAME)}]}' -i gpu-nodepool.yaml
@@ -651,13 +645,13 @@ In this section we will create a nodepool to host the AI apps with a GPU.
                           name: Lovelace 40S
         ```
 
-6.  Apply the ``gpu-nodepool.yaml`` file to the workload cluster 
+5.  Apply the ``gpu-nodepool.yaml`` file to the workload cluster 
    
     ```bash
     kubectl apply -f gpu-nodepool.yaml
     ```
 
-7.  Monitor the progress of the command and check Prism Central events for creation of the GPU worker node
+6.  Monitor the progress of the command and check Prism Central events for creation of the GPU worker node
     
     Change to workload ``nkpdev`` cluster context
    
@@ -665,7 +659,7 @@ In this section we will create a nodepool to host the AI apps with a GPU.
     kubectx ${NKP_CLUSTER_NAME}-admin@${NKP_CLUSTER_NAME}
     ```
 
-9.  Check nodes status in workload ``nkpdev`` cluster and note the gpu worker node
+7.  Check nodes status in workload ``nkpdev`` cluster and note the gpu worker node
     
     === "Command"
 
@@ -747,6 +741,3 @@ Delete the workload cluster
 !!! info
 
     If the workload cluster was created as self-managed, then the following command will delete the cluster by creating a small bootstrap cluster. This bootstrap cluster will also be deleted automatically after the workload cluster is deleted.
-
-
-

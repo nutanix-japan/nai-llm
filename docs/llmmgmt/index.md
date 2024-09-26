@@ -19,7 +19,7 @@ Deploy the two clusters using the instructions below.
 
     Setup a Nutanix cluster in under an hour using Foundation to prepare your infrastructure.
 
-    [:octicons-arrow-right-24: Setup Nutanix Karbon Engine](infra/infra_nke.md)
+    [:octicons-arrow-right-24: Setup Nutanix Karbon Engine](../infra/infra_nke.md)
 
 </div>
 
