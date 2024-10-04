@@ -38,7 +38,7 @@ For ``nkpdev``, we will deploy an NKP Cluster of type "Development".
 
 | Role   | No. of Nodes (VM) | vCPU | RAM   | Storage |
 | ------ | ----------------- | ---- | ----- | ------- |
-| Master | 3                 | 4    | 16 GB | 150 GB  |
+| Control plane | 3                 | 4    | 16 GB | 150 GB  |
 | Worker | 4                | 8   | 32 GB | 150 GB  |
 | GPU    | 1                 | 16   | 64 GB | 200 GB  |
 
@@ -227,7 +227,7 @@ In this section we will go through creating a base image for all the control pla
         ```text
         export NUTANIX_USER=_your_nutanix_username
         export NUTANIX_PASSWORD=_your_nutanix_password
-        export NUTANIX_ENDPOINT=_your_prism_central_cluster_name
+        export NUTANIX_ENDPOINT=_your_prism_central_fqdn
         export NUTANIX_CLUSTER=_your_prism_element_cluster_name
         export NUTANIX_SUBNET_NAME=_your_ahv_ipam_network_name
         export STORAGE_CONTAINER=_your_storage_container_nmae
