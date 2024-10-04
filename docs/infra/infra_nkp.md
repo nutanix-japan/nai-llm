@@ -262,10 +262,6 @@ In this section we will go through creating a base image for all the control pla
     ```
 
 9. Create the base image and upload to Prism Central using the following command. 
-   
-    ```bash
-    nkp create image nutanix ubuntu-22.04 --endpoint ${NUTANIX_ENDPOINT} --cluster ${NUTANIX_CLUSTER} --subnet ${NUTANIX_SUBNET_NAME} --insecure
-    ```
     
     !!!note 
            Image creation will take up to 5 minutes.
