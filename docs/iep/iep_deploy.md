@@ -154,6 +154,7 @@ stateDiagram-v2
     --set imagePullSecret.credentials.email=$DOCKER_EMAIL \
     --set imagePullSecret.credentials.password=$DOCKER_PASSWORD \
     --insecure-skip-tls-verify \
+    --set naiApi.naiApiImage.tag=v1.0.0-rc2 \
     -f scripts/nai/iep-values-nkp.yaml
     ```
    
