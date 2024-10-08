@@ -51,19 +51,7 @@ This site follows **Design > Deploy** model.
 
     ---
 
-<<<<<<< HEAD
     Setup a Nutanix cluster in under an hour using Foundation to prepare your infrastructure.
-=======
-    You can setup a Nutanix cluster in under an hour using Foundation to prepare your infrastructure.
-
-    [:octicons-arrow-right-24: Setup D2iQ Kubernetes Platform](infra/infra_dkp.md)
-
--   :material-kubernetes:{ .lg .middle } __Set up D2iQ Kubernetes Platform in 30 minutes__
-
-    ---
-
-    You can setup a Nutanix cluster in under an hour using Foundation to prepare your infrastructure.
->>>>>>> edca4496 (fixing dkp link)
 
     [:octicons-arrow-right-24: Setup Nutanix Karbon Engine](infra/infra_nke.md)
 
