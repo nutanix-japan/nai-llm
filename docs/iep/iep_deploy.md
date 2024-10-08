@@ -131,8 +131,14 @@ stateDiagram-v2
 4. In `VSCode` Explorer pane, browse to ``/home/ubuntu/`` folder
    
 5. Click on **New Folder** :material-folder-plus-outline: and name it: ``nai``
+6. Download the values file from git hub and place it in ``/home/ubuntu/nai`` folder
    
-6. In ``VSCode``, change to ``/home/ubuntu/nai`` folder, click on **New File** :material-file-plus-outline: and create a config file with the following name:
+    ```bash
+    cd /home/ubuntu/nai
+    curl -OL https://raw.githubusercontent.com/jesse-gonzalez/sol-cnai-infra/6656107ade4dde682dff36802b2bd805ce00dcb4/scripts/nai/iep-values-nkp.yaml
+    ```
+   
+7. In ``VSCode``, change to ``/home/ubuntu/nai`` folder, click on **New File** :material-file-plus-outline: and create a config file with the following name:
 
     ```bash
     nai-deploy.sh
@@ -153,12 +159,12 @@ stateDiagram-v2
     --set imagePullSecret.credentials.username=$DOCKER_USERNAME \
     --set imagePullSecret.credentials.email=$DOCKER_EMAIL \
     --set imagePullSecret.credentials.password=$DOCKER_PASSWORD \
-    --insecure-skip-tls-verify \
     --set naiApi.naiApiImage.tag=v1.0.0-rc2 \
-    -f scripts/nai/iep-values-nkp.yaml
+    --insecure-skip-tls-verify \
+    -f iep-values-nkp.yaml
     ```
    
-7. Run the following command to deploy NAI
+8. Run the following command to deploy NAI
    
     === "Command"
 
@@ -183,8 +189,9 @@ stateDiagram-v2
         --set imagePullSecret.credentials.username=$DOCKER_USERNAME \
         --set imagePullSecret.credentials.email=$DOCKER_EMAIL \
         --set imagePullSecret.credentials.password=$DOCKER_PASSWORD \
+        --set naiApi.naiApiImage.tag=v1.0.0-rc2 \
         --insecure-skip-tls-verify \
-        -f /home/ubuntu/sol-cnai-infra/scripts/nai/iep-values-nkp.yaml
+        -f iep-values-nkp.yaml
         Release "nai-core" has been upgraded. Happy Helming!
         NAME: nai-core
         LAST DEPLOYED: Mon Sep 16 22:07:24 2024
@@ -194,7 +201,7 @@ stateDiagram-v2
         TEST SUITE: None
         ```
 
-8. Verify that the NAI Core Pods are running and healthy
+9.  Verify that the NAI Core Pods are running and healthy
     
     === "Command"
 
