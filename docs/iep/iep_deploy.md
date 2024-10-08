@@ -8,8 +8,8 @@ stateDiagram-v2
         [*] --> DeployNAIAdmin
         DeployNAIAdmin -->  InstallSSLCert
         InstallSSLCert --> DownloadModel
-        DownloadModel --> CreateIEP
-        CreateIEP --> [*]
+        DownloadModel --> CreateNAI
+        CreateNAI --> [*]
     }
 
     [*] --> PreRequisites

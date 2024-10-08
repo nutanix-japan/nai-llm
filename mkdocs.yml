@@ -25,20 +25,20 @@ nav:
     - Deploy Management Cluster: llmmgmt/llm_mgt_deploy.md
     - Deploy Dev Cluster: llmmgmt/llm_dev_deploy.md
     - Test LLM App: llmmgmt/llm_test.md
-      # - SupportGPT: supportgpt/supportgpt.md
-  - GPT-in-a-Box v2 NVD Reference App:
+  - Nutanix Enterprise AI (NAI):
     - Getting Started: iep/index.md
     - Pre-requisites: iep/iep_pre_reqs.md
     - Deploy NAI: iep/iep_deploy.md
     - Test NAI: iep/iep_test.md
 - Appendix:
   - NKP The Hard Way: appendix/infra_nkp_hard_way.md
+  - Appendix: appendix/appendix.md
 - References:
   - Nutanix Components: ntxcomponents/ntxcomponents.md
   - Tools used and why?: tools/tools.md
-  - Appendix: appendix/appendix.md
   - Jumphost VM: infra/infra_jumphost.md
   - Contributing: contributing.md
+  - Roadmap: roadmap.md
 - Takeaways: takeaways/takeaways.md
 
 

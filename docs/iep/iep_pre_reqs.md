@@ -317,7 +317,6 @@ We will create Nutanix Files storage class which will be used to create a pvc th
           csi.storage.k8s.io/controller-expand-secret-name: nutanix-csi-credentials-files
           csi.storage.k8s.io/controller-expand-secret-namespace: ntnx-system
           storageType: NutanixFiles
-          description: iep-dev$(date +%d%m%y)
         allowVolumeExpansion: true
         ```
 
@@ -340,7 +339,6 @@ We will create Nutanix Files storage class which will be used to create a pvc th
           csi.storage.k8s.io/controller-expand-secret-name: nutanix-csi-credentials-files
           csi.storage.k8s.io/controller-expand-secret-namespace: ntnx-system
           storageType: NutanixFiles
-          description: iep-dev$(date +%d%m%y)
         allowVolumeExpansion: true
         ```
 
