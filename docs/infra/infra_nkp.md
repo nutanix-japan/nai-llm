@@ -383,7 +383,7 @@ We are now ready to install the workload ``nkpdev`` cluster
 
 4. In VSC, open Terminal, enter the following command to create the workload cluster
    
-    ??? tip "Optional - Check your command for correct argument values"
+    ??? tip "Check your command for correct argument values"
         
         Run the following command to verify your ``nkp`` command and associated environment variables and values.
 
@@ -413,7 +413,7 @@ We are now ready to install the workload ``nkpdev`` cluster
                 --insecure"
         ```
 
-        If the values are incorrect, source the ``.env`` file again by running the following command
+        If the values are incorrect, add the correct values to ``.env`` and source the  again by running the following command
 
         ```bash
         source .env
@@ -451,7 +451,7 @@ We are now ready to install the workload ``nkpdev`` cluster
 
     === "Command output"
 
-        ```{ .bash .no-copy }
+        ```{ .text .no-copy }
         > ✓ Creating a bootstrap cluster 
         ✓ Upgrading CAPI components 
         ✓ Waiting for CAPI components to be upgraded 
@@ -509,7 +509,7 @@ We are now ready to install the workload ``nkpdev`` cluster
         > nkp get dashboard --kubeconfig="/home/ubuntu/nkp/nkpdev.conf"
         ```
 
-    ??? info "Self-Manged Cluster??"
+    !!! info "What is a Self-Manged Cluster?"
 
         The ``--self-managed`` argument of the ``nkp create cluster nutanix`` command will deploy bootstrap, and Kommander management automatically. 
         
@@ -524,7 +524,7 @@ We are now ready to install the workload ``nkpdev`` cluster
         - Choose to deploy workload clusters from NKP Kommander GUI or
         - Choose to deploy workload clusters using scripts if they wish to automate the process
         
-        See [Appendix](../appendix/infra_nkp_hard_way.md) for more information for customizable NKP cluster deployments. 
+        See [NKP the Hard Way](../appendix/infra_nkp_hard_way.md) section for more information for customizable NKP cluster deployments. 
   
 5. Observe the events in the shell and in Prism Central events
 
