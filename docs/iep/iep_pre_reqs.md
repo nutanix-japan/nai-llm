@@ -428,7 +428,7 @@ Follow these steps to create a Hugging Face token with read permissions:
 5. **Set token permissions**:
 
     - Under the permissions dropdown, select **Read**. For Example:
-        ![hf-token](docs/iep/images/hf-token.png)
+        ![hf-token](images/hf-token.png)
 
 6. **Create and copy the token**:
 

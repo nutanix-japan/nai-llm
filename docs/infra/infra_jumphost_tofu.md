@@ -18,7 +18,8 @@ stateDiagram-v2
     }
 
     PrepWorkstation --> DeployJumpHost 
-    DeployJumpHost --> DeployK8S : Next section
+    DeployJumpHost --> DeployNkp : Next Section (Option A)
+    DeployJumpHost --> DeployNke : Next Section (Option B)
 ```
 
 ## Prerequisites
@@ -255,20 +256,19 @@ In the following section, we will create a `Jump Host` VM on Nutanix AHV using b
 12. Validate that the `Jump Host` VM is accessible using **VSCode > Terminal** :octicons-terminal-24:
   
     === "Command"
-        
+
         ```bash
         ssh -i ~/.ssh/id_rsa ubuntu@<ip-address-from-tofu-output>
         ``` 
     === "Command Sample"
-        
+
         ```bash
         ssh -i ~/.ssh/id_rsa ubuntu@10.x.x.171
         ```     
 
 ### Initiate Remote-SSH Connection to Jumpbox using VSCode
 
-
-1. In VSCode, click on Settings menu icon (gear icon) :gear: > **Settings** > **Extensions** 
+1. In VSCode, click on Settings menu icon (gear icon) :gear: > **Settings** > **Extensions**
 2. In the search window search for **Remote SSH**
 3. Install the [Remote-SSH Extension](https://marketplace.visualstudio.com/items?itemName=ms-vscode-remote.remote-ssh) from VSCode Marketplace
 4. click on the **Install** button for the extenstion.
@@ -340,6 +340,62 @@ In the following section, we will create a `Jump Host` VM on Nutanix AHV using b
 
     ![](images/6.png)
 
+## [OPTIONAL] Fork and Clone GiaB NVD Gitops Repository
+
+  !!!warning
+          The following steps are only required if Deploying GPT In a Box using NVD GitOps workflow
+
+1. Open the following URL and fork the repo to your Github org
+
+    ```url
+    https://github.com/jesse-gonzalez/nai-llm-fleet-infra
+    ```
+
+2. From the ``$HOME`` directory, clone the fork of your ``nai-llm-fleet-infra`` git repo and change working directory
+
+    === "Command"
+
+        ```bash
+        git clone https://github.com/<_your_github_org>/nai-llm-fleet-infra.git
+        cd $HOME/nai-llm-fleet-infra/
+        ```
+
+    === "Sample command"
+
+        ```bash
+        git clone https://github.com/rahuman/nai-llm-fleet-infra.git
+        cd $HOME/nai-llm-fleet-infra/
+        ```
+
+3. Finally set your github config
+
+    ```bash
+    git config --user.email "your_github_email"
+    git config --user.name "your_github_username"
+    ```
+
+4. In ``VSCode`` > ``Terminal`` Login to your Github account using the following command:
+
+    ```bash
+    gh auth login # (1)
+    ```
+
+    1.  :material-fountain-pen-tip:  If you do not have ``gh`` client installed, see [Github CLI Installation Docs](https://github.com/cli/cli/blob/trunk/docs/install_linux.md).
+
+    ```{ .text, .no-copy }
+    # Execution example
+
+    ❯ gh auth login                                                                                                               ─╯
+    ? What account do you want to log into? GitHub.com
+    ? What is your preferred protocol for Git operations on this host? HTTPS 
+    ? Authenticate Git with your GitHub credentials? Yes
+    ? How would you like to authenticate GitHub CLI?  [Use arrows to move, type to filter]
+        Login with a web browser
+    >   Paste an authentication token
+
+    Successfully logged in to Github.
+    ```
+
 ## Install Utilities on Jumphost VM
 
 We have compiled a list of utilities that needs to be installed on the jumphost VM to use for the rest of the lab. We have affectionately called it as ``nai-llm`` utilities. Use the following method to install these utilities:
@@ -352,29 +408,14 @@ We have compiled a list of utilities that needs to be installed on the jumphost 
     curl -fsSL https://get.jetpack.io/devbox | bash
     ```
 
-3. Open the following URL and fork the repo to your Github org
-   
-    ```url
-    https://github.com/jesse-gonzalez/nai-llm-fleet-infra
+3. From the ``$HOME`` directory, clone the ``nai-llm-fleet-infra`` git repo and change working directory
+
+    ```bash
+    git clone https://github.com/_your_github_org/nai-llm-fleet-infra.git
+    cd $HOME/nai-llm-fleet-infra/
     ```
 
-4. From the ``$HOME`` directory, clone the fork of your ``nai-llm-fleet-infra`` git repo and change working directory
-
-    === "Command"
-
-        ```bash
-        cd $HOME
-        git clone https://github.com/_your_github_org/nai-llm-fleet-infra.git
-        ```
-
-    === "Sample command"
-      
-        ```bash
-        cd $HOME
-        git clone https://github.com/rahuman/nai-llm-fleet-infra.git
-        ```
-
-5. Start the `devbox shell`. If `nix` isn't available, you will be prompted to install:
+4. Start the `devbox shell`. If `nix` isn't available, you will be prompted to install:
 
     ```sh
     cd $HOME/nai-llm-fleet-infra/
@@ -382,7 +423,7 @@ We have compiled a list of utilities that needs to be installed on the jumphost 
     devbox shell
     ```
 
-6. Run Post VM Create - Workstation Bootstrapping tasks
+5. Run Post VM Create - Workstation Bootstrapping tasks
   
     ```bash
     sudo snap install task --classic
@@ -390,7 +431,7 @@ We have compiled a list of utilities that needs to be installed on the jumphost 
     source ~/.bashrc
     ```
 
-7. Change working directory and see ``Task`` help
+6. Change working directory and see ``Task`` help
   
     ```bash
     cd $HOME/nai-llm-fleet-infra/ && task
@@ -415,33 +456,6 @@ We have compiled a list of utilities that needs to be installed on the jumphost 
     - Task: bootstrap:generate_cluster_configs
     - Task: nke:download-creds 
     - Task: flux:init
-    ```
-
-8. Finally set your github config
-
-    ```bash
-    git config --user.email "your_github_email"
-    git config --user.name "your_github_username"
-    ```
-
-9.  In ``VSCode`` > ``Terminal`` Login to your Github account using the following command 
-   
-    ```bash
-    gh auth login
-    ```
-
-    ```{ .text, .no-copy }
-    # Execution example
-
-    ❯ gh auth login                                                                                                               ─╯
-    ? What account do you want to log into? GitHub.com
-    ? What is your preferred protocol for Git operations on this host? HTTPS 
-    ? Authenticate Git with your GitHub credentials? Yes
-    ? How would you like to authenticate GitHub CLI?  [Use arrows to move, type to filter]
-        Login with a web browser
-    >   Paste an authentication token
-
-    Successfully logged in to Github.
     ```
 
 Now the jumphost VM is ready for deploying our app. We will do this in the next section.

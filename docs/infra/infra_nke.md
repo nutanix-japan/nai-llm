@@ -8,16 +8,17 @@ This section will expand to other available Kubernetes implementations on Nutani
 stateDiagram-v2
     direction LR
     
-    state DeployK8S {
+    state DeployNKE {
         [*] --> CreateTofuWorkspaces
         CreateTofuWorkspaces --> CreateMgtK8SCluster
         CreateMgtK8SCluster --> CreateDevK8SCluster
-        CreateDevK8SCluster --> [*]
+        CreateDevK8SCluster --> DeployGPUNodePool
+        DeployGPUNodePool --> [*]
     }
 
     PrepWorkstation --> DeployJumpHost 
-    DeployJumpHost --> DeployK8S 
-    DeployK8S --> DeployAIApps : Next section
+    DeployJumpHost --> DeployNKE
+    DeployNKE --> DeployGiabGitOps : Next section
 ```
 
 

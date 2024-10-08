@@ -8,17 +8,16 @@ This section will expand to other available Kubernetes implementations on Nutani
 stateDiagram-v2
     direction LR
     
-    state DeployNKPk8s {
-        [*] --> CreateBootStrapCluster
-        CreateBootStrapCluster --> CreateNKPCluster
-        CreateNKPCluster --> DeployKommander
-        DeployKommander --> DeployGPUNodePool
+    state DeployNKP {
+        [*] --> CreateNkpMachineImage
+        CreateNkpMachineImage --> CreateNKPCluster
+        CreateNKPCluster --> DeployGPUNodePool
         DeployGPUNodePool --> [*]
     }
 
     PrepWorkstation --> DeployJumpHost 
-    DeployJumpHost --> DeployNKPk8s 
-    DeployNKPk8s --> DeployAIApps : Next section
+    DeployJumpHost --> DeployNKP 
+    DeployNKP --> DeployNai : Next section
 ```
 
 ## NKP High Level Cluster Design
@@ -45,7 +44,7 @@ For ``nkpdev``, we will deploy an NKP Cluster of type "Development".
 
 ## Pre-requisites for NKP Deployment
 
-1. Existing Ubuntu/Rocky Linux jumphost VM. See here for jumphost installation [steps](../infra/infra_jumphost_tofu.md). 
+1. Existing Ubuntu/Rocky Linux jumphost VM. See here for jumphost installation [steps](../infra/infra_jumphost_tofu.md).
 2. [Docker](#setup-docker-on-jumphost) or Podman installed on the jumphost VM
 3. Nutanix PC is at least ``2024.1``
 4. Nutanix AOS is at least ``6.5``,``6.8+``
@@ -201,17 +200,17 @@ In this section we will go through creating a base image for all the control pla
 1. In VSC Explorer pane, Click on **New Folder** :material-folder-plus-outline:
 
 2. Call the folder ``nkp`` under ``/home/ubuntu`` directory
-   
+
 3. In the ``nkp`` folder, click on **New File** :material-file-plus-outline: and create new file with the following name:
   
     ```bash
     .env
     ```
 
-7. Fill the following values inside the ``.env`` file
+4. Fill the following values inside the ``.env`` file
 
     === "Template .env"
-    
+
         ```text
         export NUTANIX_USER=_your_nutanix_username
         export NUTANIX_PASSWORD=_your_nutanix_password
@@ -227,7 +226,7 @@ In this section we will go through creating a base image for all the control pla
         ```
 
     === "Sample .env"
-    
+
         ```text
         export NUTANIX_USER=admin
         export NUTANIX_PASSWORD=xxxxxxxx
@@ -242,25 +241,24 @@ In this section we will go through creating a base image for all the control pla
         export GPU_NAME="Lovelace 40S"
         ```
 
-8. Using VSC Terminal, load the environment variables and its values
-   
+5. Using VSC Terminal, load the environment variables and its values
+
     ```bash
     cd /home/ubuntu/nkp
     source .env
     ```
 
-9. Create the base image and upload to Prism Central using the following command. 
-    
+6. Create the base image and upload to Prism Central using the following command. 
+
     !!!note 
            Image creation will take up to 5 minutes.
-
 
     === "Command"
 
         ```bash
-        nkp create image nutanix ubuntu-22.04 \ 
-        --endpoint ${NUTANIX_ENDPOINT} --cluster ${NUTANIX_CLUSTER} \
-        --subnet ${NUTANIX_SUBNET_NAME} --insecure
+        nkp create image nutanix ubuntu-22.04 \
+          --endpoint ${NUTANIX_ENDPOINT} --cluster ${NUTANIX_CLUSTER} \
+          --subnet ${NUTANIX_SUBNET_NAME} --insecure
         ```
 
     === "Command output"

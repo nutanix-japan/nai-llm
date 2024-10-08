@@ -1,12 +1,11 @@
 # Getting Started
 
-We will go through four phases in this section to prepare infrastructure on which you can deploy AI applications.
+This guide covers two different scenarios for deploying Nutanix Enterprise AI [NAI] (previously known as GPT-In-A-Box).  
 
-1. Preparing your Local Workstation (Mac/Windows)
-2. Deploying Jumphost VM
-3. Deploying Kuberenetes
-   1. Managment Cluster
-   2. Dev Workload cluster
+The first scenario is a walkthrough on How-To [Deploy Nutanix Enterprise AI with Nutanix Kubernetes Platform (NKP)](#deploy-nutanix-enterprise-ai-with-nutanix-kubernetes-platform-nkp), and the second scenario covers the (soon to be deprecated) option on How-To [Deploy GPT-In-A-Box v1 Nutanix Validated Design (NVD) with NKE](#deploy-gpt-in-a-box-v1-nutanix-validated-design-nvd-with-nke) .
+
+Each scenario goes through four phases to prepare the infrastructure on which you can deploy Nutanix Enterprise AI applications.
+
 
 ```mermaid
 stateDiagram-v2
@@ -18,27 +17,79 @@ stateDiagram-v2
         InstallTofu --> InstallVSCode
         InstallVSCode --> [*]
     }
+
     state DeployJumpHost {
         [*] --> CreateCloudInit
         CreateCloudInit --> CreateJumpHostVM
         CreateJumpHostVM --> DeployNaiUtils
         DeployNaiUtils --> [*]
     }
-    state DeployK8S {
-        [*] --> CreateTofuWorkspaces
-        CreateTofuWorkspaces --> CreateMgtK8SCluster
-        CreateMgtK8SCluster --> CreateDevK8SCluster
-        CreateDevK8SCluster --> [*]
+
+    PrepWorkstation --> DeployJumpHost 
+    DeployJumpHost --> DeployNkp : Option A
+    DeployNkp --> DeployNai
+    DeployJumpHost --> DeployNke : Option B
+    DeployNke --> DeployGiabGitOps
+```
+
+## Deploy Nutanix Enterprise AI with Nutanix Kubernetes Platform (NKP)
+
+1. Prepare Local Development Workstation (Mac/Windows)
+2. Deploy Jumphost VM
+3. Deploy Nutanix Kubernetes Platform (NKP) Management Cluster
+4. Deploy Nutanix Enterprise AI (NAI)
+
+```mermaid
+stateDiagram-v2
+    direction LR
+    
+    state DeployNKP {
+        [*] --> CreateNkpMachineImage
+        CreateNkpMachineImage --> CreateNkpSelfManagedCluster
+        CreateNkpSelfManagedCluster --> DeployGPUNodePool
+        DeployGPUNodePool --> [*]
     }
-    state DeployAIApps {
-        [*] --> BootstrapK8S
-        BootstrapK8S --> DeplyAIApps
-        DeplyAIApps --> [*]
+    state DeployNai {
+        [*] --> PrepareNai
+        PrepareNai --> DeployNaiHelm 
+        DeployNaiHelm --> [*]
     }
 
     [*] --> PrepWorkstation
     PrepWorkstation --> DeployJumpHost
-    DeployJumpHost --> DeployK8S
-    DeployK8S --> DeployAIApps
-    DeployAIApps --> [*]
+    DeployJumpHost --> DeployNKP
+    DeployNKP --> DeployNai
+    DeployNai --> [*]
+```
+
+## Deploy GPT-In-A-Box (v1) Nutanix Validated Design (NVD) with NKE
+
+1. Prepare your Local Development Workstation (Mac/Windows)
+2. Deploy Jumphost VM
+3. Deploy Nutanix Kubernetes Engine (NKE) - Management Cluster
+4. Deploy Nutanix Kubernetes Engine (NKE) - Development Workload Cluster
+5. Deploy Nutanix GPT-In-A-Box (v1) Validated Design Reference RAG Applications using Flux GitOps
+
+```mermaid
+stateDiagram-v2
+    direction LR
+    
+    state DeployNKE {
+        [*] --> CreateTofuWorkspaces
+        CreateTofuWorkspaces --> CreateMgtK8SCluster
+        CreateMgtK8SCluster --> CreateDevK8SCluster
+        CreateDevK8SCluster --> DeployGPUNodePool
+        DeployGPUNodePool --> [*]
+    }
+    state DeployGiabGitOps {
+        [*] --> BootstrapFlux
+        BootstrapFlux --> DeployAIApps
+        DeployAIApps --> [*]
+    }
+
+    [*] --> PrepWorkstation
+    PrepWorkstation --> DeployJumpHost
+    DeployJumpHost --> DeployNKE
+    DeployNKE --> DeployGiabGitOps
+    DeployGiabGitOps --> [*]
 ```

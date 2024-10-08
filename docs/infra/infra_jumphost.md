@@ -44,7 +44,7 @@ The following jumphost resrouces are recommended for the jumphost VM:
 - Accept the default file location as ``~/.ssh/id_rsa``
   
 - The keys will be available in the following locations:
-    
+
     ``` { .bash .no-copy }
     ~/.ssh/id_rsa.pub 
     ~/.ssh/id_rsa
@@ -156,9 +156,11 @@ We have compiled a list of utilities that needs to be installed on the jumphost 
 3. Change working directory and see ``Task`` help
   
     ```bash
-    $ cd $HOME/nai-llm-fleet-infra/ && task
+    cd $HOME/nai-llm-fleet-infra/ && task
     ```
+
     ``` { .bash .no-copy }
+    $ cd $HOME/nai-llm-fleet-infra/ && task
     # command output
     task: bootstrap:silent
 

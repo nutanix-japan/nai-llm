@@ -64,8 +64,12 @@ To [Install OpenTofu](https://opentofu.org/docs/intro/install/standalone/), foll
     chmod +x install-opentofu.sh
     ```
     ```bash title="Run the installer:"
-    ./install-opentofu.sh --install-method rpm
+    ./install-opentofu.sh --install-method standalone
     ```
+    ```bash title="Remove the installer:"
+    rm -f install-opentofu.sh
+    ```
+    
 
 === "Windows"
 

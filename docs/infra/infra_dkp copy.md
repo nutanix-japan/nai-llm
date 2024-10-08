@@ -8,7 +8,7 @@ This section will expand to other available Kubernetes implementations on Nutani
 stateDiagram-v2
     direction LR
     
-    state DeployK8S {
+    state DeployNKP {
         [*] --> CreateBootStrapCluster
         CreateBootStrapCluster --> CreateNKPCluster
         CreateNKPCluster --> DeployGPUNodePool
@@ -16,9 +16,10 @@ stateDiagram-v2
     }
 
     PrepWorkstation --> DeployJumpHost 
-    DeployJumpHost --> DeployK8S 
-    DeployK8S --> DeployAIApps : Next section
+    DeployJumpHost --> DeployNKP 
+    DeployNKP --> DeployNai : Next section
 ```
+
 ## NKP High Level Cluster Design
 
 The `Bootstrap` NKP cluster will be a temporary [kind](https://kind.sigs.k8s.io/) cluster that will be used to deploy the DEV cluster.
@@ -61,7 +62,6 @@ Nutanix AHV IPAM network allows you to black list IPs that needs to be reserved 
 
 We will need a total of three IPs for the following:
 
-  
 | Cluster Role  | Cluster Name            |    Control Plane IP   |    MetalLB  IP  |          
 | -------------  | --------            |  ------------ |  --------   | 
 | Dev  |``nkp-dev``       |  1             |  2        |  
@@ -127,7 +127,7 @@ We will need a total of three IPs for the following:
 1. From VSC, logon to your jumpbox VM
 2. Open VSC Terminal
 3. Run the following commands to install ``docker`` binaries
-   
+
     ```bash
     cd /home/ubuntu/nai-llm-fleet-infra/; devbox init; devbox shell
     task workstation:install-docker
@@ -138,7 +138,7 @@ We will need a total of three IPs for the following:
         Restart the jumpbox host if ``ubuntu`` user has permission issues using ``docker`` commands.
 
 4. Login to docker with your docker credentials to pull images to avoid any image pull rate limits
-   
+
     ```bash
     docker login -u _your_docker_username -p _your_docker_password
     ```
@@ -150,17 +150,17 @@ In this section we will go through creating a base image for all the control pla
 1. In VSC Explorer pane, Click on **New Folder** :material-folder-plus-outline:
 
 2. Call the folder ``dkp`` under ``/home/ubuntu`` directory
-   
+
 3. In the ``dkp`` folder, click on **New File** :material-file-plus-outline: with the following name
   
     ```bash
     .env
     ```
 
-7. Fill the following values inside the ``.env`` file
+4. Fill the following values inside the ``.env`` file
 
     === "Template file"
-    
+
         ```text
         export NUTANIX_USER=_your_nutanix_username
         export NUTANIX_PASSWORD=_your_nutanix_password
@@ -176,7 +176,7 @@ In this section we will go through creating a base image for all the control pla
         ```
 
     === "Sample file"
-    
+
         ```text
         export NUTANIX_USER=admin
         export NUTANIX_PASSWORD=xxxxxxxx
