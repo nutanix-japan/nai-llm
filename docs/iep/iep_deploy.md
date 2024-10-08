@@ -23,20 +23,19 @@ stateDiagram-v2
 1. Login to VSC on the jumphost VM, go to **Terminal** :octicons-terminal-24: and run the following commands to source the environment variables
 
     ```bash
-    source $HOME/nkp/.env
+    source $HOME/.env
     ```
 
-2. In `VSCode` Explorer pane, browse to ``/home/ubuntu/`` folder
-   
-3. Click on **New Folder** :material-folder-plus-outline: and name it: ``nai``
-   
-4. In ``VSCode``, change to ``/home/ubuntu/nai`` folder, click on **New File** :material-file-plus-outline: and create a config file with the following name:
+2. In `VSCode` Explorer pane, Click on **New Folder** :material-folder-plus-outline: and name it: ``nai``
+
+3. In ``VSCode``, under the newly created ``nai`` folder, click on **New File** :material-file-plus-outline: and create file with the following name:
 
     ```bash
     nai-prepare.sh
     ```
+
     with the following content:
-   
+
     ```bash
     #!/usr/bin/env bash
 
@@ -45,35 +44,45 @@ stateDiagram-v2
 
     ## Deploy Istio 1.20.8
     helm upgrade --install istio-base base --repo https://istio-release.storage.googleapis.com/charts --version=1.20.8 -n istio-system --create-namespace --wait
-    helm upgrade --install istiod istiod --repo https://istio-release.storage.googleapis.com/charts --version=1.20.8 -n istio-system --wait \
+
+    helm upgrade --install istiod istiod --repo https://istio-release.storage.googleapis.com/charts --version=1.20.8 -n istio-system \
         --set gateways.securityContext.runAsUser=0 \
-        --set gateways.securityContext.runAsGroup=0 
+        --set gateways.securityContext.runAsGroup=0 \
+        --wait
+    
     helm upgrade --install istio-ingressgateway gateway --repo https://istio-release.storage.googleapis.com/charts --version=1.20.8 -n istio-system \
-        --set securityContext.runAsUser=0 --set securityContext.runAsGroup=0 \
-        --set containerSecurityContext.runAsUser=0 --set containerSecurityContext.runAsGroup=0 --wait
+        --set securityContext.runAsUser=0 \
+        --set securityContext.runAsGroup=0 \
+        --set containerSecurityContext.runAsUser=0 \
+        --set containerSecurityContext.runAsGroup=0 \
+        --wait
 
     ## Deploy Knative 1.13.1 
     helm upgrade --install knative-serving-crds nai-knative-serving-crds --repo https://nutanix.github.io/helm-releases  --version=1.13.1 -n knative-serving --create-namespace --wait
+    
     helm upgrade --install knative-serving nai-knative-serving --repo https://nutanix.github.io/helm-releases -n knative-serving --version=1.13.1 --wait
+    
     helm upgrade --install knative-istio-controller nai-knative-istio-controller --repo https://nutanix.github.io/helm-releases -n knative-serving --version=1.13.1 --wait
 
     kubectl patch configmap config-features -n knative-serving --patch '{"data":{"kubernetes.podspec-nodeselector":"enabled"}}'
+
     kubectl patch configmap config-autoscaler -n knative-serving --patch '{"data":{"enable-scale-to-zero":"false"}}'
 
     ## Deploy Kserve 0.13.1
     helm upgrade --install kserve-crd oci://ghcr.io/kserve/charts/kserve-crd --version=v0.13.1 -n kserve --create-namespace --wait
+
     helm upgrade --install kserve oci://ghcr.io/kserve/charts/kserve --version=v0.13.1 -n kserve --wait \
     --set kserve.modelmesh.enabled=false --set kserve.controller.image=docker.io/nutanix/nai-kserve-controller \
     --set kserve.controller.tag=v0.13.1
     ```
 
 4. Run the script from the Terminal
-   
+
     === "Command"
 
         ```bash
-        chmod +x $HOME/nai/nai-deploy.sh
-        $HOME/nai/nai-deploy.sh
+        chmod +x $HOME/nai/nai-prepare.sh
+        $HOME/nai/nai-prepare.sh
         ```
         
     === "Command output"
@@ -101,11 +110,11 @@ stateDiagram-v2
     - ``$DOCKER_EMAIL``
   
 1. Create a new ``.env`` file in ``/home/unbuntu/nai`` directory
-   
+
 2. Open .env file in VSC and add (append) the following environment variables to your ``.env`` file and save it
-   
+
     === "Template .env"
-    
+
         ```text
         export DOCKER_USERNAME=_release_candidate_docker_username
         export DOCKER_PASSWORD=_release_candidate_your_docker_password
@@ -114,12 +123,12 @@ stateDiagram-v2
         ```
 
     === "Sample .env"
-    
+
         ```text
         export DOCKER_USERNAME=ntnx-xxx
-        export DOCKER_PASSWORD=xxxxxxx
+        export DOCKER_PASSWORD=*********
         export DOCKER_EMAIL=email@domain.com
-        export NAI_CORE_VERSION=1.0.0-xxx
+        export NAI_CORE_VERSION=1.0.0-rc1
         ```
 
 3. Source the environment variables (if not done so already)
@@ -129,22 +138,23 @@ stateDiagram-v2
     ```
 
 4. In `VSCode` Explorer pane, browse to ``/home/ubuntu/`` folder
-   
+
 5. Click on **New Folder** :material-folder-plus-outline: and name it: ``nai``
 6. Download the values file from git hub and place it in ``/home/ubuntu/nai`` folder
-   
+
     ```bash
     cd /home/ubuntu/nai
     curl -OL https://raw.githubusercontent.com/jesse-gonzalez/sol-cnai-infra/6656107ade4dde682dff36802b2bd805ce00dcb4/scripts/nai/iep-values-nkp.yaml
     ```
-   
-7. In ``VSCode``, change to ``/home/ubuntu/nai`` folder, click on **New File** :material-file-plus-outline: and create a config file with the following name:
+
+7. In ``VSCode``, Click on **New File** :material-file-plus-outline: and create a file with the following name:
 
     ```bash
     nai-deploy.sh
     ```
+
     with the following content:
-   
+
     ```bash
     #!/usr/bin/env bash
 
@@ -211,7 +221,7 @@ stateDiagram-v2
     === "Command output"
 
         ```{ .text .no-copy }
-        k get po,deploy
+        kubectl get po,deploy
 
         NAME                                            READY   STATUS      RESTARTS   AGE
         pod/nai-api-55c665dd67-746b9                    1/1     Running     0          5d1h
@@ -331,13 +341,13 @@ We will download and user llama3 8B model which we sized for in the previous sec
         kubens nai-system
         ```
         ```bash
-        k get jobs
+        kubectl get jobs
         ```
         ```bash
-        k get po
+        kubectl get po
         ```
         ```bash
-        k logs -f _pod_associated_with_job
+        kubectl logs -f _pod_associated_with_job
         ```
 
     === "Command output"
@@ -348,19 +358,19 @@ We will download and user llama3 8B model which we sized for in the previous sec
         ✔ Active namespace is "nai-admin"
         ```
         ```{ .text .no-copy }
-        k get jobs
+        kubectl get jobs
 
         NAME                                       COMPLETIONS   DURATION   AGE
         nai-c0d6ca61-1629-43d2-b57a-9f-model-job   0/1           4m56s      4m56
         ```
         ```{ .text .no-copy }
-        k get po
+        kubectl get po
 
         NAME                                             READY   STATUS    RESTARTS   AGE
         nai-c0d6ca61-1629-43d2-b57a-9f-model-job-9nmff   1/1     Running   0          4m49s
         ```
         ```{ .text .no-copy }
-        k logs -f nai-c0d6ca61-1629-43d2-b57a-9f-model-job-9nmff 
+        kubectl logs -f nai-c0d6ca61-1629-43d2-b57a-9f-model-job-9nmff 
 
         /venv/lib/python3.9/site-packages/huggingface_hub/file_download.py:983: UserWarning: Not enough free disk space to download the file. The expected file size is: 0.05 MB. The target location /data/model-files only has 0.00 MB free disk space.
         warnings.warn(

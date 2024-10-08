@@ -133,7 +133,7 @@ Nutanix Objects store will send a message to kafka endpoint if an object gets st
 1. On VSC terminal on the jumpbox VM, get the ingress endpoints
    
     ```bash
-    k get ingress -A | grep kafka
+    kubectl get ingress -A | grep kafka
     ```
 
     ``` { .text .no-copy } 
@@ -194,7 +194,7 @@ To make sure Milvus database and associated components are running.
 2. Get the Milvus ingress endpoint
    
     ```bash
-    k get ingress -A | grep attu
+    kubectl get ingress -A | grep attu
     ```
 
     ``` { .text .no-copy } 

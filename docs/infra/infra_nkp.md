@@ -20,6 +20,7 @@ stateDiagram-v2
     DeployJumpHost --> DeployNKPk8s 
     DeployNKPk8s --> DeployAIApps : Next section
 ```
+
 ## NKP High Level Cluster Design
 
 The `Bootstrap` NKP cluster will be a [kind](https://kind.sigs.k8s.io/) cluster that will be used to deploy the ``nkpdev`` cluster. This will be deployed during the install automatically when the ``nkp create cluster nutanix`` command is run with the ``--self-managed`` option
@@ -53,7 +54,6 @@ For ``nkpdev``, we will deploy an NKP Cluster of type "Development".
 7. Find GPU details from Nutanix cluster
 8. Create a base image to use with NKP nodes using ``nkp`` command
 
-
 ### Install NKP Binaries
 
 1. Login to [Nutanix Portal](https://portal.nutanix.com/page/downloads?product=nkp) using your credentials
@@ -68,9 +68,9 @@ For ``nkpdev``, we will deploy an NKP Cluster of type "Development".
 7. On `VSCode` Explorer plane, click the ``/home/ubuntu/nkp`` folder
 
 8. On `VSCode` menu, select ``Terminal`` > ``New Terminal``
-   
+
 9. Run the following commands to download and unpack the NKP binaries
-    
+
     ```bash
     cd /home/ubuntu/nkp
     ```
@@ -117,7 +117,7 @@ For ``nkpdev``, we will deploy an NKP Cluster of type "Development".
 1. From VSC, logon to your jumpbox VM
 2. Open VSC Terminal
 3. Run the following commands to install ``docker`` binaries
-   
+
     ```bash
     cd /home/ubuntu/nai-llm-fleet-infra/; devbox init; devbox shell
     task workstation:install-docker
@@ -147,7 +147,7 @@ We will need a total of three IPs for the following:
 2. From VSC, logon to your jumpbox VM and open Terminal
 
 3. Install ``nmap`` tool (if not already done)
-   
+
     ```bash
     cd /home/ubuntu/nai-llm-fleet-infra
     devbox add nmap
@@ -156,7 +156,7 @@ We will need a total of three IPs for the following:
 4. Find three unused static IP addresses in the subnet
 
     === "Command"
-    
+
         ```bash
         nmap -v -sn  <your CIDR>
         ```
@@ -193,24 +193,6 @@ We will need a total of three IPs for the following:
          acli net.add_to_ip_blacklist User1 \
          ip_list=10.x.x.214,10.x.x.215,10.x.x.216
          ```
-
-### Find GPU Details
-
-!!! note "Are you just deploying NKP?"
-    If you are doing this lab only to deploy NKP, then you can skip this GPU section. 
-
-As we will be deploying Nutanix Enterprise AI (NAI) in the next section, we need to find the GPU details beforehand.
-
-Find the details of GPU on the Nutanix cluster while still connected to Prism Central (PC).
-
-1. Logon to Prism Central GUI
-2. On the general search, type **GPUs**
-3. Click on the **GPUs** result
-   
-    ![](images/cluster_gpu_info.png)
-
-4. ``Lovelace 40s`` is the GPU available for use
-5. Use ``Lovelace 40s`` in the evironment variables in the next section. 
 
 ## Create Base Image for NKP
 
@@ -338,9 +320,9 @@ We are now ready to install the workload ``nkpdev`` cluster
 ## Create NKP Workload Cluster
 
 1. Open .env file in VSC and add (append) the following environment variables to your ``.env`` file and save it
-   
+
     === "Template .env"
-    
+
         ```text
         export CONTROL_PLANE_REPLICAS=_no_of_control_plane_replicas
         export CONTROL_PLANE_VCPUS=_no_of_control_plane_vcpus
@@ -358,7 +340,7 @@ We are now ready to install the workload ``nkpdev`` cluster
         ```
 
     === "Sample .env"
-    
+
         ```text
         export CONTROL_PLANE_REPLICAS=3
         export CONTROL_PLANE_VCPUS=4
@@ -375,7 +357,7 @@ We are now ready to install the workload ``nkpdev`` cluster
         export NUTANIX_PROJECT_NAME=dev-lab
         ```
 
-2.  Source the new variables and values to the environment
+3. Source the new variables and values to the environment
      
      ```bash
      source .env
@@ -420,9 +402,9 @@ We are now ready to install the workload ``nkpdev`` cluster
         ```
 
         Then rerun the ``echo nkp`` command to verify the values again before running the ``nkp create cluster nutanix`` command.
-   
+
     === "Command"
-    
+
         ```bash hl_lines="22"
         nkp create cluster nutanix -c ${NKP_CLUSTER_NAME} \
             --control-plane-endpoint-ip ${CONTROLPLANE_VIP} \
@@ -529,7 +511,7 @@ We are now ready to install the workload ``nkpdev`` cluster
 5. Observe the events in the shell and in Prism Central events
 
 6. Store kubeconfig files for the workload cluster
-   
+
     ```bash
     nkp get kubeconfig -c ${NKP_CLUSTER_NAME} > ${NKP_CLUSTER_NAME}.cfg
     export KUBECONFIG=${PWD}/${NKP_CLUSTER_NAME}.cfg
@@ -558,7 +540,29 @@ We are now ready to install the workload ``nkpdev`` cluster
          nkp3-r4fwl-q888c                      Ready    control-plane   4h49m   v1.29.6
          ```
 
-## Create NKP GPU Workload Pool
+## Add NKP GPU Workload Pool
+
+!!! note "Are you just deploying NKP?"
+    If you are doing this lab only to deploy NKP, then you can skip this GPU section.
+
+The steps below covers first retrieving the GPU device name, then subsequently using NKP to deploy the GPU nodepool.
+
+### Find GPU Device Details
+
+As we will be deploying Nutanix Enterprise AI (NAI) in the next section, we need to find the GPU details beforehand.
+
+Find the details of GPU on the Nutanix cluster while still connected to Prism Central (PC).
+
+1. Logon to Prism Central GUI
+2. On the general search, type **GPUs**
+3. Click on the **GPUs** result
+
+    ![](images/cluster_gpu_info.png)
+
+4. ``Lovelace 40s`` is the GPU available for use
+5. Use ``Lovelace 40s`` in the evironment variables in the next section.
+
+### Create NKP GPU Workload Pool
 
 In this section we will create a nodepool to host the AI apps with a GPU.
 
@@ -567,6 +571,7 @@ In this section we will create a nodepool to host the AI apps with a GPU.
     === "Template .env"
     
         ```text
+        export GPU_NAME=_name_of_gpu_device_
         export GPU_REPLICA_COUNT=_no_of_gpu_worker_nodes
         export GPU_POOL=_name_of_gpu_pool
         ```
@@ -606,13 +611,13 @@ In this section we will create a nodepool to host the AI apps with a GPU.
         Right now there is no switch for GPU in ``nkp`` command. We need to do dry-run the output into a file and then add the necessary GPU specifications
 
 4. Add the necessary gpu section to our new ``gpu-nodepool.yaml`` using ``yq`` command
-   
+
     ```bash
     yq e '(.spec.topology.workers.machineDeployments[] | select(.name == "gpu-nodepool").variables.overrides[] | select(.name == "workerConfig").value.nutanix.machineDetails) += {"gpus": [{"type": "name", "name": strenv(GPU_NAME)}]}' -i gpu-nodepool.yaml
     ```
 
     ??? success "Successful addtion of GPU specs?"
-        
+
         You would be able to see the added gpu section at the end of the ``gpu-nodepool.yaml`` file
 
         ```yaml hl_lines="29"
@@ -647,16 +652,16 @@ In this section we will create a nodepool to host the AI apps with a GPU.
                           name: Lovelace 40S
         ```
 
-5.  Apply the ``gpu-nodepool.yaml`` file to the workload cluster 
-   
+5. Apply the ``gpu-nodepool.yaml`` file to the workload cluster
+
     ```bash
     kubectl apply -f gpu-nodepool.yaml
     ```
 
-6.  Monitor the progress of the command and check Prism Central events for creation of the GPU worker node
-    
+6. Monitor the progress of the command and check Prism Central events for creation of the GPU worker node
+
     Change to workload ``nkpdev`` cluster context
-   
+
     ```bash
     kubectx ${NKP_CLUSTER_NAME}-admin@${NKP_CLUSTER_NAME}
     ```

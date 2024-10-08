@@ -173,13 +173,16 @@ We will need to enable GPU operator for deploying NKP application.
 3. Go to **Applications** 
 4. Search for **NVIDIA GPU Operator**
 5. Click on **Enable**
-6. Click on **Configuration** and click on **Workspace Configuration**
-7. Inside the yaml editor, paste the following yaml content 
-   
+6. Click on **Configuration** tab
+7. Click on **Workspace Application Configuration Override** and paste the following yaml content
+
     ```yaml
     driver:
       enabled: true
     ```
+
+    For Example:
+    ![alt text](images/gpu-operator-enable.png)
 
 8. Click on **Enable** on the top right-hand corner to enable GPU driver on the Ubuntu GPU nodes
 9. Check GPU operator resources and make sure they are running
@@ -204,8 +207,8 @@ We will need to enable GPU operator for deploying NKP application.
         nvidia-operator-validator-w48ms                                   1/1     Running     0          28m
         ```
 
-10. Run a sample GPU workload to confirm GPU operations
-    
+11. Run a sample GPU workload to confirm GPU operations
+
     === "Command"
 
         ```bash
@@ -213,36 +216,36 @@ We will need to enable GPU operator for deploying NKP application.
         apiVersion: v1
         kind: Pod
         metadata:
-        name: cuda-vector-add
+          name: cuda-vector-add
         spec:
-        restartPolicy: OnFailure
-        containers:
-        - name: cuda-vector-add
+          restartPolicy: OnFailure
+          containers:
+          - name: cuda-vector-add
             image: k8s.gcr.io/cuda-vector-add:v0.1
             resources:
             limits:
-                nvidia.com/gpu: 1
+              nvidia.com/gpu: 1
         EOF
         ```
 
     === "Command output"
-    
+
         ```{ .text, no-copy}
         pod/cuda-vector-add created
         ```
 
-11. Follow the logs to check if the GPU operations are successful
+12. Follow the logs to check if the GPU operations are successful
     
     === "Command"
 
         ```bash
-        k logs cuda-vector-add
+        kubectl logs cuda-vector-add
         ```
 
     === "Command output"
     
         ```{ .text, no-copy}
-        k logs cuda-vector-add
+        kubectl logs cuda-vector-add
         [Vector addition of 50000 elements]
         Copy input data from the host memory to the CUDA device
         CUDA kernel launch with 196 blocks of 256 threads
@@ -271,15 +274,15 @@ We will create Nutanix Files storage class which will be used to create a pvc th
         ```
 
     === "Sample .env"
-    
+
         ```text
         export FILES_CREDENTIAILS_STRING='10.x.x.37:9440:admin:password'
         ```
 
 3. Source the .env file to load the latest $FILES_CREDENTIAILS_STRING environment variable
-   
+
     ```bash
-    source $HOME/nkp/.env
+    source $HOME/.env
     ```
 
 4. Create a secret for Nutanix Files CSI Driver
@@ -290,16 +293,16 @@ We will create Nutanix Files storage class which will be used to create a pvc th
     --dry-run -o yaml | kubectl apply -f -
     ```
 
-5. In VSC Explorer, go to ``/home/ubuntu/`` folder click on **New File** :material-file-plus-outline: and create a config file with the following name:
+5. In VSC Explorer, click on **New File** :material-file-plus-outline: and create a config file with the following name:
 
     ```bash
     nai-nfs-storage.yaml
     ```
 
-     Add the following content and replace the IP address with the IP address of ingress gateway.
-    
+     Add the following content and replace the `nfsServerName` with the name of the Nutanix Files server name .
+
     === "Template YAML"
-    
+
         ```yaml hl_lines="9"
         kind: StorageClass
         apiVersion: storage.k8s.io/v1
@@ -308,7 +311,7 @@ We will create Nutanix Files storage class which will be used to create a pvc th
         provisioner: csi.nutanix.com
         parameters:
           dynamicProv: ENABLED
-          nfsServerName: files
+          nfsServerName: _your_nutanix_files_server_name
           nfsServer: _your_nutanix_files_server_fqdn
           csi.storage.k8s.io/provisioner-secret-name: nutanix-csi-credentials-files
           csi.storage.k8s.io/provisioner-secret-namespace: ntnx-system
@@ -321,7 +324,7 @@ We will create Nutanix Files storage class which will be used to create a pvc th
         ```
 
     === "Sample YAML"
-    
+
         ```yaml hl_lines="9"
         kind: StorageClass
         apiVersion: storage.k8s.io/v1
@@ -343,62 +346,61 @@ We will create Nutanix Files storage class which will be used to create a pvc th
         ```
 
 6. Create the storage class
-    
+
     ```bash
-    kubectl apply -f storageclass.yaml
+    kubectl apply -f nai-nfs-storage.yaml
     ```
 
 7. Check storage classes in the cluster for the Nutanix Files storage class
-   
+
     === "Command"
-       
+
         ```bash
-        k get sc
+        kubectl get storageclass
         ```
   
     === "Command output"
-      
+
         ```bash hl_lines="5"
-        k get sc
+        kubectl get storageclass
 
         NAME                       PROVISIONER                     RECLAIMPOLICY   VOLUMEBINDINGMODE      ALLOWVOLUMEEXPANSION   AGE
         dkp-object-store           kommander.ceph.rook.io/bucket   Delete          Immediate              false                  28h
         nai-nfs-storage            csi.nutanix.com                 Delete          Immediate              true                   24h
         nutanix-volume (default)   csi.nutanix.com                 Delete          WaitForFirstConsumer   false                  28h
         ```
-    
-   
+
 ## Request Access to Model on Hugging Face
 
 Follow these steps to request access to the `meta-llama/Meta-Llama-3.1-8B-Instruct` model:
 
 1. **Sign in to your Hugging Face account**:  
-   
+
       - Visit [Hugging Face](https://huggingface.co) and log in to your account.
 
 2. **Navigate to the model page**:  
-   
+
       - Go to the [Meta-Llama-3.1-8B-Instruct model page](https://huggingface.co/meta-llama/Meta-Llama-3.1-8B-Instruct).
 
 3. **Request access**:
-   
+
       - On the model page, you will see a section or button labeled **Request Access** (this is usually near the top of the page or near the "Files and versions" section).
       - Click **Request Access**.
 
 4. **Complete the form**:
-   
+
       - You may be prompted to fill out a form or provide additional details about your intended use of the model.
       - Complete the required fields and submit the request.
 
 5. **Wait for approval**:
-   
+
       - After submitting your request, you will receive a notification or email once your access is granted.
       - This process can take some time depending on the approval workflow.
 
 Once access is granted, there will be an email notification.
 
 !!! note
-    
+
     Email from Hugging Face can take a few minutes or hours before it arrives.
 
 ## Create a Hugging Face Token with Read Permissions
@@ -406,31 +408,32 @@ Once access is granted, there will be an email notification.
 Follow these steps to create a Hugging Face token with read permissions:
 
 1. **Sign in to your Hugging Face account**:  
-   
-      - Visit [Hugging Face](https://huggingface.co) and log in to your account.
+
+    - Visit [Hugging Face](https://huggingface.co) and log in to your account.
 
 2. **Access your account settings**:
-      - Click on your profile picture in the top-right corner.
-      - From the dropdown, select **Settings**.
+    - Click on your profile picture in the top-right corner.
+    - From the dropdown, select **Settings**.
 
 3. **Navigate to the "Access Tokens" section**:
-    
-      - In the sidebar, click on **Access Tokens**.
-      - You will see a page where you can create and manage tokens.
+
+    - In the sidebar, click on **Access Tokens**.
+    - You will see a page where you can create and manage tokens.
 
 4. **Create a new token**:
 
-      - Click the **New token** button.
-      - Enter a name for your token (e.g., `read-only-token`).
+    - Click the **New token** button.
+    - Enter a name for your token (i.e., `read-only-token`).
 
 5. **Set token permissions**:
-   
-      - Under the permissions dropdown, select **Read**.
+
+    - Under the permissions dropdown, select **Read**. For Example:
+        ![hf-token](docs/iep/images/hf-token.png)
 
 6. **Create and copy the token**:
-   
-      - After selecting the permissions, click **Create**.
-      - Your token will be generated and displayed only once, so make sure to copy it and store it securely.
+
+    - After selecting the permissions, click **Create**.
+    - Your token will be generated and displayed only once, so make sure to copy it and store it securely.
 
 Use this token for accessing Hugging Face resources with read-only permissions.
 

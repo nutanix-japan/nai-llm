@@ -24,7 +24,7 @@ Once the bootstrapping is done in the previous section. We can access and test o
 1. In VSC Terminal, check the status of inferencing service
    
     ```bash
-    k get isvc -A
+    kubectl get isvc -A
     ```
     ``` { .text .no-copy }
     NAMESPACE   NAME      URL                                                READY   PREV   LATEST   PREVROLLEDOUTREVISION   LATESTREADYREVISION       AGE
@@ -44,11 +44,11 @@ Once the bootstrapping is done in the previous section. We can access and test o
 3. On VSC terminal, get the LLM Frontend ingress endpoints
    
     ```bash
-    k get ingress -A | grep frontend
+    kubectl get ingress -A | grep frontend
     ```
 
     ``` { .text .no-copy }
-    k get ingress -A | grep frontend
+    kubectl get ingress -A | grep frontend
     NAMESPACE              NAME                                                      CLASS   HOSTS                                      ADDRESS        PORTS     AGE
     gptnvd-reference-app   gptnvd-reference-app-gptnvd-ref-app-gptnvd-referenceapp   nginx   frontend.dev-cluster.10.x.x.216.nip.io   10.x.x.216   80, 443   4h9m      
     ```
