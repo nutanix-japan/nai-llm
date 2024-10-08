@@ -44,11 +44,14 @@ For ``nkpdev``, we will deploy an NKP Cluster of type "Development".
 
 ## Pre-requisites for NKP Deployment
 
-1. Existing Jumphost VM. See here for installation [steps](../infra/infra_jumphost_tofu.md)
-2. Download and install ``nkp`` binary from Nutanix Portal
-3. Find and reserve 3 IPs for control plane and MetalLB access from AHV network
-4. Find GPU details from Nutanix cluster
-5. Create a base image to use with NKP nodes using ``nkp`` command
+1. Existing Ubuntu/Rocky Linux jumphost VM. See here for jumphost installation [steps](../infra/infra_jumphost_tofu.md). 
+2. [Docker](#setup-docker-on-jumphost) or Podman installed on the jumphost VM
+3. Nutanix PC is at least ``2024.1``
+4. Nutanix AOS is at least ``6.5``,``6.8+``
+5. Download and install ``nkp`` binary from Nutanix Portal
+6. Find and reserve 3 IPs for control plane and MetalLB access from AHV network
+7. Find GPU details from Nutanix cluster
+8. Create a base image to use with NKP nodes using ``nkp`` command
 
 
 ### Install NKP Binaries
@@ -71,8 +74,8 @@ For ``nkpdev``, we will deploy an NKP Cluster of type "Development".
     ```bash
     cd /home/ubuntu/nkp
     ```
-    ```bash
-    curl -o nkp_v2.12.0_linux_amd64.tar.gz "copied link from Nutanix Portal"
+    ```text title="Paste the download URL within double quotes"
+    curl -o nkp_v2.12.0_linux_amd64.tar.gz "_copied_download_URL"
     ```
     ```bash
     gunzip nkp_v2.12.0_linux_amd64.tar.gz
@@ -191,9 +194,12 @@ We will need a total of three IPs for the following:
          ip_list=10.x.x.214,10.x.x.215,10.x.x.216
          ```
 
-### Optional - Find GPU Details
+### Find GPU Details
 
-If there is a requirement to deploy workloads that require GPU, find the GPU details in your Nutanix cluster.
+!!! note "Are you just deploying NKP?"
+    If you are doing this lab only to deploy NKP, then you can skip this GPU section. 
+
+As we will be deploying Nutanix Enterprise AI (NAI) in the next section, we need to find the GPU details beforehand.
 
 Find the details of GPU on the Nutanix cluster while still connected to Prism Central (PC).
 
