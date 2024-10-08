@@ -78,7 +78,7 @@ stateDiagram-v2
         
     === "Command output"
 
-        ```bash
+        ```{ .bash .no-copy }
         Installing...
         Release "nai-admin" has been upgraded. Happy Helming!
         NAME: nai-admin
@@ -203,7 +203,7 @@ stateDiagram-v2
         ```
     === "Command output"
 
-        ```bash
+        ```{ .text .no-copy }
         k get po,deploy
 
         NAME                                            READY   STATUS      RESTARTS   AGE
@@ -242,6 +242,8 @@ In this section we will install SSL Certificate to access the NAI UI.
     ``` 
    
     Add the following content to the file and replace the IP address with the IP address of ingress gateway.
+
+    Replace the values in the highlighted lines with the IP address of ingress gateway that was reserved in this [section](../infra/infra_nkp.md#reserve-control-plane-and-metallb-endpoint-ips).
    
     ```yaml hl_lines="11 13 15"
     apiVersion: cert-manager.io/v1
@@ -289,7 +291,7 @@ In this section we will install SSL Certificate to access the NAI UI.
 
     === "Command output"
      
-        ```bash
+        ```{ .text .no-copy }
         gateway.networking.istio.io/knative-ingress-gateway patched 
         ```
 
@@ -333,24 +335,24 @@ We will download and user llama3 8B model which we sized for in the previous sec
 
     === "Command output"
 
-        ```bash
+        ```{ .text .no-copy }
         kubens nai-system
 
         ✔ Active namespace is "nai-admin"
         ```
-        ```bash
+        ```{ .text .no-copy }
         k get jobs
 
         NAME                                       COMPLETIONS   DURATION   AGE
         nai-c0d6ca61-1629-43d2-b57a-9f-model-job   0/1           4m56s      4m56
         ```
-        ```bash
+        ```{ .text .no-copy }
         k get po
 
         NAME                                             READY   STATUS    RESTARTS   AGE
         nai-c0d6ca61-1629-43d2-b57a-9f-model-job-9nmff   1/1     Running   0          4m49s
         ```
-        ```bash
+        ```{ .text .no-copy }
         k logs -f nai-c0d6ca61-1629-43d2-b57a-9f-model-job-9nmff 
 
         /venv/lib/python3.9/site-packages/huggingface_hub/file_download.py:983: UserWarning: Not enough free disk space to download the file. The expected file size is: 0.05 MB. The target location /data/model-files only has 0.00 MB free disk space.
@@ -399,7 +401,7 @@ In this section we will create an inference endpoint using the downloaded model.
 
     === "Command output"
         
-        ```bash
+        ```{ .text .no-copy }
         kubens
         get po,deploy
         NAME                                                     READY   STATUS        RESTARTS   AGE
@@ -419,7 +421,7 @@ In this section we will create an inference endpoint using the downloaded model.
 
     === "Command output"
         
-        ```bash
+        ```{ .text .no-copy }
         kubectl get isvc
 
         NAME      URL                                          READY   PREV   LATEST   PREVROLLEDOUTREVISION   LATESTREADYREVISION       AGE

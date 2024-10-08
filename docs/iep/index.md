@@ -2,7 +2,7 @@
 
 In this part of the lab we will deploy LLM on GPU nodes.
 
-We have deployed a Kubernetes cluster so far as per the NVD [design requirements](../conceptual/conceptual.md#management-kubernetes-cluster)
+We have deployed a Kubernetes cluster so far as per the NVD [design requirements](../conceptual/conceptual.md#management-kubernetes-cluster).
 
 **Dev cluster**: to host the dev LLM and ChatBot application - this will use GPU passed through to the kubernetes worker node.
 
