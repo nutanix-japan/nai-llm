@@ -14,9 +14,11 @@ A kubernetes cluster (NKP or other supported ones) should already be deployed to
 
     ---
 
-    Setup a Nutanix cluster in under an hour using Foundation to prepare your infrastructure.
+    [:octicons-arrow-right-24: Setup NKP](../infra/infra_nkp.md) - Quick install with all working NKP components
 
-    [:octicons-arrow-right-24: Setup Nutanix Kubernetes Platform](../infra/infra_nkp.md)
+    [:octicons-arrow-right-24: Setup Customized NKP](../appendix/infra_nkp_hard_way.md) - Customize what NKP components to deploy
+
+    [:octicons-arrow-right-24: Air-gapped Install](../appendix/infra_nkp_hard_way.md) - Under construction :construction: .. 
 
 </div>
 
