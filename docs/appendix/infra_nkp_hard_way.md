@@ -428,8 +428,8 @@ We are now ready to install the workload ``nkpdev`` cluster
                 --worker-vm-image ${NKP_IMAGE} \
                 --ssh-public-key-file ${SSH_PUBLIC_KEY} \
                 --kubernetes-service-load-balancer-ip-range ${LB_IP_RANGE} \
-                --control-plane-disk-size 150 --control-plane-memory 16 --control-plane-vcpus 8 --control-plane-cores-per-vcpu 1 \
-                --worker-disk-size 150 --worker-memory 32 --worker-vcpus 16 --worker-cores-per-vcpu 1 \
+                --control-plane-disk-size 150 --control-plane-memory ${CONTROL_PLANE_MEMORY_GIB} --control-plane-vcpus ${CONTROL_PLANE_VCPUS} --control-plane-cores-per-vcpu ${CONTROL_PLANE_CORES_PER_VCPU} \
+                --worker-disk-size 150 --worker-memory ${WORKER_MEMORY_GIB} --worker-vcpus ${WORKER_VCPUS} --worker-cores-per-vcpu ${WORKER_CORES_PER_VCPU} \
                 --csi-file-system ${CSI_FILESYSTEM} \
                 --csi-hypervisor-attached-volumes=${CSI_HYPERVISOR_ATTACHED} \
                 --registry-mirror-url "https://registry-1.docker.io" \
@@ -463,8 +463,8 @@ We are now ready to install the workload ``nkpdev`` cluster
             --worker-vm-image ${NKP_IMAGE} \
             --ssh-public-key-file ${SSH_PUBLIC_KEY} \
             --kubernetes-service-load-balancer-ip-range ${LB_IP_RANGE} \
-            --control-plane-disk-size 150 --control-plane-memory 16 --control-plane-vcpus 8 --control-plane-cores-per-vcpu 1 \
-            --worker-disk-size 150 --worker-memory 64 --worker-vcpus 16 --worker-cores-per-vcpu 1 \
+            --control-plane-disk-size 150 --control-plane-memory ${CONTROL_PLANE_MEMORY_GIB} --control-plane-vcpus ${CONTROL_PLANE_VCPUS} --control-plane-cores-per-vcpu ${CONTROL_PLANE_CORES_PER_VCPU} \
+            --worker-disk-size 150 --worker-memory ${WORKER_MEMORY_GIB} --worker-vcpus ${WORKER_VCPUS} --worker-cores-per-vcpu ${WORKER_CORES_PER_VCPU} \
             --csi-file-system ${CSI_FILESYSTEM} \
             --csi-hypervisor-attached-volumes=${CSI_HYPERVISOR_ATTACHED} \
             --registry-mirror-url "https://registry-1.docker.io" \
