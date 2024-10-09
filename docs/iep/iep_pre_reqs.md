@@ -223,8 +223,8 @@ We will need to enable GPU operator for deploying NKP application.
           - name: cuda-vector-add
             image: k8s.gcr.io/cuda-vector-add:v0.1
             resources:
-            limits:
-              nvidia.com/gpu: 1
+              limits:
+                nvidia.com/gpu: 1
         EOF
         ```
 
