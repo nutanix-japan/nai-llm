@@ -324,7 +324,7 @@ We are now ready to install the workload ``nkpdev`` cluster
         ```text
         export CONTROL_PLANE_REPLICAS=_no_of_control_plane_replicas
         export CONTROL_PLANE_VCPUS=_no_of_control_plane_vcpus
-        export CONTROL_PLANE_CORES_PER_VCPU=_no_of_control_plane_cores_per_vcpu
+        #export CONTROL_PLANE_CORES_PER_VCPU=_no_of_control_plane_cores_per_vcpu
         export CONTROL_PLANE_MEMORY_GIB=_no_of_control_plane_memory_gib
         export WORKER_REPLICAS=_no_of_worker_replicas
         export WORKER_VCPUS=_no_of_worker_vcpus
@@ -342,7 +342,7 @@ We are now ready to install the workload ``nkpdev`` cluster
         ```text
         export CONTROL_PLANE_REPLICAS=3
         export CONTROL_PLANE_VCPUS=4
-        export CONTROL_PLANE_CORES_PER_VCPU=1
+        #export CONTROL_PLANE_CORES_PER_VCPU=1
         export CONTROL_PLANE_MEMORY_GIB=16
         export WORKER_REPLICAS=4
         export WORKER_VCPUS=8 
@@ -380,8 +380,8 @@ We are now ready to install the workload ``nkpdev`` cluster
                 --worker-vm-image ${NKP_IMAGE} \
                 --ssh-public-key-file ${SSH_PUBLIC_KEY} \
                 --kubernetes-service-load-balancer-ip-range ${LB_IP_RANGE} \
-                --control-plane-disk-size 150 --control-plane-memory 16 --control-plane-vcpus 8 --control-plane-cores-per-vcpu 1 \
-                --worker-disk-size 150 --worker-memory 32 --worker-vcpus 16 --worker-cores-per-vcpu 1 \
+                --control-plane-disk-size 150 --control-plane-memory ${CONTROL_PLANE_MEMORY_GIB} --control-plane-vcpus ${CONTROL_PLANE_VCPUS} --control-plane-cores-per-vcpu ${CONTROL_PLANE_CORES_PER_VCPU} \
+                --worker-disk-size 150 --worker-memory ${WORKER_MEMORY_GIB} --worker-vcpus ${WORKER_VCPUS} --worker-cores-per-vcpu ${WORKER_CORES_PER_VCPU} \
                 --csi-file-system ${CSI_FILESYSTEM} \
                 --csi-hypervisor-attached-volumes=${CSI_HYPERVISOR_ATTACHED} \
                 --registry-mirror-url "https://registry-1.docker.io" \
@@ -416,8 +416,8 @@ We are now ready to install the workload ``nkpdev`` cluster
             --worker-vm-image ${NKP_IMAGE} \
             --ssh-public-key-file ${SSH_PUBLIC_KEY} \
             --kubernetes-service-load-balancer-ip-range ${LB_IP_RANGE} \
-            --control-plane-disk-size 150 --control-plane-memory 16 --control-plane-vcpus 8 --control-plane-cores-per-vcpu 1 \
-            --worker-disk-size 150 --worker-memory 64 --worker-vcpus 16 --worker-cores-per-vcpu 1 \
+            --control-plane-disk-size 150 --control-plane-memory ${CONTROL_PLANE_MEMORY_GIB} --control-plane-vcpus ${CONTROL_PLANE_VCPUS} --control-plane-cores-per-vcpu ${CONTROL_PLANE_CORES_PER_VCPU} \
+            --worker-disk-size 150 --worker-memory ${WORKER_MEMORY_GIB} --worker-vcpus ${WORKER_VCPUS} --worker-cores-per-vcpu ${WORKER_CORES_PER_VCPU} \
             --csi-file-system ${CSI_FILESYSTEM} \
             --csi-hypervisor-attached-volumes=${CSI_HYPERVISOR_ATTACHED} \
             --registry-mirror-url "https://registry-1.docker.io" \
