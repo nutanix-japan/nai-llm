@@ -266,17 +266,17 @@ In this section we will install SSL Certificate to access the NAI UI.
     apiVersion: cert-manager.io/v1
     kind: Certificate
     metadata:
-    name: iep-cert
-    namespace: istio-system
+      name: iep-cert
+      namespace: istio-system
     spec:
-    issuerRef:
+      issuerRef:
         name: selfsigned-issuer
         kind: ClusterIssuer
-    secretName: iep-cert
-    commonName: nai.10.x.x.216.nip.io
-    dnsNames:
+      secretName: iep-cert
+      commonName: nai.10.x.x.216.nip.io
+      dnsNames:
         - nai.10.x.x.216.nip.io
-    ipAddresses:
+      ipAddresses:
         - 10.x.x.216
     ```
 
@@ -412,14 +412,14 @@ In this section we will create an inference endpoint using the downloaded model.
     === "Command"
 
         ```bash
-        kubens
+        kubens nai-admin
         kubectl get po,deploy
         ```
 
     === "Command output"
         
         ```{ .text .no-copy }
-        kubens
+        kubens nai-admin
         get po,deploy
         NAME                                                     READY   STATUS        RESTARTS   AGE
         pod/llama8b-predictor-00001-deployment-9ffd786db-6wkzt   2/2     Running       0          71m
