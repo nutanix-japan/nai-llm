@@ -36,11 +36,11 @@ Since the Bootstrap Cluster will be essential to deploying a workload nkpdev clu
 
 For ``nkpdev``, we will deploy an NKP Cluster of type "Development".
 
-| Role   | No. of Nodes (VM) | vCPU | RAM   | Storage |
-| ------ | ----------------- | ---- | ----- | ------- |
+| Role          | No. of Nodes (VM) | vCPU | RAM   | Storage |
+| ------------- | ----------------- | ---- | ----- | ------- |
 | Control plane | 3                 | 4    | 16 GB | 150 GB  |
-| Worker | 4                | 8   | 32 GB | 150 GB  |
-| GPU    | 1                 | 16   | 64 GB | 200 GB  |
+| Worker        | 4                 | 8    | 32 GB | 150 GB  |
+| GPU           | 1                 | 16   | 64 GB | 200 GB  |
 
 ## Pre-requisites for NKP Deployment
 
@@ -73,9 +73,11 @@ For ``nkpdev``, we will deploy an NKP Cluster of type "Development".
     ```bash
     cd /home/ubuntu/nkp
     ```
+
     ```text title="Paste the download URL within double quotes"
     curl -o nkp_v2.12.0_linux_amd64.tar.gz "_copied_download_URL"
     ```
+
     ```bash
     gunzip nkp_v2.12.0_linux_amd64.tar.gz
     tar -xvf nkp_v2.12.0_linux_amd64.tar
@@ -88,9 +90,9 @@ For ``nkpdev``, we will deploy an NKP Cluster of type "Development".
     ```
 
 11. Verify the ``nkp`` binary is installed correctly. Ensure the version is latest
-    
+
     !!! note
-        
+
         At the time of writing this lab nkp version is v2.12.0
 
     === "Command"
@@ -100,7 +102,7 @@ For ``nkpdev``, we will deploy an NKP Cluster of type "Development".
         ```
 
     === "Command output"
-      
+
         ```{ .bash .no-copy }
         $ nkp version
         diagnose: v0.10.1
@@ -123,19 +125,18 @@ For ``nkpdev``, we will deploy an NKP Cluster of type "Development".
     ```
 
     !!! tip
-        
+
         Restart the jumpbox host if ``ubuntu`` user has permission issues using ``docker`` commands.
 
-### Reserve Control Plane and MetalLB Endpoint IPs 
+### Reserve Control Plane and MetalLB Endpoint IPs
 
 Nutanix AHV IPAM network allows you to black list IPs that needs to be reserved for specific application endpoints. We will use this feature to find and reserve three IPs. 
 
 We will need a total of three IPs for the following:
 
-  
-| Cluster Role  | Cluster Name            |    Control Plane IP   |    MetalLB  IP  |          
-| -------------  | --------            |  ------------ |  --------   | 
-| Dev  |``nkpdev``       |  1             |  2        |  
+| Cluster Role | Cluster Name | Control Plane IP | MetalLB IP |
+|--------------|--------------|------------------|------------|
+| Dev          | `nkpdev`     | 1                | 2          |
 
 1. Get the CIDR range for the AHV network(subnet) where the application will be deployed
 
@@ -180,7 +181,7 @@ We will need a total of three IPs for the following:
     - **Password:** your Prism Element password 
 
     === "Command"
-    
+
         ```text
         acli net.add_to_ip_blacklist <your-ipam-ahv-network> \
         ip_list=10.x.x.214,10.x.x.215,10.x.x.216
@@ -355,16 +356,16 @@ We are now ready to install the workload ``nkpdev`` cluster
         export NUTANIX_PROJECT_NAME=dev-lab
         ```
 
-3. Source the new variables and values to the environment
-     
+2. Source the new variables and values to the environment
+
      ```bash
      source .env
      ```
 
-4. In VSC, open Terminal, enter the following command to create the workload cluster
-   
+3. In VSC, open Terminal, enter the following command to create the workload cluster
+
     ??? tip "Check your command for correct argument values"
-        
+
         Run the following command to verify your ``nkp`` command and associated environment variables and values.
 
         ```bash
@@ -506,17 +507,17 @@ We are now ready to install the workload ``nkpdev`` cluster
         
         See [NKP the Hard Way](../appendix/infra_nkp_hard_way.md) section for more information for customizable NKP cluster deployments. 
   
-5. Observe the events in the shell and in Prism Central events
+4. Observe the events in the shell and in Prism Central events
 
-6. Store kubeconfig files for the workload cluster
+5. Store kubeconfig files for the workload cluster
 
     ```bash
     nkp get kubeconfig -c ${NKP_CLUSTER_NAME} > ${NKP_CLUSTER_NAME}.cfg
     export KUBECONFIG=${PWD}/${NKP_CLUSTER_NAME}.cfg
     ```
 
-7. Run the following command to check K8S status of the ``nkpdev`` cluster
- 
+6. Run the following command to check K8S status of the ``nkpdev`` cluster
+
     === "Command"
 
          ```bash
@@ -565,9 +566,9 @@ Find the details of GPU on the Nutanix cluster while still connected to Prism Ce
 In this section we will create a nodepool to host the AI apps with a GPU.
 
 1. Open .env file in VSC and add (append) the following environment variables to your ``.env`` file and save it
-   
+
     === "Template .env"
-    
+
         ```text
         export GPU_NAME=_name_of_gpu_device_
         export GPU_REPLICA_COUNT=_no_of_gpu_worker_nodes
@@ -575,21 +576,21 @@ In this section we will create a nodepool to host the AI apps with a GPU.
         ```
 
     === "Sample .env"
-    
+
         ```text
         export GPU_NAME="Lovelace 40S"
         export GPU_REPLICA_COUNT=1
         export GPU_POOL=gpu-nodepool
         ```
 
-2.  Source the new variables and values to the environment
-     
+2. Source the new variables and values to the environment
+
      ```bash
      source .env
      ```
 
 3. Run the following command to create a GPU nodepool manifest
-   
+
     ```bash
     nkp create nodepool nutanix \
         --cluster-name ${NKP_CLUSTER_NAME} \
@@ -605,7 +606,7 @@ In this section we will create a nodepool to host the AI apps with a GPU.
     ```
 
     !!! note
-       
+
         Right now there is no switch for GPU in ``nkp`` command. We need to do dry-run the output into a file and then add the necessary GPU specifications
 
 4. Add the necessary gpu section to our new ``gpu-nodepool.yaml`` using ``yq`` command
@@ -664,8 +665,8 @@ In this section we will create a nodepool to host the AI apps with a GPU.
     kubectx ${NKP_CLUSTER_NAME}-admin@${NKP_CLUSTER_NAME}
     ```
 
-7.  Check nodes status in workload ``nkpdev`` cluster and note the gpu worker node
-    
+7. Check nodes status in workload ``nkpdev`` cluster and note the gpu worker node
+
     === "Command"
 
         ```bash

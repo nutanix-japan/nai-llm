@@ -1,4 +1,4 @@
-# Pre-requisites for MGMT and DEV Cluster
+# Pre-requisites for Deploying NAI
 
 In this part of the lab we will prepare pre-requisites for LLM application on GPU nodes.
 
@@ -24,14 +24,14 @@ stateDiagram-v2
     TestNAI --> [*]
 ```
 
-Prepare the following pre-requisites for mgmt-cluster and dev-cluster kubernetes clusters.
+Prepare the following pre-requisites needed to deploy NAI on target kubernetes cluster.
 
 ## Calculate the Required vCPUs
 
 Calculate the number of vCPU for the NKP cluster.
 
 ??? Tip "GPU Node Sizing Tips"
-    
+
     Base configurations for GPU nodes are as follows:
 
     - For each GPU node will have 8 CPU cores, 24 GB of memory, and 300 GB of disk space.
@@ -40,13 +40,12 @@ Calculate the number of vCPU for the NKP cluster.
     - If a model needs multiple GPUs, ensure all GPUs are attached to the same worker node
     - For resiliency, while running multiple instances of the same endpoint, ensure that the GPUs are on different worker nodes.
 
-    | Role   | vCPU | Memory |
-    | ------ | ---- | ------ |
-    | 1 x Base Kubernetes Worker    |  8   | 24 GB |
-    | 1 x GPU    |  -  |  16 GB |
-    | 1 x Inference Endpoint    |  8   |- |
-    | Total    | 16   | 40 GB |
-
+    | Role                       | vCPU | Memory |
+    |----------------------------|------|--------|
+    | 1 x Base Kubernetes Worker | 8    | 24 GB  |
+    | 1 x GPU                    | -    | 16 GB  |
+    | 1 x Inference Endpoint     | 8    | -      |
+    | Total                      | 16   | 40 GB  |
 
 We will be testing ``LLama-3-8B`` model with the following configurations:
 
@@ -67,15 +66,6 @@ We will be testing ``LLama-3-8B`` model with the following configurations:
 +---------------+-------------------+---------------+-----------------+-----------+--------------+
 | Totals        |                   |               |                 | 60        | 224 GB       |
 +---------------+-------------------+---------------+-----------------+-----------+--------------+
-
-<!-- +---------------+---------------+-----------------+
-| First Header  | Second Header | Third Header    |
-+===============+===============+=================+
-| A cell that   | A cell that spans multiple      |
-| spans         | columns.                        |
-| multiple rows +---------------+-----------------+
-|               | One, two cell | Red & blue cell |
-+---------------+---------------+-----------------+ -->
 
 We need to generate a license for the NKP cluster which totals to ``60`` vCPU.
 
@@ -102,7 +92,7 @@ To generate a license for the NKP cluster.
 9. Choose Non-production license and Save
 10. Select the cluster name and click on **Next**
 11. Input the number of vCPU (``60``) from our calculations in the previous [section](#calculate-the-required-vcpus)
-12. Click on **Save** 
+12. Click on **Save**
 13. Download the csv file and store it in a safe place
 
 ### Apply License for NKP Cluster
@@ -140,7 +130,7 @@ To generate a license for the NKP cluster.
         ``` -->
 
 1. Login to the Kommander URL for ``nkpdev`` cluster with the generated credentials that was generated in the previous [section](../infra/infra_nkp.md#create-nkp-workload-cluster). The following commands will give you the credentials and URL.
-   
+
     === "Command"
 
         ```bash
@@ -186,15 +176,15 @@ We will need to enable GPU operator for deploying NKP application.
 
 8. Click on **Enable** on the top right-hand corner to enable GPU driver on the Ubuntu GPU nodes
 9. Check GPU operator resources and make sure they are running
-    
+
     === "Command"
-    
+
         ```bash
         kubectl get po -A | grep -i nvidia
         ```
 
     === "Command output"
-   
+
         ```{ .text, no-copy}
         kubectl get po -A | grep -i nvidia
 
@@ -207,7 +197,7 @@ We will need to enable GPU operator for deploying NKP application.
         nvidia-operator-validator-w48ms                                   1/1     Running     0          28m
         ```
 
-11. Run a sample GPU workload to confirm GPU operations
+10. Run a sample GPU workload to confirm GPU operations
 
     === "Command"
 
@@ -234,14 +224,8 @@ We will need to enable GPU operator for deploying NKP application.
         pod/cuda-vector-add created
         ```
 
-12. Find the job and pod running the GPU workload
-    
-     ```bash
-     kubectl get job,po
-     ```
+11. Follow the logs to check if the GPU operations are successful
 
-13. Check the logs of the pod to check if the GPU operations are successful
-    
     === "Command"
 
         ```bash
@@ -254,7 +238,7 @@ We will need to enable GPU operator for deploying NKP application.
         ```
 
     === "Command output"
-    
+
         ```{ .text, no-copy}
         kubectl logs cuda-vector-add
         [Vector addition of 50000 elements]
@@ -310,7 +294,10 @@ We will create Nutanix Files storage class which will be used to create a pvc th
     nai-nfs-storage.yaml
     ```
 
-     Add the following content and replace the `nfsServerName` with the name of the Nutanix Files server name .
+    Add the following content and replace the `nfsServerName` with the name of the Nutanix Files server name .
+
+
+    ![Finding nfsServerName and nfsServer fqdn](nfs_server_domain_identify.png)
 
     === "Template YAML"
 
