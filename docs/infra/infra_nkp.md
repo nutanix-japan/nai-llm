@@ -11,8 +11,11 @@ stateDiagram-v2
     state DeployNKP {
         [*] --> CreateNkpMachineImage
         CreateNkpMachineImage --> CreateNKPCluster
-        CreateNKPCluster --> DeployGPUNodePool
-        DeployGPUNodePool --> [*]
+        CreateNKPCluster --> GenerateLicense
+        GenerateLicense --> InstallLicense
+        InstallLicense --> DeployGpuNodePool
+        DeployGpuNodePool --> EnableGpuOperator
+        EnableGpuOperator --> [*]
     }
 
     PrepWorkstation --> DeployJumpHost 
@@ -22,29 +25,54 @@ stateDiagram-v2
 
 ## NKP High Level Cluster Design
 
-The `Bootstrap` NKP cluster will be a [kind](https://kind.sigs.k8s.io/) cluster that will be used to deploy the ``nkpdev`` cluster. This will be deployed during the install automatically when the ``nkp create cluster nutanix`` command is run with the ``--self-managed`` option
-
 The ``nkpdev`` cluster will be hosting the LLM model serving endpoints and AI application stack. This cluster and will require a dedicated GPU node pool.
 
-Once ``nkpdev`` deployment has been tested successfully, we can deploy applications to optional PROD Workload cluster.
+### Sizing Requirements
 
-### Bootstrap Cluster
+Below are the sizing requirements needed to successfully deploy NAI on a NKP Cluster (labeled as ``nkpdev``) and subsequently deploying single LLM inferencing endpoint on NAI using the `meta-llama/Meta-Llama-3-8B-Instruct` LLM model.
 
-Since the Bootstrap Cluster will be essential to deploying a workload nkpdev cluster. We will use ``kind`` cluster packaged by Nutanix. ``kind`` is already installed on the jumphost VM and be accessed using ``devbox shell``.
+??? Tip "Calculating GPU Resources Tips"
 
-### Dev Workload Cluster
+    The calculations below assume that you're already aware of how much memory is required to load target LLM model.
 
-For ``nkpdev``, we will deploy an NKP Cluster of type "Development".
+    For a general example:
 
-| Role          | No. of Nodes (VM) | vCPU | RAM   | Storage |
-| ------------- | ----------------- | ---- | ----- | ------- |
-| Control plane | 3                 | 4    | 16 GB | 150 GB  |
-| Worker        | 4                 | 8    | 32 GB | 150 GB  |
-| GPU           | 1                 | 16   | 64 GB | 200 GB  |
+    - If you have a 8b(illion) parameter model, you'll need 2x the amount of GPU vRAM avaible to load into memory.
+    
+    > So in the case of the `meta-llama/Meta-Llama-3-8B-Instruct` model, you'll need a min. 16 GiB GPU vRAM available
+
+    Below are additional sizing consideration "Rules of Thumb" for further calculating min. GPU node resources:
+
+    - For each GPU node will have 8 CPU cores, 24 GB of memory, and 300 GB of disk space.
+    - For each GPU attached to the node, add 16 GiB of memory.
+    - For each endpoint attached to the node, add 8 CPU cores.
+    - If a model needs multiple GPUs, ensure all GPUs are attached to the same worker node
+    - For resiliency, while running multiple instances of the same endpoint, ensure that the GPUs are on different worker nodes.
+
+    | Role                       | vCPU | Memory |
+    |----------------------------|------|--------|
+    | 1 x Base Kubernetes Worker | 8    | 24 GB  |
+    | 1 x GPU                    | -    | 16 GB  |
+    | 1 x Inference Endpoint     | 8    | -      |
+    | Total                      | 16   | 40 GB  |
+
+Since we will be testing with the ``meta-llama/Meta-Llama-3-8B-Instruct`` HuggingFace model, we will require a GPU with a min. of 24 GiB GPU vRAM available to support this demo.
+
+!!! note
+    GPU min. vRAM should be 24 GB, such as NVIDIA L4 Model.
+
+Below are minimum requirements for deploying NAI on the NKP Demo Cluster.
+
+| Role          | No. of Nodes (VM) | vCPU per Node | Memory per Node | Storage per Node | Total vCPU | Total Memory |
+|---------------|-------------------|---------------|-----------------|------------------|------------|--------------|
+| Control plane | 3                 | 4             | 16 GB           | 150 GB           | 12         | 48 GB        |
+| Worker        | 4                 | 8             | 32 GB           | 150 GB           | 32         | 128 GB       |
+| GPU           | 1                 | 16            | 40 GB           | 300 GB           | 16         | 40 GB        |
+| **Totals**    |                   |               |                 |                  | **60**     | **216 GB**   |
 
 ## Pre-requisites for NKP Deployment
 
-1. Existing Ubuntu/Rocky Linux jumphost VM. See here for jumphost installation [steps](../infra/infra_jumphost_tofu.md).
+1. Existing Ubuntu Linux jumphost VM. See here for jumphost installation [steps](../infra/infra_jumphost_tofu.md).
 2. [Docker](#setup-docker-on-jumphost) or Podman installed on the jumphost VM
 3. Nutanix PC is at least ``2024.1``
 4. Nutanix AOS is at least ``6.5``,``6.8+``
@@ -325,7 +353,7 @@ We are now ready to install the workload ``nkpdev`` cluster
         ```text
         export CONTROL_PLANE_REPLICAS=_no_of_control_plane_replicas
         export CONTROL_PLANE_VCPUS=_no_of_control_plane_vcpus
-        #export CONTROL_PLANE_CORES_PER_VCPU=_no_of_control_plane_cores_per_vcpu
+        export CONTROL_PLANE_CORES_PER_VCPU=_no_of_control_plane_cores_per_vcpu
         export CONTROL_PLANE_MEMORY_GIB=_no_of_control_plane_memory_gib
         export WORKER_REPLICAS=_no_of_worker_replicas
         export WORKER_VCPUS=_no_of_worker_vcpus
@@ -343,7 +371,7 @@ We are now ready to install the workload ``nkpdev`` cluster
         ```text
         export CONTROL_PLANE_REPLICAS=3
         export CONTROL_PLANE_VCPUS=4
-        #export CONTROL_PLANE_CORES_PER_VCPU=1
+        export CONTROL_PLANE_CORES_PER_VCPU=1
         export CONTROL_PLANE_MEMORY_GIB=16
         export WORKER_REPLICAS=4
         export WORKER_VCPUS=8 
@@ -381,8 +409,14 @@ We are now ready to install the workload ``nkpdev`` cluster
                 --worker-vm-image ${NKP_IMAGE} \
                 --ssh-public-key-file ${SSH_PUBLIC_KEY} \
                 --kubernetes-service-load-balancer-ip-range ${LB_IP_RANGE} \
-                --control-plane-disk-size 150 --control-plane-memory ${CONTROL_PLANE_MEMORY_GIB} --control-plane-vcpus ${CONTROL_PLANE_VCPUS} --control-plane-cores-per-vcpu ${CONTROL_PLANE_CORES_PER_VCPU} \
-                --worker-disk-size 150 --worker-memory ${WORKER_MEMORY_GIB} --worker-vcpus ${WORKER_VCPUS} --worker-cores-per-vcpu ${WORKER_CORES_PER_VCPU} \
+                --control-plane-disk-size 150 \
+                --control-plane-memory ${CONTROL_PLANE_MEMORY_GIB} \
+                --control-plane-vcpus ${CONTROL_PLANE_VCPUS} \
+                --control-plane-cores-per-vcpu ${CONTROL_PLANE_CORES_PER_VCPU} \
+                --worker-disk-size 150 \
+                --worker-memory ${WORKER_MEMORY_GIB} \
+                --worker-vcpus ${WORKER_VCPUS} \
+                --worker-cores-per-vcpu ${WORKER_CORES_PER_VCPU} \
                 --csi-file-system ${CSI_FILESYSTEM} \
                 --csi-hypervisor-attached-volumes=${CSI_HYPERVISOR_ATTACHED} \
                 --registry-mirror-url "https://registry-1.docker.io" \
@@ -417,8 +451,14 @@ We are now ready to install the workload ``nkpdev`` cluster
             --worker-vm-image ${NKP_IMAGE} \
             --ssh-public-key-file ${SSH_PUBLIC_KEY} \
             --kubernetes-service-load-balancer-ip-range ${LB_IP_RANGE} \
-            --control-plane-disk-size 150 --control-plane-memory ${CONTROL_PLANE_MEMORY_GIB} --control-plane-vcpus ${CONTROL_PLANE_VCPUS} --control-plane-cores-per-vcpu ${CONTROL_PLANE_CORES_PER_VCPU} \
-            --worker-disk-size 150 --worker-memory ${WORKER_MEMORY_GIB} --worker-vcpus ${WORKER_VCPUS} --worker-cores-per-vcpu ${WORKER_CORES_PER_VCPU} \
+            --control-plane-disk-size 150 \
+            --control-plane-memory ${CONTROL_PLANE_MEMORY_GIB} \
+            --control-plane-vcpus ${CONTROL_PLANE_VCPUS} \
+            --control-plane-cores-per-vcpu ${CONTROL_PLANE_CORES_PER_VCPU} \
+            --worker-disk-size 150 \
+            --worker-memory ${WORKER_MEMORY_GIB} \
+            --worker-vcpus ${WORKER_VCPUS} \
+            --worker-cores-per-vcpu ${WORKER_CORES_PER_VCPU} \
             --csi-file-system ${CSI_FILESYSTEM} \
             --csi-hypervisor-attached-volumes=${CSI_HYPERVISOR_ATTACHED} \
             --registry-mirror-url "https://registry-1.docker.io" \
@@ -449,7 +489,7 @@ We are now ready to install the workload ``nkpdev`` cluster
         ✓ Waiting for machines to be ready
         ✓ Initializing new CAPI components 
         ✓ Creating ClusterClass resources 
-        ✓ Moving cluster resources 
+        ✓ Moving cluster resources
 
         > You can now view resources in the moved cluster by using the --kubeconfig flag with kubectl.
         For example: kubectl --kubeconfig="/home/ubuntu/nkp/nkpdev.conf" get nodes
@@ -544,7 +584,14 @@ We are now ready to install the workload ``nkpdev`` cluster
 !!! note "Are you just deploying NKP?"
     If you are doing this lab only to deploy NKP, then you can skip this GPU section.
 
-The steps below covers first retrieving the GPU device name, then subsequently using NKP to deploy the GPU nodepool.
+The steps below covers the following:
+    - Retrieving and Applying NKP Pro License
+    - Identifying the GPU device name
+    - Deploying the GPU nodepool
+    - Enabling the NVIDIA GPU Operator
+
+!!! note
+    To Enable the GPU Operator afterwards using the NKP Marketplace, a minimal NKP Pro license is required.
 
 ### Find GPU Device Details
 
@@ -573,6 +620,10 @@ In this section we will create a nodepool to host the AI apps with a GPU.
         export GPU_NAME=_name_of_gpu_device_
         export GPU_REPLICA_COUNT=_no_of_gpu_worker_nodes
         export GPU_POOL=_name_of_gpu_pool
+        export GPU_NODE_VCPUS=_no_of_gpu_node_vcpus
+        export GPU_NODE_CORES_PER_VCPU=_per_gpu_node_cores_per_vcpu
+        export GPU_NODE_MEMORY_GIB=_per_gpu_node_memory_gib
+        export GPU_NODE_DISK_SIZE_GIB=_per_gpu_node_memory_gib
         ```
 
     === "Sample .env"
@@ -581,6 +632,10 @@ In this section we will create a nodepool to host the AI apps with a GPU.
         export GPU_NAME="Lovelace 40S"
         export GPU_REPLICA_COUNT=1
         export GPU_POOL=gpu-nodepool
+        export GPU_NODE_VCPUS=16
+        export GPU_NODE_CORES_PER_VCPU=1
+        export GPU_NODE_MEMORY_GIB=40
+        export GPU_NODE_DISK_SIZE_GIB=200
         ```
 
 2. Source the new variables and values to the environment
@@ -595,11 +650,13 @@ In this section we will create a nodepool to host the AI apps with a GPU.
     nkp create nodepool nutanix \
         --cluster-name ${NKP_CLUSTER_NAME} \
         --prism-element-cluster ${NUTANIX_CLUSTER} \
+        --pc-project ${NUTANIX_PROJECT_NAME} \
         --subnets ${NUTANIX_SUBNET_NAME} \
         --vm-image ${NKP_IMAGE} \
-        --disk-size 200 \
-        --memory 40 \
-        --vcpus 16 \
+        --disk-size ${GPU_NODE_DISK_SIZE_GIB} \
+        --memory ${GPU_NODE_MEMORY_GIB} \
+        --vcpus ${GPU_NODE_VCPUS} \
+        --cores-per-vcpu ${GPU_NODE_CORES_PER_VCPU} \
         --replicas ${GPU_REPLICA_COUNT} \
         --wait \
         ${GPU_POOL} --dry-run -o yaml > gpu-nodepool.yaml
@@ -639,13 +696,13 @@ In this section we will create a nodepool to host the AI apps with a GPU.
                       image:
                         name: nkp-ubuntu-22.04-1.29.6-20240718055804
                         type: name
-                      memorySize: 64Gi
+                      memorySize: 40Gi
                       subnets:
                         - name: User1
                           type: name
                       systemDiskSize: 200Gi
-                      vcpuSockets: 2
-                      vcpusPerSocket: 8
+                      vcpuSockets: 16
+                      vcpusPerSocket: 1
                       gpus:
                         - type: name
                           name: Lovelace 40S
@@ -663,6 +720,12 @@ In this section we will create a nodepool to host the AI apps with a GPU.
 
     ```bash
     kubectx ${NKP_CLUSTER_NAME}-admin@${NKP_CLUSTER_NAME}
+    ```
+
+    Monitor Cluster-Api resources to ensure machines are being created successfully
+
+    ```bash
+    watch kubectl get cluster-api
     ```
 
 7. Check nodes status in workload ``nkpdev`` cluster and note the gpu worker node
@@ -688,6 +751,159 @@ In this section we will create a nodepool to host the AI apps with a GPU.
         nkpdev-ncnww-bbm4s                      Ready    control-plane   72m     v1.29.6
         nkpdev-ncnww-hldm9                      Ready    control-plane   75m     v1.29.6
         ```
+
+### Licensing
+
+We need to generate a license for the NKP cluster which is the total for all the vCPUs used by worker nodes.
+
+For example, in the [Sizing Requirements](#sizing-requirements) section, the NKP Demo Cluster `Total vCPU count` is equal to ``60``, whereas the actual worker nodes total vCPU count is only `48`.
+
+#### Generate NKP Pro License
+
+To generate a NKP Pro License for the NKP cluster:
+
+!!! note
+
+    Nutanix Internal users should logon using Nutanix SSO
+
+    Nutanix Partners/Customers should logon to Portal using their Nutanix Portal account credentials
+
+1. Login to [Nutanix Portal](https://portal.nutanix.com/page/licensing) using your credentials
+2. Go to **Licensing** > **License Summary**
+3. Click on the small drop down arrow :material-chevron-down: on Manage Licenses and choose Nutanix Kubernetes Platform (NKP)
+4. Input the NKP cluster name
+5. Click on the plus icon :material-plus:
+6. Click on **Next** in the bottom right corner
+7. Select NKP Pro License
+8. Select Apply to cluster
+9. Choose Non-production license and Save
+10. Select the cluster name and click on **Next**
+11. Input the number of vCPU (``60``) from our calculations in the previous [section](#calculate-the-required-vcpus)
+12. Click on **Save**
+13. Download the csv file and store it in a safe place
+
+#### Applying NKP Pro License to NKP Cluster
+
+1. Login to the Kommander URL for ``nkpdev`` cluster with the generated credentials that was generated in the previous [section](../infra/infra_nkp.md#create-nkp-workload-cluster). The following commands will give you the credentials and URL.
+
+    === "Command"
+
+        ```bash
+        nkp get dashboard
+        ```
+
+    === "Command output"
+
+        ```{ .bash .no-copy }
+        nkp get dashboard
+
+        Username: recursing_xxxxxxxxx
+        Password: YHbPsslIDB7p7rqwnfxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+        URL: https://10.x.x.215/dkp/kommander/dashboard
+        ```
+
+2. Go to **Licensing** and click on **Remove License** to remove the Starter license
+3. Type **nutanix-license** in the confirmation box and click on **Remove License**
+4. Click on **Add License**, choose Nutanix platform and paste the license key from the previous [section](#generate-license-for-nkp-cluster)
+5. Click on **Save**
+6. Confirm the license is applied to the cluster by cheking the **License Status** in the **License** menu
+7. The license will be applied to the cluster and the license status will reflect NKP Pro in the top right corner of the dashboard
+
+### Enable GPU Operator
+
+We will need to enable GPU operator for deploying NKP application. 
+
+1. In the NKP GUI, Go to **Clusters**
+2. Click on **Kommander Host**
+3. Go to **Applications** 
+4. Search for **NVIDIA GPU Operator**
+5. Click on **Enable**
+6. Click on **Configuration** tab
+7. Click on **Workspace Application Configuration Override** and paste the following yaml content
+
+    ```yaml
+    driver:
+      enabled: true
+    ```
+
+    For Example:
+    ![alt text](images/gpu-operator-enable.png)
+
+8. Click on **Enable** on the top right-hand corner to enable GPU driver on the Ubuntu GPU nodes
+9. Check GPU operator resources and make sure they are running
+
+    === "Command"
+
+        ```bash
+        kubectl get po -A | grep -i nvidia
+        ```
+
+    === "Command output"
+
+        ```{ .text, no-copy}
+        kubectl get po -A | grep -i nvidia
+
+        nvidia-container-toolkit-daemonset-fjzbt                          1/1     Running     0          28m
+        nvidia-cuda-validator-f5dpt                                       0/1     Completed   0          26m
+        nvidia-dcgm-exporter-9f77d                                        1/1     Running     0          28m
+        nvidia-dcgm-szqnx                                                 1/1     Running     0          28m
+        nvidia-device-plugin-daemonset-gzpdq                              1/1     Running     0          28m
+        nvidia-driver-daemonset-dzf55                                     1/1     Running     0          28m
+        nvidia-operator-validator-w48ms                                   1/1     Running     0          28m
+        ```
+
+10. Run a sample GPU workload to confirm GPU operations
+
+    === "Command"
+
+        ```bash
+        kubectl apply -f - <<EOF
+        apiVersion: v1
+        kind: Pod
+        metadata:
+          name: cuda-vector-add
+        spec:
+          restartPolicy: OnFailure
+          containers:
+          - name: cuda-vector-add
+            image: k8s.gcr.io/cuda-vector-add:v0.1
+            resources:
+              limits:
+                nvidia.com/gpu: 1
+        EOF
+        ```
+
+    === "Command output"
+
+        ```{ .text, no-copy}
+        pod/cuda-vector-add created
+        ```
+
+11. Follow the logs to check if the GPU operations are successful
+
+    === "Command"
+
+        ```bash
+        kubectl logs _gpu_worload_pod_name
+        ```
+    === "Sample Command"
+
+        ```bash
+        kubectl logs cuda-vector-add-xxx
+        ```
+
+    === "Command output"
+
+        ```{ .text, no-copy}
+        kubectl logs cuda-vector-add
+        [Vector addition of 50000 elements]
+        Copy input data from the host memory to the CUDA device
+        CUDA kernel launch with 196 blocks of 256 threads
+        Copy output data from the CUDA device to the host memory
+        Test PASSED
+        Done
+        ```
+
 
 Now we are ready to deploy our AI workloads.
 
