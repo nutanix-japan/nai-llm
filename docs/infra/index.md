@@ -6,8 +6,8 @@ We will deploy a jumphost to work with. We will deploy all the necessary tools o
 
 This guide covers two different scenarios for deploying Nutanix Enterprise AI [NAI] (previously known as GPT-In-A-Box).  
 
-1. The first scenario is a walkthrough on How-To [Deploy Nutanix Enterprise AI (NAI) with Nutanix Kubernetes Platform (NKP)](#deploy-nutanix-enterprise-ai-with-nutanix-kubernetes-platform-nkp), and 
-2. The second scenario covers the (soon to be deprecated) option on How-To [Deploy GPT-In-A-Box v1 Nutanix Validated Design (NVD) with NKE](#deploy-gpt-in-a-box-v1-nutanix-validated-design-nvd-with-nke) .
+1. The first scenario is a walkthrough on How-To [Deploy Nutanix Enterprise AI (NAI) with Nutanix Kubernetes Platform (NKP)](#deploy-nai-with-nkp), and 
+2. The second scenario covers the (soon to be deprecated) option on How-To [Deploy GPT-In-A-Box v1 Nutanix Validated Design (NVD) with NKE](#deploy-gpt-in-a-box-v1-with-nke) .
 
 !!! warning "Deprecation Notice!"
           
@@ -25,27 +25,25 @@ Here is a diagram that shows the four phases.
 
 ```mermaid
 stateDiagram-v2
-    direction LR
-    
-    state PrepWorkstation {
-        [*] --> GenrateRSAKeys
-        GenrateRSAKeys --> InstallTofu
-        InstallTofu --> InstallVSCode
-        InstallVSCode --> [*]
-    }
+  direction LR
 
-    state DeployJumpHost {
-        [*] --> CreateCloudInit
-        CreateCloudInit --> CreateJumpHostVM
-        CreateJumpHostVM --> DeployNaiUtils
-        DeployNaiUtils --> [*]
-    }
-
-    PrepWorkstation --> DeployJumpHost 
-    DeployJumpHost --> DeployNkp : Option A
-    DeployNkp --> DeployNai
-    DeployJumpHost --> DeployNke : Option B
-    DeployNke --> DeployGiabGitOps
+  state PrepWorkstation {
+    [*] --> GenrateRSAKeys
+    GenrateRSAKeys --> InstallTofu
+    InstallTofu --> InstallVSCode
+    InstallVSCode --> [*]
+  }
+  state DeployJumpHost {
+    [*] --> CreateCloudInit
+    CreateCloudInit --> CreateJumpHostVM
+    CreateJumpHostVM --> DeployNaiUtils
+    DeployNaiUtils --> [*]
+  }
+  PrepWorkstation --> DeployJumpHost
+  DeployJumpHost --> DeployNkp: Option A
+  DeployNkp --> DeployNai
+  DeployJumpHost --> DeployNke: Option B
+  DeployNke --> DeployGiabGitOps
 ```
 
 ## Deploy NAI with NKP
@@ -54,7 +52,7 @@ stateDiagram-v2
 2. Deploy Jumphost VM
 3. Deploy Nutanix Kubernetes Platform (NKP) Management Cluster
 4. Deploy Nutanix Enterprise AI (NAI)
-   
+
 Here is a diagram that shows the workflow:
 
 ```mermaid
