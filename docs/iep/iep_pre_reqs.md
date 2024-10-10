@@ -234,12 +234,23 @@ We will need to enable GPU operator for deploying NKP application.
         pod/cuda-vector-add created
         ```
 
-12. Follow the logs to check if the GPU operations are successful
+12. Find the job and pod running the GPU workload
+    
+     ```bash
+     kubectl get job,po
+     ```
+
+13. Check the logs of the pod to check if the GPU operations are successful
     
     === "Command"
 
         ```bash
-        kubectl logs cuda-vector-add
+        kubectl logs _gpu_worload_pod_name
+        ```
+    === "Sample Command"
+
+        ```bash
+        kubectl logs cuda-vector-add-xxx
         ```
 
     === "Command output"
