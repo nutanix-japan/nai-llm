@@ -108,10 +108,11 @@ stateDiagram-v2
     - ``$DOCKER_USERNAME``
     - ``$DOCKER_PASSWORD``
     - ``$DOCKER_EMAIL``
-  
-1. Create a new ``.env`` file in ``/home/unbuntu/nai`` directory
 
-2. Open .env file in VSC and add (append) the following environment variables to your ``.env`` file and save it
+
+1. Open ``$HOME/.env`` file in ``VSCode``
+
+2. Add (append) the following environment variables and save it
 
     === "Template .env"
 
@@ -337,39 +338,40 @@ We will download and user llama3 8B model which we sized for in the previous sec
     
     === "Command"
 
-        ```bash
-        kubens nai-system
-        ```
-        ```bash
+        ```bash title="Get jobs in nai-admin namespace"
+        kubens nai-admin
+        
         kubectl get jobs
         ```
-        ```bash
-        kubectl get po
+        ```bash title="Validate creation of pods and PVC"
+        kubectl get po,pvc
         ```
-        ```bash
+        ```bash title="Verify download of model using pod logs"
         kubectl logs -f _pod_associated_with_job
         ```
 
     === "Command output"
 
-        ```{ .text .no-copy }
-        kubens nai-system
+        ```text title="Get jobs in nai-admin namespace"
+        kubens nai-admin
 
         ✔ Active namespace is "nai-admin"
-        ```
-        ```{ .text .no-copy }
+     
         kubectl get jobs
 
         NAME                                       COMPLETIONS   DURATION   AGE
         nai-c0d6ca61-1629-43d2-b57a-9f-model-job   0/1           4m56s      4m56
         ```
-        ```{ .text .no-copy }
-        kubectl get po
+        ```text title="Validate creation of pods and PVC"
+        kubectl get po,pvc
 
         NAME                                             READY   STATUS    RESTARTS   AGE
         nai-c0d6ca61-1629-43d2-b57a-9f-model-job-9nmff   1/1     Running   0          4m49s
+
+        NAME                                       STATUS   VOLUME                                     CAPACITY   ACCESS MODES   STORAGECLASS      VOLUMEATTRIBUTESCLASS   AGE
+        nai-c0d6ca61-1629-43d2-b57a-9f-pvc-claim   Bound    pvc-a63d27a4-2541-4293-b680-514b8b890fe0   28Gi       RWX            nai-nfs-storage   <unset>                 2d
         ```
-        ```{ .text .no-copy }
+        ```text title="Verify download of model using pod logs"
         kubectl logs -f nai-c0d6ca61-1629-43d2-b57a-9f-model-job-9nmff 
 
         /venv/lib/python3.9/site-packages/huggingface_hub/file_download.py:983: UserWarning: Not enough free disk space to download the file. The expected file size is: 0.05 MB. The target location /data/model-files only has 0.00 MB free disk space.

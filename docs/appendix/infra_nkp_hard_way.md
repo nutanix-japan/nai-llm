@@ -71,8 +71,8 @@ For ``nkpdev``, we will deploy an NKP Cluster of type "Development".
     ```bash
     cd /home/ubuntu/nkp
     ```
-    ```bash
-    curl -o nkp_v2.12.0_linux_amd64.tar.gz "copied link from Nutanix Portal"
+    ```text title="Paste the download URL within double quotes"
+    curl -o nkp_v2.12.0_linux_amd64.tar.gz "_paste_download_URL_here"
     ```
     ```bash
     gunzip nkp_v2.12.0_linux_amd64.tar.gz
@@ -240,7 +240,7 @@ In this section we will go through creating a base image for all the control pla
 
     === "Sample .env"
     
-        ```text
+        ```{ .text .no-copy }
         export NUTANIX_USER=admin
         export NUTANIX_PASSWORD=xxxxxxxx
         export NUTANIX_ENDPOINT=pc.example.com
@@ -263,40 +263,43 @@ In this section we will go through creating a base image for all the control pla
 
 9. Create the base image and upload to Prism Central using the following command. 
    
-    ```bash
-    nkp create image nutanix ubuntu-22.04 --endpoint ${NUTANIX_ENDPOINT} --cluster ${NUTANIX_CLUSTER} --subnet ${NUTANIX_SUBNET_NAME}
-    ```
-    
     !!!note 
            Image creation will take up to 5 minutes.
 
+    === "Command"
 
-    <!-- termynal -->
+        ```bash
+        nkp create image nutanix ubuntu-22.04 \
+          --endpoint ${NUTANIX_ENDPOINT} --cluster ${NUTANIX_CLUSTER} \
+          --subnet ${NUTANIX_SUBNET_NAME} --insecure
+        ```
 
-    ```bash
-    nkp create image nutanix ubuntu-22.04 \ 
-    --endpoint ${NUTANIX_ENDPOINT} --cluster ${NUTANIX_CLUSTER} \
-    --subnet ${NUTANIX_SUBNET_NAME} 
-    
-    > Provisioning and configuring image
-    Manifest files extracted to /home/ubuntu/nkp/.nkp-image-builder-3243021807
-    nutanix.kib_image: output will be in this color.
+    === "Command output"
 
-    ==> nutanix.kib_image: Creating Packer Builder virtual machine...
-        nutanix.kib_image: Virtual machine nkp-ubuntu-22.04-1.29.6-20240717082720 created
-        nutanix.kib_image: Found IP for virtual machine: 10.x.x.234
-    ==> nutanix.kib_image: Running post-processor: packer-manifest (type manifest)
-    
-    ---> 100%
-    Build 'nutanix.kib_image' finished after 4 minutes 55 seconds.
-    ==> Wait completed after 4 minutes 55 seconds
+        ```{ .text .no-copy }
+        nkp create image nutanix ubuntu-22.04 \ 
+        --endpoint ${NUTANIX_ENDPOINT} --cluster ${NUTANIX_CLUSTER} \
+        --subnet ${NUTANIX_SUBNET_NAME} --insecure
+        
+        > Provisioning and configuring image
+        Manifest files extracted to /home/ubuntu/nkp/.nkp-image-builder-3243021807
+        nutanix.kib_image: output will be in this color.
 
-    ==> Builds finished. The artifacts of successful builds are:
-    --> nutanix.kib_image: nkp-ubuntu-22.04-1.29.6-20240717082720
-    --> nutanix.kib_image: nkp-ubuntu-22.04-1.29.6-20240717082720
-    ```
+        ==> nutanix.kib_image: Creating Packer Builder virtual machine...
+            nutanix.kib_image: Virtual machine nkp-ubuntu-22.04-1.29.6-20240717082720 created
+            nutanix.kib_image: Found IP for virtual machine: 10.x.x.234
+        ==> nutanix.kib_image: Running post-processor: packer-manifest (type manifest)
+        
+        ---> 100%
+        Build 'nutanix.kib_image' finished after 4 minutes 55 seconds.
+        ==> Wait completed after 4 minutes 55 seconds
 
-    !!! info inline end "Image name"
+        ==> Builds finished. The artifacts of successful builds are:
+        --> nutanix.kib_image: nkp-ubuntu-22.04-1.29.6-20240717082720
+        --> nutanix.kib_image: nkp-ubuntu-22.04-1.29.6-20240717082720
+        ```
+
+    !!! info "Image name"
         
         Note image name from the previous ``nkp`` create image command output
 
@@ -387,7 +390,7 @@ We are now ready to install the workload ``nkpdev`` cluster
 
     === "Sample .env"
     
-        ```text
+        ```{ .text .no-copy }
         export CONTROL_PLANE_REPLICAS=3
         export CONTROL_PLANE_VCPUS=4
         export CONTROL_PLANE_CORES_PER_VCPU=1
@@ -717,13 +720,14 @@ In this section we will create a nodepool to host the AI apps with a GPU.
     === "Template .env"
     
         ```text
+        export GPU_NAME=_name_of_gpu_device_
         export GPU_REPLICA_COUNT=_no_of_gpu_worker_nodes
         export GPU_POOL=_name_of_gpu_pool
         ```
 
     === "Sample .env"
     
-        ```text
+        ```{ .text .no-copy }
         export GPU_NAME="Lovelace 40S"
         export GPU_REPLICA_COUNT=1
         export GPU_POOL=gpu-nodepool

@@ -74,7 +74,7 @@ For ``nkpdev``, we will deploy an NKP Cluster of type "Development".
     cd /home/ubuntu/nkp
     ```
     ```text title="Paste the download URL within double quotes"
-    curl -o nkp_v2.12.0_linux_amd64.tar.gz "_copied_download_URL"
+    curl -o nkp_v2.12.0_linux_amd64.tar.gz "_paste_download_URL_here"
     ```
     ```bash
     gunzip nkp_v2.12.0_linux_amd64.tar.gz
@@ -263,7 +263,7 @@ In this section we will go through creating a base image for all the control pla
 
     === "Command output"
 
-        ```bash
+        ```{ .text .no-copy }
         nkp create image nutanix ubuntu-22.04 \ 
         --endpoint ${NUTANIX_ENDPOINT} --cluster ${NUTANIX_CLUSTER} \
         --subnet ${NUTANIX_SUBNET_NAME} --insecure
@@ -286,7 +286,7 @@ In this section we will go through creating a base image for all the control pla
         --> nutanix.kib_image: nkp-ubuntu-22.04-1.29.6-20240717082720
         ```
 
-    !!! info inline end "Image name"
+    !!! info "Image name"
         
         Note image name from the previous ``nkp`` create image command output
 
@@ -296,7 +296,7 @@ In this section we will go through creating a base image for all the control pla
         --> nutanix.kib_image: nkp-ubuntu-22.04-1.29.6-20240717082720
         ```
 
-10. Populate the ``.env`` file with the NKP image name
+7.  Populate the ``.env`` file with the NKP image name
 
     === "Command"
     
