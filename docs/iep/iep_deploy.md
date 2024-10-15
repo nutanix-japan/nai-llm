@@ -211,13 +211,13 @@ stateDiagram-v2
     source $HOME/nai/.env
     ```
 
-4. In `VSCode` Explorer pane, browse to ``/home/ubuntu/`` folder
+4. In `VSCode` Explorer pane, browse to ``$HOME/`` folder
 
 5. Click on **New Folder** :material-folder-plus-outline: and name it: ``nai``
-6. Download the values file from git hub and place it in ``/home/ubuntu/nai`` folder
+6. Download the values file from git hub and place it in ``$HOME/nai`` folder
 
     ```bash
-    cd /home/ubuntu/nai
+    cd $HOME/nai
     curl -OL https://raw.githubusercontent.com/jesse-gonzalez/sol-cnai-infra/6656107ade4dde682dff36802b2bd805ce00dcb4/scripts/nai/iep-values-nkp.yaml
     ```
 
@@ -330,7 +330,7 @@ In this section we will install SSL Certificate to access the NAI UI.
     nai.10.x.x.216.nip.io
     ```
 
-3. In VSC Explorer, go to ``/home/ubuntu/`` folder, click on **New File** :material-file-plus-outline:  and create a file with the following name
+3. In VSC Explorer, go to ``$HOME/`` folder, click on **New File** :material-file-plus-outline:  and create a file with the following name
    
     ```bash
     iep-cert.yaml
@@ -361,7 +361,7 @@ In this section we will install SSL Certificate to access the NAI UI.
 4. Create the certificate using the following command
     
     ```bash
-    kubectl apply -f /home/ubuntu/iep-cert.yaml
+    kubectl apply -f $HOME/iep-cert.yaml
     ```
 
 5. Patch the ingress gateway's IP address to the certificate file.

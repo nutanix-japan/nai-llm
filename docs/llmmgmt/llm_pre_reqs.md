@@ -48,7 +48,7 @@ We will need a total of four IPs for the following:
 4. Install ``nmap`` tool (if not already done)
    
     ```bash
-    cd /home/ubuntu/nai-llm-fleet-infra
+    cd $HOME/nai-llm-fleet-infra
     devbox add nmap
     ```
 

@@ -92,7 +92,7 @@ Nutanix also provides a sample chat application that uses NAI to provide chatbot
 1. Run the following command to deploy the chat application.
    
     ```bash
-    code /home/ubuntu/sol-cnai-infra/scripts/nai/chat.yaml
+    code $HOME/sol-cnai-infra/scripts/nai/chat.yaml
     ```
 
 2. Change this line to point to the IP address of your NAI cluster for the ``VirtualService`` resource

@@ -328,7 +328,7 @@ In the following section, we will create a `Jump Host` VM on Nutanix AHV using b
 
     ![](images/4.png)
 
-5. Provide the ``/home/ubuntu/`` as the folder you want to open and click on **OK**.
+5. Provide the ``$HOME/`` as the folder you want to open and click on **OK**.
 
     !!!note
            Ensure that **bin** is NOT highlighted otherwise the editor will attempt to autofill ``/bin/``. You can avoid this by clicking in the path field *before* clicking **OK**.

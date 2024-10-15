@@ -276,7 +276,7 @@ We will create Nutanix Files storage class which will be used to create a pvc th
     kubectl get nodes
     ```
 
-2. Add (append) the following environment variable to  ``/home/ubuntu/nkp/.env`` file
+2. Add (append) the following environment variable to  ``$HOME/nkp/.env`` file
    
     === "Template .env"
     
