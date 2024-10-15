@@ -72,10 +72,10 @@ stateDiagram-v2
             "system_fingerprint": ""
         }
         ```
-        
+
 We have a successful NAI deployment.
 
-## Accessing LLM Frontend UI
+<!-- ## Accessing LLM Frontend UI
 
 1. In the NAI GUI, under **Endpoints**, click on the **llama8b**
    
@@ -83,7 +83,7 @@ We have a successful NAI deployment.
 
 3. Provide a sample prompt and check the output
    
-    ![](images/test_iep.png)
+    ![](images/test_iep.png) -->
 
 ## Sample Chat Application
 

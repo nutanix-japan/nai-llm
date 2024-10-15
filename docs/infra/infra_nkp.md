@@ -68,26 +68,38 @@ For ``nkpdev``, we will deploy an NKP Cluster of type "Development".
 
 8. On `VSCode` menu, select ``Terminal`` > ``New Terminal``
 
-9. Run the following commands to download and unpack the NKP binaries
+9. Browse to ``nkp`` directory
 
     ```bash
-    cd /home/ubuntu/nkp
+    cd $HOME/nkp
     ```
-    ```text title="Paste the download URL within double quotes"
-    curl -o nkp_v2.12.0_linux_amd64.tar.gz "_paste_download_URL_here"
-    ```
+
+10. Download and extract the NKP binary from the link you copied earlier
+    
+    === "Command"
+
+        ```text title="Paste the download URL within double quotes"
+        curl -o nkp_v2.12.0_linux_amd64.tar.gz "_paste_download_URL_here"
+        ```
+
+    === "Sample command"
+        
+        ```bash
+        curl -o nkp_v2.12.0_linux_amd64.tar.gz "https://download.nutanix.com/downloads/nkp/v2.12.0/nkp_v2.12.0_linux_amd64.tar.gz?Expires=1729016864&........"
+        ```
+
     ```bash
     gunzip nkp_v2.12.0_linux_amd64.tar.gz
     tar -xvf nkp_v2.12.0_linux_amd64.tar
     ```
 
-10. Move the ``nkp`` binary to a directory that is included in your ``PATH`` environment variable
+11. Move the ``nkp`` binary to a directory that is included in your ``PATH`` environment variable
 
     ```bash
     sudo mv nkp /usr/local/bin/
     ```
 
-11. Verify the ``nkp`` binary is installed correctly. Ensure the version is latest
+12. Verify the ``nkp`` binary is installed correctly. Ensure the version is latest
     
     !!! note
         
