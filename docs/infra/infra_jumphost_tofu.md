@@ -362,7 +362,6 @@ We have compiled a list of utilities that needs to be installed on the jumphost 
 4. Start the `devbox shell`. If `nix` isn't available, you will be prompted to install:
 
     ```sh
-    cd $HOME/sol-cnai-infra/
     devbox init
     devbox shell
     ```
@@ -402,60 +401,4 @@ We have compiled a list of utilities that needs to be installed on the jumphost 
     - Task: flux:init
     ```
 
-## [OPTIONAL] Fork and Clone GiaB NVD Gitops Repository
-
-!!! warning
-    The following steps are only required if Deploying [GPT-In-A-Box v1](../llmmgmt/index.md) using NVD GitOps workflow
-
-1. Open the following URL and fork the repo to your Github org
-
-    ```url
-    https://github.com/jesse-gonzalez/sol-cnai-infra
-    ```
-
-2. From the ``$HOME`` directory, clone the fork of your ``sol-cnai-infra`` git repo and change working directory
-
-    === "Command"
-
-        ```bash
-        git clone https://github.com/<_your_github_org>/sol-cnai-infra.git
-        cd $HOME/sol-cnai-infra/
-        ```
-
-    === "Sample command"
-
-        ```bash
-        git clone https://github.com/rahuman/sol-cnai-infra.git
-        cd $HOME/sol-cnai-infra/
-        ```
-
-3. Finally set your github config
-
-    ```bash
-    git config --user.email "your_github_email"
-    git config --user.name "your_github_username"
-    ```
-
-4. In ``VSCode`` > ``Terminal`` Login to your Github account using the following command:
-
-    ```bash
-    gh auth login # (1)
-    ```
-
-    1.  :material-fountain-pen-tip:  If you do not have ``gh`` client installed, see [Github CLI Installation Docs](https://github.com/cli/cli/blob/trunk/docs/install_linux.md).
-
-    ```{ .text, .no-copy }
-    # Execution example
-
-    ❯ gh auth login                                                                                                               ─╯
-    ? What account do you want to log into? GitHub.com
-    ? What is your preferred protocol for Git operations on this host? HTTPS 
-    ? Authenticate Git with your GitHub credentials? Yes
-    ? How would you like to authenticate GitHub CLI?  [Use arrows to move, type to filter]
-        Login with a web browser
-    >   Paste an authentication token
-
-    Successfully logged in to Github.
-    ```
-
-Now the jumphost VM is ready for deploying our app. We will do this in the next section.
+Now the jumphost VM is ready with all the tools to deploy other sections on this site. 

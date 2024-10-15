@@ -149,7 +149,7 @@ In this section we will go through creating a base image for all the control pla
 
 1. In VSC Explorer pane, Click on **New Folder** :material-folder-plus-outline:
 
-2. Call the folder ``dkp`` under ``/home/ubuntu`` directory
+2. Call the folder ``dkp`` under ``$HOME`` directory
 
 3. In the ``dkp`` folder, click on **New File** :material-file-plus-outline: with the following name
   

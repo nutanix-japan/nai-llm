@@ -88,7 +88,7 @@ Below are minimum requirements for deploying NAI on the NKP Demo Cluster.
 3. Select NKP for Linux and copy the download link to the ``.tar.gz`` file
 4. If you haven't already done so, Open new `VSCode` window on your jumphost VM
 
-5. In `VSCode` Explorer pane, click on existing ``/home/ubuntu`` folder
+5. In `VSCode` Explorer pane, click on existing ``$HOME`` folder
 
 6. Click on **New Folder** :material-folder-plus-outline: name it: ``nkp``
 
@@ -124,7 +124,7 @@ Below are minimum requirements for deploying NAI on the NKP Demo Cluster.
 11. Move the ``nkp`` binary to a directory that is included in your ``PATH`` environment variable
 
     ```bash
-    sudo mv nkp /usr/local/bin/
+    sudo cp nkp /usr/local/bin/
     ```
 
 
@@ -239,7 +239,7 @@ In this section we will go through creating a base image for all the control pla
 
 1. In VSC Explorer pane, Click on **New Folder** :material-folder-plus-outline:
 
-2. Call the folder ``nkp`` under ``/home/ubuntu`` directory
+2. Call the folder ``nkp`` under ``$HOME`` directory
 
 3. In the ``nkp`` folder, click on **New File** :material-file-plus-outline: and create new file with the following name:
   

@@ -58,22 +58,34 @@ For ``nkpdev``, we will deploy an NKP Cluster of type "Development".
 3. Select NKP for Linux and copy the download link to the ``.tar.gz`` file
 4. If you haven't already done so, Open new `VSCode` window on your jumphost VM
 
-5. In `VSCode` Explorer pane, click on existing ``/home/ubuntu`` folder
+5. In `VSCode` Explorer pane, click on existing ``$HOME`` folder
 
 6. Click on **New Folder** :material-folder-plus-outline: name it: ``nkp``
 
-7. On `VSCode` Explorer plane, click the ``/home/ubuntu/nkp`` folder
+7. On `VSCode` Explorer plane, click the ``$HOME/nkp`` folder
 
 8. On `VSCode` menu, select ``Terminal`` > ``New Terminal``
    
-9. Run the following commands to download and unpack the NKP binaries
-    
+9. Browse to ``nkp`` directory
+
     ```bash
-    cd /home/ubuntu/nkp
+    cd $HOME/nkp
     ```
-    ```text title="Paste the download URL within double quotes"
-    curl -o nkp_v2.12.0_linux_amd64.tar.gz "_paste_download_URL_here"
-    ```
+
+10. Download and extract the NKP binary from the link you copied earlier
+    
+    === "Command"
+
+        ```text title="Paste the download URL within double quotes"
+        curl -o nkp_v2.12.0_linux_amd64.tar.gz "_paste_download_URL_here"
+        ```
+
+    === "Sample command"
+        
+        ```bash
+        curl -o nkp_v2.12.0_linux_amd64.tar.gz "https://download.nutanix.com/downloads/nkp/v2.12.0/nkp_v2.12.0_linux_amd64.tar.gz?Expires=1729016864&........"
+        ```
+        
     ```bash
     gunzip nkp_v2.12.0_linux_amd64.tar.gz
     tar -xvf nkp_v2.12.0_linux_amd64.tar
@@ -82,7 +94,7 @@ For ``nkpdev``, we will deploy an NKP Cluster of type "Development".
 10. Move the ``nkp`` binary to a directory that is included in your ``PATH`` environment variable
 
     ```bash
-    sudo mv nkp /usr/local/bin/
+    sudo cp nkp /usr/local/bin/
     ```
 
 11. Verify the ``nkp`` binary is installed correctly. Ensure the version is latest
@@ -116,7 +128,7 @@ For ``nkpdev``, we will deploy an NKP Cluster of type "Development".
 3. Run the following commands to install ``docker`` binaries
    
     ```bash
-    cd /home/ubuntu/sol-cnai-infra/; devbox init; devbox shell
+    cd $HOMEsol-cnai-infra/; devbox init; devbox shell
     task workstation:install-docker
     ```
 
@@ -131,9 +143,9 @@ Nutanix AHV IPAM network allows you to black list IPs that needs to be reserved 
 We will need a total of three IPs for the following:
 
   
-| Cluster Role  | Cluster Name            |    Control Plane IP   |    MetalLB  IP  |          
-| -------------  | --------            |  ------------ |  --------   | 
-| Dev  |``nkpdev``       |  1             |  2        |  
+| Cluster Role   | Cluster Name   | Control Plane IP   |    MetalLB  IP  |
+| -------------  | --------       |  ------------      |  --------       |
+| Dev            |``nkpdev``      |  1                 |  2              |  
 
 1. Get the CIDR range for the AHV network(subnet) where the application will be deployed
 
@@ -146,7 +158,7 @@ We will need a total of three IPs for the following:
 3. Install ``nmap`` tool (if not already done)
    
     ```bash
-    cd /home/ubuntu/sol-cnai-infra
+    cd $HOME/sol-cnai-infra
     devbox add nmap
     ```
 
@@ -212,7 +224,7 @@ In this section we will go through creating a base image for all the control pla
 
 1. In VSC Explorer pane, Click on **New Folder** :material-folder-plus-outline:
 
-2. Call the folder ``nkp`` under ``/home/ubuntu`` directory
+2. Call the folder ``nkp`` under ``$HOME`` directory
    
 3. In the ``nkp`` folder, click on **New File** :material-file-plus-outline: and create new file with the following name:
   
@@ -247,7 +259,7 @@ In this section we will go through creating a base image for all the control pla
         export NUTANIX_CLUSTER=pe
         export NUTANIX_SUBNET_NAME=User1
         export STORAGE_CONTAINER=default
-        export SSH_PUBLIC_KEY=/home/ubuntu/.ssh/id_rsa.pub
+        export SSH_PUBLIC_KEY=$HOME/.ssh/id_rsa.pub
         export NKP_CLUSTER_NAME=nkpdev
         export CONTROLPLANE_VIP=10.x.x.214
         export LB_IP_RANGE=10.x.x.215-10.x.x.216
@@ -257,7 +269,7 @@ In this section we will go through creating a base image for all the control pla
 8. Using VSC Terminal, load the environment variables and its values
    
     ```bash
-    cd /home/ubuntu/nkp
+    cd $HOME/nkp
     source .env
     ```
 
@@ -282,7 +294,7 @@ In this section we will go through creating a base image for all the control pla
         --subnet ${NUTANIX_SUBNET_NAME} --insecure
         
         > Provisioning and configuring image
-        Manifest files extracted to /home/ubuntu/nkp/.nkp-image-builder-3243021807
+        Manifest files extracted to $HOME/nkp/.nkp-image-builder-3243021807
         nutanix.kib_image: output will be in this color.
 
         ==> nutanix.kib_image: Creating Packer Builder virtual machine...
@@ -346,7 +358,7 @@ In this section we will create a bootstrap cluster which will be used to deploy 
 2. Store kubeconfig file for bootstrap cluster
    
     ```bash
-    cp /home/ubuntu/.kube/config bs.cfg
+    cp $HOME/.kube/config bs.cfg
     export KUBECONFIG=bs.cfg
     ```
 
@@ -500,13 +512,13 @@ We are now ready to install the workload ``nkpdev`` cluster
         ✓ Moving cluster resources 
 
         > You can now view resources in the moved cluster by using the --kubeconfig flag with kubectl.
-        For example: kubectl --kubeconfig="/home/ubuntu/nkp/nkpdev.conf" get nodes
+        For example: kubectl --kubeconfig="$HOME/nkp/nkpdev.conf" get nodes
 
         > ✓ Deleting bootstrap cluster 
 
         Cluster default/nkpdev kubeconfig was written to to the filesystem.
         You can now view resources in the new cluster by using the --kubeconfig flag with kubectl.
-        For example: kubectl --kubeconfig="/home/ubuntu/nkp/nkpdev.conf" get nodes
+        For example: kubectl --kubeconfig="$HOME/nkp/nkpdev.conf" get nodes
 
         > Starting kommander installation
         ✓ Deploying Flux 
@@ -535,7 +547,7 @@ We are now ready to install the workload ``nkpdev`` cluster
         ✓ Creating cluster-admin credentials
 
         > Cluster was created successfully! Get the dashboard details with:
-        > nkp get dashboard --kubeconfig="/home/ubuntu/nkp/nkpdev.conf"
+        > nkp get dashboard --kubeconfig="$HOME/nkp/nkpdev.conf"
         ```
 
     ??? info "Self-Manged Cluster??"
