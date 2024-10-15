@@ -77,7 +77,7 @@ We will need a total of three IPs for the following:
 3. Install ``nmap`` tool (if not already done)
    
     ```bash
-    cd $HOME/nai-llm-fleet-infra
+    cd $HOME/sol-cnai-infra
     devbox add nmap
     ```
 
@@ -129,7 +129,7 @@ We will need a total of three IPs for the following:
 3. Run the following commands to install ``docker`` binaries
 
     ```bash
-    cd $HOME/nai-llm-fleet-infra/; devbox init; devbox shell
+    cd $HOME/sol-cnai-infra/; devbox init; devbox shell
     task workstation:install-docker
     ```
 

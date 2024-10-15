@@ -16,13 +16,21 @@ stateDiagram-v2
     TestNAI --> [*]
 ```
 
-## Test Querying Inference Service
+## Test Querying Inference Service API
 
 1. Prepare the API key that was created in the previous [section](../iep/iep_deploy.md#create-and-test-inference-endpoint)
 
-    ```bash
-    export API_KEY=_your_endpoint_api_key
-    ```
+    === "Template command"
+
+        ```bash
+        export API_KEY=_your_endpoint_api_key
+        ```
+
+    === "Sample command"
+
+        ```bash
+        export API_KEY=5840a693-254d-41ef-a2d3-1xxxxxxxxxx
+        ```
 
 2. Construct your ``curl`` command using the API key obtained above, and run it on the terminal
 
@@ -75,15 +83,15 @@ stateDiagram-v2
 
 We have a successful NAI deployment.
 
-<!-- ## Accessing LLM Frontend UI
+## Accessing LLM Frontend UI
 
 1. In the NAI GUI, under **Endpoints**, click on the **llama8b**
    
-2. Choose test endpoint
+2. Click on **Test**
 
 3. Provide a sample prompt and check the output
    
-    ![](images/test_iep.png) -->
+    ![](images/test_iep.png)
 
 ## Sample Chat Application
 

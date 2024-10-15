@@ -253,7 +253,7 @@ stateDiagram-v2
     === "Command"
 
         ```bash
-        cd $HOME/nai-llm-fleet-infra/; devbox shell
+        cd $HOME/sol-cnai-infra/; devbox shell
         $HOME/nai/nai-deploy.sh
         ```
 

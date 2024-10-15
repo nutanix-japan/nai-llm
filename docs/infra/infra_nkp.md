@@ -130,7 +130,7 @@ For ``nkpdev``, we will deploy an NKP Cluster of type "Development".
 3. Run the following commands to install ``docker`` binaries
 
     ```bash
-    cd $HOME/nai-llm-fleet-infra/; devbox init; devbox shell
+    cd $HOME/sol-cnai-infra/; devbox init; devbox shell
     task workstation:install-docker
     ```
 
@@ -160,7 +160,7 @@ We will need a total of three IPs for the following:
 3. Install ``nmap`` tool (if not already done)
 
     ```bash
-    cd $HOME/nai-llm-fleet-infra
+    cd $HOME/sol-cnai-infra
     devbox add nmap
     ```
 
@@ -336,7 +336,7 @@ We are now ready to install the workload ``nkpdev`` cluster
         ```text
         export CONTROL_PLANE_REPLICAS=_no_of_control_plane_replicas
         export CONTROL_PLANE_VCPUS=_no_of_control_plane_vcpus
-        #export CONTROL_PLANE_CORES_PER_VCPU=_no_of_control_plane_cores_per_vcpu
+        export CONTROL_PLANE_CORES_PER_VCPU=_no_of_control_plane_cores_per_vcpu
         export CONTROL_PLANE_MEMORY_GIB=_no_of_control_plane_memory_gib
         export WORKER_REPLICAS=_no_of_worker_replicas
         export WORKER_VCPUS=_no_of_worker_vcpus
@@ -354,7 +354,7 @@ We are now ready to install the workload ``nkpdev`` cluster
         ```text
         export CONTROL_PLANE_REPLICAS=3
         export CONTROL_PLANE_VCPUS=4
-        #export CONTROL_PLANE_CORES_PER_VCPU=1
+        export CONTROL_PLANE_CORES_PER_VCPU=1
         export CONTROL_PLANE_MEMORY_GIB=16
         export WORKER_REPLICAS=4
         export WORKER_VCPUS=8 

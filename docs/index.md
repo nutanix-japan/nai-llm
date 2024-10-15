@@ -74,7 +74,7 @@ This site follows **Design > Deploy** model.
 
     ---
 
-    Install and host a LLM on Nutanix platform using this framework in this [repo](https://github.com/jesse-gonzalez/nai-llm-fleet-infra). Get up and running in minutes.
+    Install and host a LLM on Nutanix platform using this framework in this [repo](https://github.com/nutanix-japan/sol-cnai-infra.git). Get up and running in minutes.
 
     This site will also take you through implementation.
 
@@ -84,7 +84,7 @@ This site follows **Design > Deploy** model.
 
     ---
 
-    Install and host a Support GPT application on Nutanix platform using this framework in this [repo](https://github.com/jesse-gonzalez/nai-llm-fleet-infra). 
+    Install and host a Support GPT application on Nutanix platform using this framework in this [repo](https://github.com/nutanix-japan/sol-cnai-infra.git).
 
     [:octicons-arrow-right-24: Start](contributing.md)
 
