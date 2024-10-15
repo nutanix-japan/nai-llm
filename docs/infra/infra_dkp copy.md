@@ -77,7 +77,7 @@ We will need a total of three IPs for the following:
 3. Install ``nmap`` tool (if not already done)
    
     ```bash
-    cd /home/ubuntu/nai-llm-fleet-infra
+    cd $HOME/sol-cnai-infra
     devbox add nmap
     ```
 
@@ -129,7 +129,7 @@ We will need a total of three IPs for the following:
 3. Run the following commands to install ``docker`` binaries
 
     ```bash
-    cd /home/ubuntu/nai-llm-fleet-infra/; devbox init; devbox shell
+    cd $HOME/sol-cnai-infra/; devbox init; devbox shell
     task workstation:install-docker
     ```
 
@@ -184,7 +184,7 @@ In this section we will go through creating a base image for all the control pla
         export NUTANIX_CLUSTER=pe
         export NUTANIX_SUBNET_NAME=User1
         export STORAGE_CONTAINER=default
-        export SSH_PUBLIC_KEY=/home/ubuntu/.ssh/id_rsa.pub
+        export SSH_PUBLIC_KEY=$HOME/.ssh/id_rsa.pub
         export NKP_CLUSTER_NAME=nkp1
         export GPU_NAME="Lovelace 40S"
         export CONTROLPLANE_VIP=10.x.x.214
@@ -194,7 +194,7 @@ In this section we will go through creating a base image for all the control pla
 8. Using VSC Terminal, load the environment variables and its values
    
     ```bash
-    cd /home/ubuntu/dkp
+    cd $HOME/dkp
     source .env
     ```
 
@@ -216,7 +216,7 @@ In this section we will go through creating a base image for all the control pla
     $ --subnet ${NUTANIX_SUBNET_NAME} 
     
     Provisioning and configuring image
-    Manifest files extracted to /home/ubuntu/dkp/.dkp-image-builder-3243021807
+    Manifest files extracted to $HOME/dkp/.dkp-image-builder-3243021807
     nutanix.kib_image: output will be in this color.
 
     ==> nutanix.kib_image: Creating Packer Builder virtual machine...
@@ -283,7 +283,7 @@ In this section we will create a bootstrap cluster which will be used to deploy 
 2. Store kubeconfig file for bootstrap cluster
    
     ```bash
-    cp /home/ubuntu/.kube/config bs.cfg
+    cp $HOME/.kube/config bs.cfg
     export KUBECONFIG=bs.cfg
     ```
 

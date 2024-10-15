@@ -328,7 +328,7 @@ In the following section, we will create a `Jump Host` VM on Nutanix AHV using b
 
     ![](images/4.png)
 
-5. Provide the ``/home/ubuntu/`` as the folder you want to open and click on **OK**.
+5. Provide the ``$HOME/`` as the folder you want to open and click on **OK**.
 
     !!!note
            Ensure that **bin** is NOT highlighted otherwise the editor will attempt to autofill ``/bin/``. You can avoid this by clicking in the path field *before* clicking **OK**.
@@ -352,17 +352,17 @@ We have compiled a list of utilities that needs to be installed on the jumphost 
     curl -fsSL https://get.jetpack.io/devbox | bash
     ```
 
-3. From the ``$HOME`` directory, clone the ``nai-llm-fleet-infra`` git repo and change working directory
+3. From the ``$HOME`` directory, clone the ``sol-cnai-infra`` git repo and change working directory
 
     ```bash
-    git clone https://github.com/_your_github_org/nai-llm-fleet-infra.git
-    cd $HOME/nai-llm-fleet-infra/
+    git clone https://github.com/nutanix-japan/sol-cnai-infra.git
+    cd $HOME/sol-cnai-infra/
     ```
 
 4. Start the `devbox shell`. If `nix` isn't available, you will be prompted to install:
 
     ```sh
-    cd $HOME/nai-llm-fleet-infra/
+    cd $HOME/sol-cnai-infra/
     devbox init
     devbox shell
     ```
@@ -371,14 +371,14 @@ We have compiled a list of utilities that needs to be installed on the jumphost 
   
     ```bash
     sudo snap install task --classic
-    task ws:install-packages ws:load-dotfiles --yes -d $HOME/nai-llm-fleet-infra/
+    task ws:install-packages ws:load-dotfiles --yes -d $HOME/sol-cnai-infra/
     source ~/.bashrc
     ```
 
 6. Change working directory and see ``Task`` help
   
     ```bash
-    cd $HOME/nai-llm-fleet-infra/ && task
+    cd $HOME/sol-cnai-infra/ && task
     ```
 
     ``` { .bash .no-copy }
@@ -410,23 +410,23 @@ We have compiled a list of utilities that needs to be installed on the jumphost 
 1. Open the following URL and fork the repo to your Github org
 
     ```url
-    https://github.com/jesse-gonzalez/nai-llm-fleet-infra
+    https://github.com/jesse-gonzalez/sol-cnai-infra
     ```
 
-2. From the ``$HOME`` directory, clone the fork of your ``nai-llm-fleet-infra`` git repo and change working directory
+2. From the ``$HOME`` directory, clone the fork of your ``sol-cnai-infra`` git repo and change working directory
 
     === "Command"
 
         ```bash
-        git clone https://github.com/<_your_github_org>/nai-llm-fleet-infra.git
-        cd $HOME/nai-llm-fleet-infra/
+        git clone https://github.com/<_your_github_org>/sol-cnai-infra.git
+        cd $HOME/sol-cnai-infra/
         ```
 
     === "Sample command"
 
         ```bash
-        git clone https://github.com/rahuman/nai-llm-fleet-infra.git
-        cd $HOME/nai-llm-fleet-infra/
+        git clone https://github.com/rahuman/sol-cnai-infra.git
+        cd $HOME/sol-cnai-infra/
         ```
 
 3. Finally set your github config

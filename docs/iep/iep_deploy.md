@@ -87,15 +87,88 @@ stateDiagram-v2
         
     === "Command output"
 
-        ```{ .bash .no-copy }
-        Installing...
-        Release "nai-admin" has been upgraded. Happy Helming!
-        NAME: nai-admin
-        LAST DEPLOYED: Mon Sep 16 22:07:24 2024
-        NAMESPACE: nai-admin
+        ```{ .text .no-copy }
+        Release "istiod" has been upgraded. Happy Helming!
+        NAME: istiod
+        LAST DEPLOYED: Tue Oct 15 02:01:58 2024
+        NAMESPACE: istio-system
         STATUS: deployed
-        REVISION: 7
+        REVISION: 2
         TEST SUITE: None
+        NOTES:
+        "istiod" successfully installed!
+
+        NAME: istio-ingressgateway
+        LAST DEPLOYED: Tue Oct 15 02:02:01 2024
+        NAMESPACE: istio-system
+        STATUS: deployed
+
+        NAME: knative-serving-crds
+        LAST DEPLOYED: Tue Oct 15 02:02:03 2024
+        NAMESPACE: knative-serving
+        STATUS: deployed
+
+        NAME: knative-serving
+        LAST DEPLOYED: Tue Oct 15 02:02:05 2024
+        NAMESPACE: knative-serving
+        STATUS: deployed
+
+        NAME: kserve-crd
+        LAST DEPLOYED: Tue Oct 15 02:02:16 2024
+        NAMESPACE: kserve
+        STATUS: deployed
+
+        NAME: kserve
+        LAST DEPLOYED: Tue Oct 15 02:02:19 2024
+        NAMESPACE: kserve
+        STATUS: deployed
+        ```
+
+    ??? tip "Check helm deployment status"
+
+        Check the status of the ``nai`` helm deployments using the following command:
+        
+        ```bash
+        helm list -n istio-system
+        helm list -n kserve
+        helm list -n knative-serving
+        ```
+
+
+5. Validate if the resources are running in the following namespaces.
+
+    - `istio-system`, 
+    - `knative-serving`, and 
+    - `kserve`
+   
+    === "Command"
+
+        ```bash
+        kubectl get po -n istio-system
+        k get po -n kserve
+        k get po -n knative-serving
+        ```
+        
+    === "Command output"
+
+        ```{ .text .no-copy }
+        $ k get po -n istio-system
+        NAME                                    READY   STATUS    RESTARTS   AGE
+        istio-ingressgateway-6675867d85-qzrpq   1/1     Running   0          26d
+        istiod-6d96569c9b-2dww4                 1/1     Running   0          26d
+
+        $ k get po -n kserve
+        NAME                                         READY   STATUS    RESTARTS   AGE
+        kserve-controller-manager-6654f69d5c-45n64   2/2     Running   0          26d
+
+        $ k get po -n knative-serving
+        NAME                                   READY   STATUS    RESTARTS   AGE
+        activator-58db57894b-g2nx8             1/1     Running   0          26d
+        autoscaler-76f95fff78-c8q9m            1/1     Running   0          26d
+        controller-7dd875844b-4clqb            1/1     Running   0          26d
+        net-istio-controller-57486f879-85vml   1/1     Running   0          26d
+        net-istio-webhook-7ccdbcb557-54dn5     1/1     Running   0          26d
+        webhook-d8674645d-mscsc                1/1     Running   0          26d
         ```
 
 ## Deploy NAI
@@ -108,10 +181,11 @@ stateDiagram-v2
     - ``$DOCKER_USERNAME``
     - ``$DOCKER_PASSWORD``
     - ``$DOCKER_EMAIL``
-  
-1. Create a new ``.env`` file in ``/home/unbuntu/nai`` directory
 
-2. Open .env file in VSC and add (append) the following environment variables to your ``.env`` file and save it
+
+1. Open ``$HOME/.env`` file in ``VSCode``
+
+2. Add (append) the following environment variables and save it
 
     === "Template .env"
 
@@ -137,13 +211,13 @@ stateDiagram-v2
     source $HOME/nai/.env
     ```
 
-4. In `VSCode` Explorer pane, browse to ``/home/ubuntu/`` folder
+4. In `VSCode` Explorer pane, browse to ``$HOME/`` folder
 
 5. Click on **New Folder** :material-folder-plus-outline: and name it: ``nai``
-6. Download the values file from git hub and place it in ``/home/ubuntu/nai`` folder
+6. Download the values file from git hub and place it in ``$HOME/nai`` folder
 
     ```bash
-    cd /home/ubuntu/nai
+    cd $HOME/nai
     curl -OL https://raw.githubusercontent.com/jesse-gonzalez/sol-cnai-infra/6656107ade4dde682dff36802b2bd805ce00dcb4/scripts/nai/iep-values-nkp.yaml
     ```
 
@@ -179,7 +253,7 @@ stateDiagram-v2
     === "Command"
 
         ```bash
-        cd $HOME/nai-llm-fleet-infra/; devbox shell
+        cd $HOME/sol-cnai-infra/; devbox shell
         $HOME/nai/nai-deploy.sh
         ```
 
@@ -216,12 +290,16 @@ stateDiagram-v2
     === "Command"
 
         ```bash
-        kubectl get pods -n nai-system
+        kubens nai-system
+        kubectl get po,deploy
         ```
     === "Command output"
 
         ```{ .text .no-copy }
-        kubectl get po,deploy
+        $ kubens nai-system
+        ✔ Active namespace is "nai-system"
+
+        $ kubectl get po,deploy
 
         NAME                                            READY   STATUS      RESTARTS   AGE
         pod/nai-api-55c665dd67-746b9                    1/1     Running     0          5d1h
@@ -252,7 +330,7 @@ In this section we will install SSL Certificate to access the NAI UI.
     nai.10.x.x.216.nip.io
     ```
 
-3. In VSC Explorer, go to ``/home/ubuntu/`` folder, click on **New File** :material-file-plus-outline:  and create a file with the following name
+3. In VSC Explorer, go to ``$HOME/`` folder, click on **New File** :material-file-plus-outline:  and create a file with the following name
    
     ```bash
     iep-cert.yaml
@@ -283,7 +361,7 @@ In this section we will install SSL Certificate to access the NAI UI.
 4. Create the certificate using the following command
     
     ```bash
-    kubectl apply -f /home/ubuntu/iep-cert.yaml
+    kubectl apply -f $HOME/iep-cert.yaml
     ```
 
 5. Patch the ingress gateway's IP address to the certificate file.
@@ -337,39 +415,40 @@ We will download and user llama3 8B model which we sized for in the previous sec
     
     === "Command"
 
-        ```bash
-        kubens nai-system
-        ```
-        ```bash
+        ```bash title="Get jobs in nai-admin namespace"
+        kubens nai-admin
+        
         kubectl get jobs
         ```
-        ```bash
-        kubectl get po
+        ```bash title="Validate creation of pods and PVC"
+        kubectl get po,pvc
         ```
-        ```bash
+        ```bash title="Verify download of model using pod logs"
         kubectl logs -f _pod_associated_with_job
         ```
 
     === "Command output"
 
-        ```{ .text .no-copy }
-        kubens nai-system
+        ```text title="Get jobs in nai-admin namespace"
+        kubens nai-admin
 
         ✔ Active namespace is "nai-admin"
-        ```
-        ```{ .text .no-copy }
+     
         kubectl get jobs
 
         NAME                                       COMPLETIONS   DURATION   AGE
         nai-c0d6ca61-1629-43d2-b57a-9f-model-job   0/1           4m56s      4m56
         ```
-        ```{ .text .no-copy }
-        kubectl get po
+        ```text title="Validate creation of pods and PVC"
+        kubectl get po,pvc
 
         NAME                                             READY   STATUS    RESTARTS   AGE
         nai-c0d6ca61-1629-43d2-b57a-9f-model-job-9nmff   1/1     Running   0          4m49s
+
+        NAME                                       STATUS   VOLUME                                     CAPACITY   ACCESS MODES   STORAGECLASS      VOLUMEATTRIBUTESCLASS   AGE
+        nai-c0d6ca61-1629-43d2-b57a-9f-pvc-claim   Bound    pvc-a63d27a4-2541-4293-b680-514b8b890fe0   28Gi       RWX            nai-nfs-storage   <unset>                 2d
         ```
-        ```{ .text .no-copy }
+        ```text title="Verify download of model using pod logs"
         kubectl logs -f nai-c0d6ca61-1629-43d2-b57a-9f-model-job-9nmff 
 
         /venv/lib/python3.9/site-packages/huggingface_hub/file_download.py:983: UserWarning: Not enough free disk space to download the file. The expected file size is: 0.05 MB. The target location /data/model-files only has 0.00 MB free disk space.
@@ -385,6 +464,37 @@ We will download and user llama3 8B model which we sized for in the previous sec
 
         Deleting directory : /data/hf_cache
         ```
+
+6. Optional - verify the events in the namespace for the pvc creation 
+    
+    === "Command"
+
+        ```bash
+        k get events | awk '{print $1, $3}'
+        ```
+
+    === "Command output"
+
+        ```{ .text, .no-copy}
+        $ k get events | awk '{print $1, $3}'
+    
+        3m43s Scheduled
+        3m43s SuccessfulAttachVolume
+        3m36s Pulling
+        3m29s Pulled
+        3m29s Created
+        3m29s Started
+        3m43s SuccessfulCreate
+        90s   Completed
+        3m53s Provisioning
+        3m53s ExternalProvisioning
+        3m45s ProvisioningSucceeded
+        3m53s PvcCreateSuccessful
+        3m48s PvcNotBound
+        3m43s ModelProcessorJobActive
+        90s   ModelProcessorJobComplete
+        ```
+
 The model is downloaded to the Nutanix Files ``pvc`` volume.
 
 After a successful model import, you will see it in **Active** status in the NAI UI under **Models** menu
@@ -428,7 +538,32 @@ In this section we will create an inference endpoint using the downloaded model.
         deployment.apps/llama8b-predictor-00001-deployment   1/1     1            0           3d17h
         ```
 
-5. Once the services are running, check the status of the inference service
+5. Check the events in the ``nai-admin`` namespace for resource usage to make sure all 
+   
+    === "Command"
+       
+        ```bash
+        kubectl get events -n nai-admin --sort-by='.lastTimestamp' | awk '{print $1, $3, $5}'
+        ```
+
+    === "Command output"
+       
+        ```bash
+        $ kubectl get events -n nai-admin --sort-by='.lastTimestamp' | awk '{print $1, $3, $5}'
+
+        110s FinalizerUpdate Updated
+        110s FinalizerUpdate Updated
+        110s RevisionReady Revision
+        110s ConfigurationReady Configuration
+        110s LatestReadyUpdate LatestReadyRevisionName
+        110s Created Created
+        110s Created Created
+        110s Created Created
+        110s InferenceServiceReady InferenceService
+        110s Created Created
+        ```
+
+6. Once the services are running, check the status of the inference service
    
     === "Command"
 

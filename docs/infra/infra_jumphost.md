@@ -141,26 +141,26 @@ We have compiled a list of utilities that needs to be installed on the jumphost 
 2. Clone Git repo and change working directory
 
     ```bash
-    git clone https://github.com/jesse-gonzalez/nai-llm-fleet-infra
-    cd $HOME/nai-llm-fleet-infra/
+    git clone https://github.com/nutanix-japan/sol-cnai-infra
+    cd $HOME/sol-cnai-infra/
     ```
 
 3. Run Post VM Create - Workstation Bootstrapping Tasks
   
     ```bash
     sudo snap install task --classic
-    task ws:install-packages ws:load-dotfiles --yes -d $HOME/nai-llm-fleet-infra/
+    task ws:install-packages ws:load-dotfiles --yes -d $HOME/sol-cnai-infra/
     source ~/.bashrc
     ```
 
 3. Change working directory and see ``Task`` help
   
     ```bash
-    cd $HOME/nai-llm-fleet-infra/ && task
+    cd $HOME/sol-cnai-infra/ && task
     ```
 
     ``` { .bash .no-copy }
-    $ cd $HOME/nai-llm-fleet-infra/ && task
+    $ cd $HOME/sol-cnai-infra/ && task
     # command output
     task: bootstrap:silent
 

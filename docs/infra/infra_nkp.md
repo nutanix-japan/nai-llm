@@ -92,33 +92,44 @@ Below are minimum requirements for deploying NAI on the NKP Demo Cluster.
 
 6. Click on **New Folder** :material-folder-plus-outline: name it: ``nkp``
 
-7. On `VSCode` Explorer plane, click the ``/home/ubuntu/nkp`` folder
+7. On `VSCode` Explorer plane, click the ``$HOME/nkp`` folder
 
 8. On `VSCode` menu, select ``Terminal`` > ``New Terminal``
 
-9. Run the following commands to download and unpack the NKP binaries
+9. Browse to ``nkp`` directory
 
     ```bash
-    cd /home/ubuntu/nkp
+    cd $HOME/nkp
     ```
 
-    ```text title="Paste the download URL within double quotes"
-    curl -o nkp_v2.12.0_linux_amd64.tar.gz "_copied_download_URL"
-    ```
+10. Download and extract the NKP binary from the link you copied earlier
+    
+    === "Command"
 
+        ```text title="Paste the download URL within double quotes"
+        curl -o nkp_v2.12.0_linux_amd64.tar.gz "_paste_download_URL_here"
+        ```
+
+    === "Sample command"
+        
+        ```bash
+        curl -o nkp_v2.12.0_linux_amd64.tar.gz "https://download.nutanix.com/downloads/nkp/v2.12.0/nkp_v2.12.0_linux_amd64.tar.gz?Expires=1729016864&........"
+        ```
+        
     ```bash
     gunzip nkp_v2.12.0_linux_amd64.tar.gz
     tar -xvf nkp_v2.12.0_linux_amd64.tar
     ```
 
-10. Move the ``nkp`` binary to a directory that is included in your ``PATH`` environment variable
+11. Move the ``nkp`` binary to a directory that is included in your ``PATH`` environment variable
 
     ```bash
     sudo mv nkp /usr/local/bin/
     ```
 
-11. Verify the ``nkp`` binary is installed correctly. Ensure the version is latest
 
+12. Verify the ``nkp`` binary is installed correctly. Ensure the version is latest
+    
     !!! note
 
         At the time of writing this lab nkp version is v2.12.0
@@ -148,7 +159,7 @@ Below are minimum requirements for deploying NAI on the NKP Demo Cluster.
 3. Run the following commands to install ``docker`` binaries
 
     ```bash
-    cd /home/ubuntu/nai-llm-fleet-infra/; devbox init; devbox shell
+    cd $HOME/sol-cnai-infra/; devbox init; devbox shell
     task workstation:install-docker
     ```
 
@@ -177,7 +188,7 @@ We will need a total of three IPs for the following:
 3. Install ``nmap`` tool (if not already done)
 
     ```bash
-    cd /home/ubuntu/nai-llm-fleet-infra
+    cd $HOME/sol-cnai-infra
     devbox add nmap
     ```
 
@@ -263,7 +274,7 @@ In this section we will go through creating a base image for all the control pla
         export NUTANIX_CLUSTER=pe
         export NUTANIX_SUBNET_NAME=User1
         export STORAGE_CONTAINER=default
-        export SSH_PUBLIC_KEY=/home/ubuntu/.ssh/id_rsa.pub
+        export SSH_PUBLIC_KEY=$HOME/.ssh/id_rsa.pub
         export NKP_CLUSTER_NAME=nkpdev
         export CONTROLPLANE_VIP=10.x.x.214
         export LB_IP_RANGE=10.x.x.215-10.x.x.216
@@ -273,7 +284,7 @@ In this section we will go through creating a base image for all the control pla
 5. Using VSC Terminal, load the environment variables and its values
 
     ```bash
-    cd /home/ubuntu/nkp
+    cd $HOME/nkp
     source .env
     ```
 
@@ -292,13 +303,13 @@ In this section we will go through creating a base image for all the control pla
 
     === "Command output"
 
-        ```bash
+        ```{ .text .no-copy }
         nkp create image nutanix ubuntu-22.04 \ 
         --endpoint ${NUTANIX_ENDPOINT} --cluster ${NUTANIX_CLUSTER} \
         --subnet ${NUTANIX_SUBNET_NAME} --insecure
         
         > Provisioning and configuring image
-        Manifest files extracted to /home/ubuntu/nkp/.nkp-image-builder-3243021807
+        Manifest files extracted to $HOME/nkp/.nkp-image-builder-3243021807
         nutanix.kib_image: output will be in this color.
 
         ==> nutanix.kib_image: Creating Packer Builder virtual machine...
@@ -315,7 +326,7 @@ In this section we will go through creating a base image for all the control pla
         --> nutanix.kib_image: nkp-ubuntu-22.04-1.29.6-20240717082720
         ```
 
-    !!! info inline end "Image name"
+    !!! info "Image name"
         
         Note image name from the previous ``nkp`` create image command output
 
@@ -325,7 +336,7 @@ In this section we will go through creating a base image for all the control pla
         --> nutanix.kib_image: nkp-ubuntu-22.04-1.29.6-20240717082720
         ```
 
-10. Populate the ``.env`` file with the NKP image name
+7.  Populate the ``.env`` file with the NKP image name
 
     === "Command"
     
@@ -492,13 +503,13 @@ We are now ready to install the workload ``nkpdev`` cluster
         ✓ Moving cluster resources
 
         > You can now view resources in the moved cluster by using the --kubeconfig flag with kubectl.
-        For example: kubectl --kubeconfig="/home/ubuntu/nkp/nkpdev.conf" get nodes
+        For example: kubectl --kubeconfig="$HOME/nkp/nkpdev.conf" get nodes
 
         > ✓ Deleting bootstrap cluster 
 
         Cluster default/nkpdev kubeconfig was written to to the filesystem.
         You can now view resources in the new cluster by using the --kubeconfig flag with kubectl.
-        For example: kubectl --kubeconfig="/home/ubuntu/nkp/nkpdev.conf" get nodes
+        For example: kubectl --kubeconfig="$HOME/nkp/nkpdev.conf" get nodes
 
         > Starting kommander installation
         ✓ Deploying Flux 
@@ -527,7 +538,7 @@ We are now ready to install the workload ``nkpdev`` cluster
         ✓ Creating cluster-admin credentials
 
         > Cluster was created successfully! Get the dashboard details with:
-        > nkp get dashboard --kubeconfig="/home/ubuntu/nkp/nkpdev.conf"
+        > nkp get dashboard --kubeconfig="$HOME/nkp/nkpdev.conf"
         ```
 
     !!! info "What is a Self-Manged Cluster?"
