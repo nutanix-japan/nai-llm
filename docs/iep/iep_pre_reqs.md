@@ -71,7 +71,7 @@ We will create Nutanix Files storage class which will be used to create a pvc th
     Add the following content and replace the `nfsServerName` with the name of the Nutanix Files server name .
 
 
-    ![Finding nfsServerName and nfsServer fqdn](nfs_server_domain_identify.png)
+    ![Finding nfsServerName and nfsServer fqdn](images/nfs_server_domain_identify.png)
 
     === "Template YAML"
 
@@ -105,8 +105,8 @@ We will create Nutanix Files storage class which will be used to create a pvc th
         provisioner: csi.nutanix.com
         parameters:
           dynamicProv: ENABLED
-          nfsServerName: files
-          nfsServer: files.example.com
+          nfsServerName: labFS
+          nfsServer: labFS.ntnxlab.local
           csi.storage.k8s.io/provisioner-secret-name: nutanix-csi-credentials-files
           csi.storage.k8s.io/provisioner-secret-namespace: ntnx-system
           csi.storage.k8s.io/node-publish-secret-name: nutanix-csi-credentials-files
