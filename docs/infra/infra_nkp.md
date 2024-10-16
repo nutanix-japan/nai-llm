@@ -449,7 +449,7 @@ We are now ready to install the workload ``nkpdev`` cluster
 
     === "Command"
 
-        ```bash hl_lines="22"
+        ```bash hl_lines="28"
         nkp create cluster nutanix -c ${NKP_CLUSTER_NAME} \
             --control-plane-endpoint-ip ${CONTROLPLANE_VIP} \
             --control-plane-prism-element-cluster ${NUTANIX_CLUSTER} \
@@ -837,7 +837,8 @@ We will need to enable GPU operator for deploying NKP application.
       enabled: true
     ```
 
-    For Example:
+    As shown here:
+
     ![alt text](images/gpu-operator-enable.png)
 
 8. Click on **Enable** on the top right-hand corner to enable GPU driver on the Ubuntu GPU nodes
