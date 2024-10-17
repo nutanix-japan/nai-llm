@@ -236,15 +236,17 @@ We will reserve a total of three IPs for the following:
 
 ### Reservation of IPs
 
-Reserve the first two reserved IPs for NKP control plane and MetalLB.
+Reserve the firs IPs for NKP control plane 
+Reserve the second two IPs for MetalLB distributed load balancer
+- We will use one of these IP for NAI
 
 Reserve the third IP for NAI. We will use the NAI IP in the next [NAI](../iep/iep_deploy.md#install-ssl-certificate) section to assign the FDQN and install SSL certificate.
 
-|   Component            |  IP/FQDN          |
-|  ------------          | --------          |
-| NKP Control Plane VIP  |  ``10.x.x.214``   |
-| NKP MetalLB IP         |  ``10.x.x.215``   |
-| NAI                    |  ``10.x.x.216``   |
+|   Component            |  IP                          | FQDN |
+|  ------------          | --------                     |------|
+| NKP Control Plane VIP  |  ``10.x.x.214``              | -    |
+| NKP MetalLB IP Range   |  ``10.x.x.215-10.x.x.216``   | -    |
+| NAI                    |  ``10.x.x.216``              | ``nai.10.x.x.216.nip.io``|
 
 ## Create Base Image for NKP
 
@@ -260,9 +262,9 @@ In this section we will go through creating a base image for all the control pla
     .env
     ```
 
-4. Run the following command to generate an new RSA key pair on the jumphost VM.
+4. Run the following command to generate an new RSA key pair on the jumphost VM. This SSH key pair will be used for authentication between the jumphost and NKP K8S cluster nodes.
    
-    ??? tip "Would you like to use existing SSH key pair?"
+    ??? tip "Do you have existing SSH key pair?"
 
         Copy the key pair from your workstation (PC/Mac) to `~/.ssh/` directory on your Jumphost VM.
         
@@ -364,32 +366,34 @@ In this section we will go through creating a base image for all the control pla
         --> nutanix.kib_image: nkp-ubuntu-22.04-1.29.6-20240717082720
         ```
 
-    !!! info "Image name"
+    !!! info "Image name - This will be different in your environment"
         
         Note image name from the previous ``nkp`` create image command output
 
         ```text hl_lines="2"
         ==> Builds finished. The artifacts of successful builds are:
         --> nutanix.kib_image: nkp-ubuntu-22.04-1.29.6-20240717082720
-        --> nutanix.kib_image: nkp-ubuntu-22.04-1.29.6-20240717082720
         ```
 
-8.  Populate the ``.env`` file with the NKP image name
+    !!! warning
 
-    === "Command"
-    
+        Make sure to use image name that is generated in your environment for the next steps.
+
+8.  Populate the ``.env`` file with the NKP image name by adding (appending) the following environment variables and save it
+
+    === "Template .env"
+
         ```text
-        echo -e "export NKP_IMAGE=nkp-image-name" >> .env
-        source .env
+        export NKP_IMAGE=nkp-image-name
         ```
 
-    === "Sample command"
+    === "Sample .env"
 
-         ```text
-         echo -e "export NKP_IMAGE=nkp-ubuntu-22.04-1.29.6-20240717082720" >> .env
-         source .env
-         ```
-    Make sure to use image name that is generated in your environment for the next steps.
+        ```text
+        export NKP_IMAGE=nkp-ubuntu-22.04-1.29.6-20240717082720
+        ```
+
+
 
 We are now ready to install the workload ``nkpdev`` cluster
 
@@ -957,7 +961,7 @@ We will need to enable GPU operator for deploying NKP application.
 
 Now we are ready to deploy our AI workloads.
 
-## Optional - Cleanup
+<!-- ## Optional - Cleanup
 
 Optionally, cleanup the workloads on nkp cluster by deleting it **after deploying and testing your AI/ML application**. 
 
@@ -1012,4 +1016,4 @@ Delete the workload cluster
 
 !!! info
 
-    If the workload cluster was created as self-managed, then the following command will delete the cluster by creating a small bootstrap cluster. This bootstrap cluster will also be deleted automatically after the workload cluster is deleted.
+    If the workload cluster was created as self-managed, then the following command will delete the cluster by creating a small bootstrap cluster. This bootstrap cluster will also be deleted automatically after the workload cluster is deleted. -->
