@@ -23,6 +23,14 @@ stateDiagram-v2
     DeployNKP --> DeployNai : Next section
 ```
 
+!!! warning "Deploying NKP Cluster"
+
+    This lab will focus on deploying NKP to host NAI workloads. However, the steps can also be used deploy a custom NKP deployment if that's the aim.
+
+    Consider using [NKP The Hard Way](../appendix/infra_nkp_hard_way.md) section to create a customized version of your NKP cluster.
+
+    Once you have determined the resource requirements for a custom NKP deployment, modify the environment variables and values in the ``.env`` file to suit your resource needs for your NKP cluster.
+
 ## NKP High Level Cluster Design
 
 The ``nkpdev`` cluster will be hosting the LLM model serving endpoints and AI application stack. This cluster and will require a dedicated GPU node pool.
