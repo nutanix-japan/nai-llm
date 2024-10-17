@@ -208,20 +208,57 @@ stateDiagram-v2
 3. Source the environment variables (if not done so already)
 
     ```bash
-    source $HOME/nai/.env
+    source $HOME/.env
     ```
 
-4. In `VSCode` Explorer pane, browse to ``$HOME/`` folder
-
-5. Click on **New Folder** :material-folder-plus-outline: and name it: ``nai``
-6. Download the values file from git hub and place it in ``$HOME/nai`` folder
+4. In `VSCode` Explorer pane, browse to ``$HOME/nai`` folder
+   
+5. Click on **New File** :material-file-plus-outline: and create file with the following name:
 
     ```bash
-    cd $HOME/nai
-    curl -OL https://raw.githubusercontent.com/jesse-gonzalez/sol-cnai-infra/6656107ade4dde682dff36802b2bd805ce00dcb4/scripts/nai/iep-values-nkp.yaml
+    iep-values-nkp.yaml
     ```
 
-7. In ``VSCode``, Click on **New File** :material-file-plus-outline: and create a file with the following name:
+    with the following content:
+
+    ```yaml
+    # nai-monitoring stack values for nai-monitoring stack deployment in NKE environment
+    naiMonitoring:
+        
+    ## Component scraping node exporter
+    ##
+    nodeExporter:
+        serviceMonitor:
+        enabled: true
+        endpoint:
+            port: http-metrics
+            scheme: http
+            targetPort: 9100
+        namespaceSelector:
+            matchNames:
+            - kommander
+        serviceSelector:
+            matchLabels:
+            app.kubernetes.io/name: prometheus-node-exporter
+            app.kubernetes.io/component: metrics
+            app.kubernetes.io/version: 1.8.1
+
+    ##
+    dcgmExporter:
+        podLevelMetrics: true
+        serviceMonitor:
+        enabled: true
+        endpoint:
+            targetPort: 9400
+        namespaceSelector:
+            matchNames:
+            - kommander
+        serviceSelector:
+            matchLabels:
+            app: nvidia-dcgm-exporter
+    ```
+
+6. In ``VSCode``, Under ``$HOME/nai`` folder, click on **New File** :material-file-plus-outline: and create a file with the following name:
 
     ```bash
     nai-deploy.sh
@@ -248,19 +285,18 @@ stateDiagram-v2
     -f iep-values-nkp.yaml
     ```
    
-8. Run the following command to deploy NAI
+7.  Run the following command to deploy NAI
    
     === "Command"
 
         ```bash
-        cd $HOME/sol-cnai-infra/; devbox shell
         $HOME/nai/nai-deploy.sh
         ```
 
     === "Command output"
       
         ```{ .text .no-copy }
-        $HOME/sol-cnai-infra/scripts/nai/nai-deploy.sh 
+        $HOME/nai/nai-deploy.sh 
 
         + set -o pipefail
         + helm repo add ntnx-charts https://nutanix.github.io/helm-releases
@@ -285,7 +321,7 @@ stateDiagram-v2
         TEST SUITE: None
         ```
 
-9.  Verify that the NAI Core Pods are running and healthy
+8.  Verify that the NAI Core Pods are running and healthy
     
     === "Command"
 
@@ -320,23 +356,21 @@ stateDiagram-v2
 
 In this section we will install SSL Certificate to access the NAI UI. 
 
-1. Create a certificate file using the Istio ingress gateway's IP address that was reserved in this [section](../infra/infra_nkp.md#reserve-control-plane-and-metallb-endpoint-ips). 
-   
-    Of three IPs ``10.x.x.214``,``10.x.x.215``,`10.x.x.216`, we will use ``10.x.x.216`` as the IP address of the ingress gateway.
+1. We will use ``10.x.x.216`` as the IP address for NAI as reserved in this [section](../infra/infra_nkp.md#reserve-control-plane-and-metallb-endpoint-ips). 
 
-2. Construct the FQDN of NAI UI using [nip.io](https://nip.io/)
+2. Construct the FQDN of NAI UI using [nip.io](https://nip.io/) and we will use this FQDN as the certificate's Common Name (CN).
    
-    ```url
+    ```url title="Example URL"
     nai.10.x.x.216.nip.io
     ```
 
-3. In VSC Explorer, go to ``$HOME/`` folder, click on **New File** :material-file-plus-outline:  and create a file with the following name
+3. In VSC Explorer, go to ``$HOME/nai`` folder, click on **New File** :material-file-plus-outline:  and create a file with the following name
    
     ```bash
     iep-cert.yaml
     ``` 
    
-    Add the following content to the file and replace the IP address with the IP address of ingress gateway.
+    Add the following content to the file and replace the IP address with the IP address of ingress gateway:
 
     Replace the values in the highlighted lines with the IP address of ingress gateway that was reserved in this [section](../infra/infra_nkp.md#reserve-control-plane-and-metallb-endpoint-ips).
    
@@ -361,7 +395,7 @@ In this section we will install SSL Certificate to access the NAI UI.
 4. Create the certificate using the following command
     
     ```bash
-    kubectl apply -f $HOME/iep-cert.yaml
+    kubectl apply -f $HOME/nai/iep-cert.yaml
     ```
 
 5. Patch the ingress gateway's IP address to the certificate file.

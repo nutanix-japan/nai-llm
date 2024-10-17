@@ -37,8 +37,9 @@ Below are the sizing requirements needed to successfully deploy NAI on a NKP Clu
 
     For a general example:
 
-    - If you have a 8b(illion) parameter model, you'll need 2x the amount of GPU vRAM avaible to load into memory.
-    
+    - To host a 8b(illion) parameter model, multiply the parameter number by 2 to get minimum GPU memory requirments. 
+      e.g. 16GB of GPU memory is required for 8b parameter model.
+  
     > So in the case of the `meta-llama/Meta-Llama-3-8B-Instruct` model, you'll need a min. 16 GiB GPU vRAM available
 
     Below are additional sizing consideration "Rules of Thumb" for further calculating min. GPU node resources:
@@ -48,13 +49,6 @@ Below are the sizing requirements needed to successfully deploy NAI on a NKP Clu
     - For each endpoint attached to the node, add 8 CPU cores.
     - If a model needs multiple GPUs, ensure all GPUs are attached to the same worker node
     - For resiliency, while running multiple instances of the same endpoint, ensure that the GPUs are on different worker nodes.
-
-    | Role                       | vCPU | Memory |
-    |----------------------------|------|--------|
-    | 1 x Base Kubernetes Worker | 8    | 24 GB  |
-    | 1 x GPU                    | -    | 16 GB  |
-    | 1 x Inference Endpoint     | 8    | -      |
-    | Total                      | 16   | 40 GB  |
 
 Since we will be testing with the ``meta-llama/Meta-Llama-3-8B-Instruct`` HuggingFace model, we will require a GPU with a min. of 24 GiB GPU vRAM available to support this demo.
 
@@ -117,8 +111,7 @@ Below are minimum requirements for deploying NAI on the NKP Demo Cluster.
         ```
         
     ```bash
-    gunzip nkp_v2.12.0_linux_amd64.tar.gz
-    tar -xvf nkp_v2.12.0_linux_amd64.tar
+    tar xvfz nkp_v2.12.0_linux_amd64.tar
     ```
 
 11. Move the ``nkp`` binary to a directory that is included in your ``PATH`` environment variable
@@ -167,15 +160,15 @@ Below are minimum requirements for deploying NAI on the NKP Demo Cluster.
 
         Restart the jumpbox host if ``ubuntu`` user has permission issues using ``docker`` commands.
 
-### Reserve Control Plane and MetalLB Endpoint IPs
+## Reserve Control Plane and MetalLB IP
 
 Nutanix AHV IPAM network allows you to black list IPs that needs to be reserved for specific application endpoints. We will use this feature to find and reserve three IPs. 
 
-We will need a total of three IPs for the following:
+We will reserve a total of three IPs for the following:
 
-| Cluster Role | Cluster Name | Control Plane IP | MetalLB IP |
-|--------------|--------------|------------------|------------|
-| Dev          | `nkpdev`     | 1                | 2          |
+| Cluster Role | Cluster Name |       NKP        | NAI |
+|--------------|--------------|------------------|-----|
+| Dev          | `nkpdev`     |       2          | 1   |
 
 1. Get the CIDR range for the AHV network(subnet) where the application will be deployed
 
@@ -233,6 +226,18 @@ We will need a total of three IPs for the following:
          ip_list=10.x.x.214,10.x.x.215,10.x.x.216
          ```
 
+### Reservation of IPs
+
+Reserve the first two reserved IPs for NKP control plane and MetalLB.
+
+Reserve the third IP for NAI. We will use the NAI IP in the next [NAI](../iep/iep_deploy.md#install-ssl-certificate) section to assign the FDQN and install SSL certificate.
+
+|   Component            |  IP/FQDN          |
+|  ------------          | --------          |
+| NKP Control Plane VIP  |  ``10.x.x.214``   |
+| NKP MetalLB IP         |  ``10.x.x.215``   |
+| NAI                    |  ``10.x.x.216``   |
+
 ## Create Base Image for NKP
 
 In this section we will go through creating a base image for all the control plane and worker node VMs on Nutanix.
@@ -247,8 +252,33 @@ In this section we will go through creating a base image for all the control pla
     .env
     ```
 
-4. Fill the following values inside the ``.env`` file
+4. Run the following command to generate an new RSA key pair on the jumphost VM.
+   
+    ??? tip "Would you like to use existing SSH key pair?"
 
+        Copy the key pair from your workstation (PC/Mac) to `~/.ssh/` directory on your Jumphost VM.
+        
+        ``` { .bash .no-copy }
+        mac/pc $ scp ~/.ssh/id_rsa.pub ubuntu@10.x.x.171:~/.ssh/id_rsa.pub
+        mac/pc $ scp ~/.ssh/id_rsa ubuntu@10.x.x.171:~/.ssh/id_rsa
+        ```
+
+    ```bash
+    ssh-keygen -t rsa
+    ```
+    
+    Accept the default file location as ``~/.ssh/id_rsa``
+    
+    SSH key pair will stored in the following location:
+        
+    ``` { .bash .no-copy }
+    ~/.ssh/id_rsa.pub 
+    ~/.ssh/id_rsa
+    ```
+
+    
+5. Fill the following values inside the ``.env`` file
+   
     === "Template .env"
 
         ```text
@@ -258,7 +288,7 @@ In this section we will go through creating a base image for all the control pla
         export NUTANIX_CLUSTER=_your_prism_element_cluster_name
         export NUTANIX_SUBNET_NAME=_your_ahv_ipam_network_name
         export STORAGE_CONTAINER=_your_storage_container_nmae
-        export SSH_PUBLIC_KEY=_your_path_to_ssh_pub_key
+        export SSH_PUBLIC_KEY=_path_to_ssh_pub_key_on_jumphost_vm
         export NKP_CLUSTER_NAME=_your_nkp_cluster_name
         export CONTROLPLANE_VIP=_your_nkp_cluster_controlplane_ip
         export LB_IP_RANGE=_your_range_of_two_ips
@@ -281,14 +311,14 @@ In this section we will go through creating a base image for all the control pla
         export GPU_NAME="Lovelace 40S"
         ```
 
-5. Using VSC Terminal, load the environment variables and its values
+6. Using VSC Terminal, load the environment variables and its values
 
     ```bash
     cd $HOME/nkp
     source .env
     ```
 
-6. Create the base image and upload to Prism Central using the following command. 
+7. Create the base image and upload to Prism Central using the following command. 
 
     !!!note 
            Image creation will take up to 5 minutes.
@@ -336,7 +366,7 @@ In this section we will go through creating a base image for all the control pla
         --> nutanix.kib_image: nkp-ubuntu-22.04-1.29.6-20240717082720
         ```
 
-7.  Populate the ``.env`` file with the NKP image name
+8.  Populate the ``.env`` file with the NKP image name
 
     === "Command"
     
