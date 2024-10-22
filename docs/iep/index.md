@@ -2,11 +2,9 @@
 
 In this part of the lab we will deploy LLM on GPU nodes.
 
-We have deployed a Kubernetes cluster so far as per the NVD [design requirements](../conceptual/conceptual.md#management-kubernetes-cluster).
+We will also deploy a Kubernetes cluster so far as per the NVD [design requirements](../conceptual/conceptual.md#management-kubernetes-cluster).
 
-**Dev cluster**: to host the dev LLM and ChatBot application - this will use GPU passed through to the kubernetes worker node.
-
-A kubernetes cluster (NKP or other supported ones) should already be deployed to be able to run this lab. If it is not, follow the guide below to deploy.
+**Dev NKP cluster**: to host the dev LLM and ChatBot application - this will use GPU passed through to the kubernetes worker node.
 
 <div class="grid cards" markdown>
 
@@ -22,12 +20,11 @@ A kubernetes cluster (NKP or other supported ones) should already be deployed to
 
 </div>
 
-Confirm that the kubernetes cluster has the following components installed:
+Deploy the kubernetes cluster with the following components:
 
 - 3 x Control plane nodes
 - 4 x Worker nodes 
 - 1 x GPU node (with a minimum of 40GB of RAM and 16 vCPUs based on ``llama3-8B`` LLM model)
-
 
 We will deploy the GPT-in-a-Box v2 NVD Reference App - backed by ``llama3-8B`` model.
 
@@ -37,7 +34,14 @@ The following is the flow of the NAI lab:
 stateDiagram-v2
     direction LR
 
-    state PreRequisites {
+    state DeployNKP {
+        [*] --> CreateNkpMachineImage
+        CreateNkpMachineImage --> CreateNkpSelfManagedCluster
+        CreateNkpSelfManagedCluster --> DeployGPUNodePool
+        DeployGPUNodePool --> [*]
+    }
+    
+    state NAIPreRequisites {
         [*] --> ReserveIPs
         ReserveIPs --> CreateFilesShare
         CreateFilesShare --> [*]
@@ -55,8 +59,9 @@ stateDiagram-v2
         TestChatApp --> [*]
     }
 
-    [*] --> PreRequisites
-    PreRequisites --> DeployNAI
+    [*] --> DeployNKP
+    DeployNKP --> NAIPreRequisites
+    NAIPreRequisites --> DeployNAI
     DeployNAI --> TestLLMApp
     TestLLMApp --> [*]
 ```

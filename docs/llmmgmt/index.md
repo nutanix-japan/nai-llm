@@ -1,35 +1,11 @@
 # Getting Started
 
-In this part of the lab we will deploy LLM on GPU nodes.
+In this part of the lab we will deploy LLM on GPU nodes using the GPT-in-a-Box V1 NVD.
 
-We have deployed two Kubernetes clusters so far as per the NVD [design requirements](../conceptual/conceptual.md#management-kubernetes-cluster)
+We will deploy two Kubernetes clusters so far as per the NVD [design requirements](../conceptual/conceptual.md#management-kubernetes-cluster)
 
 1. **Management cluster**: to host the management workloads like flux, kafka, etc
 2. **Dev cluster**: to host the dev LLM and ChatBot application - this will use GPU passed through to the kubernetes worker nodes 
-
-Deploy the two clusters using the instructions below:
-
-<div class="grid cards" markdown>
-
--   :material-kubernetes:{ .lg .middle } __Set up Nutanix Karbon Engine [ NKE ] Clusters in 10 minutes__
-
-    ---
-
-    [:octicons-arrow-right-24: Setup Nutanix Karbon Engine](../infra/infra_nke.md)
-
-</div>
-
-Fork and clone GitOps repository on jumphost (if not already done):
-
-<div class="grid cards" markdown>
-
--   :material-github:{ .lg .middle } __Fork and Clone GiaB NVD Gitops Repository__
-
-    ---
-
-    [:octicons-arrow-right-24: Fork and Clone GiaB NVD Gitops Repository](../infra/infra_jumphost_tofu.md#optional-fork-and-clone-giab-nvd-gitops-repository)
-
-</div>
 
 We will deploy the following applications one after the other
 
@@ -42,7 +18,15 @@ The following is the flow of the applications lab:
 stateDiagram-v2
     direction LR
 
-    state PreRequisites {
+    state DeployNKE {
+        [*] --> CreateTofuWorkspaces
+        CreateTofuWorkspaces --> CreateMgtK8SCluster
+        CreateMgtK8SCluster --> CreateDevK8SCluster
+        CreateDevK8SCluster --> DeployGPUNodePool
+        DeployGPUNodePool --> [*]
+    }
+    
+    state NAIPreRequisites {
         [*] --> ReserveIPs
         ReserveIPs --> CreateBuckets
         CreateBuckets --> CreateFilesShare
@@ -62,8 +46,9 @@ stateDiagram-v2
         TestRAG -->  [*]
     }
 
-    [*] --> PreRequisites
-    PreRequisites --> DeployLLMV1
+    [*] --> DeployNKE
+    DeployNKE --> NAIPreRequisites
+    NAIPreRequisites --> DeployLLMV1
     DeployLLMV1 --> TestLLMApp
     TestLLMApp --> [*]
 ```
