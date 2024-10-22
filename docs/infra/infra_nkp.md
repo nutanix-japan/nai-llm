@@ -50,7 +50,7 @@ Below are the sizing requirements needed to successfully deploy NAI on a NKP Clu
   
     > So in the case of the `meta-llama/Meta-Llama-3-8B-Instruct` model, you'll need a min. 16 GiB GPU vRAM available
 
-    Below are additional sizing consideration "Rules of Thumb" for further calculating min. GPU node resources:
+    Below are additional sizing consideration "Rule of Thumb" for further calculating min. GPU node resources:
 
     - For each GPU node will have 8 CPU cores, 24 GB of memory, and 300 GB of disk space.
     - For each GPU attached to the node, add 16 GiB of memory.
@@ -609,28 +609,37 @@ We are now ready to install the workload ``nkpdev`` cluster
     export KUBECONFIG=${PWD}/${NKP_CLUSTER_NAME}.cfg
     ```
 
-6. Run the following command to check K8S status of the ``nkpdev`` cluster
+7. Combine the bootstrap and workload clusters ``KUBECONFIG`` file so that we can use it with ``kubectx``command to change context between clusters
+   
+    ```bash
+    export KUBECONFIG=bs.cfg:${NKP_CLUSTER_NAME}.cfg
+    kubectl config view --flatten > all-in-one-kubeconfig.yaml
+    export KUBECONFIG=all-in-one-kubeconfig.yaml
+    ```
 
+8. Run the following command to check K8S status of the ``nkpdev`` cluster
+ 
     === "Command"
+    
+        ```bash
+        kubectx ${NKP_CLUSTER_NAME}-admin@${NKP_CLUSTER_NAME} 
+        kubectl get nodes
+        ```
 
-         ```bash
-         kubectl get nodes
-         ```
-         
     === "Command output"
+    
+        ```bash
+        $ kubectl get nodes
 
-         ```bash
-         kubectl get nodes
-
-         NAME                                  STATUS   ROLES           AGE     VERSION
-         nkp3-md-0-x948v-hvxtj-9r698           Ready    <none>          4h49m   v1.29.6
-         nkp3-md-0-x948v-hvxtj-fb75c           Ready    <none>          4h50m   v1.29.6
-         nkp3-md-0-x948v-hvxtj-mdckn           Ready    <none>          4h49m   v1.29.6
-         nkp3-md-0-x948v-hvxtj-shxc8           Ready    <none>          4h49m   v1.29.6
-         nkp3-r4fwl-8q4ch                      Ready    control-plane   4h50m   v1.29.6
-         nkp3-r4fwl-jf2s8                      Ready    control-plane   4h51m   v1.29.6
-         nkp3-r4fwl-q888c                      Ready    control-plane   4h49m   v1.29.6
-         ```
+        NAME                                  STATUS   ROLES           AGE     VERSION
+        nkpdev-md-0-x948v-hvxtj-9r698           Ready    <none>          4h49m   v1.29.6
+        nkpdev-md-0-x948v-hvxtj-fb75c           Ready    <none>          4h50m   v1.29.6
+        nkpdev-md-0-x948v-hvxtj-mdckn           Ready    <none>          4h49m   v1.29.6
+        nkpdev-md-0-x948v-hvxtj-shxc8           Ready    <none>          4h49m   v1.29.6
+        nkpdev-r4fwl-8q4ch                      Ready    control-plane   4h50m   v1.29.6
+        nkpdev-r4fwl-jf2s8                      Ready    control-plane   4h51m   v1.29.6
+        nkpdev-r4fwl-q888c                      Ready    control-plane   4h49m   v1.29.6
+        ```
 
 ## Add NKP GPU Workload Pool
 
@@ -805,7 +814,7 @@ In this section we will create a nodepool to host the AI apps with a GPU.
         nkpdev-ncnww-hldm9                      Ready    control-plane   75m     v1.29.6
         ```
 
-### Licensing
+## Licensing
 
 We need to generate a license for the NKP cluster which is the total for all the vCPUs used by worker nodes.
 

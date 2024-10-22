@@ -16,17 +16,19 @@ nav:
   - infra/index.md
   - Workstation Setup: infra/workstation.md
   - Jumphost VM Tofu: infra/infra_jumphost_tofu.md
-  - K8S NKE Clusters: infra/infra_nke.md
-  - K8S NKP Clusters: infra/infra_nkp.md
+  # - K8S NKE Clusters: infra/infra_nke.md
+  # - K8S NKP Clusters: infra/infra_nkp.md
 - Tutorials:
   - GPT-in-a-Box v1 NVD Reference App:
     - Getting Started: llmmgmt/index.md
+    - Setup NKE Cluster: infra/infra_nke.md
     - Pre-requisites: llmmgmt/llm_pre_reqs.md
     - Deploy Management Cluster: llmmgmt/llm_mgt_deploy.md
     - Deploy Dev Cluster: llmmgmt/llm_dev_deploy.md
     - Test LLM App: llmmgmt/llm_test.md
   - Nutanix Enterprise AI (NAI):
     - Getting Started: iep/index.md
+    - Setup NKP Cluster: infra/infra_nkp.md
     - Pre-requisites: iep/iep_pre_reqs.md
     - Deploy NAI: iep/iep_deploy.md
     - Test NAI: iep/iep_test.md

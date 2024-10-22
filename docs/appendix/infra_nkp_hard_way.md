@@ -564,7 +564,8 @@ We are now ready to install the workload ``nkpdev`` cluster
     nkp get kubeconfig -c ${NKP_CLUSTER_NAME} > ${NKP_CLUSTER_NAME}.cfg
     export KUBECONFIG=${PWD}/${NKP_CLUSTER_NAME}.cfg
     ```
-7. Combine the bootstrap and workload clusters ``KUBECONFIG`` file so that we can use it with ``kubectx`` to change context between clusters
+
+7. Combine the bootstrap and workload clusters ``KUBECONFIG`` file so that we can use it with ``kubectx`` command to change context between clusters
    
     ```bash
     export KUBECONFIG=bs.cfg:${NKP_CLUSTER_NAME}.cfg
@@ -572,26 +573,29 @@ We are now ready to install the workload ``nkpdev`` cluster
     export KUBECONFIG=all-in-one-kubeconfig.yaml
     ```
 
-   1. Run the following command to check K8S status of the ``nkpdev`` cluster
+8. Run the following command to check K8S status of the ``nkpdev`` cluster
+ 
+    === "Command"
     
-    ```bash
-    kubectx ${NKP_CLUSTER_NAME}-admin@${NKP_CLUSTER_NAME} 
-    kubectl get nodes
-    ```
-    <!-- termynal -->
+        ```bash
+        kubectx ${NKP_CLUSTER_NAME}-admin@${NKP_CLUSTER_NAME} 
+        kubectl get nodes
+        ```
 
-    ```bash
-    $ kubectl get nodes
+    === "Command output"
+    
+        ```bash
+        $ kubectl get nodes
 
-    NAME                                  STATUS   ROLES           AGE     VERSION
-    nkp3-md-0-x948v-hvxtj-9r698           Ready    <none>          4h49m   v1.29.6
-    nkp3-md-0-x948v-hvxtj-fb75c           Ready    <none>          4h50m   v1.29.6
-    nkp3-md-0-x948v-hvxtj-mdckn           Ready    <none>          4h49m   v1.29.6
-    nkp3-md-0-x948v-hvxtj-shxc8           Ready    <none>          4h49m   v1.29.6
-    nkp3-r4fwl-8q4ch                      Ready    control-plane   4h50m   v1.29.6
-    nkp3-r4fwl-jf2s8                      Ready    control-plane   4h51m   v1.29.6
-    nkp3-r4fwl-q888c                      Ready    control-plane   4h49m   v1.29.6
-    ```
+        NAME                                  STATUS   ROLES           AGE     VERSION
+        nkp3-md-0-x948v-hvxtj-9r698           Ready    <none>          4h49m   v1.29.6
+        nkp3-md-0-x948v-hvxtj-fb75c           Ready    <none>          4h50m   v1.29.6
+        nkp3-md-0-x948v-hvxtj-mdckn           Ready    <none>          4h49m   v1.29.6
+        nkp3-md-0-x948v-hvxtj-shxc8           Ready    <none>          4h49m   v1.29.6
+        nkp3-r4fwl-8q4ch                      Ready    control-plane   4h50m   v1.29.6
+        nkp3-r4fwl-jf2s8                      Ready    control-plane   4h51m   v1.29.6
+        nkp3-r4fwl-q888c                      Ready    control-plane   4h49m   v1.29.6
+        ```
 
 ## Install Kommander Management
 

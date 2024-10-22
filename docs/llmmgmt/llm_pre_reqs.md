@@ -166,9 +166,9 @@ Assign the first two reserved IPs to Management cluster.
 
 |   Component  | Sub-component| IP/FQDN   |    
 |  ------------ | --| --------   | 
-| Nginx Ingress | `vip`| ``10.x.x.214``  |
-|  Nginx Ingress   | ``wildcard_ingress_subdomain``| ``mgmt-cluster.10.x.x.214.nip.io``    | 
-|  Nginx Ingress   |  ``management_cluster_ingress_subdomain``| ``mgmt-cluster.10.x.x.214.nip.io``     | 
+| Ingress | `vip`| ``10.x.x.214``  |
+| Ingress  Wildcard | ``wildcard_ingress_subdomain``| ``mgmt-cluster.10.x.x.214.nip.io``    | 
+| Ingress  Subdomain |  ``management_cluster_ingress_subdomain``| ``mgmt-cluster.10.x.x.214.nip.io``     | 
 | Reserved for future | `troubleshooting or debugging`| ``10.x.x.215``  |
 
 !!!note
