@@ -16,8 +16,8 @@ nav:
   - infra/index.md
   - Workstation Setup: infra/workstation.md
   - Jumphost VM Tofu: infra/infra_jumphost_tofu.md
-  # - K8S NKE Clusters: infra/infra_nke.md
-  # - K8S NKP Clusters: infra/infra_nkp.md
+  - Setup NKE Cluster: infra/infra_nke.md
+  - Setup NKP Cluster: infra/infra_nkp.md
 - Tutorials:
   - GPT-in-a-Box v1 NVD Reference App:
     - Getting Started: llmmgmt/index.md
