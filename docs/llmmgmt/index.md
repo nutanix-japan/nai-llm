@@ -1,6 +1,10 @@
 # Getting Started
 
-In this part of the lab we will deploy LLM on GPU nodes using the GPT-in-a-Box V1 NVD.
+!!! warning "Deprecation Notice"
+
+    GPT-in-a-Box V1 NVD will be deprecated and be removed in a future releases. This is replaced by Nutanix Enterprise AI (AI).
+
+This part of the lab we will focus on deploying LLM on GPU nodes using the GPT-in-a-Box V1 NVD.
 
 We will deploy two Kubernetes clusters so far as per the NVD [design requirements](../conceptual/conceptual.md#management-kubernetes-cluster)
 
