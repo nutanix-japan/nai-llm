@@ -35,6 +35,7 @@ nav:
 - Appendix:
   - NKP The Hard Way: appendix/infra_nkp_hard_way.md
   - Jumphost VM Manual: infra/infra_jumphost.md
+  - Harbor Container Registry: infra/harbor.md
   - Appendix: appendix/appendix.md
 - References:
   - Nutanix Components: ntxcomponents/ntxcomponents.md

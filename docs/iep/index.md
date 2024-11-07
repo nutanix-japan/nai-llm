@@ -14,6 +14,15 @@ We will also deploy a Kubernetes cluster so far as per the NVD [design requireme
 
     [:octicons-arrow-right-24: Setup NKP](../infra/infra_nkp.md) - Quick install with all working NKP components
 
+</div>
+
+
+<div class="grid cards" markdown>
+
+-   :material-kubernetes:{ .lg .middle } __Set up Nutanix Kubernetes Platform [ NKP ] Advanced__
+
+    ---
+
     [:octicons-arrow-right-24: Setup Customized NKP](../appendix/infra_nkp_hard_way.md) - Customize what NKP components to deploy
 
     [:octicons-arrow-right-24: Air-gapped Install](../appendix/infra_nkp_hard_way.md) - Under construction :construction: .. 
