@@ -24,7 +24,7 @@ We will use the following commands to install Harbor on the jumphost.
 
 1. Open new VSCode window on your jumphost
 
-2. In `VSCode` Explorer pane, Click on **New Folder** :material-folder-plus-outline: and name it: ``harbor`
+2. In `VSCode` Explorer pane, Click on **New Folder** :material-folder-plus-outline: and name it: ``harbor``
    
 3. In `VSCode` Terminal pane, run the following commands to download Harbor.
    
@@ -250,16 +250,21 @@ We will use the following commands to install Harbor on the jumphost.
         ```
     === "Command output"
 
-        ```bash
-        $ sudo docker-compose ps
-        Name                     Command                       State                                              Ports                                    
-        ---------------------------------------------------------------------------------------------------------------------------------------------------------
+        ```{ .text .no-copy }
+        $ sudo docker-compose ps 
+
+        Name                     Command                  State                                          Ports                                    
+        ------------------------------------------------------------------------------------------------------------------------------------------------
         harbor-core         /harbor/entrypoint.sh            Up (healthy)                                                                               
-        harbor-db           /docker-entrypoint.sh            Up (healthy)                                                                                        
-        harbor-jobservice   /harbor/entrypoint.sh            Up (healthy)                                                                           
-        harbor-log          /bin/sh -c /usr/local/bin/ ...   Up (healthy)            127.0.0.1:1514->10514/tcp                                                   
-        harbor-portal       nginx -g daemon off;             Up (healthy)                                                                                        
-        nginx               nginx -g daemon off;             Up (healthy)            0.0.0.0:80->8080/tcp,:::80->8080/tcp, 0.0.0.0:443->8443/tcp,:::443->8443/tcp                 
+        harbor-db           /docker-entrypoint.sh 13 14      Up (healthy)                                                                               
+        harbor-jobservice   /harbor/entrypoint.sh            Up (healthy)                                                                               
+        harbor-log          /bin/sh -c /usr/local/bin/ ...   Up (healthy)   127.0.0.1:1514->10514/tcp                                                   
+        harbor-portal       nginx -g daemon off;             Up (healthy)                                                                               
+        nginx               nginx -g daemon off;             Up (healthy)   0.0.0.0:80->8080/tcp,:::80->8080/tcp, 0.0.0.0:443->8443/tcp,:::443->8443/tcp
+        redis               redis-server /etc/redis.conf     Up (healthy)                                                                               
+        registry            /home/harbor/entrypoint.sh       Up (healthy)                                                                               
+        registryctl         /home/harbor/start.sh            Up (healthy)                                                                               
+        trivy-adapter       /home/scanner/entrypoint.sh      Up (healthy)                    
         ```
 
 5. Login to Harbor Web UI using the following credentials
