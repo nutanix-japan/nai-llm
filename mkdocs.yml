@@ -22,7 +22,7 @@ nav:
   - Nutanix Enterprise AI (NAI):
     - Getting Started: iep/index.md
     - Setup NKP Cluster: infra/infra_nkp.md
-    - Pre-requisites: iep/iep_pre_reqs.md
+    - Pre-requisites NAI: iep/iep_pre_reqs.md
     - Deploy NAI: iep/iep_deploy.md
     - Test NAI: iep/iep_test.md
   - GPT-in-a-Box v1 NVD Reference App:

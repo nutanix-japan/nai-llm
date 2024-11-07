@@ -72,6 +72,7 @@ Below are minimum requirements for deploying NAI on the NKP Demo Cluster.
 | GPU           | 1                 | 16            | 40 GB           | 300 GB           | 16         | 40 GB        |
 | **Totals**    |                   |               |                 |                  | **60**     | **216 GB**   |
 
+
 ## Pre-requisites for NKP Deployment
 
 1. Existing Ubuntu Linux jumphost VM. See here for jumphost installation [steps](../infra/infra_jumphost_tofu.md).
@@ -602,11 +603,16 @@ We are now ready to install the workload ``nkpdev`` cluster
   
 4. Observe the events in the shell and in Prism Central events
 
+2. Store kubeconfig file for bootstrap cluster
+   
+    ```bash
+    cp $HOME/.kube/config bs.cfg
+    export KUBECONFIG=bs.cfg
+    ```
 5. Store kubeconfig files for the workload cluster
 
     ```bash
     nkp get kubeconfig -c ${NKP_CLUSTER_NAME} > ${NKP_CLUSTER_NAME}.cfg
-    export KUBECONFIG=${PWD}/${NKP_CLUSTER_NAME}.cfg
     ```
 
 7. Combine the bootstrap and workload clusters ``KUBECONFIG`` file so that we can use it with ``kubectx``command to change context between clusters
