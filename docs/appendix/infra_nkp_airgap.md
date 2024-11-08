@@ -1,8 +1,15 @@
 # Deploy NKP Clusters
 
-This section will take you through install NKP(Kubernetes) on Nutanix cluster as we will be deploying AI applications on these kubernetes clusters. 
+This lab will take you through install Air-gapped NKP(Kubernetes) on Nutanix cluster as we will be deploying AI applications on these kubernetes clusters. 
 
-This section will expand to other available Kubernetes implementations on Nutanix.
+!!! warning "Airgapped NKP Cluster"
+
+    This lab assumes the following:
+
+     - The subnet (VPC or otherwise) is air-gapped and there is no internet connectivity.
+     - The jumphost VM has connectivity to download the NKP air-gapped bundle
+     - The jumphost is in the same subnet as the Kubernetes cluster
+     - The jumphost VM is hosting Harbor container registry
 
 ```mermaid
 stateDiagram-v2
@@ -10,7 +17,8 @@ stateDiagram-v2
     
     state DeployNKP {
         [*] --> CreateNkpMachineImage
-        CreateNkpMachineImage --> CreateNKPCluster
+        CreateNkpMachineImage --> UploadImagestoRegistry
+        UploadImagestoRegistry -->  CreateNKPCluster
         CreateNKPCluster --> GenerateLicense
         GenerateLicense --> InstallLicense
         InstallLicense --> DeployGpuNodePool
@@ -33,11 +41,11 @@ stateDiagram-v2
 
 ## NKP High Level Cluster Design
 
-The ``nkpdev`` cluster will be hosting the LLM model serving endpoints and AI application stack. This cluster and will require a dedicated GPU node pool.
+The ``nkpdarksite`` cluster will be hosting the LLM model serving endpoints and AI application stack. This cluster and will require a dedicated GPU node pool.
 
 ### Sizing Requirements
 
-Below are the sizing requirements needed to successfully deploy NAI on a NKP Cluster (labeled as ``nkpdev``) and subsequently deploying single LLM inferencing endpoint on NAI using the `meta-llama/Meta-Llama-3-8B-Instruct` LLM model.
+Below are the sizing requirements needed to successfully deploy NAI on a NKP Cluster (labeled as ``nkpdarksite``) and subsequently deploying single LLM inferencing endpoint on NAI using the `meta-llama/Meta-Llama-3-8B-Instruct` LLM model.
 
 ??? Tip "Calculating GPU Resources Tips"
 
@@ -75,58 +83,74 @@ Below are minimum requirements for deploying NAI on the NKP Demo Cluster.
 
 ## Pre-requisites for NKP Deployment
 
-1. Existing Ubuntu Linux jumphost VM. See here for jumphost installation [steps](../infra/infra_jumphost_tofu.md).
-2. [Docker](#setup-docker-on-jumphost) or Podman installed on the jumphost VM
-3. Nutanix PC is at least ``2024.1``
-4. Nutanix AOS is at least ``6.5``,``6.8+``
-5. Download and install ``nkp`` binary from Nutanix Portal
-6. Find and reserve 3 IPs for control plane and MetalLB access from AHV network
-7. Find GPU details from Nutanix cluster
-8. Create a base image to use with NKP nodes using ``nkp`` command
 
-### Install NKP Binaries
+1. Nutanix PC is at least ``2024.1``
+5. Nutanix AOS is at least ``6.5``,``6.8+``
+6. Existing Ubuntu Linux jumphost VM. See here for jumphost installation [steps](../infra/infra_jumphost_tofu.md).
+
+    !!! warning "Before you proceed!"
+
+        Make sure the Jumphost VM has enough resources to host the following:
+
+        - Harbor container registry
+        - Bootstrap ``kind`` cluster
+        
+        with at least the following resources:
+
+        | #    | CPU | Memory | Disk |
+        |-----| --- | ------ | ---- |
+        |Jumphost VM |   8   | 16 GB   | 80 GB |
+
+7. [Docker](#setup-docker-on-jumphost) or Podman installed on the jumphost VM
+8. Existing **Harbor** container registry on the jumphost VM. See here for installation [steps](../infra/harbor.md).
+9. Download and install ``nkp`` binary from Nutanix Portal
+10. Find and reserve 3 IPs for control plane and MetalLB access from AHV network
+11. Find GPU details from Nutanix cluster
+12. Create a base image to use with NKP nodes using ``nkp`` command
+
+### Download Offline NKP Air-gapped Bundle
 
 1. Login to [Nutanix Portal](https://portal.nutanix.com/page/downloads?product=nkp) using your credentials
-2. Go to **Downloads** > **Nutanix Kubernetes Platform (NKP)**
+2. Go to **Downloads** > **NKP Airgapped Bundle**
 3. Select NKP for Linux and copy the download link to the ``.tar.gz`` file
 4. If you haven't already done so, Open new `VSCode` window on your jumphost VM
 
 5. In `VSCode` Explorer pane, click on existing ``$HOME`` folder
 
-6. Click on **New Folder** :material-folder-plus-outline: name it: ``nkp``
+6. Click on **New Folder** :material-folder-plus-outline: name it: ``airgap-nkp``
 
-7. On `VSCode` Explorer plane, click the ``$HOME/nkp`` folder
+7. On `VSCode` Explorer plane, click the ``$HOME/airgap-nkp`` folder
 
 8. On `VSCode` menu, select ``Terminal`` > ``New Terminal``
 
-9. Browse to ``nkp`` directory
+9. Browse to ``airgap-nkp`` directory
 
     ```bash
-    cd $HOME/nkp
+    cd $HOME/airgap-nkp
     ```
 
-10. Download and extract the NKP binary from the link you copied earlier
+10. Download and extract the NKP air-gap bundle from the link you copied earlier
     
     === "Command"
 
         ```text title="Paste the download URL within double quotes"
-        curl -o nkp_v2.12.1_linux_amd64.tar.gz "_paste_download_URL_here"
+        curl -o nkp-air-gapped-bundle_v2.12.1_linux_amd64.tar.gz "_paste_download_URL_here"
         ```
 
     === "Sample command"
         
         ```bash
-        curl -o nkp_v2.12.0_linux_amd64.tar.gz "https://download.nutanix.com/downloads/nkp/v2.12.1/nkp_v2.12.1_linux_amd64.tar.gz?Expires=1729016864&........"
+        curl -o nkp-air-gapped-bundle_v2.12.0_linux_amd64.tar.gz "https://download.nutanix.com/downloads/nkp/v2.12.0/nkp_v2.12.0_linux_amd64.tar.gz?Expires=1729016864&........"
         ```
         
     ```bash
-    tar xvfz nkp_v2.12.0_linux_amd64.tar
+    tar xvfz nkp-air-gapped-bundle_v2.12.0_linux_amd64.tar.gz
     ```
 
 11. Move the ``nkp`` binary to a directory that is included in your ``PATH`` environment variable
 
     ```bash
-    sudo cp nkp /usr/local/bin/
+    sudo cp nkp-v2.12.1/cli/nkp /usr/local/bin/
     ```
 
 
@@ -169,6 +193,34 @@ Below are minimum requirements for deploying NAI on the NKP Demo Cluster.
 
         Restart the jumpbox host if ``ubuntu`` user has permission issues using ``docker`` commands.
 
+### Load Docker with NKP Images
+
+1. From VSC, open Terminal and run the following command to load the ``nkp`` images
+   
+    ```bash
+    cd $HOME/airgap-nkp/nkp-v2.12.1/cli
+    docker load -i nkp-image-builder-image-v0.13.1.tar
+    docker load -i konvoy-bootstrap-image-v2.12.0.tar
+    ```
+
+2. Confirm presence of container images on jumhost VM
+   
+    === "Command"
+    
+        ```bash
+        docker image ls
+        ```
+    
+    === "Command output"
+    
+        ```text hl_lines="4 5"
+        $ docker image ls
+
+        REPOSITORY                                                   TAG       IMAGE ID       CREATED        SIZE
+        mesosphere/nkp-image-builder                                 v0.13.3   fbb35cce9a8f   44 years ago   594MB
+        mesosphere/konvoy-bootstrap                                  v2.12.1   7ca8eeaa8381   3 weeks ago    2.15GB
+        ```
+
 ## Reserve Control Plane and MetalLB IP
 
 Nutanix AHV IPAM network allows you to black list IPs that needs to be reserved for specific application endpoints. We will use this feature to find and reserve three IPs. 
@@ -177,7 +229,7 @@ We will reserve a total of three IPs for the following:
 
 | Cluster Role | Cluster Name |       NKP        | NAI |
 |--------------|--------------|------------------|-----|
-| Dev          | `nkpdev`     |       2          | 1   |
+| Dev          | `nkpdarksite`     |       2          | 1   |
 
 1. Get the CIDR range for the AHV network(subnet) where the application will be deployed
 
@@ -255,9 +307,9 @@ In this section we will go through creating a base image for all the control pla
 
 1. In VSC Explorer pane, Click on **New Folder** :material-folder-plus-outline:
 
-2. Call the folder ``nkp`` under ``$HOME`` directory
+2. Call the folder ``airgap-nkp`` under ``$HOME`` directory
 
-3. In the ``nkp`` folder, click on **New File** :material-file-plus-outline: and create new file with the following name:
+3. In the ``airgap-nkp`` folder, click on **New File** :material-file-plus-outline: and create new file with the following name:
   
     ```bash
     .env
@@ -303,6 +355,9 @@ In this section we will go through creating a base image for all the control pla
         export NKP_CLUSTER_NAME=_your_nkp_cluster_name
         export CONTROLPLANE_VIP=_your_nkp_cluster_controlplane_ip
         export LB_IP_RANGE=_your_range_of_two_ips
+        export OS_BUNDLE_DIR=_your_artifacts_directory
+        export OS=_your_preferred_os
+        export BASE_IMAGE=_your_baseimage_name
         ```
 
     === "Sample .env"
@@ -315,37 +370,65 @@ In this section we will go through creating a base image for all the control pla
         export NUTANIX_SUBNET_NAME=User1
         export STORAGE_CONTAINER=default
         export SSH_PUBLIC_KEY=$HOME/.ssh/id_rsa.pub
-        export NKP_CLUSTER_NAME=nkpdev
+        export NKP_CLUSTER_NAME=nkpdarksite
         export CONTROLPLANE_VIP=10.x.x.214
         export LB_IP_RANGE=10.x.x.215-10.x.x.216
+        export OS_BUNDLE_DIR=kib/artifacts
+        export OS=ubuntu-22.04
+        export BASE_IMAGE=ubuntu-22.04-server-cloudimg-amd64.img
         ```
 
 6. Using VSC Terminal, load the environment variables and its values
 
     ```bash
-    cd $HOME/nkp
+    cd $HOME/airgap-nkp
     source .env
+    cd nkp-v2.12.1/
     ```
 
-7. Create the base image and upload to Prism Central using the following command. 
+7. Create the base image
+   
+    === "Command"
 
+        ```bash
+        nkp create package-bundle --artifacts-directory ${OS_BUNDLE_DIR} ${OS}
+        ```
+
+    === "Command output"
+
+        ```{ .text .no-copy }
+        $ nkp create package-bundle --artifacts-directory ${OS_BUNDLE_DIR} ${OS}
+
+        OS bundle configuration files extracted to /home/ubuntu/airgap-nkp/nkp-v2.12.1/kib/artifacts/.dkp-image-builder-2593079857
+        Get:1 http://archive.ubuntu.com/ubuntu jammy InRelease [270 kB]
+        Get:2 http://security.ubuntu.com/ubuntu jammy-security InRelease [129 kB]
+
+        <snip>
+
+        Get:241 http://archive.ubuntu.com/ubuntu jammy-updates/universe amd64 gpgv2 all 2.2.27-3ubuntu2.1 [4392 B]                              
+        Get:242 http://archive.ubuntu.com/ubuntu jammy-updates/universe amd64 python3-pip all 22.0.2+dfsg-1ubuntu0.5 [1306 kB]                  
+        Get:243 http://archive.ubuntu.com/ubuntu jammy-updates/universe amd64 python3-wheel all 0.37.1-2ubuntu0.22.04.1 [32.0 kB]               
+        Fetched 176 MB in 9s (19.9 MB/s) 
+        dpkg-scanpackages: info: Wrote 243 entries to output Packages file.
+        /home/ubuntu/airgap-nkp/nkp-v2.12.1/kib/artifacts/.dkp-image-builder-2593079857/ubuntu-22.04/Packages       
+        ```
+
+
+8. Create the os image and upload to Prism Central using the following command. 
+   
     !!!note 
            Image creation will take up to 5 minutes.
 
     === "Command"
 
         ```bash
-        nkp create image nutanix ubuntu-22.04 \
-          --endpoint ${NUTANIX_ENDPOINT} --cluster ${NUTANIX_CLUSTER} \
-          --subnet ${NUTANIX_SUBNET_NAME} --insecure
+        nkp create image nutanix ${OS} --endpoint ${NUTANIX_ENDPOINT} --cluster ${NUTANIX_CLUSTER} --subnet ${NUTANIX_SUBNET_NAME} --source-image ${BASE_IMAGE} --artifacts-directory ${OS_BUNDLE_DIR}
         ```
 
     === "Command output"
 
         ```{ .text .no-copy }
-        nkp create image nutanix ubuntu-22.04 \ 
-        --endpoint ${NUTANIX_ENDPOINT} --cluster ${NUTANIX_CLUSTER} \
-        --subnet ${NUTANIX_SUBNET_NAME} --insecure
+        nkp create image nutanix ${OS} --endpoint ${NUTANIX_ENDPOINT} --cluster ${NUTANIX_CLUSTER} --subnet ${NUTANIX_SUBNET_NAME} --source-image ${BASE_IMAGE} --artifacts-directory ${OS_BUNDLE_DIR}
         
         > Provisioning and configuring image
         Manifest files extracted to $HOME/nkp/.nkp-image-builder-3243021807
@@ -378,7 +461,7 @@ In this section we will go through creating a base image for all the control pla
 
         Make sure to use image name that is generated in your environment for the next steps.
 
-8.  Populate the ``.env`` file with the NKP image name by adding (appending) the following environment variables and save it
+9.  Populate the ``.env`` file with the NKP image name by adding (appending) the following environment variables and save it
 
     === "Template .env"
 
@@ -392,11 +475,110 @@ In this section we will go through creating a base image for all the control pla
         export NKP_IMAGE=nkp-ubuntu-22.04-1.29.6-20240717082720
         ```
 
+## Push Container Images to Local/Private Registry to be used by NKP
+
+!!! warning
+    
+    This section requires a air-gapped container registry to be functional.
+
+    If you haven't already deployed the air gapped container registry, please follow the steps in [Harbor Container Registry](../infra/harbor.md) section to deploy a Harbor container registry on the jumphost VM.
 
 
-We are now ready to install the workload ``nkpdev`` cluster
+1. Open ``$HOME/airgap-nkp/.env`` file in VSC and add (append) the following environment variables to your ``.env`` file and save it
+   
+    === "Template .env"
 
-## Create NKP Workload Cluster
+        ```text
+        export REGISTRY_URL=_your_registry_url
+        export REGISTRY_USERNAME=_your_registry_username
+        export REGISTRY_PASSWORD=_your_registry_password
+        export REGISTRY_CACERT=_path_to_ca_cert_of_registry
+        ```
+
+    === "Sample .env"
+
+        ```{ .text .no-copy }
+        export REGISTRY_URL=https://harbor.10.x.x.111.nip.io/nkp
+        export REGISTRY_USERNAME=admin
+        export REGISTRY_PASSWORD=xxxxxxxx
+        export REGISTRY_CACERT=$HOME/harbor/certs/ca.crt
+        ```
+
+2. Source the new variables and values to the environment
+   
+     ```bash
+     cd $HOME/airgap-nkp/
+     source .env
+     ```
+
+3. Push the images to air-gapped registry
+   
+    ```bash
+    cd nkp-v2.12.1\
+    ```
+   
+    === "Command"
+
+        ```bash
+        nkp push bundle --bundle ./container-images/konvoy-image-bundle-v2.12.1.tar \
+        --to-registry=${REGISTRY_URL} --to-registry-username=${REGISTRY_USERNAME} \
+        --to-registry-password=${REGISTRY_PASSWORD} \
+        --to-registry-ca-cert-file=${REGISTRY_CACERT}
+        ```
+        ```bash
+        nkp push bundle --bundle ./container-images/kommander-image-bundle-v2.12.1.tar \
+        --to-registry=${REGISTRY_URL} --to-registry-username=${REGISTRY_USERNAME} \
+        --to-registry-password=${REGISTRY_PASSWORD} \
+        --to-registry-ca-cert-file=${REGISTRY_CACERT}
+        ```
+        ```bash
+        nkp push bundle --bundle ./container-images/nkp-catalog-applications-image-bundle-v2.12.1.tar \
+        --to-registry=${REGISTRY_URL} --to-registry-username=${REGISTRY_USERNAME} \
+        --to-registry-password=${REGISTRY_PASSWORD} \
+        --to-registry-ca-cert-file=${REGISTRY_CACERT}
+        ```
+
+    === "Command output"
+
+        ```{ .text .no-copy }
+        $ nkp push bundle --bundle ./container-images/konvoy-image-bundle-v2.12.1.tar \
+        --to-registry=${REGISTRY_URL} --to-registry-username=${REGISTRY_USERNAME} \
+        --to-registry-password=${REGISTRY_PASSWORD} \
+        --to-registry-ca-cert-file=${REGISTRY_CACERT}
+        ✓ Creating temporary directory
+        ✓ Unarchiving image bundle "./container-images/konvoy-image-bundle-v2.12.1.tar" 
+        ✓ Parsing image bundle config
+        ✓ Starting temporary Docker registry
+        ✓ Pushing bundled images [================================>129/129] (time elapsed 153s) 
+        ```
+        ```{ .text .no-copy }
+        $ nkp push bundle --bundle ./container-images/kommander-image-bundle-v2.12.1.tar \
+        --to-registry=${REGISTRY_URL} --to-registry-username=${REGISTRY_USERNAME} \
+        --to-registry-password=${REGISTRY_PASSWORD} \
+        --to-registry-ca-cert-file=${REGISTRY_CACERT}
+        ✓ Creating temporary directory
+        ✓ Unarchiving image bundle "./container-images/kommander-image-bundle-v2.12.1.tar" 
+        ✓ Parsing image bundle config
+        ✓ Starting temporary Docker registry
+        ✓ Pushing bundled images [================================>131/131] (time elapsed 183s) 
+        (devbox) 
+        ```
+        ```{ .text .no-copy }
+        nkp push bundle --bundle ./container-images/nkp-catalog-applications-image-bundle-v2.12.1.tar \
+        --to-registry=${REGISTRY_URL} --to-registry-username=${REGISTRY_USERNAME} \
+        --to-registry-password=${REGISTRY_PASSWORD} \
+        --to-registry-ca-cert-file=${REGISTRY_CACERT}
+        ✓ Creating temporary directory
+        ✓ Unarchiving image bundle "./container-images/nkp-catalog-applications-image-bundle-v2.12.1.tar" 
+        ✓ Parsing image bundle config
+        ✓ Starting temporary Docker registry
+        ✓ Pushing bundled images [====================================>8/8] (time elapsed 25s) 
+        (devbox) 
+        ```
+
+We are now ready to install the workload ``nkpdarksite`` cluster
+
+## Create Air-gapped NKP Workload Cluster
 
 1. Open .env file in VSC and add (append) the following environment variables to your ``.env`` file and save it
 
@@ -413,8 +595,6 @@ We are now ready to install the workload ``nkpdev`` cluster
         export WORKER_MEMORY_GIB=_no_of_worker_memory_gib
         export CSI_FILESYSTEM=_preferred_filesystem_ext4/xfs
         export CSI_HYPERVISOR_ATTACHED=_true/false
-        export DOCKER_USERNAME=_your_docker_username
-        export DOCKER_PASSWORD=_your_docker_password
         export NUTANIX_PROJECT_NAME=_your_pc_project_name
         ```
 
@@ -431,8 +611,6 @@ We are now ready to install the workload ``nkpdev`` cluster
         export WORKER_MEMORY_GIB=32
         export CSI_FILESYSTEM=ext4
         export CSI_HYPERVISOR_ATTACHED=true
-        export DOCKER_USERNAME=_your_docker_username
-        export DOCKER_PASSWORD=_your_docker_password
         export NUTANIX_PROJECT_NAME=dev-lab
         ```
 
@@ -471,13 +649,14 @@ We are now ready to install the workload ``nkpdev`` cluster
                 --worker-cores-per-vcpu ${WORKER_CORES_PER_VCPU} \
                 --csi-file-system ${CSI_FILESYSTEM} \
                 --csi-hypervisor-attached-volumes=${CSI_HYPERVISOR_ATTACHED} \
-                --registry-mirror-url "https://registry-1.docker.io" \
-                --registry-mirror-username ${DOCKER_USERNAME} \
-                --registry-mirror-password ${DOCKER_PASSWORD} \
+                --registry-mirror-url=${REGISTRY_URL} \
+                --registry-mirror-username=${REGISTRY_USERNAME} \
+                --registry-mirror-password=${REGISTRY_PASSWORD} \
+                --registry-mirror-cacert=${REGISTRY_CACERT} \
                 --control-plane-pc-project ${NUTANIX_PROJECT_NAME} \
                 --worker-pc-project ${NUTANIX_PROJECT_NAME} \
                 --self-managed \
-                --insecure"
+                --airgapped"
         ```
 
         If the values are incorrect, add the correct values to ``.env`` and source the  again by running the following command
@@ -490,7 +669,7 @@ We are now ready to install the workload ``nkpdev`` cluster
 
     === "Command"
 
-        ```bash hl_lines="28"
+        ```bash 
         nkp create cluster nutanix -c ${NKP_CLUSTER_NAME} \
             --control-plane-endpoint-ip ${CONTROLPLANE_VIP} \
             --control-plane-prism-element-cluster ${NUTANIX_CLUSTER} \
@@ -513,13 +692,14 @@ We are now ready to install the workload ``nkpdev`` cluster
             --worker-cores-per-vcpu ${WORKER_CORES_PER_VCPU} \
             --csi-file-system ${CSI_FILESYSTEM} \
             --csi-hypervisor-attached-volumes=${CSI_HYPERVISOR_ATTACHED} \
-            --registry-mirror-url "https://registry-1.docker.io" \
-            --registry-mirror-username ${DOCKER_USERNAME} \
-            --registry-mirror-password ${DOCKER_PASSWORD} \
+            --registry-mirror-url=${REGISTRY_URL} \
+            --registry-mirror-username=${REGISTRY_USERNAME} \
+            --registry-mirror-password=${REGISTRY_PASSWORD} \
+            --registry-mirror-cacert=${REGISTRY_CACERT} \
             --control-plane-pc-project ${NUTANIX_PROJECT_NAME} \
             --worker-pc-project ${NUTANIX_PROJECT_NAME} \
             --self-managed \
-            --insecure
+            --airgapped
         ```
 
     === "Command output"
@@ -532,10 +712,10 @@ We are now ready to install the workload ``nkpdev`` cluster
         ✓ Creating ClusterClass resources 
         ✓ Creating ClusterClass resources
         > Generating cluster resources
-        cluster.cluster.x-k8s.io/nkpdev created
-        secret/nkpdev-pc-credentials created
-        secret/nkpdev-pc-credentials-for-csi created
-        secret/nkpdev-image-registry-credentials created
+        cluster.cluster.x-k8s.io/nkpdarksite created
+        secret/nkpdarksite-pc-credentials created
+        secret/nkpdarksite-pc-credentials-for-csi created
+        secret/nkpdarksite-image-registry-credentials created
         ✓ Waiting for cluster infrastructure to be ready 
         ✓ Waiting for cluster control-planes to be ready 
         ✓ Waiting for machines to be ready
@@ -544,13 +724,13 @@ We are now ready to install the workload ``nkpdev`` cluster
         ✓ Moving cluster resources
 
         > You can now view resources in the moved cluster by using the --kubeconfig flag with kubectl.
-        For example: kubectl --kubeconfig="$HOME/nkp/nkpdev.conf" get nodes
+        For example: kubectl --kubeconfig="$HOME/nkp/nkpdarksite.conf" get nodes
 
         > ✓ Deleting bootstrap cluster 
 
-        Cluster default/nkpdev kubeconfig was written to to the filesystem.
+        Cluster default/nkpdarksite kubeconfig was written to to the filesystem.
         You can now view resources in the new cluster by using the --kubeconfig flag with kubectl.
-        For example: kubectl --kubeconfig="$HOME/nkp/nkpdev.conf" get nodes
+        For example: kubectl --kubeconfig="$HOME/nkp/nkpdarksite.conf" get nodes
 
         > Starting kommander installation
         ✓ Deploying Flux 
@@ -579,36 +759,30 @@ We are now ready to install the workload ``nkpdev`` cluster
         ✓ Creating cluster-admin credentials
 
         > Cluster was created successfully! Get the dashboard details with:
-        > nkp get dashboard --kubeconfig="$HOME/nkp/nkpdev.conf"
+        > nkp get dashboard --kubeconfig="$HOME/airgap-nkp/nkpdarksite.conf"
         ```
 
-    !!! info "What is a Self-Manged Cluster?"
+    !!! info "Deployment info"
 
-        The ``--self-managed`` argument of the ``nkp create cluster nutanix`` command will deploy bootstrap, and Kommander management automatically. 
-        
-        The appendix section has information on how to deploy a cluster without using the ``--self-managed`` option. 
+        The above command with the use of ``--self-managed`` argument, will create a bootstrap cluster, deploy CAPI resources on it and create a NKP base cluster (konvoy) using the CAPI components in the bootstrap cluster. It will automatically do the following once the NKP base cluster is provisioned:
 
-        Usually preferred by customer DevOps teams to have more control over the deployment process. This way the customer can do the following:
-        
-        - Deploy bootstrap (``kind``) cluster
-        - Deploy NKP Management cluster
-        - Choose to migrate the CAPI components over to NKP Management cluster
-        - Choose to customize Kommander Managment component instllation
-        - Choose to deploy workload clusters from NKP Kommander GUI or
-        - Choose to deploy workload clusters using scripts if they wish to automate the process
-        
+        - Deploy CAPI components on the bootstrap cluster
+        - Move the CAPI components from the bootstrap cluster to the new cluster
+        - Delete the Bootstrap cluster
+        - Deploy the Kommander components on top of the new base NKP cluster 
+
         See [NKP the Hard Way](../appendix/infra_nkp_hard_way.md) section for more information for customizable NKP cluster deployments. 
   
 4. Observe the events in the shell and in Prism Central events
 
-2. Store kubeconfig file for bootstrap cluster
+5. Store kubeconfig file for bootstrap cluster
    
     ```bash
     kind get kubeconfig --name konvoy-capi-bootstrapper > bs.cfg
     export KUBECONFIG=bs.cfg
     ```
-
-5. Store kubeconfig files for the workload cluster
+    
+6. Store kubeconfig files for the workload cluster
 
     ```bash
     nkp get kubeconfig -c ${NKP_CLUSTER_NAME} > ${NKP_CLUSTER_NAME}.cfg
@@ -622,7 +796,7 @@ We are now ready to install the workload ``nkpdev`` cluster
     export KUBECONFIG=all-in-one-kubeconfig.yaml
     ```
 
-8. Run the following command to check K8S status of the ``nkpdev`` cluster
+8. Run the following command to check K8S status of the ``nkpdarksite`` cluster
  
     === "Command"
     
@@ -637,13 +811,13 @@ We are now ready to install the workload ``nkpdev`` cluster
         $ kubectl get nodes
 
         NAME                                  STATUS   ROLES           AGE     VERSION
-        nkpdev-md-0-x948v-hvxtj-9r698           Ready    <none>          4h49m   v1.29.6
-        nkpdev-md-0-x948v-hvxtj-fb75c           Ready    <none>          4h50m   v1.29.6
-        nkpdev-md-0-x948v-hvxtj-mdckn           Ready    <none>          4h49m   v1.29.6
-        nkpdev-md-0-x948v-hvxtj-shxc8           Ready    <none>          4h49m   v1.29.6
-        nkpdev-r4fwl-8q4ch                      Ready    control-plane   4h50m   v1.29.6
-        nkpdev-r4fwl-jf2s8                      Ready    control-plane   4h51m   v1.29.6
-        nkpdev-r4fwl-q888c                      Ready    control-plane   4h49m   v1.29.6
+        nkpdarksite-md-0-x948v-hvxtj-9r698           Ready    <none>          4h49m   v1.29.6
+        nkpdarksite-md-0-x948v-hvxtj-fb75c           Ready    <none>          4h50m   v1.29.6
+        nkpdarksite-md-0-x948v-hvxtj-mdckn           Ready    <none>          4h49m   v1.29.6
+        nkpdarksite-md-0-x948v-hvxtj-shxc8           Ready    <none>          4h49m   v1.29.6
+        nkpdarksite-r4fwl-8q4ch                      Ready    control-plane   4h50m   v1.29.6
+        nkpdarksite-r4fwl-jf2s8                      Ready    control-plane   4h51m   v1.29.6
+        nkpdarksite-r4fwl-q888c                      Ready    control-plane   4h49m   v1.29.6
         ```
 
 ## Add NKP GPU Workload Pool
@@ -783,7 +957,7 @@ In this section we will create a nodepool to host the AI apps with a GPU.
 
 6. Monitor the progress of the command and check Prism Central events for creation of the GPU worker node
 
-    Change to workload ``nkpdev`` cluster context
+    Change to workload ``nkpdarksite`` cluster context
 
     ```bash
     kubectx ${NKP_CLUSTER_NAME}-admin@${NKP_CLUSTER_NAME}
@@ -795,7 +969,7 @@ In this section we will create a nodepool to host the AI apps with a GPU.
     watch kubectl get cluster-api
     ```
 
-7. Check nodes status in workload ``nkpdev`` cluster and note the gpu worker node
+7. Check nodes status in workload ``nkpdarksite`` cluster and note the gpu worker node
 
     === "Command"
 
@@ -809,14 +983,14 @@ In this section we will create a nodepool to host the AI apps with a GPU.
         $ kubectl get nodes
 
         NAME                                   STATUS   ROLES           AGE     VERSION
-        nkpdev-gpu-nodepool-7g4jt-2p7l7-49wvd   Ready    <none>          5m57s   v1.29.6
-        nkpdev-md-0-q679c-khl2n-9k7jk           Ready    <none>          74m     v1.29.6
-        nkpdev-md-0-q679c-khl2n-9nk6h           Ready    <none>          74m     v1.29.6
-        nkpdev-md-0-q679c-khl2n-nf9p6           Ready    <none>          73m     v1.29.6
-        nkpdev-md-0-q679c-khl2n-qgxp9           Ready    <none>          74m     v1.29.6
-        nkpdev-ncnww-2dg7h                      Ready    control-plane   73m     v1.29.6
-        nkpdev-ncnww-bbm4s                      Ready    control-plane   72m     v1.29.6
-        nkpdev-ncnww-hldm9                      Ready    control-plane   75m     v1.29.6
+        nkpdarksite-gpu-nodepool-7g4jt-2p7l7-49wvd   Ready    <none>          5m57s   v1.29.6
+        nkpdarksite-md-0-q679c-khl2n-9k7jk           Ready    <none>          74m     v1.29.6
+        nkpdarksite-md-0-q679c-khl2n-9nk6h           Ready    <none>          74m     v1.29.6
+        nkpdarksite-md-0-q679c-khl2n-nf9p6           Ready    <none>          73m     v1.29.6
+        nkpdarksite-md-0-q679c-khl2n-qgxp9           Ready    <none>          74m     v1.29.6
+        nkpdarksite-ncnww-2dg7h                      Ready    control-plane   73m     v1.29.6
+        nkpdarksite-ncnww-bbm4s                      Ready    control-plane   72m     v1.29.6
+        nkpdarksite-ncnww-hldm9                      Ready    control-plane   75m     v1.29.6
         ```
 
 ## Licensing
@@ -851,7 +1025,7 @@ To generate a NKP Pro License for the NKP cluster:
 
 #### Applying NKP Pro License to NKP Cluster
 
-1. Login to the Kommander URL for ``nkpdev`` cluster with the generated credentials that was generated in the previous [section](../infra/infra_nkp.md#create-nkp-workload-cluster). The following commands will give you the credentials and URL.
+1. Login to the Kommander URL for ``nkpdarksite`` cluster with the generated credentials that was generated in the previous [section](../infra/infra_nkp.md#create-nkp-workload-cluster). The following commands will give you the credentials and URL.
 
     === "Command"
 
@@ -895,7 +1069,7 @@ We will need to enable GPU operator for deploying NKP application.
 
     As shown here:
 
-    ![alt text](images/gpu-operator-enable.png)
+    ![alt text](../infra/images/gpu-operator-enable.png)
 
 8. Click on **Enable** on the top right-hand corner to enable GPU driver on the Ubuntu GPU nodes
 9. Check GPU operator resources and make sure they are running
@@ -996,7 +1170,7 @@ Optionally, cleanup the workloads on nkp cluster by deleting it **after deployin
 === "Command output"
 
     ```{ .bash .no-copy }
-    nkp delete cluster -c nkpdev --self-managed
+    nkp delete cluster -c nkpdarksite --self-managed
 
     ✓ Upgrading CAPI components 
     ✓ Waiting for CAPI components to be upgraded 
@@ -1009,7 +1183,7 @@ Optionally, cleanup the workloads on nkp cluster by deleting it **after deployin
     ✓ Waiting for machines to be ready
     ✓ Deleting cluster resources
     ✓ Waiting for cluster to be fully deleted 
-    Deleted default/nkpdev cluster
+    Deleted default/nkpdarksite cluster
     ``` -->
 
 <!-- 1. Delete the Bootstrap cluster

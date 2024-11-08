@@ -69,6 +69,13 @@ We will use the following commands to install Harbor on the jumphost.
     openssl req -x509 -new -nodes -key ca.key -sha256 -days 1024 -out ca.crt -subj "/CN=harborroot"
     ```
 
+6. Install the CA certificate on the jumphost VM trusted root CA store
+
+    ```bash
+    sudo cp ca.crt /usr/local/share/ca-certificates/
+    sudo update-ca-certificates
+    ```
+
 6. Create private key for Harbor
 
     ```bash
@@ -112,6 +119,7 @@ We will use the following commands to install Harbor on the jumphost.
 
      sudo systemctl restart docker
      ```
+
 ### Configure Harbor Installation Manifest
 
 1. In VSCode Terminal, run the following command to setup and create the manifest file:
@@ -185,7 +193,7 @@ We will use the following commands to install Harbor on the jumphost.
     === " Sample file"
 
         ```yaml hl_lines="1 10 11 13"
-        hostname: harbor.10.x.x.111.nip.io
+        hostname: 10.x.x.111
         http:
           port: 80
         https:
@@ -234,6 +242,7 @@ We will use the following commands to install Harbor on the jumphost.
             - trivy
         _version: v2.9.4
         ```    
+### Install and Verify
 
 3. Run the installation
    
@@ -275,4 +284,4 @@ We will use the following commands to install Harbor on the jumphost.
 
 6. Go to Projects and create a new project ``nkp``
    
-Harbor registry will be used to store the ``nkp`` images for air-gapped deployments.
+Harbor registry and ``nkp`` projectswill be used to store the container images for NKP air-gapped deployments.

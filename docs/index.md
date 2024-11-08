@@ -51,7 +51,7 @@ This site follows **Design > Deploy** model.
 
     ---
 
-    Setup a Nutanix cluster in under an hour using Foundation to prepare your infrastructure.
+    Setup a NKE K8S cluster in under an hour using Foundation to prepare your infrastructure.
 
     [:octicons-arrow-right-24: Setup Nutanix Karbon Engine](infra/infra_nke.md)
 
@@ -59,9 +59,31 @@ This site follows **Design > Deploy** model.
 
     ---
 
-    Setup a Nutanix cluster in under an hour using Foundation to prepare your infrastructure.
+    Setup a Nutanix NKP K8S cluster to deploy your workloads.
 
     [:octicons-arrow-right-24: Setup Nutanix Kubernetes Platform](infra/infra_nkp.md)
+
+</div>
+
+
+<div class="grid cards" markdown>
+
+-   :material-kubernetes:{ .lg .middle } __Set up NKP Advanced__
+
+    ---
+
+    Customize what NKP components to deploy
+
+    [:octicons-arrow-right-24: Setup Customized NKP](appendix/infra_nkp_hard_way.md) 
+
+
+-   :material-kubernetes:{ .lg .middle } __Setup NKP Air-Gapped__
+
+    ---
+
+    Setup NKP on air-gapped cluster
+
+    [:octicons-arrow-right-24: Air-gapped Install](appendix/infra_nkp_airgap.md)
 
 </div>
 
@@ -70,23 +92,36 @@ This site follows **Design > Deploy** model.
 
 <div class="grid cards" markdown>
 
--   :material-clock-fast:{ .lg .middle } __Set up LLM with RAG on Nutanix in 10 minutes__
+-   :material-clock-fast:{ .lg .middle } __Set up Nutanix Enterprise AI (NAI) in 60 minutes__
 
+    ---
+
+    Install and host an LLM on Nutanix Enterprise AI (NAI) platform.
+
+    [:octicons-arrow-right-24: Start](iep/index.md)
+
+-   :material-clock-fast:{ .lg .middle } __Set up Air-gapped Nutanix Enterprise AI (NAI)__
+
+    ---
+
+    Install and host an LLM on Nutanix Enterprise AI (NAI) platform.
+
+    [:octicons-arrow-right-24: Start](airgap_nai/index.md)
+
+
+</div>
+
+<div class="grid cards" markdown>
+
+-   :material-clock-fast:{ .lg .middle } __Set up LLM with RAG on Nutanix in 10 minutes - soon to be deprecated__
+  
     ---
 
     Install and host a LLM on Nutanix platform using this framework in this [repo](https://github.com/nutanix-japan/sol-cnai-infra.git). Get up and running in minutes.
 
-    This site will also take you through implementation.
+    This site will also take you through implementation using **NKE** clusters and **GPT-in-a-Box v1** NVD Reference App.
 
     [:octicons-arrow-right-24: Start](llmmgmt/index.md)
-
--   :material-clock-fast:{ .lg .middle } __Set up Support GPT in 15 minutes__
-
-    ---
-
-    Install and host a Support GPT application on Nutanix platform using this framework in this [repo](https://github.com/nutanix-japan/sol-cnai-infra.git).
-
-    [:octicons-arrow-right-24: Start](contributing.md)
 
 </div>
 

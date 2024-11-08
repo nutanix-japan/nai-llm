@@ -25,6 +25,13 @@ nav:
     - Pre-requisites NAI: iep/iep_pre_reqs.md
     - Deploy NAI: iep/iep_deploy.md
     - Test NAI: iep/iep_test.md
+  - Air-gapped Nutanix Enterprise AI (NAI):
+    - Getting Started: airgap_nai/index.md
+    - Harbor Container Registry: infra/harbor.md
+    - Setup Air-gapped NKP Cluster: appendix/infra_nkp_airgap.md
+    - Pre-requisites NAI: airgap_nai/airgap_nai_pre_reqs.md
+    - Deploy NAI: airgap_nai/airgap_nai_deploy.md
+    - Test NAI: airgap_nai/airgap_nai_test.md
   - GPT-in-a-Box v1 NVD Reference App:
     - Getting Started: llmmgmt/index.md
     - Setup NKE Cluster: infra/infra_nke.md
@@ -33,9 +40,8 @@ nav:
     - Deploy Dev Cluster: llmmgmt/llm_dev_deploy.md
     - Test LLM App: llmmgmt/llm_test.md
 - Appendix:
-  - NKP The Hard Way: appendix/infra_nkp_hard_way.md
   - Jumphost VM Manual: infra/infra_jumphost.md
-  - Harbor Container Registry: infra/harbor.md
+  - NKP The Hard Way: appendix/infra_nkp_hard_way.md
   - Appendix: appendix/appendix.md
 - References:
   - Nutanix Components: ntxcomponents/ntxcomponents.md

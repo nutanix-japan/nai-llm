@@ -4,7 +4,8 @@ In this part of the lab we will deploy LLM on GPU nodes.
 
 We will also deploy a Kubernetes cluster so far as per the NVD [design requirements](../conceptual/conceptual.md#management-kubernetes-cluster).
 
-**Dev NKP cluster**: to host the dev LLM and ChatBot application - this will use GPU passed through to the kubernetes worker node.
+**Darksite NKP cluster**: to host the dev LLM and ChatBot application - this will use GPU passed through to the kubernetes worker node.
+
 
 Deploy the kubernetes cluster with the following components:
 
@@ -19,6 +20,12 @@ The following is the flow of the NAI lab:
 ```mermaid
 stateDiagram-v2
     direction LR
+
+    state DeployHarborRegistry {
+        [*] --> IncreaseJumphostResources
+        IncreaseJumphostResources --> DeployHarbor
+        DeployHarbor --> [*]
+    }
 
     state DeployNKP {
         [*] --> CreateNkpMachineImage
@@ -45,7 +52,8 @@ stateDiagram-v2
         TestChatApp --> [*]
     }
 
-    [*] --> DeployNKP
+    [*] --> DeployHarborRegistry
+    DeployHarborRegistry --> DeployNKP
     DeployNKP --> NAIPreRequisites
     NAIPreRequisites --> DeployNAI
     DeployNAI --> TestLLMApp

@@ -101,7 +101,7 @@ For ``nkpdev``, we will deploy an NKP Cluster of type "Development".
     
     !!! note
         
-        At the time of writing this lab nkp version is v2.12.0
+        At the time of writing this lab nkp version is v2.12.1
 
     === "Command"
 
@@ -247,7 +247,6 @@ In this section we will go through creating a base image for all the control pla
         export NKP_CLUSTER_NAME=_your_nkp_cluster_name
         export CONTROLPLANE_VIP=_your_nkp_cluster_controlplane_ip
         export LB_IP_RANGE=_your_range_of_two_ips
-        export GPU_NAME=_gpu_name_from_previous_section
         ```
 
     === "Sample .env"
@@ -263,7 +262,6 @@ In this section we will go through creating a base image for all the control pla
         export NKP_CLUSTER_NAME=nkpdev
         export CONTROLPLANE_VIP=10.x.x.214
         export LB_IP_RANGE=10.x.x.215-10.x.x.216
-        export GPU_NAME="Lovelace 40S"
         ```
 
 8. Using VSC Terminal, load the environment variables and its values
@@ -558,6 +556,13 @@ We are now ready to install the workload ``nkpdev`` cluster
 
 5. Observe the events in the shell and in Prism Central events
 
+2. Store kubeconfig file for bootstrap cluster
+   
+    ```bash
+    kind get kubeconfig --name konvoy-capi-bootstrapper > bs.cfg
+    export KUBECONFIG=bs.cfg
+    ```
+
 6. Store kubeconfig files for the workload cluster
    
     ```bash
@@ -588,13 +593,13 @@ We are now ready to install the workload ``nkpdev`` cluster
         $ kubectl get nodes
 
         NAME                                  STATUS   ROLES           AGE     VERSION
-        nkp3-md-0-x948v-hvxtj-9r698           Ready    <none>          4h49m   v1.29.6
-        nkp3-md-0-x948v-hvxtj-fb75c           Ready    <none>          4h50m   v1.29.6
-        nkp3-md-0-x948v-hvxtj-mdckn           Ready    <none>          4h49m   v1.29.6
-        nkp3-md-0-x948v-hvxtj-shxc8           Ready    <none>          4h49m   v1.29.6
-        nkp3-r4fwl-8q4ch                      Ready    control-plane   4h50m   v1.29.6
-        nkp3-r4fwl-jf2s8                      Ready    control-plane   4h51m   v1.29.6
-        nkp3-r4fwl-q888c                      Ready    control-plane   4h49m   v1.29.6
+        nkpdev-md-0-x948v-hvxtj-9r698           Ready    <none>          4h49m   v1.29.6
+        nkpdev-md-0-x948v-hvxtj-fb75c           Ready    <none>          4h50m   v1.29.6
+        nkpdev-md-0-x948v-hvxtj-mdckn           Ready    <none>          4h49m   v1.29.6
+        nkpdev-md-0-x948v-hvxtj-shxc8           Ready    <none>          4h49m   v1.29.6
+        nkpdev-r4fwl-8q4ch                      Ready    control-plane   4h50m   v1.29.6
+        nkpdev-r4fwl-jf2s8                      Ready    control-plane   4h51m   v1.29.6
+        nkpdev-r4fwl-q888c                      Ready    control-plane   4h49m   v1.29.6
         ```
 
 ## Install Kommander Management
