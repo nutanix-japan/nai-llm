@@ -1028,6 +1028,6 @@ Optionally, cleanup the workloads on nkp cluster by deleting it **after deployin
         ✓ Deleting bootstrap cluster
         ``` -->
 
-!!! info
+<!-- !!! info
 
-    If the workload cluster was created as self-managed, then the following command will delete the cluster by creating a small bootstrap cluster. This bootstrap cluster will also be deleted automatically after the workload cluster is deleted. -->
+    If the workload cluster was created as self-managed, then the following command will delete the cluster by creating a small bootstrap cluster. This bootstrap cluster will also be deleted automatically after the workload cluster is deleted. --> -->
