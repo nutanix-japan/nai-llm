@@ -171,12 +171,42 @@ stateDiagram-v2
         webhook-d8674645d-mscsc                1/1     Running   0          26d
         ```
 
-## Deploy NAI
+## Prepare NAI Docker Download Credentials
+
+All NAI Docker images will be downloaded from the public Docker Hub registry. In order to download the images, you will need to logon to [Nutanix Portal - NAI](https://portal.nutanix.com/page/downloads?product=nai) and create a Docker ID and access token.
+
+
+1. Login to [Nutanix Portal - NAI](https://portal.nutanix.com/page/downloads?product=nai) using your credentials
+2. Click on **Generate Access Token** option
+3. Copy the generated Docker ID and access token
+4. Login to the Docker CLI on your jumphost VM
+   
+    === "Command"
+
+        ```bash
+        docker login --username ntnxsvcgpt -p _docker_id_and_access_token_
+        ```
+
+    === "Command output"
+
+        ```{ .bash .no-copy }
+        docker login --username ntnxsvcgpt -p dckr_pat_xxxxxxxxxxxxxxxxxxxxxxxx
+        ```
 
 !!! warning
-    This ``Deploy NAI`` section requires installation of a release candidate. Reach out to a Nutanix representative for download token for containers in this helm chart. This will have to be done until the solution becomes generally available. 
+    
+    Currently there are issues with the Nutanix Portal to create a Docker ID and access token. This will be fixed soon.
 
-    The following Docker based environment variable values will be different from your own Docker environment variables.
+    Click on the **Manage Access Token** option and use the credentials listed there until the Nutanix Portal is fixed.
+
+
+## Deploy NAI
+
+We will use the Docker login credentials we created in the previous section to download the NAI Docker images.
+
+!!! warning "Change the Docker login credentials"
+
+    The following Docker based environment variable values need to be changed from your own Docker environment variables.
 
     - ``$DOCKER_USERNAME``
     - ``$DOCKER_PASSWORD``
@@ -192,17 +222,15 @@ stateDiagram-v2
         ```text
         export DOCKER_USERNAME=_release_candidate_docker_username
         export DOCKER_PASSWORD=_release_candidate_your_docker_password
-        export DOCKER_EMAIL=_release_candidate_docker_email
         export NAI_CORE_VERSION=_release_candidate_nai_core_version
         ```
 
     === "Sample .env"
 
         ```text
-        export DOCKER_USERNAME=ntnx-xxx
-        export DOCKER_PASSWORD=*********
-        export DOCKER_EMAIL=email@domain.com
-        export NAI_CORE_VERSION=1.0.0-rc1
+        export DOCKER_USERNAME=ntnxsvcgpt
+        export DOCKER_PASSWORD=dckr_pat_xxxxxxxxxxxxxxxxxxxxxxxx
+        export NAI_CORE_VERSION=1.0.0-rc2
         ```
 
 3. Source the environment variables (if not done so already)
@@ -278,7 +306,6 @@ stateDiagram-v2
     #NAI-core
     helm upgrade --install nai-core ntnx-charts/nai-core --version=$NAI_CORE_VERSION -n nai-system --create-namespace --wait \
     --set imagePullSecret.credentials.username=$DOCKER_USERNAME \
-    --set imagePullSecret.credentials.email=$DOCKER_EMAIL \
     --set imagePullSecret.credentials.password=$DOCKER_PASSWORD \
     --set naiApi.naiApiImage.tag=v1.0.0-rc2 \
     --insecure-skip-tls-verify \
@@ -307,7 +334,6 @@ stateDiagram-v2
         Update Complete. ⎈Happy Helming!⎈
         helm upgrade --install nai-core ntnx-charts/nai-core --version=$NAI_CORE_VERSION -n nai-system --create-namespace --wait \
         --set imagePullSecret.credentials.username=$DOCKER_USERNAME \
-        --set imagePullSecret.credentials.email=$DOCKER_EMAIL \
         --set imagePullSecret.credentials.password=$DOCKER_PASSWORD \
         --set naiApi.naiApiImage.tag=v1.0.0-rc2 \
         --insecure-skip-tls-verify \
