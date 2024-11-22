@@ -111,7 +111,7 @@ theme:
   # - navigation.sections
   - navigation.tabs
   - navigation.tabs.sticky
-  - navigation.expand
+  # - navigation.expand
   - navigation.top
   - navigation.integrateåß
   - search.highlight

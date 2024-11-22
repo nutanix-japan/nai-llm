@@ -8,10 +8,10 @@ We will use the jumphost to install and host Harbor container registry.
 
 Since the jumphost also will host the ``kind`` cluster, we will need to ensure that the jumphost has enough resources.
 
-| #    | CPU | Memory | Disk |
-|-----| --- | ------ | ---- |
-|Before | 2   | 4 GB   | 40 GB |
-|After |   8   | 16 GB   | 80 GB |
+| #    | CPU | Memory | Disk | Purpose | 
+|-----| --- | ------ | ---- |----------|
+|Before | 4  | 16 GB   | 300 GB |  ``Jumphost`` + ``Tools``|
+|After |   `8`   | 16 GB   | 300 GB | ``Jumphost`` + ``Tools`` + ``Harbor`` + ``kind`` |
 
 !!! note 
     If the jumphost does not have the resources, make sure to stop the jumphost and add the resources in Prism Central.

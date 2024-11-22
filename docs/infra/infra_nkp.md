@@ -1,6 +1,8 @@
 # Deploy NKP Clusters
 
-This section will take you through install NKP(Kubernetes) on Nutanix cluster as we will be deploying AI applications on these kubernetes clusters. 
+This section will take you through install NKP(Kubernetes) on Nutanix cluster as we will be deploying AI applications on these kubernetes clusters.
+
+We will use the [CAPI](https://cluster-api.sigs.k8s.io/) based deployment of NKP. This will automatically deploy the required infrastructure VMs for the cluster by connecting to Nutanix Cluster APIs. There is no requirement to use Terraform or or other IaC tools to deploy NKP.
 
 This section will expand to other available Kubernetes implementations on Nutanix.
 
@@ -116,11 +118,11 @@ Below are minimum requirements for deploying NAI on the NKP Demo Cluster.
     === "Sample command"
         
         ```bash
-        curl -o nkp_v2.12.0_linux_amd64.tar.gz "https://download.nutanix.com/downloads/nkp/v2.12.1/nkp_v2.12.1_linux_amd64.tar.gz?Expires=1729016864&........"
+        curl -o nkp_v2.12.1_linux_amd64.tar.gz "https://download.nutanix.com/downloads/nkp/v2.12.1/nkp_v2.12.1_linux_amd64.tar.gz?Expires=1729016864&........"
         ```
         
     ```bash
-    tar xvfz nkp_v2.12.0_linux_amd64.tar
+    tar xvfz nkp_v2.12.1_linux_amd64.tar
     ```
 
 11. Move the ``nkp`` binary to a directory that is included in your ``PATH`` environment variable
@@ -251,7 +253,19 @@ Reserve the third IP for NAI. We will use the NAI IP in the next [NAI](../iep/ie
 
 ## Create Base Image for NKP
 
-In this section we will go through creating a base image for all the control plane and worker node VMs on Nutanix.
+!!! tip "About NKP Base Image OS Version on Nutanix Cluster"
+    
+    The base image for NKP is a minimal image that contains the required packages and tools to run the Kubernetes cluster. The base image is used to create the worker node VMs and the control plane VMs.
+
+    NKP base image can be ``Rocky Linux 9.4`` image and is part of ``NKP Starter`` license. This image is maintained and supported by Nutanix. The image is updated regularly to include the latest security patches and bug fixes. Customers **should not** modify the base image. 
+
+    Using ```NKP Pro``` license also offers choice of using ``Ubuntu 22.04`` base image for GPU based workload deployments.
+
+In this section we will go through creating a base image for all the control plane and worker node VMs on Nutanix. We will use the ``Ubuntu 22.04`` image as the base image as we will need GPU support for AI applications. NVIDIA GPU drivers are not yet available for ``Rocky Linux 9.4`` base image. 
+
+!!! info "NKP Cloud Support"
+    
+    For information about other supported operating systems for Nutanix Kubernetes Platform (NKP), see [NKP Cloud Support](https://portal.nutanix.com/page/documents/details?targetId=Nutanix-Kubernetes-Platform-v2_12:Nutanix-Kubernetes-Platform-v2_12).
 
 1. In VSC Explorer pane, Click on **New Folder** :material-folder-plus-outline:
 
