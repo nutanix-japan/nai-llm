@@ -171,35 +171,6 @@ stateDiagram-v2
         webhook-d8674645d-mscsc                1/1     Running   0          26d
         ```
 
-## Prepare NAI Docker Download Credentials
-
-All NAI Docker images will be downloaded from the public Docker Hub registry. In order to download the images, you will need to logon to [Nutanix Portal - NAI](https://portal.nutanix.com/page/downloads?product=nai) and create a Docker ID and access token.
-
-
-1. Login to [Nutanix Portal - NAI](https://portal.nutanix.com/page/downloads?product=nai) using your credentials
-2. Click on **Generate Access Token** option
-3. Copy the generated Docker ID and access token
-4. Login to the Docker CLI on your jumphost VM
-   
-    === "Command"
-
-        ```bash
-        docker login --username ntnxsvcgpt -p _docker_id_and_access_token_
-        ```
-
-    === "Command output"
-
-        ```{ .bash .no-copy }
-        docker login --username ntnxsvcgpt -p dckr_pat_xxxxxxxxxxxxxxxxxxxxxxxx
-        ```
-
-!!! warning
-    
-    Currently there are issues with the Nutanix Portal to create a Docker ID and access token. This will be fixed soon.
-
-    Click on the **Manage Access Token** option and use the credentials listed there until the Nutanix Portal is fixed.
-
-
 ## Deploy NAI
 
 We will use the Docker login credentials we created in the previous section to download the NAI Docker images.
@@ -230,7 +201,7 @@ We will use the Docker login credentials we created in the previous section to d
         ```text
         export DOCKER_USERNAME=ntnxsvcgpt
         export DOCKER_PASSWORD=dckr_pat_xxxxxxxxxxxxxxxxxxxxxxxx
-        export NAI_CORE_VERSION=1.0.0-rc2
+        export NAI_CORE_VERSION=v1.0.0-rc2
         ```
 
 3. Source the environment variables (if not done so already)
@@ -469,8 +440,10 @@ We will download and user llama3 8B model which we sized for in the previous sec
 
 1. In the NAI GUI, go to **Models**
 2. Click on Import Model from Hugging Face
-3. Input your Hugging Face token that was created in the previous [section](../iep/iep_pre_reqs.md#create-a-hugging-face-token-with-read-permissions) and click **Save**
+3. Choose the ``meta-llama/Meta-Llama-3.1-8B-Instruct`` model
+4. Input your Hugging Face token that was created in the previous [section](../iep/iep_pre_reqs.md#create-a-hugging-face-token-with-read-permissions) and click **Import**
 
+5. Provide the Model Instance Name as ``Meta-Llama-3.1-8B-Instruct`` and click **Import**
 5. Go to VSC Terminal to monitor the download
     
     === "Command"

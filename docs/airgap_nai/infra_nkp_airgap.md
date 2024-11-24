@@ -381,7 +381,8 @@ In this section we will go through creating a base image for all the control pla
 6. Using VSC Terminal, load the environment variables and its values
 
     ```bash
-    source $HOME/airgap-nkp/.env
+    cd $HOME/airgap-nkp
+    source .env
     cd nkp-v2.12.1/
     ```
 
@@ -506,7 +507,8 @@ In this section we will go through creating a base image for all the control pla
 2. Source the new variables and values to the environment
    
      ```bash
-     source $HOME/airgap-nkp/.env
+     cd $HOME/airgap-nkp/
+     source .env
      ```
 
 3. Push the images to air-gapped registry
@@ -615,7 +617,7 @@ We are now ready to install the workload ``nkpdarksite`` cluster
 2. Source the new variables and values to the environment
 
      ```bash
-     source $HOME/airgap-nkp/.env
+     source .env
      ```
 
 3. In VSC, open Terminal, enter the following command to create the workload cluster
@@ -660,7 +662,7 @@ We are now ready to install the workload ``nkpdarksite`` cluster
         If the values are incorrect, add the correct values to ``.env`` and source the  again by running the following command
 
         ```bash
-        source $HOME/airgap-nkp/.env
+        source .env
         ```
 
         Then rerun the ``echo nkp`` command to verify the values again before running the ``nkp create cluster nutanix`` command.
@@ -851,7 +853,7 @@ Find the details of GPU on the Nutanix cluster while still connected to Prism Ce
 
 In this section we will create a nodepool to host the AI apps with a GPU.
 
-1. Open ``.env`` file in VSC and add (append) the following environment variables and save it
+1. Open .env file in VSC and add (append) the following environment variables to your ``.env`` file and save it
 
     === "Template .env"
 
@@ -880,7 +882,7 @@ In this section we will create a nodepool to host the AI apps with a GPU.
 2. Source the new variables and values to the environment
 
      ```bash
-     source $HOME/airgap-nkp/.env
+     source .env
      ```
 
 3. Run the following command to create a GPU nodepool manifest
@@ -947,19 +949,19 @@ In this section we will create a nodepool to host the AI apps with a GPU.
                           name: Lovelace 40S
         ```
 
-5. Monitor Cluster-Api resources to ensure gpu machine will be successfully
+4. Monitor Cluster-Api resources to ensure gpu machine will be successfully
 
     ```bash
     watch kubectl get cluster-api
     ```
 
-6. Apply the ``gpu-nodepool.yaml`` file to the workload cluster
+5. Apply the ``gpu-nodepool.yaml`` file to the workload cluster
 
     ```bash
     kubectl apply -f gpu-nodepool.yaml
     ```
 
-7. Monitor the progress of the command and check Prism Central events for creation of the GPU worker node
+6. Monitor the progress of the command and check Prism Central events for creation of the GPU worker node
 
     Change to workload ``nkpdev`` cluster context
 
@@ -967,7 +969,7 @@ In this section we will create a nodepool to host the AI apps with a GPU.
     kubectx ${NKP_CLUSTER_NAME}-admin@${NKP_CLUSTER_NAME}
     ```
 
-8. Check nodes status in workload ``nkpdarksite`` cluster and note the gpu worker node
+7. Check nodes status in workload ``nkpdarksite`` cluster and note the gpu worker node
 
     === "Command"
 

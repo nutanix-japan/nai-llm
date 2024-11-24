@@ -28,7 +28,7 @@ nav:
   - Air-gapped Nutanix Enterprise AI (NAI):
     - Getting Started: airgap_nai/index.md
     - Harbor Container Registry: infra/harbor.md
-    - Setup Air-gapped NKP Cluster: appendix/infra_nkp_airgap.md
+    - Setup Air-gapped NKP Cluster: airgap_nai/infra_nkp_airgap.md
     - Pre-requisites NAI: airgap_nai/airgap_nai_pre_reqs.md
     - Deploy NAI: airgap_nai/airgap_nai_deploy.md
     - Test NAI: airgap_nai/airgap_nai_test.md

@@ -337,8 +337,7 @@ In this section we will go through creating a base image for all the control pla
 6. Using VSC Terminal, load the environment variables and its values
 
     ```bash
-    cd $HOME/nkp
-    source .env
+    source $HOME/nkp/.env
     ```
 
 7. Create the base image and upload to Prism Central using the following command. 
@@ -453,7 +452,7 @@ We are now ready to install the workload ``nkpdev`` cluster
 2. Source the new variables and values to the environment
 
      ```bash
-     source .env
+     source $HOME/nkp/.env
      ```
 
 3. In VSC, open Terminal, enter the following command to create the workload cluster
@@ -497,7 +496,7 @@ We are now ready to install the workload ``nkpdev`` cluster
         If the values are incorrect, add the correct values to ``.env`` and source the  again by running the following command
 
         ```bash
-        source .env
+        source $HOME/nkp/.env
         ```
 
         Then rerun the ``echo nkp`` command to verify the values again before running the ``nkp create cluster nutanix`` command.
@@ -722,7 +721,7 @@ In this section we will create a nodepool to host the AI apps with a GPU.
 2. Source the new variables and values to the environment
 
      ```bash
-     source .env
+     source $HOME/nkp/.env
      ```
 
 3. Run the following command to create a GPU nodepool manifest
@@ -789,6 +788,12 @@ In this section we will create a nodepool to host the AI apps with a GPU.
                           name: Lovelace 40S
         ```
 
+4. Monitor Cluster-Api resources to ensure gpu machine will be successfully
+
+    ```bash
+    watch kubectl get cluster-api
+    ```
+
 5. Apply the ``gpu-nodepool.yaml`` file to the workload cluster
 
     ```bash
@@ -801,12 +806,6 @@ In this section we will create a nodepool to host the AI apps with a GPU.
 
     ```bash
     kubectx ${NKP_CLUSTER_NAME}-admin@${NKP_CLUSTER_NAME}
-    ```
-
-    Monitor Cluster-Api resources to ensure machines are being created successfully
-
-    ```bash
-    watch kubectl get cluster-api
     ```
 
 7. Check nodes status in workload ``nkpdev`` cluster and note the gpu worker node

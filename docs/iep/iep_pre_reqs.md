@@ -39,16 +39,16 @@ We will create Nutanix Files storage class which will be used to create a pvc th
     === "Template .env"
     
         ```text
-        export FILES_CREDENTIAILS_STRING='_prism_element_ip_addres:9440:admin:_your_password'
+        export FILES_CREDENTIALS_STRING='_prism_element_ip_addres:9440:admin:_your_password'
         ```
 
     === "Sample .env"
 
         ```text
-        export FILES_CREDENTIAILS_STRING='10.x.x.37:9440:admin:password'
+        export FILES_CREDENTIALS_STRING='10.x.x.37:9440:admin:password'
         ```
 
-3. Source the .env file to load the latest $FILES_CREDENTIAILS_STRING environment variable
+3. Source the .env file to load the latest $FILES_CREDENTIALS_STRING environment variable
 
     ```bash
     source $HOME/.env
@@ -58,7 +58,7 @@ We will create Nutanix Files storage class which will be used to create a pvc th
 
     ```bash
     kubectl create secret generic nutanix-csi-credentials-files \
-    -n ntnx-system --from-literal=key=${FILES_CREDENTIAILS_STRING} \
+    -n ntnx-system --from-literal=key=${FILES_CREDENTIALS_STRING} \
     --dry-run -o yaml | kubectl apply -f -
     ```
 
@@ -209,14 +209,30 @@ Follow these steps to create a Hugging Face token with read permissions:
 
 Use this token for accessing Hugging Face resources with read-only permissions.
 
-## Prepare Download Credentials for Release Candidate
+## Prepare NAI Docker Download Credentials
 
-Contact your Nutanix team to obtain the credentials required to download the release candidate. The following information will be required:
+All NAI Docker images will be downloaded from the public Docker Hub registry. In order to download the images, you will need to logon to [Nutanix Portal - NAI](https://portal.nutanix.com/page/downloads?product=nai) and create a Docker ID and access token.
 
-- ``$DOCKER_USERNAME``
-- ``$DOCKER_PASSWORD``
-- ``$DOCKER_EMAIL``
 
-Once NAI is Generally available. This procedure will change to possibly use general customer Docker credentials. This is not yet confirmed.
+1. Login to [Nutanix Portal - NAI](https://portal.nutanix.com/page/downloads?product=nai) using your credentials
+2. Click on **Generate Access Token** option
+3. Copy the generated Docker ID and access token
+4. Login to the Docker CLI on your jumphost VM
+   
+    === "Command"
 
-Now we can proceed to deploy NAI.
+        ```bash
+        docker login --username ntnxsvcgpt -p _docker_id_and_access_token_
+        ```
+
+    === "Command output"
+
+        ```{ .bash .no-copy }
+        docker login --username ntnxsvcgpt -p dckr_pat_xxxxxxxxxxxxxxxxxxxxxxxx
+        ```
+
+!!! warning
+    
+    Currently there are issues with the Nutanix Portal to create a Docker ID and access token. This will be fixed soon.
+
+    Click on the **Manage Access Token** option and use the credentials listed there until the Nutanix Portal is fixed.
