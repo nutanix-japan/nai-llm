@@ -28,7 +28,7 @@ stateDiagram-v2
         export KOMMANDER_CLUSTER_HOSTNAME=_ip_or_hostname_of_kommander_dashboard_url
         export INTERNAL_REPO=https://${KOMMANDER_CLUSTER_HOSTNAME}/dkp/kommander/helm-mirror
         export ENVIRONMENT=nkp
-        export IMAGE_REGISTRY=_your_registry_url
+        export REGISTRY_URL=_your_registry_url
         ```
 
     === "Sample .env"
@@ -37,7 +37,7 @@ stateDiagram-v2
         export KOMMANDER_CLUSTER_HOSTNAME="10.x.x.214"
         export INTERNAL_REPO=https://${KOMMANDER_CLUSTER_HOSTNAME}/dkp/kommander/helm-mirror
         export ENVIRONMENT=nkp
-        export IMAGE_REGISTRY="https://harbor.10.x.x.111.nip.io/nkp"
+        export REGISTRY_URL="https://harbor.10.x.x.111.nip.io/nkp"
         ```
 
 2. IN VSC,go to **Terminal** :octicons-terminal-24: and run the following commands to source the environment variables
@@ -79,7 +79,8 @@ stateDiagram-v2
     
     helm --insecure-skip-tls-verify=true upgrade --install knative-istio-controller nai-knative-istio-controller --repo ${INTERNAL_REPO} -n knative-serving --version=${KNATIVE_VERSION} --wait
     
-    # Patch configurations stored in configmaps 
+    # Patch configurations stored in configmaps
+
     kubectl patch configmap config-features -n knative-serving -p '{"data":{"kubernetes.podspec-nodeselector":"enabled"}}'
 
     kubectl patch configmap config-autoscaler -n knative-serving -p '{"data":{"enable-scale-to-zero":"false"}}'
@@ -209,43 +210,56 @@ stateDiagram-v2
     with the following content:
 
     ```yaml
-    # nai-monitoring stack values for nai-monitoring stack deployment in NKE environment
+    ## Image pull secret. This is required for the huggingface image check by the Inference pod as that does not go via the kubelet and does a direct check.
+    imagePullSecret:
+      ## Name of the image pull secret
+      name: nai-iep-secret
+    ## Image registry credentials
+      credentials:
+        registry: ${REGISTRY_URL}
+        username: ${REGISTRY_USERNAME}
+        password: ${REGISTRY_PASSWORD}
+        email: ${REGISTRY_USERNAME}@foobar.com
+    naiApi:
+      naiApiImage:
+        tag: ${NAI_API_VERSION}  
+      supportedRuntimeImage: ${REGISTRY_URL}/nutanix/nai-kserve-huggingfaceserver:v0.13.1
+    ## nai-monitoring stack values for nai-monitoring stack deployment in NKE environment
     naiMonitoring:
-        
-    ## Component scraping node exporter
-    ##
-    nodeExporter:
+      ## Component scraping node exporter
+      ##
+      nodeExporter:
         serviceMonitor:
-        enabled: true
-        endpoint:
+          enabled: true
+          endpoint:
             port: http-metrics
             scheme: http
             targetPort: 9100
         namespaceSelector:
-            matchNames:
-            - kommander
+          matchNames:
+          - kommander
         serviceSelector:
-            matchLabels:
+          matchLabels:
             app.kubernetes.io/name: prometheus-node-exporter
             app.kubernetes.io/component: metrics
             app.kubernetes.io/version: 1.8.1
-
+    ## Component scraping dcgm exporter
     ##
-    dcgmExporter:
+      dcgmExporter:
         podLevelMetrics: true
         serviceMonitor:
-        enabled: true
-        endpoint:
+          enabled: true
+          endpoint:
             targetPort: 9400
-        namespaceSelector:
+          namespaceSelector:
             matchNames:
             - kommander
-        serviceSelector:
+          serviceSelector:
             matchLabels:
-            app: nvidia-dcgm-exporter
+               app: nvidia-dcgm-exporter
     ```
 
-5. In ``VSCode``, Under ``$HOME/nai`` folder, click on **New File** :material-file-plus-outline: and create a file with the following name:
+5. In ``VSCode``, Under ``$HOME/airgap-nai`` folder, click on **New File** :material-file-plus-outline: and create a file with the following name:
 
     ```bash
     nai-deploy.sh
@@ -259,16 +273,10 @@ stateDiagram-v2
     set -ex
     set -o pipefail
 
-    helm repo add ntnx-charts https://nutanix.github.io/helm-releases
-    helm repo update ntnx-charts
-
-    #NAI-core
-    helm upgrade --install nai-core ntnx-charts/nai-core --version=$NAI_CORE_VERSION -n nai-system --create-namespace --wait \
-    --set imagePullSecret.credentials.username=$DOCKER_USERNAME \
-    --set imagePullSecret.credentials.password=$DOCKER_PASSWORD \
-    --set naiApi.naiApiImage.tag=v1.0.0-rc2 \
+    helm upgrade --install nai-core nai-core --repo ${INTERNAL_REPO} \
+    --version=${NAI_CORE_VERSION} -n nai-system --create-namespace \
     --insecure-skip-tls-verify \
-    -f iep-values-nkp.yaml
+    -f ${ENVIRONMENT}-values.yaml --wait
     ```
    
 6.  Run the following command to deploy NAI
@@ -276,7 +284,7 @@ stateDiagram-v2
     === "Command"
 
         ```bash
-        $HOME/nai/nai-deploy.sh
+        $HOME/airgap-nai/nai-deploy.sh
         ```
 
     === "Command output"
@@ -352,7 +360,7 @@ In this section we will install SSL Certificate to access the NAI UI.
 3. In VSC Explorer, go to ``$HOME/nai`` folder, click on **New File** :material-file-plus-outline:  and create a file with the following name
    
     ```bash
-    iep-cert.yaml
+    nkp-cert.yaml
     ``` 
    
     Add the following content to the file and replace the IP address with the IP address of ingress gateway:
@@ -363,13 +371,13 @@ In this section we will install SSL Certificate to access the NAI UI.
     apiVersion: cert-manager.io/v1
     kind: Certificate
     metadata:
-      name: iep-cert
+      name: nkp-cert
       namespace: istio-system
     spec:
       issuerRef:
         name: selfsigned-issuer
         kind: ClusterIssuer
-      secretName: iep-cert
+      secretName: nkp-cert
       commonName: nai.10.x.x.216.nip.io
       dnsNames:
         - nai.10.x.x.216.nip.io
@@ -380,7 +388,7 @@ In this section we will install SSL Certificate to access the NAI UI.
 4. Create the certificate using the following command
     
     ```bash
-    kubectl apply -f $HOME/nai/iep-cert.yaml
+    kubectl apply -f $HOME/nai/nkp-cert.yaml
     ```
 
 5. Patch the ingress gateway's IP address to the certificate file.
@@ -399,7 +407,7 @@ In this section we will install SSL Certificate to access the NAI UI.
               protocol: HTTPS
             tls:
               mode: SIMPLE
-              credentialName: iep-cert
+              credentialName: nkp-cert
         EOF
         ```
 
