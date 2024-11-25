@@ -101,8 +101,8 @@ stateDiagram-v2
     === "Command"
 
         ```bash
-        chmod +x $HOME/nai/nai-prepare.sh
-        $HOME/nai/nai-prepare.sh
+        chmod +x $HOME/airgap-nai/nai-prepare.sh
+        $HOME/airgap-nai/nai-prepare.sh
         ```
         
     === "Command output"
@@ -290,7 +290,7 @@ stateDiagram-v2
     === "Command output"
       
         ```{ .text .no-copy }
-        $HOME/nai/nai-deploy.sh 
+        $HOME/airgap-nai/nai-deploy.sh 
 
         + set -o pipefail
         + helm repo add ntnx-charts https://nutanix.github.io/helm-releases
@@ -349,15 +349,60 @@ stateDiagram-v2
 
 In this section we will install SSL Certificate to access the NAI UI. 
 
-1. We will use ``10.x.x.216`` as the IP address for NAI as reserved in this [section](../infra/infra_nkp.md#reserve-control-plane-and-metallb-endpoint-ips). 
+NAI UI is accessible using the Ingress Gateway.
 
-2. Construct the FQDN of NAI UI using [nip.io](https://nip.io/) and we will use this FQDN as the certificate's Common Name (CN).
-   
-    ```url title="Example URL"
-    nai.10.x.x.216.nip.io
+This is required as the endpoint will only work with a ssl endpoint with a valid certificate. 
+
+The following steps show how cert-manager can be used to generate a self signed certificate using the default selfsigned-issuer present in the cluster. 
+
+!!! info "If you are using Public Certificate Authority (CA) for NAI SSL Certificate"
+    
+    If an organization generates certificates using a different mechanism then obtain the certificate **+ key** and create a kubernetes secret manually using the following command:
+
+    ```bash
+    kubectl -n istio-system create secret tls nai-cert --cert=path/to/nai.crt --key=path/to/nai.key
     ```
 
-3. In VSC Explorer, go to ``$HOME/nai`` folder, click on **New File** :material-file-plus-outline:  and create a file with the following name
+    Skip the steps in this section to create a self-signed certificate resource.
+
+1. Get the Ingress host using the following command:
+   
+    ```bash
+    INGRESS_HOST=$(kubectl get svc -n istio-system istio-ingressgateway \
+    -o jsonpath='{.status.loadBalancer.ingress[0].ip}')
+    ```
+
+2. Get the value of ``INGRESS_HOST`` environment variable
+   
+    === "Command"
+
+        ```bash
+        echo $INGRESS_HOST
+        ```
+
+    === "Command output"
+
+        ``` { .text .no-copy }
+        10.x.x.216
+        ```
+
+3. We will use the command output e.g: ``10.x.x.216`` as the IP address for NAI as reserved in this [section](../infra/infra_nkp.md#reserve-control-plane-and-metallb-endpoint-ips)
+
+4. Construct the FQDN of NAI UI using [nip.io](https://nip.io/) and we will use this FQDN as the certificate's Common Name (CN).
+   
+    === "Template URL"
+
+        ```bash
+        nai.${INGRESS_HOST}.nip.io
+        ```
+
+    === "Sample URL"
+
+        ``` { .text .no-copy }
+        nai.10.x.x.216.nip.io
+        ```
+
+5. In VSC Explorer, go to ``$HOME/airgap-nai`` folder, click on **New File** :material-file-plus-outline:  and create a file with the following name
    
     ```bash
     nkp-cert.yaml
@@ -378,20 +423,20 @@ In this section we will install SSL Certificate to access the NAI UI.
         name: selfsigned-issuer
         kind: ClusterIssuer
       secretName: nkp-cert
-      commonName: nai.10.x.x.216.nip.io
+      commonName: nai.${INGRESS_HOST}.nip.io
       dnsNames:
-        - nai.10.x.x.216.nip.io
+      - nai.${INGRESS_HOST}.nip.io
       ipAddresses:
-        - 10.x.x.216
+      - ${INGRESS_HOST}
     ```
 
-4. Create the certificate using the following command
+6. Create the certificate using the following command
     
     ```bash
-    kubectl apply -f $HOME/nai/nkp-cert.yaml
+    kubectl apply -f $HOME/airgap-nai/nkp-cert.yaml
     ```
 
-5. Patch the ingress gateway's IP address to the certificate file.
+7. Patch the ingress gateway's IP address to the certificate file.
     
     === "Command"
    

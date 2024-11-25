@@ -460,14 +460,14 @@ All NAI Docker images will be downloaded from the public Docker Hub registry. In
         ✓ Unarchiving image bundle "nai-prereq-images.tar" 
         ✓ Parsing image bundle config
         ✓ Starting temporary Docker registry
-        ✓ Pushing bundled images [================================>129/129] (time elapsed 153s) 
+        ✓ Pushing bundled images [================================>24/24] (time elapsed 153s) 
         ```
         ```{ .text .no-copy } 
         ✓ Creating temporary directory
         ✓ Unarchiving image bundle "nai-core-images.tar" 
         ✓ Parsing image bundle config
         ✓ Starting temporary Docker registry
-        ✓ Pushing bundled images [================================>8/8] (time elapsed 25s)
+        ✓ Pushing bundled images [================================>10/10] (time elapsed 25s)
         ```
 
 Now we are ready to deploy our AI workloads.
