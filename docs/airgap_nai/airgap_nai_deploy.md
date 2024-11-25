@@ -86,13 +86,19 @@ stateDiagram-v2
     kubectl patch configmap config-autoscaler -n knative-serving -p '{"data":{"enable-scale-to-zero":"false"}}'
 
     kubectl patch configmap  config-domain -n knative-serving --type merge -p '{"data":{"example.com":""}}'
+    ```
 
+    !!! warning "Change to your internal registry IP/FQDN"
+
+        Remember to change the registry IP/FQDN to your internal registry IP/FQDN in the following commands where it is mentioned as `harbor.10.x.x.111`
+        
+    ```bash 
     ## Deploy Kserve
     helm --insecure-skip-tls-verify=true upgrade --install kserve-crd kserve-crd --repo ${INTERNAL_REPO} --version=${KSERVE_VERSION} -n kserve --create-namespace
 
     helm --insecure-skip-tls-verify=true upgrade --install kserve kserve --repo ${INTERNAL_REPO} --version=${KSERVE_VERSION} -n kserve \
     --set kserve.modelmesh.enabled=false \
-    --set kserve.controller.image="docker.io/nutanix/nai-kserve-controller" \
+    --set kserve.controller.image="harbor.10.x.x.111/nkp/nutanix/nai-kserve-controller" \
     --set kserve.controller.tag=${KSERVE_VERSION} --wait
     ```
 
@@ -201,20 +207,15 @@ stateDiagram-v2
 
 3. In `VSCode` Explorer pane, browse to ``$HOME/airgap-nai`` folder
    
-4. Click on **New File** :material-file-plus-outline: and create file with the following name:
-
+4. Run the following command to create a helm values file:
+5. 
     ```bash
-    iep-values-nkp.yaml
-    ```
-
-    with the following content:
-
-    ```yaml
+    cat << EOF > ${ENVIRONMENT}-values.yaml
     ## Image pull secret. This is required for the huggingface image check by the Inference pod as that does not go via the kubelet and does a direct check.
     imagePullSecret:
       ## Name of the image pull secret
       name: nai-iep-secret
-    ## Image registry credentials
+      ## Image registry credentials
       credentials:
         registry: ${REGISTRY_URL}
         username: ${REGISTRY_USERNAME}
@@ -223,7 +224,9 @@ stateDiagram-v2
     naiApi:
       naiApiImage:
         tag: ${NAI_API_VERSION}  
-      supportedRuntimeImage: ${REGISTRY_URL}/nutanix/nai-kserve-huggingfaceserver:v0.13.1
+      supportedRuntimeImage: ${REGISTRY_URL}/nutanix/nai-kserve-huggingfaceserver:v0.14.0
+      supportedTGIImage: ${REGISTRY_URL}/nutanix/nai-tgi
+      supportedTGIImageTag: "2.3.1-825f39d"
     ## nai-monitoring stack values for nai-monitoring stack deployment in NKE environment
     naiMonitoring:
       ## Component scraping node exporter
@@ -235,16 +238,16 @@ stateDiagram-v2
             port: http-metrics
             scheme: http
             targetPort: 9100
-        namespaceSelector:
-          matchNames:
-          - kommander
-        serviceSelector:
-          matchLabels:
-            app.kubernetes.io/name: prometheus-node-exporter
-            app.kubernetes.io/component: metrics
-            app.kubernetes.io/version: 1.8.1
-    ## Component scraping dcgm exporter
-    ##
+          namespaceSelector:
+            matchNames:
+            - kommander
+          serviceSelector:
+            matchLabels:
+              app.kubernetes.io/name: prometheus-node-exporter
+              app.kubernetes.io/component: metrics
+              app.kubernetes.io/version: 1.8.1
+      ## Component scraping dcgm exporter
+      ##
       dcgmExporter:
         podLevelMetrics: true
         serviceMonitor:
@@ -256,10 +259,11 @@ stateDiagram-v2
             - kommander
           serviceSelector:
             matchLabels:
-               app: nvidia-dcgm-exporter
+              app: nvidia-dcgm-exporter
+    EOF
     ```
 
-5. In ``VSCode``, Under ``$HOME/airgap-nai`` folder, click on **New File** :material-file-plus-outline: and create a file with the following name:
+6. In ``VSCode``, Under ``$HOME/airgap-nai`` folder, click on **New File** :material-file-plus-outline: and create a file with the following name:
 
     ```bash
     nai-deploy.sh
@@ -279,7 +283,7 @@ stateDiagram-v2
     -f ${ENVIRONMENT}-values.yaml --wait
     ```
    
-6.  Run the following command to deploy NAI
+7.  Run the following command to deploy NAI
    
     === "Command"
 
@@ -300,11 +304,9 @@ stateDiagram-v2
         ...Successfully got an update from the "ntnx-charts" chart repository
         Update Complete. ⎈Happy Helming!⎈
         helm upgrade --install nai-core ntnx-charts/nai-core --version=$NAI_CORE_VERSION -n nai-system --create-namespace --wait \
-        --set imagePullSecret.credentials.username=$DOCKER_USERNAME \
-        --set imagePullSecret.credentials.password=$DOCKER_PASSWORD \
         --set naiApi.naiApiImage.tag=v1.0.0-rc2 \
         --insecure-skip-tls-verify \
-        -f iep-values-nkp.yaml
+        -f nkp-values.yaml
         Release "nai-core" has been upgraded. Happy Helming!
         NAME: nai-core
         LAST DEPLOYED: Mon Sep 16 22:07:24 2024
@@ -314,7 +316,7 @@ stateDiagram-v2
         TEST SUITE: None
         ```
 
-7.  Verify that the NAI Core Pods are running and healthy
+8.  Verify that the NAI Core Pods are running and healthy
     
     === "Command"
 
@@ -347,11 +349,9 @@ stateDiagram-v2
 
 ## Install SSL Certificate
 
-In this section we will install SSL Certificate to access the NAI UI. 
+In this section we will install SSL Certificate to access the NAI UI. This is required as the endpoint will only work with a ssl endpoint with a valid certificate. 
 
 NAI UI is accessible using the Ingress Gateway.
-
-This is required as the endpoint will only work with a ssl endpoint with a valid certificate. 
 
 The following steps show how cert-manager can be used to generate a self signed certificate using the default selfsigned-issuer present in the cluster. 
 
@@ -368,8 +368,7 @@ The following steps show how cert-manager can be used to generate a self signed 
 1. Get the Ingress host using the following command:
    
     ```bash
-    INGRESS_HOST=$(kubectl get svc -n istio-system istio-ingressgateway \
-    -o jsonpath='{.status.loadBalancer.ingress[0].ip}')
+    INGRESS_HOST=$(kubectl get svc -n istio-system istio-ingressgateway -o jsonpath='{.status.loadBalancer.ingress[0].ip}')
     ```
 
 2. Get the value of ``INGRESS_HOST`` environment variable
@@ -402,38 +401,32 @@ The following steps show how cert-manager can be used to generate a self signed 
         nai.10.x.x.216.nip.io
         ```
 
-5. In VSC Explorer, go to ``$HOME/airgap-nai`` folder, click on **New File** :material-file-plus-outline:  and create a file with the following name
+5. Create the ingress resource certificate using the following command:
    
-    ```bash
-    nkp-cert.yaml
-    ``` 
-   
-    Add the following content to the file and replace the IP address with the IP address of ingress gateway:
-
-    Replace the values in the highlighted lines with the IP address of ingress gateway that was reserved in this [section](../infra/infra_nkp.md#reserve-control-plane-and-metallb-endpoint-ips).
-   
-    ```yaml hl_lines="11 13 15"
+    ```bash hl_lines="12 14 16"
+    cat << EOF | k apply -f -
     apiVersion: cert-manager.io/v1
     kind: Certificate
     metadata:
-      name: nkp-cert
+      name: nai-cert
       namespace: istio-system
     spec:
       issuerRef:
         name: selfsigned-issuer
         kind: ClusterIssuer
-      secretName: nkp-cert
+      secretName: nai-cert
       commonName: nai.${INGRESS_HOST}.nip.io
       dnsNames:
       - nai.${INGRESS_HOST}.nip.io
       ipAddresses:
       - ${INGRESS_HOST}
+    EOF
     ```
 
 6. Create the certificate using the following command
     
     ```bash
-    kubectl apply -f $HOME/airgap-nai/nkp-cert.yaml
+    kubectl apply -f $HOME/airgap-nai/nai-cert.yaml
     ```
 
 7. Patch the ingress gateway's IP address to the certificate file.
@@ -452,7 +445,7 @@ The following steps show how cert-manager can be used to generate a self signed 
               protocol: HTTPS
             tls:
               mode: SIMPLE
-              credentialName: nkp-cert
+              credentialName: nai-cert
         EOF
         ```
 

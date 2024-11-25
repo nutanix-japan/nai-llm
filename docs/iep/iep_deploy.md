@@ -351,51 +351,87 @@ We will use the Docker login credentials we created in the previous section to d
 
 ## Install SSL Certificate
 
-In this section we will install SSL Certificate to access the NAI UI. 
+In this section we will install SSL Certificate to access the NAI UI. This is required as the endpoint will only work with a ssl endpoint with a valid certificate. 
 
-1. We will use ``10.x.x.216`` as the IP address for NAI as reserved in this [section](../infra/infra_nkp.md#reserve-control-plane-and-metallb-endpoint-ips). 
+NAI UI is accessible using the Ingress Gateway.
 
-2. Construct the FQDN of NAI UI using [nip.io](https://nip.io/) and we will use this FQDN as the certificate's Common Name (CN).
-   
-    ```url title="Example URL"
-    nai.10.x.x.216.nip.io
+The following steps show how cert-manager can be used to generate a self signed certificate using the default selfsigned-issuer present in the cluster. 
+
+!!! info "If you are using Public Certificate Authority (CA) for NAI SSL Certificate"
+    
+    If an organization generates certificates using a different mechanism then obtain the certificate **+ key** and create a kubernetes secret manually using the following command:
+
+    ```bash
+    kubectl -n istio-system create secret tls nai-cert --cert=path/to/nai.crt --key=path/to/nai.key
     ```
 
-3. In VSC Explorer, go to ``$HOME/nai`` folder, click on **New File** :material-file-plus-outline:  and create a file with the following name
+    Skip the steps in this section to create a self-signed certificate resource.
+
+1. Get the Ingress host using the following command:
    
     ```bash
-    iep-cert.yaml
-    ``` 
-   
-    Add the following content to the file and replace the IP address with the IP address of ingress gateway:
+    INGRESS_HOST=$(kubectl get svc -n istio-system istio-ingressgateway -o jsonpath='{.status.loadBalancer.ingress[0].ip}')
+    ```
 
-    Replace the values in the highlighted lines with the IP address of ingress gateway that was reserved in this [section](../infra/infra_nkp.md#reserve-control-plane-and-metallb-endpoint-ips).
+2. Get the value of ``INGRESS_HOST`` environment variable
    
-    ```yaml hl_lines="11 13 15"
+    === "Command"
+
+        ```bash
+        echo $INGRESS_HOST
+        ```
+
+    === "Command output"
+
+        ``` { .text .no-copy }
+        10.x.x.216
+        ```
+
+3. We will use the command output e.g: ``10.x.x.216`` as the IP address for NAI as reserved in this [section](../infra/infra_nkp.md#reserve-control-plane-and-metallb-endpoint-ips)
+
+4. Construct the FQDN of NAI UI using [nip.io](https://nip.io/) and we will use this FQDN as the certificate's Common Name (CN).
+   
+    === "Template URL"
+
+        ```bash
+        nai.${INGRESS_HOST}.nip.io
+        ```
+
+    === "Sample URL"
+
+        ``` { .text .no-copy }
+        nai.10.x.x.216.nip.io
+        ```
+
+5. Create the ingress resource certificate using the following command:
+   
+    ```bash hl_lines="12 14 16"
+    cat << EOF | k apply -f -
     apiVersion: cert-manager.io/v1
     kind: Certificate
     metadata:
-      name: iep-cert
+      name: nai-cert
       namespace: istio-system
     spec:
       issuerRef:
         name: selfsigned-issuer
         kind: ClusterIssuer
-      secretName: iep-cert
-      commonName: nai.10.x.x.216.nip.io
+      secretName: nai-cert
+      commonName: nai.${INGRESS_HOST}.nip.io
       dnsNames:
-        - nai.10.x.x.216.nip.io
+      - nai.${INGRESS_HOST}.nip.io
       ipAddresses:
-        - 10.x.x.216
+      - ${INGRESS_HOST}
+    EOF
     ```
 
-4. Create the certificate using the following command
+6. Create the certificate using the following command
     
     ```bash
-    kubectl apply -f $HOME/nai/iep-cert.yaml
+    kubectl apply -f $HOME/airgap-nai/nai-cert.yaml
     ```
 
-5. Patch the ingress gateway's IP address to the certificate file.
+7. Patch the ingress gateway's IP address to the certificate file.
     
     === "Command"
    
@@ -411,7 +447,7 @@ In this section we will install SSL Certificate to access the NAI UI.
               protocol: HTTPS
             tls:
               mode: SIMPLE
-              credentialName: iep-cert
+              credentialName: nai-cert
         EOF
         ```
 

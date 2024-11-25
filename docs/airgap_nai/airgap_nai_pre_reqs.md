@@ -409,10 +409,10 @@ All NAI Docker images will be downloaded from the public Docker Hub registry. In
     with the following content:
 
     ```yaml
-    docker.io/nutanix/nai-iep-operator:v1.0.0-rc1
-    docker.io/nutanix/nai-model-processor:v1.0.0-rc1
-    docker.io/nutanix/nai-inference-ui:v1.0.0-rc1
-    docker.io/nutanix/nai-api:v1.0.0-rc2
+    docker.io/nutanix/nai-iep-operator:v2.0.0
+    docker.io/nutanix/nai-model-processor:v2.0.0
+    docker.io/nutanix/nai-inference-ui:v2.0.0
+    docker.io/nutanix/nai-api:v2.0.0
     docker.io/nutanix/nai-postgres:16.1-alpine
     docker.io/nutanix/nai-kserve-controller:v0.13.1
     nutanix/nai-kserve-huggingfaceserver:v0.13.1
