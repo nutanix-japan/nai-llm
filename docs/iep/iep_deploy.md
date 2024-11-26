@@ -24,15 +24,39 @@ stateDiagram-v2
 
 ## Prepare for NAI Deployment
 
-1. Login to VSC on the jumphost VM, go to **Terminal** :octicons-terminal-24: and run the following commands to source the environment variables
+1. Login to VSC on the jumphost VM, Click on **New Folder** :material-folder-plus-outline: and name it: ``nai``
+   
+2. Create a new ``.env`` file add the following environment variables to the and save it
+   
+    === "Template .env"
+
+        ```text
+        export ISTIO_VERSION=_your_istio_version
+        export KNATIVE_VERSION=_your_knative_version
+        export KSERVE_VERSION=_your_kserve_version
+        export KUBE_PROMETHEUS_STACK_VERSION=_your_kube_prometheus_stack_version
+        export NAI_CORE_VERSION=_your_nai_core_version
+        export NAI_API_VERSION=_your_nai_api_version
+        ```
+    
+    === "Sample .env"
+        
+        ```text
+        export ISTIO_VERSION=1.20.8
+        export KNATIVE_VERSION=1.13.1
+        export KSERVE_VERSION=v0.13.1
+        export KUBE_PROMETHEUS_STACK_VERSION=61.3.1
+        export NAI_CORE_VERSION=v2.0.0
+        export NAI_API_VERSION=v2.0.0
+        ```
+
+3. Run the following commands to source the environment variables
 
     ```bash
-    source $HOME/.env
+    source $HOME/nai/.env
     ```
 
-2. In `VSCode` Explorer pane, Click on **New Folder** :material-folder-plus-outline: and name it: ``nai``
-
-3. In ``VSCode``, under the newly created ``nai`` folder, click on **New File** :material-file-plus-outline: and create file with the following name:
+4. In ``VSCode``, under the newly created ``nai`` folder, click on **New File** :material-file-plus-outline: and create file with the following name:
 
     ```bash
     nai-prepare.sh
@@ -40,44 +64,45 @@ stateDiagram-v2
 
     with the following content:
 
+
     ```bash
     #!/usr/bin/env bash
 
     set -ex
     set -o pipefail
 
-    ## Deploy Istio 1.20.8
-    helm upgrade --install istio-base base --repo https://istio-release.storage.googleapis.com/charts --version=1.20.8 -n istio-system --create-namespace --wait
+    ## Deploy Istio
+    #
+    helm --insecure-skip-tls-verify=true upgrade --install istio-base base --repo ${INTERNAL_REPO} --version=${ISTIO_VERSION} -n istio-system --create-namespace --wait
 
-    helm upgrade --install istiod istiod --repo https://istio-release.storage.googleapis.com/charts --version=1.20.8 -n istio-system \
-        --set gateways.securityContext.runAsUser=0 \
-        --set gateways.securityContext.runAsGroup=0 \
-        --wait
-    
-    helm upgrade --install istio-ingressgateway gateway --repo https://istio-release.storage.googleapis.com/charts --version=1.20.8 -n istio-system \
-        --set securityContext.runAsUser=0 \
-        --set securityContext.runAsGroup=0 \
-        --set containerSecurityContext.runAsUser=0 \
-        --set containerSecurityContext.runAsGroup=0 \
-        --wait
+    helm --insecure-skip-tls-verify=true upgrade --install istiod istiod --repo ${INTERNAL_REPO} --version=${ISTIO_VERSION} -n istio-system \
+    --set gateways.securityContext.runAsUser=0 \
+    --set gateways.securityContext.runAsGroup=0 --wait
 
-    ## Deploy Knative 1.13.1 
-    helm upgrade --install knative-serving-crds nai-knative-serving-crds --repo https://nutanix.github.io/helm-releases  --version=1.13.1 -n knative-serving --create-namespace --wait
-    
-    helm upgrade --install knative-serving nai-knative-serving --repo https://nutanix.github.io/helm-releases -n knative-serving --version=1.13.1 --wait
-    
-    helm upgrade --install knative-istio-controller nai-knative-istio-controller --repo https://nutanix.github.io/helm-releases -n knative-serving --version=1.13.1 --wait
+    helm --insecure-skip-tls-verify=true upgrade --install istio-ingressgateway gateway --repo ${INTERNAL_REPO} --version=${ISTIO_VERSION} -n istio-system \
+    --set securityContext.runAsUser=0 --set securityContext.runAsGroup=0 \
+    --set containerSecurityContext.runAsUser=0 --set containerSecurityContext.runAsGroup=0 --wait
 
-    kubectl patch configmap config-features -n knative-serving --patch '{"data":{"kubernetes.podspec-nodeselector":"enabled"}}'
+    ## Deploy Knative 
+    #
+    helm --insecure-skip-tls-verify=true upgrade --install knative-serving-crds nai-knative-serving-crds --repo ${INTERNAL_REPO} --version=${KNATIVE_VERSION} -n knative-serving --create-namespace --wait
 
-    kubectl patch configmap config-autoscaler -n knative-serving --patch '{"data":{"enable-scale-to-zero":"false"}}'
+    helm --insecure-skip-tls-verify=true upgrade --install knative-serving nai-knative-serving --repo ${INTERNAL_REPO} -n knative-serving --version=${KNATIVE_VERSION} --wait
 
-    ## Deploy Kserve 0.13.1
-    helm upgrade --install kserve-crd oci://ghcr.io/kserve/charts/kserve-crd --version=v0.13.1 -n kserve --create-namespace --wait
 
-    helm upgrade --install kserve oci://ghcr.io/kserve/charts/kserve --version=v0.13.1 -n kserve --wait \
-    --set kserve.modelmesh.enabled=false --set kserve.controller.image=docker.io/nutanix/nai-kserve-controller \
-    --set kserve.controller.tag=v0.13.1
+    helm --insecure-skip-tls-verify=true upgrade --install knative-istio-controller nai-knative-istio-controller --repo ${INTERNAL_REPO} -n knative-serving --version=${KNATIVE_VERSION} --wait
+
+    # Patch configurations stored in configmaps
+    #
+    kubectl patch configmap config-features -n knative-serving -p '{"data":{"kubernetes.podspec-nodeselector":"enabled"}}'
+
+    kubectl patch configmap config-autoscaler -n knative-serving -p '{"data":{"enable-scale-to-zero":"false"}}'
+
+    kubectl patch configmap  config-domain -n knative-serving --type merge -p '{"data":{"example.com":""}}'
+
+    ## Deploy Kserve
+    #
+    helm --insecure-skip-tls-verify=true upgrade --install kserve-crd kserve-crd --repo ${INTERNAL_REPO} --version=${KSERVE_VERSION} -n kserve --create-namespace
     ```
 
 4. Run the script from the Terminal
@@ -193,9 +218,9 @@ We will use the Docker login credentials we created in the previous section to d
     === "Template .env"
 
         ```text
-        export DOCKER_USERNAME=_release_candidate_docker_username
-        export DOCKER_PASSWORD=_release_candidate_your_docker_password
-        export NAI_CORE_VERSION=_release_candidate_nai_core_version
+        export DOCKER_USERNAME=_GA_release_docker_username
+        export DOCKER_PASSWORD=_GA_release_docker_password
+        export NAI_CORE_VERSION=_GA_release_nai_core_version
         ```
 
     === "Sample .env"
