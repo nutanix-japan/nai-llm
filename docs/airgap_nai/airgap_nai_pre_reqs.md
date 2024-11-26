@@ -151,6 +151,13 @@ We will create Nutanix Files storage class which will be used to create a pvc th
 
 Follow these steps to request access to the `meta-llama/Meta-Llama-3.1-8B-Instruct` model:
 
+!!! info "LLM Recommendation"
+
+    From testing ``google/gemma-2-2b-it`` model is quicker to download and obtain download rights, than ``meta-llama/Meta-Llama-3.1-8B-Instruct`` model.
+
+    Feel free to use the [google/gemma-2-2b-it](https://hf.co/google/gemma-2-2b-it) model if necessary. The procedure to request access to the model is the same.
+
+
 1. **Sign in to your Hugging Face account**:  
 
       - Visit [Hugging Face](https://huggingface.co) and log in to your account.

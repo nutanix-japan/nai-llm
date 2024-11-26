@@ -1,4 +1,8 @@
-# Deploying GPT-in-a-Box v2 NVD Reference Application
+# Deploying Nutanix Enterprise AI (NAI) NVD Reference Application
+
+!!! info "Version 2.0.0"
+
+    This version of the NAI deployment is based on the Nutanix Enterprise AI (NAI) ``v2.0.0`` release.
 
 ```mermaid
 stateDiagram-v2
