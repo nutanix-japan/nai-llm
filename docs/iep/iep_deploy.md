@@ -177,12 +177,10 @@ We will use the Docker login credentials we created in the previous section to d
 
 !!! warning "Change the Docker login credentials"
 
-    The following Docker based environment variable values need to be changed from your own Docker environment variables.
+    The following Docker based environment variable values need to be changed from your own Docker environment variables to the credentials downloaded from Nutanix Portal.
 
     - ``$DOCKER_USERNAME``
     - ``$DOCKER_PASSWORD``
-    - ``$DOCKER_EMAIL``
-
 
 1. Open ``$HOME/.env`` file in ``VSCode``
 
@@ -201,7 +199,7 @@ We will use the Docker login credentials we created in the previous section to d
         ```text
         export DOCKER_USERNAME=ntnxsvcgpt
         export DOCKER_PASSWORD=dckr_pat_xxxxxxxxxxxxxxxxxxxxxxxx
-        export NAI_CORE_VERSION=v1.0.0-rc2
+        export NAI_CORE_VERSION=v2.0.0
         ```
 
 3. Source the environment variables (if not done so already)
@@ -223,38 +221,37 @@ We will use the Docker login credentials we created in the previous section to d
     ```yaml
     # nai-monitoring stack values for nai-monitoring stack deployment in NKE environment
     naiMonitoring:
-        
-    ## Component scraping node exporter
-    ##
-    nodeExporter:
+      ## Component scraping node exporter
+      ##
+      nodeExporter:
         serviceMonitor:
-        enabled: true
-        endpoint:
+          enabled: true
+          endpoint:
             port: http-metrics
             scheme: http
             targetPort: 9100
-        namespaceSelector:
+          namespaceSelector:
             matchNames:
             - kommander
-        serviceSelector:
+          serviceSelector:
             matchLabels:
-            app.kubernetes.io/name: prometheus-node-exporter
-            app.kubernetes.io/component: metrics
-            app.kubernetes.io/version: 1.8.1
-
-    ##
-    dcgmExporter:
+              app.kubernetes.io/name: prometheus-node-exporter
+              app.kubernetes.io/component: metrics
+              app.kubernetes.io/version: 1.8.1
+      ## Component scraping dcgm exporter
+      ##
+      dcgmExporter:
         podLevelMetrics: true
         serviceMonitor:
-        enabled: true
-        endpoint:
+          enabled: true
+          endpoint:
             targetPort: 9400
-        namespaceSelector:
+          namespaceSelector:
             matchNames:
             - kommander
-        serviceSelector:
+          serviceSelector:
             matchLabels:
-            app: nvidia-dcgm-exporter
+              app: nvidia-dcgm-exporter
     ```
 
 6. In ``VSCode``, Under ``$HOME/nai`` folder, click on **New File** :material-file-plus-outline: and create a file with the following name:
@@ -278,7 +275,6 @@ We will use the Docker login credentials we created in the previous section to d
     helm upgrade --install nai-core ntnx-charts/nai-core --version=$NAI_CORE_VERSION -n nai-system --create-namespace --wait \
     --set imagePullSecret.credentials.username=$DOCKER_USERNAME \
     --set imagePullSecret.credentials.password=$DOCKER_PASSWORD \
-    --set naiApi.naiApiImage.tag=v1.0.0-rc2 \
     --insecure-skip-tls-verify \
     -f iep-values-nkp.yaml
     ```
@@ -306,7 +302,6 @@ We will use the Docker login credentials we created in the previous section to d
         helm upgrade --install nai-core ntnx-charts/nai-core --version=$NAI_CORE_VERSION -n nai-system --create-namespace --wait \
         --set imagePullSecret.credentials.username=$DOCKER_USERNAME \
         --set imagePullSecret.credentials.password=$DOCKER_PASSWORD \
-        --set naiApi.naiApiImage.tag=v1.0.0-rc2 \
         --insecure-skip-tls-verify \
         -f iep-values-nkp.yaml
         Release "nai-core" has been upgraded. Happy Helming!

@@ -86,16 +86,16 @@ stateDiagram-v2
     kubectl patch configmap config-autoscaler -n knative-serving -p '{"data":{"enable-scale-to-zero":"false"}}'
 
     kubectl patch configmap  config-domain -n knative-serving --type merge -p '{"data":{"example.com":""}}'
+     
+    ## Deploy Kserve
+    helm --insecure-skip-tls-verify=true upgrade --install kserve-crd kserve-crd --repo ${INTERNAL_REPO} --version=${KSERVE_VERSION} -n kserve --create-namespace
     ```
 
     !!! warning "Change to your internal registry IP/FQDN"
 
         Remember to change the registry IP/FQDN to your internal registry IP/FQDN in the following commands where it is mentioned as `harbor.10.x.x.111`
         
-    ```bash 
-    ## Deploy Kserve
-    helm --insecure-skip-tls-verify=true upgrade --install kserve-crd kserve-crd --repo ${INTERNAL_REPO} --version=${KSERVE_VERSION} -n kserve --create-namespace
-
+    ```bash
     helm --insecure-skip-tls-verify=true upgrade --install kserve kserve --repo ${INTERNAL_REPO} --version=${KSERVE_VERSION} -n kserve \
     --set kserve.modelmesh.enabled=false \
     --set kserve.controller.image="harbor.10.x.x.111/nkp/nutanix/nai-kserve-controller" \
