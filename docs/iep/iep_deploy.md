@@ -44,7 +44,7 @@ stateDiagram-v2
         ```text
         export ISTIO_VERSION=1.20.8
         export KNATIVE_VERSION=1.13.1
-        export KSERVE_VERSION=v0.13.1
+        export KSERVE_VERSION=v0.14.0
         export KUBE_PROMETHEUS_STACK_VERSION=61.3.1
         export NAI_CORE_VERSION=v2.0.0
         export NAI_API_VERSION=v2.0.0

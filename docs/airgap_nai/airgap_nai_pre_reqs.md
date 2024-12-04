@@ -439,7 +439,7 @@ All NAI Docker images will be downloaded from the public Docker Hub registry. In
 6. Since we will be using the same internal Harbor container registry to upload container images, make sure the following environment variables are set (these were already set during air-gap NKP preparation)
    
     ```bash
-    export REGISTRY_URL=https://harbor.10.x.x.111.nip.io/nkp
+    export REGISTRY_URL=harbor.10.x.x.111.nip.io/nkp
     export REGISTRY_USERNAME=admin
     export REGISTRY_PASSWORD=xxxxxxx
     export REGISTRY_CACERT=$HOME/harbor/certs/ca.crt
