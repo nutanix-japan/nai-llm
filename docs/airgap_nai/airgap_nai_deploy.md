@@ -33,6 +33,7 @@ stateDiagram-v2
         export INTERNAL_REPO=https://${KOMMANDER_CLUSTER_HOSTNAME}/dkp/kommander/helm-mirror
         export ENVIRONMENT=nkp
         export REGISTRY_URL=_your_registry_url
+        export REGISTRY_HOST=_your_registry_hostname
         ```
 
     === "Sample .env"
@@ -42,6 +43,7 @@ stateDiagram-v2
         export INTERNAL_REPO=https://${KOMMANDER_CLUSTER_HOSTNAME}/dkp/kommander/helm-mirror
         export ENVIRONMENT=nkp
         export REGISTRY_URL="https://harbor.10.x.x.111.nip.io/nkp"
+        export REGISTRY_HOST="harbor.10.x.x.111.nip.io/nkp"
         ```
 
 2. IN VSC,go to **Terminal** :octicons-terminal-24: and run the following commands to source the environment variables
@@ -212,62 +214,159 @@ stateDiagram-v2
 3. In `VSCode` Explorer pane, browse to ``$HOME/airgap-nai`` folder
    
 4. Run the following command to create a helm values file:
-5. 
-    ```bash
-    cat << EOF > ${ENVIRONMENT}-values.yaml
-    ## Image pull secret. This is required for the huggingface image check by the Inference pod as that does not go via the kubelet and does a direct check.
-    imagePullSecret:
-      ## Name of the image pull secret
-      name: nai-iep-secret
-      ## Image registry credentials
-      credentials:
-        registry: ${REGISTRY_URL}
-        username: ${REGISTRY_USERNAME}
-        password: ${REGISTRY_PASSWORD}
-        email: ${REGISTRY_USERNAME}@foobar.com
-    naiApi:
-      naiApiImage:
-        tag: ${NAI_API_VERSION}  
-      supportedRuntimeImage: ${REGISTRY_URL}/nutanix/nai-kserve-huggingfaceserver:v0.14.0
-      supportedTGIImage: ${REGISTRY_URL}/nutanix/nai-tgi
-      supportedTGIImageTag: "2.3.1-825f39d"
-    ## nai-monitoring stack values for nai-monitoring stack deployment in NKE environment
-    naiMonitoring:
-      ## Component scraping node exporter
-      ##
-      nodeExporter:
-        serviceMonitor:
-          enabled: true
-          endpoint:
-            port: http-metrics
-            scheme: http
-            targetPort: 9100
-          namespaceSelector:
-            matchNames:
-            - kommander
-          serviceSelector:
-            matchLabels:
-              app.kubernetes.io/name: prometheus-node-exporter
-              app.kubernetes.io/component: metrics
-              app.kubernetes.io/version: 1.8.1
-      ## Component scraping dcgm exporter
-      ##
-      dcgmExporter:
-        podLevelMetrics: true
-        serviceMonitor:
-          enabled: true
-          endpoint:
-            targetPort: 9400
-          namespaceSelector:
-            matchNames:
-            - kommander
-          serviceSelector:
-            matchLabels:
-              app: nvidia-dcgm-exporter
-    EOF
-    ```
 
-6. In ``VSCode``, Under ``$HOME/airgap-nai`` folder, click on **New File** :material-file-plus-outline: and create a file with the following name:
+    === "Command"
+
+        ```bash
+        cat << EOF > ${ENVIRONMENT}-values.yaml
+        ## Image pull secret. This is required for the huggingface image check by the Inference pod as that does not go via the kubelet and does a direct check.
+        imagePullSecret:
+          ## Name of the image pull secret
+          name: nai-iep-secret
+          ## Image registry credentials
+          credentials:
+            registry: ${REGISTRY_URL}
+            username: ${REGISTRY_USERNAME}
+            password: ${REGISTRY_PASSWORD}
+            email: ${REGISTRY_USERNAME}@foobar.com
+        naiApi:
+          naiApiImage:
+            image: ${REGISTRY_HOST}/nutanix/nai-api
+            tag: ${NAI_API_VERSION}  
+          supportedRuntimeImage: ${REGISTRY_HOST}/nutanix/nai-kserve-huggingfaceserver:${NAI_KSERVE_HF_SERVER_VERSION}
+          supportedTGIImage: ${REGISTRY_HOST}/nutanix/nai-tgi
+          supportedTGIImageTag: ${NAI_TGI_RUNTIME_VERSION}
+        naiIepOperator:
+          iepOperatorImage:
+            image: ${REGISTRY_HOST}/nutanix/nai-iep-operator
+            tag: ${NAI_API_VERSION}
+          modelProcessorImage:
+            image: ${REGISTRY_HOST}/nutanix/nai-model-processor
+            tag: ${NAI_API_VERSION}
+        naiInferenceUi:
+          naiUiImage:
+            image: ${REGISTRY_HOST}/nutanix/nai-inference-ui
+            tag: ${NAI_API_VERSION}
+        naiDatabase:
+          naiDbImage:
+            image: ${REGISTRY_HOST}/nutanix/nai-postgres:16.1-alpine
+        naiMonitoring:
+          prometheus:
+            image: 
+              registry: ${REGISTRY_HOST}
+              repository: prometheus/prometheus
+              tag: ${NAI_PROMETHEUS_VERSION}
+        ## nai-monitoring stack values for nai-monitoring stack deployment in NKE environment
+        naiMonitoring:
+          ## Component scraping node exporter
+          ##
+          nodeExporter:
+            serviceMonitor:
+              enabled: true
+              endpoint:
+                port: http-metrics
+                scheme: http
+                targetPort: 9100
+              namespaceSelector:
+                matchNames:
+                - kommander
+              serviceSelector:
+                matchLabels:
+                  app.kubernetes.io/name: prometheus-node-exporter
+                  app.kubernetes.io/component: metrics
+                  app.kubernetes.io/version: 1.8.1
+          ## Component scraping dcgm exporter
+          ##
+          dcgmExporter:
+            podLevelMetrics: true
+            serviceMonitor:
+              enabled: true
+              endpoint:
+                targetPort: 9400
+              namespaceSelector:
+                matchNames:
+                - kommander
+              serviceSelector:
+                matchLabels:
+                  app: nvidia-dcgm-exporter
+        EOF
+        ```
+    === "Sample nkp-values.yaml"
+    
+        ```yaml
+        ## Image pull secret. This is required for the huggingface image check by the Inference pod as that does not go via the kubelet and does a direct check.
+        imagePullSecret:
+          ## Name of the image pull secret
+          name: nai-iep-secret
+          ## Image registry credentials
+          credentials:
+            registry: https://harbor.10.x.x.111.nip.io/nkp
+            username: admin
+            password: xxxxxxx
+            email: admin@foobar.com
+        naiApi:
+          naiApiImage:
+            image: harbor.10.x.x.111.nip.io/nkp/nutanix/nai-api
+            tag: v2.0.0  
+          supportedRuntimeImage: harbor.10.x.x.111.nip.io/nkp/nutanix/nai-kserve-huggingfaceserver:v0.14.0
+          supportedTGIImage: harbor.10.x.x.111.nip.io/nkp/nutanix/nai-tgi
+          supportedTGIImageTag: "2.3.1-825f39d"
+        naiIepOperator:
+          iepOperatorImage:
+            image:  harbor.10.x.x.111.nip.io/nkp/nutanix/nai-iep-operator
+            tag: v2.0.0
+          modelProcessorImage:
+            image:  harbor.10.x.x.111.nip.io/nkp/nutanix/nai-model-processor
+            tag: v2.0.0
+        naiInferenceUi:
+          naiUiImage:
+            image:  harbor.10.x.x.111.nip.io/nkp/nutanix/nai-inference-ui
+            tag: v2.0.0
+        naiDatabase:
+          naiDbImage:
+            image:  harbor.10.x.x.111.nip.io/nkp/nutanix/nai-postgres:16.1-alpine
+        naiMonitoring:
+          prometheus:
+            image: 
+              registry: harbor.10.x.x.111.nip.io/nkp
+              repository: prometheus/prometheus
+              tag: v2.53.0     
+        # nai-monitoring stack values for nai-monitoring stack deployment in NKE environment
+        naiMonitoring:
+          ## Component scraping node exporter
+          ##
+          nodeExporter:
+            serviceMonitor:
+              enabled: true
+              endpoint:
+                port: http-metrics
+                scheme: http
+                targetPort: 9100
+              namespaceSelector:
+                matchNames:
+                - kommander
+              serviceSelector:
+                matchLabels:
+                  app.kubernetes.io/name: prometheus-node-exporter
+                  app.kubernetes.io/component: metrics
+                  app.kubernetes.io/version: 1.8.1
+          ## Component scraping dcgm exporter
+          ##
+          dcgmExporter:
+            podLevelMetrics: true
+            serviceMonitor:
+              enabled: true
+              endpoint:
+                targetPort: 9400
+              namespaceSelector:
+                matchNames:
+                - kommander
+              serviceSelector:
+                matchLabels:
+                  app: nvidia-dcgm-exporter
+        ```
+        
+5. In ``VSCode``, Under ``$HOME/airgap-nai`` folder, click on **New File** :material-file-plus-outline: and create a file with the following name:
 
     ```bash
     nai-deploy.sh
@@ -287,7 +386,7 @@ stateDiagram-v2
     -f ${ENVIRONMENT}-values.yaml --wait
     ```
    
-7.  Run the following command to deploy NAI
+6.  Run the following command to deploy NAI
    
     === "Command"
 
@@ -320,7 +419,7 @@ stateDiagram-v2
         TEST SUITE: None
         ```
 
-8.  Verify that the NAI Core Pods are running and healthy
+7.  Verify that the NAI Core Pods are running and healthy
     
     === "Command"
 
@@ -650,3 +749,129 @@ In this section we will create an inference endpoint using the downloaded model.
         NAME      URL                                          READY   PREV   LATEST   PREVROLLEDOUTREVISION   LATESTREADYREVISION       AGE
         llama8b   http://llama8b.nai-admin.svc.cluster.local   True           100                              llama8b-predictor-00001   3d17h
         ```
+   
+## Troubleshooting ``isvc``
+
+!!! warning "TGI Imange and Self-signed Certificates"
+    
+    Only follow this procedure if the ``isvc`` is not coming up.
+
+It is possible that the image registry is not accessible from the worker nodes due to the self-signed certificate that was used to install Harbor. 
+
+From testing, we have identified some issues with TGI image uploaded in container registry with self-signed CA certificates. 
+
+1. If the ``isvc`` is not coming up, then explore the events in ``nai-admin`` namespace.
+
+    === "Command"
+    
+        ```bash
+        kubens nai-admin
+        kubectl get isvc
+        kubectl get events  --sort-by='.lastTimestamp'
+        ```
+    
+    === "Command output"
+        
+        ```text hl_lines="4 9"
+        $ kubectl get isvc
+
+        NAME      URL                                          READY   PREV   LATEST   PREVROLLEDOUTREVISION   LATESTREADYREVISION       AGE
+        llama8b   http://llama8b.nai-admin.svc.cluster.local   False
+
+        $ kubectl get events --sort-by='.lastTimestamp'
+    
+        Warning   InternalError         revision/llama8b-predictor-00001   Unable to fetch image "harbor.10.x.x.111.nip.io/nkp/nutanix/nai-tgi:2.3.1-825f39d": failed to resolve image to digest: 
+        Get "https://harbor.10.x.x.111.nip.io/v2/": tls: failed to verify certificate: x509: certificate signed by unknown authority
+        ```
+
+    The temporary workaround is to use the TGI images SHA signature from the container registry.
+
+    This site will be updated with resolutions for the above issues in the future.
+
+2. Note the above TGI image SHA digest from the container registry.
+   
+    === "Command"
+
+        ```bash
+        docker pull ${REGISTRY_HOST}/nutanix/nai-tgi:${NAI_TGI_RUNTIME_VERSION}
+        ```
+
+    === "Command output"
+        
+        ```text hl_lines="4"
+        docker pull harbor.10.x.x.111.nip.io/nkp/nutanix/nai-tgi:2.3.1-825f39d
+
+        2.3.1-825f39d: Pulling from nkp/nutanix/nai-tgi
+        Digest: sha256:2df9fab2cf86ab54c2e42959f23e6cfc5f2822a014d7105369aa6ddd0de33006
+        Status: Image is up to date for harbor.10.x.x.111.nip.io/nkp/nutanix/nai-tgi:2.3.1-825f39d
+        harbor.10.x.x.111.nip.io/nkp/nutanix/nai-tgi:2.3.1-825f39d
+        ```
+
+3. The SHA digest will look like the following:
+
+    ```text title="TGI image SHA digest will be different for different environments"
+    sha256:2df9fab2cf86ab54c2e42959f23e6cfc5f2822a014d7105369aa6ddd0de33006
+    ```
+
+4. Create a copy of the ``isvc`` manifest
+   
+    ```bash
+    kubectl get isvc llama8b -n nai-admin -o yaml > llama8b.yaml
+    ```
+
+5. Edit the ``isvc``
+   
+     ```bash
+     kubectl edit isvc llama8b -n nai-admin
+     ```
+
+6. Search and replace the ``image`` tag with the SHA digest from the TGI image.
+
+    ```yaml hl_lines="6"
+    <snip>
+
+    env:
+    - name: STORAGE_URI
+      value: pvc://nai-c34d8d58-d6f8-4cb4-94e4-28-pvc-claim/model-files
+      image: harbor.10.x.x.111.nip.io/nkp/nutanix/nai-tgi:2.3.1-825f39d
+
+    <snip>
+    ```
+7. After replacing the image's SHA digest, the image value should look as follows: 
+    
+    ```yaml hl_lines="6"
+    <snip>
+
+    env:
+    - name: STORAGE_URI
+      value: pvc://nai-c34d8d58-d6f8-4cb4-94e4-28-pvc-claim/model-files
+      image: harbor.10.x.x.111.nip.io/nkp/nutanix/nai-tgi@sha256:2df9fab2cf86ab54c2e42959f23e6cfc5f2822a014d7105369aa6ddd0de33006
+    
+    <snip>
+    ```
+
+8.  Save the ``isvc`` configuration by writing the changes to the file and exiting the vi editor using ``:wq!`` key combination.
+
+9.  Verify that the ``isvc`` is running
+    
+    === "Command"
+
+        ```bash
+        kubens nai-admin
+        kubectl get isvc
+        ```
+
+    === "Command output"
+        
+        ```bash hl_lines="4"
+        $ kubectl get isvc
+
+        NAME      URL                                          READY   PREV   LATEST   PREVROLLEDOUTREVISION   LATESTREADYREVISION       AGE
+        llama8b   http://llama8b.nai-admin.svc.cluster.local   True           100                              llama8b-predictor-00001   3d17h
+        ```
+
+This should resolve the issue the issue with the TGI image.
+
+!!! note "Report Other Issues"
+
+    If you are facing any other issues, please report them here in the [NAI LLM GitHub Repo Issues](https://github.com/nutanix-japan/nai-llm/issues) page.

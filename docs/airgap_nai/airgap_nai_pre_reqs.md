@@ -242,17 +242,25 @@ Use this token for accessing Hugging Face resources with read-only permissions.
         export KUBE_PROMETHEUS_STACK_VERSION=_your_kube_prometheus_stack_version
         export NAI_CORE_VERSION=_your_nai_core_version
         export NAI_API_VERSION=_your_nai_api_version
+        export NAI_PROMETHEUS_VERSION=_your_nai_prometheus_version
+        export NAI_POSTGRESQL_VERSION=_your_nai_postgresql_version
+        export NAI_KSERVE_HF_SERVER_VERSION=_your_nai_kserve_hf_server_version
+        export NAI_TGI_RUNTIME_VERSION=_your_nai_tgi_runtime_version
         ```
     
-    === "Sample .env"
+    === ".env for NAI v2.0.0"
         
         ```text
         export ISTIO_VERSION=1.20.8
         export KNATIVE_VERSION=1.13.1
-        export KSERVE_VERSION=v0.13.1
+        export KSERVE_VERSION=v0.14.0
         export KUBE_PROMETHEUS_STACK_VERSION=61.3.1
         export NAI_CORE_VERSION=v2.0.0
         export NAI_API_VERSION=v2.0.0
+        export NAI_PROMETHEUS_VERSION=v2.54.0
+        export NAI_POSTGRESQL_VERSION=16.1-alpine
+        export NAI_KSERVE_HF_SERVER_VERSION=v0.14.0
+        export NAI_TGI_RUNTIME_VERSION=2.3.1-825f39d
         ```
     
 5. Create a new directory to store the custom helm charts
@@ -290,13 +298,13 @@ Use this token for accessing Hugging Face resources with read-only permissions.
         ```{ .text .no-copy }
         ```
 
-2. Create a tar ball of the helm charts and compress it
+7. Create a tar ball of the helm charts and compress it
 
     ```bash
     tar -czvf nai-iep-chartbundle.tar.gz *.tgz
     ```
 
-3. Upload the helm charts to ChartMuseum instance deployed automatically by Kommander. This will make this consistent with other NKP catalog items and will work seamlessly when this is converted to a catalog item.
+8. Upload the helm charts to ChartMuseum instance deployed automatically by Kommander. This will make this consistent with other NKP catalog items and will work seamlessly when this is converted to a catalog item.
     
     ```bash
     nkp push chart-bundle nai-iep-chartbundle.tar.gz

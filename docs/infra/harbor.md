@@ -120,6 +120,16 @@ We will use the following commands to install Harbor on the jumphost.
      sudo systemctl restart docker
      ```
 
+### Add Harbor's CA Certificate to the Trusted CA Store
+
+!!! warning
+
+    The local CA certificate will need to be added to all the NKP air-gapped cluster nodes.
+
+    Kubernetes nodes will only trust the CA certificates present on the nodes apart from the public CA certificates (Let's Encrypt, Digicert, etc.).
+
+Follow the steps in this [Deploying Private CA Certificate to NKP Cluster section](../appendix/nkp_cert_ds.md) to add the Harbor container registry's CA certificate ``ca.crt`` that you created in the above section to the NKP air-gapped cluster nodes.
+
 ### Configure Harbor Installation Manifest
 
 1. In VSCode Terminal, run the following command to setup and create the manifest file:
@@ -242,15 +252,16 @@ We will use the following commands to install Harbor on the jumphost.
             - trivy
         _version: v2.9.4
         ```    
+
 ### Install and Verify
 
-3. Run the installation
+1. Run the installation
    
     ```bash
     sudo ./install.sh --with-trivy
     ```
 
-4. Verify the installation
+2. Verify the installation
    
     ===  "Command"
 
@@ -276,7 +287,7 @@ We will use the following commands to install Harbor on the jumphost.
         trivy-adapter       /home/scanner/entrypoint.sh      Up (healthy)                    
         ```
 
-5. Login to Harbor Web UI using the following credentials
+3. Login to Harbor Web UI using the following credentials
    
     - Username: ``admin``
     - Password: ``xxxxxxx`` (password you set in the manifest file)
@@ -284,4 +295,5 @@ We will use the following commands to install Harbor on the jumphost.
 
 6. Go to Projects and create a new project ``nkp``
    
-Harbor registry and ``nkp`` projectswill be used to store the container images for NKP air-gapped deployments.
+Harbor registry and ``nkp`` projects will be used to store the container images for NKP air-gapped deployments.
+

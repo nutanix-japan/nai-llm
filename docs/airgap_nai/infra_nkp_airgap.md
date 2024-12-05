@@ -844,7 +844,7 @@ Find the details of GPU on the Nutanix cluster while still connected to Prism Ce
 2. On the general search, type **GPUs**
 3. Click on the **GPUs** result
 
-    ![](images/cluster_gpu_info.png)
+    ![](../infra/images/cluster_gpu_info.png)
 
 4. ``Lovelace 40s`` is the GPU available for use
 5. Use ``Lovelace 40s`` in the evironment variables in the next section.

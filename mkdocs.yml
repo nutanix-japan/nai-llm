@@ -42,7 +42,8 @@ nav:
 - Appendix:
   - Jumphost VM Manual: infra/infra_jumphost.md
   - NKP The Hard Way: appendix/infra_nkp_hard_way.md
-  - Appendix: appendix/appendix.md
+  - Deploying Private CA Certificate to NKP Cluster: appendix/nkp_cert_ds.md
+  - Opentofu: appendix/opentofu.md
 - References:
   - Nutanix Components: ntxcomponents/ntxcomponents.md
   - Tools used and why?: tools/tools.md
