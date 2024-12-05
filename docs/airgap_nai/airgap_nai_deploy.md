@@ -104,7 +104,7 @@ stateDiagram-v2
     ```bash
     helm --insecure-skip-tls-verify=true upgrade --install kserve kserve --repo ${INTERNAL_REPO} --version=${KSERVE_VERSION} -n kserve \
     --set kserve.modelmesh.enabled=false \
-    --set kserve.controller.image="harbor.10.x.x.111/nkp/nutanix/nai-kserve-controller" \
+    --set kserve.controller.image="${REGISTRY_HOST}/nutanix/nai-kserve-controller" \
     --set kserve.controller.tag=${KSERVE_VERSION} --wait
     ```
 
@@ -750,7 +750,7 @@ In this section we will create an inference endpoint using the downloaded model.
         llama8b   http://llama8b.nai-admin.svc.cluster.local   True           100                              llama8b-predictor-00001   3d17h
         ```
    
-## Troubleshooting ``isvc``
+## Troubleshooting Endpoint ISVC 
 
 !!! warning "TGI Imange and Self-signed Certificates"
     
