@@ -27,7 +27,7 @@ nav:
     - Test NAI: iep/iep_test.md
   - Air-gapped Nutanix Enterprise AI (NAI):
     - Getting Started: airgap_nai/index.md
-    - Harbor Container Registry: infra/harbor.md
+    - Harbor Container Registry: airgap_nai/harbor.md
     - Setup Air-gapped NKP Cluster: airgap_nai/infra_nkp_airgap.md
     - Pre-requisites NAI: airgap_nai/airgap_nai_pre_reqs.md
     - Deploy NAI: airgap_nai/airgap_nai_deploy.md
@@ -42,6 +42,7 @@ nav:
 - Appendix:
   - Jumphost VM Manual: infra/infra_jumphost.md
   - NKP The Hard Way: appendix/infra_nkp_hard_way.md
+  - Harbor Container Registry: infra/harbor.md
   - Deploying Private CA Certificate to NKP Cluster: appendix/nkp_cert_ds.md
   - Opentofu: appendix/opentofu.md
 - References:
