@@ -296,6 +296,11 @@ Use this token for accessing Hugging Face resources with read-only permissions.
     === "Command output"
     
         ```{ .text .no-copy }
+        Pulled: ghcr.io/kserve/charts/kserve-crd:v0.14.0
+        Digest: sha256:6ae5af970d9a9400e8456ad1dbc86360d03f4b6bb00be4f16c48bc0542283d42
+
+        Pulled: ghcr.io/kserve/charts/kserve:v0.14.0
+        Digest: sha256:25129d39a4aa85f96159db6933729ea9f35e9d0f7f7cac7918c0a8013672eccb
         ```
 
 7. Create a tar ball of the helm charts and compress it

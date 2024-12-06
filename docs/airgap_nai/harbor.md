@@ -18,6 +18,6 @@ Since the jumphost also will host the ``kind`` cluster, we will need to ensure t
 
 ## Install Harbor
 
-Follow the instructions in Appendix section to deploy Harbor container registry.
+Follow the instructions in **Appendix** section of this site to deploy Harbor container registry.
 
 > [Harbor Container Registry](../infra/harbor.md)

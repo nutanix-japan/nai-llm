@@ -4,7 +4,7 @@ In this section we will deploy a private CA certificate to the NKP air-gapped cl
 
 !!! warning "Best Practice for Self-signed Certificates"
     
-    The best practice is to deploy the NKP air-gapped cluster with a Self-signed Certificates (private) CA certificate at Day 0.
+    The best practice is to deploy the NKP air-gapped cluster with a Self-signed Certificates (private) CA certificate at Day 0 using the ``nkp create cluster nutanix --additional-trust-bundle`` among other options.
 
     For Day 1 and 2 operations, the private CA certificate will need to be added to all the NKP air-gapped cluster nodes.
 

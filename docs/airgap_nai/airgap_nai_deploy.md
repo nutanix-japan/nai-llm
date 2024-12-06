@@ -84,7 +84,7 @@ stateDiagram-v2
 
     
     helm --insecure-skip-tls-verify=true upgrade --install knative-istio-controller nai-knative-istio-controller --repo ${INTERNAL_REPO} -n knative-serving --version=${KNATIVE_VERSION} --wait
-    
+
     # Patch configurations stored in configmaps
 
     kubectl patch configmap config-features -n knative-serving -p '{"data":{"kubernetes.podspec-nodeselector":"enabled"}}'
@@ -92,16 +92,18 @@ stateDiagram-v2
     kubectl patch configmap config-autoscaler -n knative-serving -p '{"data":{"enable-scale-to-zero":"false"}}'
 
     kubectl patch configmap  config-domain -n knative-serving --type merge -p '{"data":{"example.com":""}}'
-     
+    
+    # This patch of config-deployment config map 
+    # is necessary in air-gapped environment 
+    # kserve will to skip image tag checks
+    # in a self hosted registry
+
+    kubectl patch configmap  config-deployment -n knative-serving --type merge -p '{"data":{"registries-skipping-tag-resolving":"${REGISTRY_HOST"}}'
+  
     ## Deploy Kserve
+
     helm --insecure-skip-tls-verify=true upgrade --install kserve-crd kserve-crd --repo ${INTERNAL_REPO} --version=${KSERVE_VERSION} -n kserve --create-namespace
-    ```
-
-    !!! warning "Change to your internal registry IP/FQDN"
-
-        Remember to change the registry IP/FQDN to your internal registry IP/FQDN in the following commands where it is mentioned as `harbor.10.x.x.111`
-        
-    ```bash
+    
     helm --insecure-skip-tls-verify=true upgrade --install kserve kserve --repo ${INTERNAL_REPO} --version=${KSERVE_VERSION} -n kserve \
     --set kserve.modelmesh.enabled=false \
     --set kserve.controller.image="${REGISTRY_HOST}/nutanix/nai-kserve-controller" \
@@ -752,13 +754,21 @@ In this section we will create an inference endpoint using the downloaded model.
    
 ## Troubleshooting Endpoint ISVC 
 
-!!! warning "TGI Imange and Self-signed Certificates"
+!!! danger "TGI Imange and Self-signed Certificates"
     
-    Only follow this procedure if the ``isvc`` is not coming up.
+    Only follow this procedure if this ``isvc`` is not starting up.
 
-It is possible that the image registry is not accessible from the worker nodes due to the self-signed certificate that was used to install Harbor. 
+!!! warning "KServe Image Tag Checking"
 
-From testing, we have identified some issues with TGI image uploaded in container registry with self-signed CA certificates. 
+    From testing, we have identified that KServe module is making sure that there are no container image tag discrepencies, by pulling image using SHA digest. This is done to avoid pulling images that are updated without updating the tag.
+
+    We have avoided this behavior by patching the ``config-deployment`` config map in the ``knative-serving`` namespace to skip image tag checking. Check this [Prepare for NAI Deployment](#prepare-for-nai-deployment) sectionfor more details.
+
+    ```bash
+    kubectl patch configmap  config-deployment -n knative-serving --type merge -p '{"data":{"registries-skipping-tag-resolving":"${REGISTRY_HOST}"}'
+    ```
+
+    If this procedure was not followed, then the ``isvc`` will not start up.
 
 1. If the ``isvc`` is not coming up, then explore the events in ``nai-admin`` namespace.
 
