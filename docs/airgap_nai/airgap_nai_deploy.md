@@ -96,7 +96,7 @@ stateDiagram-v2
     # This patch of config-deployment config map 
     # is necessary in air-gapped environment 
     # kserve will to skip image tag checks
-    # in a self hosted registry
+    # for the self hosted registry if the following is configured
 
     kubectl patch configmap  config-deployment -n knative-serving --type merge -p '{"data":{"registries-skipping-tag-resolving":"${REGISTRY_HOST"}}'
   
@@ -758,7 +758,7 @@ In this section we will create an inference endpoint using the downloaded model.
     
     Only follow this procedure if this ``isvc`` is not starting up.
 
-!!! warning "KServe Image Tag Checking"
+!!! warning "KNative Serving Image Tag Checking"
 
     From testing, we have identified that KServe module is making sure that there are no container image tag discrepencies, by pulling image using SHA digest. This is done to avoid pulling images that are updated without updating the tag.
 
