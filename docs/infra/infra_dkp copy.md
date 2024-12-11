@@ -122,27 +122,6 @@ We will need a total of three IPs for the following:
          ip_list=10.x.x.214,10.x.x.215,10.x.x.216
          ```
 
-### Setup Docker on Jumphost
-
-1. From VSC, logon to your jumpbox VM
-2. Open VSC Terminal
-3. Run the following commands to install ``docker`` binaries
-
-    ```bash
-    cd $HOME/sol-cnai-infra/; devbox init; devbox shell
-    task workstation:install-docker
-    ```
-
-    !!! tip
-        
-        Restart the jumpbox host if ``ubuntu`` user has permission issues using ``docker`` commands.
-
-4. Login to docker with your docker credentials to pull images to avoid any image pull rate limits
-
-    ```bash
-    docker login -u _your_docker_username -p _your_docker_password
-    ```
-
 ## Create Base Image for NKP
 
 In this section we will go through creating a base image for all the control plane and worker node VMs on Nutanix.

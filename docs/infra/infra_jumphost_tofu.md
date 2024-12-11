@@ -116,7 +116,7 @@ In the following section, we will create a `Jump Host` VM on Nutanix AHV using b
           num_sockets: "2"
           memory_size_mib: 16384
           disk_size_mib: 307200
-          source_uri: "https://cloud-images.ubuntu.com/releases/22.04/release/ubuntu-22.04-server-cloudimg-amd64.img"
+          source_uri: "https://cloud-images.ubuntu.com/releases/24.04/release/ubuntu-24.04-server-cloudimg-amd64.img"
           ```
 
     === "Example file"
@@ -132,7 +132,7 @@ In the following section, we will create a `Jump Host` VM on Nutanix AHV using b
           num_sockets: "2"
           memory_size_mib: 16384
           disk_size_mib: 307200
-          source_uri: "https://cloud-images.ubuntu.com/releases/22.04/release/ubuntu-22.04-server-cloudimg-amd64.img"
+          source_uri: "https://cloud-images.ubuntu.com/releases/24.04/release/ubuntu-24.04-server-cloudimg-amd64.img"
           ```
 
           1. :material-vector-difference: make sure to update `hostname` with same name defined within `cloudinit.yaml`.
@@ -400,5 +400,20 @@ We have compiled a list of utilities that needs to be installed on the jumphost 
     - Task: nke:download-creds 
     - Task: flux:init
     ```
+
+### Setup Docker on Jumphost
+
+1. From VSC, logon to your jumpbox VM
+2. Open VSC Terminal
+3. Run the following commands to install ``docker`` binaries
+
+    ```bash
+    cd $HOME/sol-cnai-infra/; devbox init; devbox shell
+    task workstation:install-docker
+    ```
+
+    !!! tip
+
+        Restart the jumpbox host if ``ubuntu`` user has permission issues using ``docker`` commands.
 
 Now the jumphost VM is ready with all the tools to deploy other sections on this site. 

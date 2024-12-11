@@ -120,15 +120,22 @@ We will use the following commands to install Harbor on the jumphost.
      sudo systemctl restart docker
      ```
 
-### Add Harbor's CA Certificate to the Trusted CA Store
+### Add Harbor's CA Certificate to the Trusted CA Store of NKP Nodes
 
 !!! warning
 
-    The local CA certificate will need to be added to all the NKP air-gapped cluster nodes.
+    The local CA certificate that is certifying Harbor's certificate will need to be added to all the NKP air-gapped cluster nodes.
 
     Kubernetes nodes will only trust the CA certificates present on the nodes apart from the public CA certificates (Let's Encrypt, Digicert, etc.).
 
 Follow the steps in this [Deploying Private CA Certificate to NKP Cluster section](../appendix/nkp_cert_ds.md) to add the Harbor container registry's CA certificate ``ca.crt`` that you created in the above section to the NKP air-gapped cluster nodes.
+
+!!! warning "Best Practice for Self-signed Certificates"
+    
+    The best practice is to deploy the NKP air-gapped cluster with a Self-signed Certificates (private) CA certificate at Day 0 using the ``nkp create cluster nutanix --additional-trust-bundle`` among other options.
+
+    For Day 1 and 2 operations, the private CA certificate will need to be added to all the NKP air-gapped cluster nodes.
+
 
 ### Configure Harbor Installation Manifest
 

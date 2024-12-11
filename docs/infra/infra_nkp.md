@@ -155,21 +155,10 @@ Below are minimum requirements for deploying NAI on the NKP Demo Cluster.
         mindthegap: v1.13.1
         nkp: v2.12.1
         ```
-
+        
 ### Setup Docker on Jumphost
 
-1. From VSC, logon to your jumpbox VM
-2. Open VSC Terminal
-3. Run the following commands to install ``docker`` binaries
-
-    ```bash
-    cd $HOME/sol-cnai-infra/; devbox init; devbox shell
-    task workstation:install-docker
-    ```
-
-    !!! tip
-
-        Restart the jumpbox host if ``ubuntu`` user has permission issues using ``docker`` commands.
+Follow the steps in [Setup Docker on Jumphost](../infra/infra_jumphost_tofu.md#setup-docker-on-jumphost) section.
 
 ## Reserve Control Plane and MetalLB IP
 
