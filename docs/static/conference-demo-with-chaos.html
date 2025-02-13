@@ -1,0 +1,553 @@
+<!DOCTYPE html><html><head><meta http-equiv="Content-Security-Policy" content="default-src 'self' 'unsafe-inline' 'unsafe-eval' data: blob: https://cdnjs.cloudflare.com https://cdn.jsdelivr.net https://code.jquery.com https://unpkg.com https://d3js.org https://threejs.org https://cdn.plot.ly https://stackpath.bootstrapcdn.com https://maps.googleapis.com https://cdn.tailwindcss.com https://ajax.googleapis.com https://kit.fontawesome.com https://cdn.datatables.net https://maxcdn.bootstrapcdn.com https://code.highcharts.com https://tako-static-assets-production.s3.amazonaws.com https://www.youtube.com https://fonts.googleapis.com https://fonts.gstatic.com https://pfst.cf2.poecdn.net https://puc.poecdn.net https://i.imgur.com https://wikimedia.org https://*.icons8.com https://*.giphy.com https://picsum.photos https://images.unsplash.com; frame-src 'self' https://www.youtube.com https://trytako.com; child-src 'self'; manifest-src 'self'; worker-src 'self'; upgrade-insecure-requests; block-all-mixed-content;"><script src="https://puc.poecdn.net/standard.c8d3df4d67dddca2ccac.js"></script>
+    <meta charset="utf-8">
+    <title>GTS Demo with Pod Scheduling and Chaos</title>
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+  <script src="https://puc.poecdn.net/tw.b9024aecac666455e183.js"></script><script src="https://puc.poecdn.net/deps.ac7e4de820f1e47e84a2.js"></script><script src="https://puc.poecdn.net/exports.b0f0f482cdeb5302b0b9.js"></script><script src="https://puc.poecdn.net/renderer.6065bf6c6271ccf44fe1.js"></script><script>Object.defineProperty(exports, "__esModule", {value: true}); function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }var _react = require('react'); var _react2 = _interopRequireDefault(_react);
+var _framermotion = require('framer-motion');
+var _lucidereact = require('lucide-react');
+
+const NODE_CAPACITY = {
+  cpu: 4000,    
+  memory: 8192, 
+  maxPods: 12
+};
+
+const POD_SIZES = {
+  small: {
+    cpu: 1000,    
+    memory: 1024, 
+    label: 'Small (1 Core, 1 GiB)'
+  },
+  medium: {
+    cpu: 2000,    
+    memory: 2048, 
+    label: 'Medium (2 Cores, 2 GiB)'
+  },
+  large: {
+    cpu: 4000,    
+    memory: 4096, 
+    label: 'Large (4 Cores, 4 GiB)'
+  }
+};
+
+const POD_STATES = {
+  PENDING: 'pending',
+  RUNNING: 'running',
+  FAILED: 'failed',
+  HEALING: 'healing'
+};
+
+const ResourceBar = ({ used, total, label, icon: Icon }) => {
+  const percentage = (used / total) * 100;
+  const color = percentage > 90 ? 'red' : percentage > 70 ? 'yellow' : 'green';
+
+  return (
+    _react2.default.createElement('div', { className: "space-y-1",}
+      , _react2.default.createElement('div', { className: "h-2 bg-gray-700 rounded overflow-hidden"   ,}
+        , _react2.default.createElement('div', {
+          className: `h-full transition-all duration-500 ${
+            color === 'red' ? 'bg-red-500' : color === 'yellow' ? 'bg-yellow-500' : 'bg-green-500'
+          }`,
+          style: { width: `${Math.min(100, percentage)}%` },}
+        )
+      )
+    )
+  );
+};
+
+const KubernetesVisualizer = () => {
+  const [nodes, setNodes] = _react.useState.call(void 0, [{ id: 1 }]);
+  const [pods, setPods] = _react.useState.call(void 0, []);
+  const [pendingPods, setPendingPods] = _react.useState.call(void 0, []);
+  const [selectedPodSize, setSelectedPodSize] = _react.useState.call(void 0, 'small');
+  const [failedPods, setFailedPods] = _react.useState.call(void 0, []);
+  const [healingPods, setHealingPods] = _react.useState.call(void 0, []);
+  const [autoFailureEnabled, setAutoFailureEnabled] = _react.useState.call(void 0, true);
+
+  const getNodeResources = (nodeId) => {
+    const nodePods = pods.filter(pod => pod.nodeId === nodeId);
+    return {
+      cpu: nodePods.reduce((sum, pod) => sum + POD_SIZES[pod.size].cpu, 0),
+      memory: nodePods.reduce((sum, pod) => sum + POD_SIZES[pod.size].memory, 0),
+      podCount: nodePods.length
+    };
+  };
+
+  const clusterSummary = {
+    totalCPU: nodes.length * NODE_CAPACITY.cpu,
+    totalMemory: nodes.length * NODE_CAPACITY.memory,
+    usedCPU: pods.reduce((sum, pod) => sum + POD_SIZES[pod.size].cpu, 0),
+    usedMemory: pods.reduce((sum, pod) => sum + POD_SIZES[pod.size].memory, 0),
+    scheduledPods: pods.length,
+    pendingPods: pendingPods.length,
+    failedPods: failedPods.length,
+    healingPods: healingPods.length,
+    availableNodes: nodes.length,
+    totalPodCapacity: nodes.length * NODE_CAPACITY.maxPods
+  };
+
+  const addNode = () => {
+    const newNodeId = Math.max(0, ...nodes.map(n => n.id)) + 1;
+    setNodes([...nodes, { id: newNodeId }]);
+  };
+
+  const removeNode = (nodeId) => {
+    const affectedPods = pods.filter(pod => pod.nodeId === nodeId);
+    setPods(pods.filter(pod => pod.nodeId !== nodeId));
+    setPendingPods(current => [...current, ...affectedPods.map(pod => ({
+      ...pod,
+      nodeId: undefined,
+      status: POD_STATES.PENDING
+    }))]);
+    setNodes(nodes.filter(node => node.id !== nodeId));
+  };
+
+  const addPod = () => {
+    const newPodId = Math.max(
+      0,
+      ...pods.map(p => p.id),
+      ...pendingPods.map(p => p.id),
+      ...failedPods.map(p => p.id),
+      ...healingPods.map(p => p.id)
+    ) + 1;
+    const newPod = {
+      id: newPodId,
+      size: selectedPodSize,
+      status: POD_STATES.PENDING
+    };
+    setPendingPods(current => [...current, newPod]);
+  };
+
+  const removePod = (podId) => {
+    setPods(current => current.filter(pod => pod.id !== podId));
+  };
+
+  // Pod failure simulation
+  _react.useEffect.call(void 0, () => {
+    if (!autoFailureEnabled) return;
+
+    const failureSimulation = setInterval(() => {
+      setPods(currentPods => {
+        if (currentPods.length === 0) return currentPods;
+        
+        const updatedPods = currentPods.map(pod => {
+          if (Math.random() < 0.05) {
+            setFailedPods(current => [...current, { ...pod, status: POD_STATES.FAILED }]);
+            return null;
+          }
+          return pod;
+        }).filter(Boolean);
+
+        return updatedPods;
+      });
+    }, 5000);
+
+    return () => clearInterval(failureSimulation);
+  }, [autoFailureEnabled]);
+
+  // Pod healing mechanism
+  _react.useEffect.call(void 0, () => {
+    if (failedPods.length === 0) return;
+
+    const healingDelay = setTimeout(() => {
+      const podsToHeal = failedPods.map(pod => ({
+        ...pod,
+        id: Math.max(
+          0,
+          ...pods.map(p => p.id),
+          ...pendingPods.map(p => p.id),
+          ...healingPods.map(p => p.id)
+        ) + 1,
+        status: POD_STATES.HEALING
+      }));
+
+      setHealingPods(current => [...current, ...podsToHeal]);
+      setFailedPods([]);
+    }, 2000);
+
+    return () => clearTimeout(healingDelay);
+  }, [failedPods]);
+
+  // Pod scheduling mechanism
+  _react.useEffect.call(void 0, () => {
+    if (pendingPods.length === 0 && healingPods.length === 0) return;
+
+    const schedulePods = () => {
+      const allPendingPods = [...pendingPods, ...healingPods];
+      const newScheduled = [];
+
+      allPendingPods.forEach(pod => {
+        let bestNodeId = null;
+        let leastUsedResources = Infinity;
+
+        nodes.forEach(node => {
+          const resources = getNodeResources(node.id);
+          if (
+            resources.cpu + POD_SIZES[pod.size].cpu <= NODE_CAPACITY.cpu &&
+            resources.memory + POD_SIZES[pod.size].memory <= NODE_CAPACITY.memory &&
+            resources.podCount < NODE_CAPACITY.maxPods
+          ) {
+            const resourceUsage = (resources.cpu / NODE_CAPACITY.cpu) + (resources.memory / NODE_CAPACITY.memory);
+            if (resourceUsage < leastUsedResources) {
+              leastUsedResources = resourceUsage;
+              bestNodeId = node.id;
+            }
+          }
+        });
+
+        if (bestNodeId) {
+          newScheduled.push({ ...pod, nodeId: bestNodeId, status: POD_STATES.RUNNING });
+        }
+      });
+
+      if (newScheduled.length > 0) {
+        setPods(current => [...current, ...newScheduled]);
+        setPendingPods(current => 
+          current.filter(pod => !newScheduled.some(scheduled => scheduled.id === pod.id))
+        );
+        setHealingPods(current =>
+          current.filter(pod => !newScheduled.some(scheduled => scheduled.id === pod.id))
+        );
+      }
+    };
+
+    const scheduleInterval = setInterval(schedulePods, 1000);
+    return () => clearInterval(scheduleInterval);
+  }, [nodes.length, pods.length, pendingPods, healingPods]);
+
+  const renderFailedAndHealingPods = () => {
+    if (failedPods.length === 0 && healingPods.length === 0) return null;
+
+    return (
+      _react2.default.createElement('div', { className: "bg-gray-800 rounded-lg shadow-lg p-6"   ,}
+        , _react2.default.createElement('div', { className: "flex items-center justify-between mb-4"   ,}
+          , _react2.default.createElement('h3', { className: "text-sm font-medium text-gray-300"  ,}, "Pod Health Status"  )
+          , _react2.default.createElement('div', { className: "text-sm text-gray-400" ,}, "Failed: "
+             , failedPods.length, " | Healing: "   , healingPods.length
+          )
+        )
+        , _react2.default.createElement('div', { className: "grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2"     ,}
+          , _react2.default.createElement(_framermotion.AnimatePresence, null
+            , [...failedPods, ...healingPods].map((pod) => (
+              _react2.default.createElement(_framermotion.motion.div, {
+                key: pod.id,
+                initial: { scale: 0.95, opacity: 0 },
+                animate: { scale: 1, opacity: 1 },
+                exit: { scale: 0.95, opacity: 0 },
+                className: `p-3 rounded-md bg-gray-700 border ${
+                  pod.status === POD_STATES.FAILED 
+                    ? 'border-red-500/50' 
+                    : 'border-yellow-500/50'
+                }`,}
+
+                , _react2.default.createElement('div', { className: "flex items-center justify-between"  ,}
+                  , _react2.default.createElement('div', { className: "flex items-center gap-2"  ,}
+                    , pod.status === POD_STATES.FAILED ? (
+                      _react2.default.createElement(_lucidereact.AlertTriangle, { className: "w-4 h-4 text-red-400"  ,} )
+                    ) : (
+                      _react2.default.createElement(_lucidereact.Loader, { className: "w-4 h-4 text-yellow-400 animate-spin"   ,} )
+                    )
+                    , _react2.default.createElement('span', { className: "text-sm font-medium text-gray-200"  ,}, "Pod "
+                       , pod.id
+                    )
+                  )
+                  , _react2.default.createElement('div', { className: "text-xs text-gray-400" ,}
+                    , pod.status === POD_STATES.FAILED ? 'Failed' : 'Self-healing...'
+                  )
+                )
+                , _react2.default.createElement('div', { className: "mt-2 text-xs text-gray-400 flex justify-between"    ,}
+                  , _react2.default.createElement('span', null, POD_SIZES[pod.size].label)
+                  , _react2.default.createElement('span', null
+                    , POD_SIZES[pod.size].cpu / 1000, " Cores, "  , POD_SIZES[pod.size].memory / 1024, " GiB"
+                  )
+                )
+              )
+            ))
+          )
+        )
+      )
+    );
+  };
+
+  return (
+    _react2.default.createElement('div', { className: "flex min-h-screen bg-gray-900 text-gray-100"   ,}
+      , _react2.default.createElement('div', { className: "w-80 fixed left-0 top-0 h-screen overflow-y-auto bg-gray-800 border-r border-gray-700 p-6"         ,}
+        , _react2.default.createElement('h2', { className: "text-xl font-semibold mb-6"  ,}, "Cluster Summary" )
+
+        , _react2.default.createElement('div', { className: "space-y-6",}
+          , _react2.default.createElement('div', { className: "space-y-2",}
+            , _react2.default.createElement('div', { className: "text-sm text-gray-400" ,}, "CPU Usage" )
+            , _react2.default.createElement('div', { className: "flex items-end gap-2"  ,}
+              , _react2.default.createElement('div', { className: "text-xl font-semibold" ,}
+                , Math.round(clusterSummary.usedCPU / 1000)
+              )
+              , _react2.default.createElement('div', { className: "text-sm text-gray-400" ,}, "/"
+                , Math.round(clusterSummary.totalCPU / 1000), " Cores"
+              )
+            )
+            , _react2.default.createElement(ResourceBar, {
+              used: clusterSummary.usedCPU,
+              total: clusterSummary.totalCPU,
+              label: "CPU",
+              icon: _lucidereact.Cpu,}
+            )
+          )
+
+          , _react2.default.createElement('div', { className: "space-y-2",}
+            , _react2.default.createElement('div', { className: "text-sm text-gray-400" ,}, "Memory Usage" )
+            , _react2.default.createElement('div', { className: "flex items-end gap-2"  ,}
+              , _react2.default.createElement('div', { className: "text-xl font-semibold" ,}
+                , Math.round(clusterSummary.usedMemory / 1024)
+              )
+              , _react2.default.createElement('div', { className: "text-sm text-gray-400" ,}, "/"
+                , Math.round(clusterSummary.totalMemory / 1024), " GiB"
+              )
+            )
+            , _react2.default.createElement(ResourceBar, {
+              used: clusterSummary.usedMemory,
+              total: clusterSummary.totalMemory,
+              label: "Memory",
+              icon: _lucidereact.CircuitBoard,}
+            )
+          )
+
+          , _react2.default.createElement('div', { className: "space-y-2",}
+            , _react2.default.createElement('div', { className: "text-sm text-gray-400" ,}, "Pod Distribution" )
+            , _react2.default.createElement('div', { className: "flex items-end gap-2"  ,}
+              , _react2.default.createElement('div', { className: "text-xl font-semibold" ,}
+                , clusterSummary.scheduledPods
+              )
+              , _react2.default.createElement('div', { className: "text-sm text-gray-400" ,}, "/"
+                , clusterSummary.totalPodCapacity, " Pods"
+              )
+            )
+            , _react2.default.createElement(ResourceBar, {
+              used: clusterSummary.scheduledPods,
+              total: clusterSummary.totalPodCapacity,
+              label: "Pods",
+              icon: _lucidereact.Boxes,}
+            )
+          )
+
+          , _react2.default.createElement('div', { className: "space-y-2",}
+            , _react2.default.createElement('div', { className: "text-sm text-gray-400" ,}, "Pod Health" )
+            , _react2.default.createElement('div', { className: "grid grid-cols-2 gap-2 text-sm"   ,}
+              , _react2.default.createElement('div', { className: "p-2 bg-gray-700 rounded"  ,}
+                , _react2.default.createElement('div', { className: "text-red-400",}, "Failed")
+                , _react2.default.createElement('div', { className: "text-xl font-semibold" ,}, clusterSummary.failedPods)
+              )
+              , _react2.default.createElement('div', { className: "p-2 bg-gray-700 rounded"  ,}
+                , _react2.default.createElement('div', { className: "text-yellow-400",}, "Healing")
+                , _react2.default.createElement('div', { className: "text-xl font-semibold" ,}, clusterSummary.healingPods)
+              )
+            )
+          )
+
+          , _react2.default.createElement('div', { className: "space-y-2 pt-6 border-t border-gray-700"   ,}
+            , _react2.default.createElement('div', { className: "flex items-center justify-between"  ,}
+              , _react2.default.createElement('div', { className: "text-sm text-gray-400" ,}, "Auto Pod Failure"  )
+              , _react2.default.createElement('button', {
+                onClick: () => setAutoFailureEnabled(!autoFailureEnabled),
+                className: "flex items-center gap-2 text-sm px-3 py-1.5 rounded hover:bg-gray-700"       ,}
+
+                , autoFailureEnabled ? (
+                  _react2.default.createElement(_react2.default.Fragment, null
+                    , _react2.default.createElement(_lucidereact.ToggleRight, { className: "w-5 h-5 text-green-400"  ,} )
+                    , _react2.default.createElement('span', { className: "text-green-400",}, "Enabled")
+                  )
+                ) : (
+                  _react2.default.createElement(_react2.default.Fragment, null
+                    , _react2.default.createElement(_lucidereact.ToggleLeft, { className: "w-5 h-5 text-gray-400"  ,} )
+                    , _react2.default.createElement('span', { className: "text-gray-400",}, "Disabled")
+                  )
+                )
+              )
+            )
+            , _react2.default.createElement('div', { className: "text-xs text-gray-500" ,}
+              , autoFailureEnabled 
+                ? "Pods have a 5% chance to fail every 5 seconds" 
+                : "Automatic pod failures are disabled"
+            )
+          )
+        )
+      )
+
+      , _react2.default.createElement('div', { className: "flex-1 ml-80 p-6"  ,}
+        , _react2.default.createElement('div', { className: "space-y-6",}
+          , _react2.default.createElement('div', { className: "flex justify-between items-center"  ,}
+            , _react2.default.createElement('h1', { className: "text-2xl font-semibold" ,}, "Kubernetes Cluster" )
+            , _react2.default.createElement('button', {
+              onClick: addPod,
+              className: "px-4 py-2 rounded bg-blue-600 hover:bg-blue-700 text-white flex items-center gap-2"        ,}
+
+              , _react2.default.createElement(_lucidereact.Plus, { className: "w-4 h-4" ,} ), "Add Pod"
+
+            )
+          )
+
+          , _react2.default.createElement('div', { className: "bg-gray-800 rounded-lg shadow-lg p-6 space-y-4"    ,}
+            , _react2.default.createElement('h3', { className: "text-sm font-medium text-gray-300"  ,}, "Pod Configuration" )
+            , _react2.default.createElement('div', { className: "flex flex-wrap items-center gap-4"   ,}
+              , Object.entries(POD_SIZES).map(([size, config]) => (
+                _react2.default.createElement('button', {
+                  key: size,
+                  onClick: () => setSelectedPodSize(size),
+                  className: `px-3 py-1.5 rounded text-sm ${
+                    selectedPodSize === size
+                      ? 'bg-blue-600 text-white'
+                      : 'bg-gray-700 text-gray-300 hover:bg-gray-600'
+                  }`,}
+
+                  , config.label
+                )
+              ))
+            )
+          )
+
+          , pendingPods.length > 0 && (
+            _react2.default.createElement('div', { className: "bg-gray-800 rounded-lg shadow-lg p-6"   ,}
+              , _react2.default.createElement('div', { className: "flex items-center justify-between mb-4"   ,}
+                , _react2.default.createElement('h3', { className: "text-sm font-medium text-gray-300"  ,}, "Pending Pods" )
+                , _react2.default.createElement('div', { className: "text-sm text-gray-400" ,}, "Waiting to be scheduled: "
+                      , pendingPods.length
+                )
+              )
+              , _react2.default.createElement('div', { className: "grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2"     ,}
+                , _react2.default.createElement(_framermotion.AnimatePresence, null
+                  , pendingPods.map((pod) => (
+                    _react2.default.createElement(_framermotion.motion.div, {
+                      key: pod.id,
+                      initial: { scale: 0.95, opacity: 0 },
+                      animate: { scale: 1, opacity: 1 },
+                      exit: { scale: 0.95, opacity: 0 },
+                      className: "p-3 rounded-md bg-gray-700 border border-yellow-500/50"    ,}
+
+                      , _react2.default.createElement('div', { className: "flex items-center justify-between"  ,}
+                        , _react2.default.createElement('div', { className: "flex items-center gap-2"  ,}
+                          , _react2.default.createElement(_lucidereact.Loader, { className: "w-4 h-4 text-yellow-400 animate-spin"   ,} )
+                          , _react2.default.createElement('span', { className: "text-sm font-medium text-gray-200"  ,}, "Pod "
+                             , pod.id
+                          )
+                        )
+                        , _react2.default.createElement('div', { className: "text-xs text-gray-400" ,}, "Scheduling..."
+
+                        )
+                      )
+                      , _react2.default.createElement('div', { className: "mt-2 text-xs text-gray-400 flex justify-between"    ,}
+                        , _react2.default.createElement('span', null, POD_SIZES[pod.size].label)
+                        , _react2.default.createElement('span', null
+                          , POD_SIZES[pod.size].cpu / 1000, " Cores, "  , POD_SIZES[pod.size].memory / 1024, " GiB"
+                        )
+                      )
+                    )
+                  ))
+                )
+              )
+            )
+          )
+
+          , renderFailedAndHealingPods()
+
+          , _react2.default.createElement('div', { className: "bg-gray-800 rounded-lg shadow-lg p-6"   ,}
+            , _react2.default.createElement('div', { className: "flex justify-between items-center mb-4"   ,}
+              , _react2.default.createElement('h3', { className: "text-sm font-medium text-gray-300"  ,}, "Nodes")
+              , _react2.default.createElement('button', {
+                onClick: addNode,
+                className: "px-4 py-2 rounded bg-blue-600 hover:bg-blue-700 text-white flex items-center gap-2"        ,}
+
+                , _react2.default.createElement(_lucidereact.Plus, { className: "w-4 h-4" ,} ), "Add Node"
+
+              )
+            )
+
+            , _react2.default.createElement('div', { className: "flex overflow-x-auto gap-4 pb-4"   ,}
+              , nodes.map(node => {
+                const resources = getNodeResources(node.id);
+                const nodePods = pods.filter(pod => pod.nodeId === node.id);
+
+                return (
+                  _react2.default.createElement('div', { key: node.id, className: "bg-gray-700 rounded-lg shadow-lg p-4 w-[300px] flex-shrink-0"     ,}
+                    , _react2.default.createElement('div', { className: "flex justify-between items-start mb-4"   ,}
+                      , _react2.default.createElement('div', null
+                        , _react2.default.createElement('h3', { className: "text-sm font-medium text-gray-300"  ,}, "Node " , node.id)
+                        , _react2.default.createElement('div', { className: "text-xs text-gray-400 mt-1"  ,}
+                          , nodePods.length, " / "  , NODE_CAPACITY.maxPods, " Pods"
+                        )
+                      )
+                      , _react2.default.createElement('button', {
+                        onClick: () => removeNode(node.id),
+                        className: "p-2 hover:bg-gray-600 rounded"  ,}
+
+                        , _react2.default.createElement(_lucidereact.Trash2, { className: "w-4 h-4 text-gray-400"  ,} )
+                      )
+                    )
+
+                    , _react2.default.createElement('div', { className: "space-y-3",}
+                      , _react2.default.createElement('div', null
+                        , _react2.default.createElement('div', { className: "flex justify-between text-xs text-gray-400 mb-1"    ,}
+                          , _react2.default.createElement('span', null, "CPU")
+                          , _react2.default.createElement('span', null, resources.cpu / 1000, " / "  , NODE_CAPACITY.cpu / 1000, " Cores" )
+                        )
+                        , _react2.default.createElement(ResourceBar, {
+                          used: resources.cpu,
+                          total: NODE_CAPACITY.cpu,
+                          label: "CPU",
+                          icon: _lucidereact.Cpu,}
+                        )
+                      )
+
+                      , _react2.default.createElement('div', null
+                        , _react2.default.createElement('div', { className: "flex justify-between text-xs text-gray-400 mb-1"    ,}
+                          , _react2.default.createElement('span', null, "Memory")
+                          , _react2.default.createElement('span', null, resources.memory / 1024, " / "  , NODE_CAPACITY.memory / 1024, " GiB" )
+                        )
+                        , _react2.default.createElement(ResourceBar, {
+                          used: resources.memory,
+                          total: NODE_CAPACITY.memory,
+                          label: "Memory",
+                          icon: _lucidereact.CircuitBoard,}
+                        )
+                      )
+                    )
+
+                    , _react2.default.createElement('div', { className: "mt-4 space-y-2" ,}
+                      , nodePods.map(pod => (
+                        _react2.default.createElement(_framermotion.motion.div, {
+                          key: pod.id,
+                          initial: { scale: 0.95, opacity: 0 },
+                          animate: { scale: 1, opacity: 1 },
+                          exit: { scale: 0.95, opacity: 0 },
+                          className: "flex items-center justify-between p-2 rounded bg-gray-600"     ,}
+
+                          , _react2.default.createElement('div', { className: "flex items-center gap-2"  ,}
+                            , _react2.default.createElement('div', { className: "w-2 h-2 rounded-full bg-green-500"   ,} )
+                            , _react2.default.createElement('span', { className: "text-sm text-gray-200" ,}, "Pod "
+                               , pod.id
+                            )
+                          )
+                          , _react2.default.createElement('button', {
+                            onClick: () => removePod(pod.id),
+                            className: "p-1 hover:bg-gray-500 rounded"  ,}
+
+                            , _react2.default.createElement(_lucidereact.Trash2, { className: "w-3 h-3 text-gray-400"  ,} )
+                          )
+                        )
+                      ))
+                    )
+                  )
+                );
+              })
+            )
+          )
+        )
+      )
+    )
+  );
+};
+
+exports. default = KubernetesVisualizer;
+</script></head>
+  <body>
+  
+
+<div id="preview-app"></div></body></html>

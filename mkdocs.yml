@@ -50,6 +50,8 @@ nav:
   - Tools used and why?: tools/tools.md
   - Contributing: contributing.md
   - Roadmap: roadmap.md
+- Sizing Simulators:
+  - Special Page: static/scheduling-mixed-pods-and-nodepool-v1.html
 - Takeaways: takeaways/takeaways.md
 
 
