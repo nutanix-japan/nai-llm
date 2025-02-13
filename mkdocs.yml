@@ -50,8 +50,10 @@ nav:
   - Tools used and why?: tools/tools.md
   - Contributing: contributing.md
   - Roadmap: roadmap.md
-- Sizing Simulators:
-  - Special Page: static/scheduling-mixed-pods-and-nodepool-v1.html
+- Simulators:
+  - static/index.md
+  - Pods and Nodepools Simulation: static/scheduling-mixed-pods-and-nodepool-v1.html
+  - K8S Deployment Strategies: static/k8s-deployment-strategies-visualizer.html
 - Takeaways: takeaways/takeaways.md
 
 
@@ -62,7 +64,7 @@ repo_url: https://github.com/nutanix-japan/nai-llm
 edit_uri: edit/main/docs/
 
 # Copyright
-copyright: Copyright &copy; 2016 - 2024 Nutanix
+copyright: Copyright &copy; 2016 - 2025 Nutanix
 
 # Configuration
 
