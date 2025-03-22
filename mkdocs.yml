@@ -25,7 +25,7 @@ nav:
     - Pre-requisites NAI: nai/iep_pre_reqs_nai.md
     - Deploy NAI: nai/iep_deploy_nai.md
     - Test NAI: iep/iep_test.md
-  - Nutanix Enterprise AI (NAI):
+  - Nutanix Enterprise AI v2.0 (NAI):
     - Getting Started: iep/index.md
     - Setup NKP Cluster: infra/infra_nkp.md
     - Pre-requisites NAI: iep/iep_pre_reqs.md
