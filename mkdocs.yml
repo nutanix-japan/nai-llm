@@ -22,9 +22,9 @@ nav:
   - Nutanix Enterprise AI v2.2 (NAI):
     - Getting Started: iep/index.md
     - Setup NKP Cluster: nai/infra_nkp_nai.md
-    - Pre-requisites NAI: nai/iep_pre_reqs_nai.md
-    - Deploy NAI: nai/iep_deploy_nai.md
-    - Test NAI: iep/iep_test.md
+    - Pre-requisites NAI: nai/pre_reqs_nai.md
+    - Deploy NAI: nai/deploy_nai.md
+    - Test NAI: nai/test_nai.md
   - Nutanix Enterprise AI v2.0 (NAI):
     - Getting Started: iep/index.md
     - Setup NKP Cluster: infra/infra_nkp.md
@@ -33,7 +33,7 @@ nav:
     - Test NAI: iep/iep_test.md
   - Air-gapped Nutanix Enterprise AI (NAI):
     - Getting Started: airgap_nai/index.md
-    - Harbor Container Registry: airgap_nai/harbor.md
+    - Harbor Container Registry: airgap_nai/harbor.mKommander Hostd
     - Setup Air-gapped NKP Cluster: airgap_nai/infra_nkp_airgap.md
     - Pre-requisites NAI: airgap_nai/airgap_nai_pre_reqs.md
     - Deploy NAI: airgap_nai/airgap_nai_deploy.md
