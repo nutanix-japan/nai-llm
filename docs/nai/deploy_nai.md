@@ -63,9 +63,25 @@ stateDiagram-v2
         webhook-57d994c7b8-z58nl                1/1     Running   0          23h
         ```
 
+## Prepare NAI Docker Download Credentials
+
+All NAI Docker images will be downloaded from the public Docker Hub registry. In order to download the images, you will need to logon to [Nutanix Portal - NAI](https://portal.nutanix.com/page/downloads?product=nai) and create a Docker ID and access token.
+
+
+1. Login to [Nutanix Portal - NAI](https://portal.nutanix.com/page/downloads?product=nai) using your credentials
+2. Click on **Generate Access Token** option
+3. Copy the generated Docker ID and access token
+   
+!!! warning
+    
+    Currently there are issues with the Nutanix Portal to create a Docker ID and access token. This will be fixed soon.
+
+    Click on the **Manage Access Token** option and use the credentials listed there until the Nutanix Portal is fixed.
+
+
 ## Deploy NAI
 
-We will use the NKP Applications Catalog to deploy NAI. 
+In this section we will use the NKP Applications Catalog to deploy NAI. 
 
 !!! warning
     NAI catalog has to be added manually for now to NKP Application Catalog. However future releases of NKP v2.14 and beyond may be released with NAI application ready to setup.

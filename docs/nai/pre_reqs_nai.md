@@ -75,7 +75,7 @@ We will create Nutanix Files storage class which will be used to create a pvc th
 
     === "Template YAML"
 
-        ```yaml hl_lines="9"
+        ```yaml hl_lines="8 9"
         kind: StorageClass
         apiVersion: storage.k8s.io/v1
         metadata:
@@ -97,7 +97,7 @@ We will create Nutanix Files storage class which will be used to create a pvc th
 
     === "Sample YAML"
 
-        ```yaml hl_lines="9"
+        ```yaml hl_lines="8 9"
         kind: StorageClass
         apiVersion: storage.k8s.io/v1
         metadata:
@@ -214,31 +214,3 @@ Follow these steps to create a Hugging Face token with read permissions:
     - Your token will be generated and displayed only once, so make sure to copy it and store it securely.
 
 Use this token for accessing Hugging Face resources with read-only permissions.
-
-## Prepare NAI Docker Download Credentials
-
-All NAI Docker images will be downloaded from the public Docker Hub registry. In order to download the images, you will need to logon to [Nutanix Portal - NAI](https://portal.nutanix.com/page/downloads?product=nai) and create a Docker ID and access token.
-
-
-1. Login to [Nutanix Portal - NAI](https://portal.nutanix.com/page/downloads?product=nai) using your credentials
-2. Click on **Generate Access Token** option
-3. Copy the generated Docker ID and access token
-4. Login to the Docker CLI on your jumphost VM
-   
-    === "Command"
-
-        ```bash
-        docker login --username ntnxsvcgpt -p _docker_id_and_access_token_
-        ```
-
-    === "Command output"
-
-        ```{ .bash .no-copy }
-        docker login --username ntnxsvcgpt -p dckr_pat_xxxxxxxxxxxxxxxxxxxxxxxx
-        ```
-
-!!! warning
-    
-    Currently there are issues with the Nutanix Portal to create a Docker ID and access token. This will be fixed soon.
-
-    Click on the **Manage Access Token** option and use the credentials listed there until the Nutanix Portal is fixed.
