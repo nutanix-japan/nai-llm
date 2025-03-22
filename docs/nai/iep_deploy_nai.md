@@ -109,7 +109,7 @@ We will use the NKP Applications Catalog to deploy NAI.
 
     === "Sample yaml"
 
-        ```text
+        ```yaml
         imagePullSecret:
           # Name of the image pull secret
           name: nai-iep-secret

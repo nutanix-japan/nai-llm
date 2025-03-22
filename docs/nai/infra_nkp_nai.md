@@ -914,9 +914,10 @@ Enable these NKE Operators from NKP GUI.
 2. Click on **Management Cluster Workspace**
 3. Go to **Applications** 
 4. Search and enable the following operators: follow this order to avoid dependency issues
-   - Prometheus Monitoring: version ``69.1.2`` or later
-   - Istio Service Mesh: version``1.20.8`` or later
-   - Knative-serving: version ``1.13.1`` or later
+   
+    - Prometheus Monitoring: version ``69.1.2`` or later
+    - Istio Service Mesh: version``1.20.8`` or later
+    - Knative-serving: version ``1.13.1`` or later
 
 ### GPU Operator
 
