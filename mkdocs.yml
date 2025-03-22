@@ -19,6 +19,12 @@ nav:
   # - Setup NKE Cluster: infra/infra_nke.md
   # - Setup NKP Cluster: infra/infra_nkp.md
 - Tutorials:
+  - Nutanix Enterprise AI v2.2 (NAI):
+    - Getting Started: iep/index.md
+    - Setup NKP Cluster: nai/infra_nkp_nai.md
+    - Pre-requisites NAI: nai/iep_pre_reqs_nai.md
+    - Deploy NAI: nai/iep_deploy_nai.md
+    - Test NAI: iep/iep_test.md
   - Nutanix Enterprise AI (NAI):
     - Getting Started: iep/index.md
     - Setup NKP Cluster: infra/infra_nkp.md

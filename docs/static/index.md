@@ -4,7 +4,7 @@ The simulator section of the site is to help visualise kubernetes node and pod d
 
 !!! warning
 
-    This is just a static HTML with javascript. There is no backend logic to persist simulations.
+    This is just a static HTML page with javascript. There is no backend logic to persist simulations.
 
     Remember to take screen shots are download them to your personal device for persistence.
 

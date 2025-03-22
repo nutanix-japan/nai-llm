@@ -112,17 +112,17 @@ Below are minimum requirements for deploying NAI on the NKP Demo Cluster.
     === "Command"
 
         ```text title="Paste the download URL within double quotes"
-        curl -o nkp_v2.12.1_linux_amd64.tar.gz "_paste_download_URL_here"
+        curl -o nkp_v2.14.0_linux_amd64.tar.gz "_paste_download_URL_here"
         ```
 
     === "Sample command"
         
         ```bash
-        curl -o nkp_v2.12.1_linux_amd64.tar.gz "https://download.nutanix.com/downloads/nkp/v2.12.1/nkp_v2.12.1_linux_amd64.tar.gz?Expires=1729016864&........"
+        curl -o nkp_v2.14.0_linux_amd64.tar.gz "https://download.nutanix.com/downloads/nkp/v2.14.0/nkp_v2.14.0_linux_amd64.tar.gz?Expires=1729016864&........"
         ```
         
     ```bash
-    tar xvfz nkp_v2.12.1_linux_amd64.tar
+    tar xvfz nkp_v2.14.0_linux_amd64.tar
     ```
 
 11. Move the ``nkp`` binary to a directory that is included in your ``PATH`` environment variable
@@ -136,7 +136,7 @@ Below are minimum requirements for deploying NAI on the NKP Demo Cluster.
     
     !!! note
 
-        At the time of writing this lab nkp version is v2.12.1
+        At the time of writing this lab nkp version is v2.14.0
 
     === "Command"
 
@@ -149,11 +149,11 @@ Below are minimum requirements for deploying NAI on the NKP Demo Cluster.
         ```{ .bash .no-copy }
         $ nkp version
         diagnose: v0.10.1
-        imagebuilder: v0.13.3
-        kommander: v2.12.1
-        konvoy: v2.12.1
-        mindthegap: v1.13.1
-        nkp: v2.12.1
+        imagebuilder: v0.22.3
+        kommander: v2.14.0
+        konvoy: v2.14.0
+        mindthegap: v1.16.0
+        nkp: v2.14.0
         ```
 
 ### Setup Docker on Jumphost
@@ -342,13 +342,21 @@ In this section we will go through creating a base image for all the control pla
           --subnet ${NUTANIX_SUBNET_NAME} --insecure
         ```
 
+    === "Example Command"
+
+        ```bash
+        nkp create image nutanix ubuntu-22.04 \
+          --endpoint pc.example.com --cluster pe \
+          --subnet User1 --insecure
+        ```
+
     === "Command output"
 
         ```{ .text .no-copy }
-        nkp create image nutanix ubuntu-22.04 \ 
-        --endpoint ${NUTANIX_ENDPOINT} --cluster ${NUTANIX_CLUSTER} \
-        --subnet ${NUTANIX_SUBNET_NAME} --insecure
-        
+        nkp create image nutanix ubuntu-22.04 \
+          --endpoint pc.example.com --cluster pe \
+          --subnet User1 --insecure
+
         > Provisioning and configuring image
         Manifest files extracted to $HOME/nkp/.nkp-image-builder-3243021807
         nutanix.kib_image: output will be in this color.
@@ -373,7 +381,7 @@ In this section we will go through creating a base image for all the control pla
 
         ```text hl_lines="2"
         ==> Builds finished. The artifacts of successful builds are:
-        --> nutanix.kib_image: nkp-ubuntu-22.04-1.29.6-20240717082720
+        --> nutanix.kib_image: nkp-ubuntu-22.04-1.31.4-20250320042646
         ```
 
     !!! warning
@@ -391,7 +399,7 @@ In this section we will go through creating a base image for all the control pla
     === "Sample .env"
 
         ```text
-        export NKP_IMAGE=nkp-ubuntu-22.04-1.29.6-20240717082720
+        export NKP_IMAGE=nkp-ubuntu-22.04-1.31.4-20250320042646
         ```
 
 
@@ -777,11 +785,25 @@ In this section we will create a nodepool to host the AI apps with a GPU.
                           name: Lovelace 40S
         ```
 
-4. Monitor Cluster-Api resources to ensure gpu machine will be successfully
+4. Monitor Cluster-Api resources to ensure gpu machine will be successful
 
-    ```bash
-    watch kubectl get cluster-api
-    ```
+    === "Command"
+
+        ```bash
+        watch kubectl get cluster-api
+        ```
+
+    === "Scaling output"
+    
+        ```bash
+        NAME                                                          CLUSTER   REPLICAS   READY   UPDATED   UNA
+        VAILABLE   PHASE       AGE    VERSION
+        machinedeployment.cluster.x-k8s.io/nkplb-gpu-nodepool-mpr4d   nkplb     1                  1         1
+                   ScalingUp   12s    v1.31.4
+        machinedeployment.cluster.x-k8s.io/nkplb-md-0-d6cm7           nkplb     4          4       4         0
+                   Running     159m   v1.31.4
+        ```
+
 
 5. Apply the ``gpu-nodepool.yaml`` file to the workload cluster
 
@@ -878,7 +900,19 @@ To generate a NKP Pro License for the NKP cluster:
 6. Confirm the license is applied to the cluster by cheking the **License Status** in the **License** menu
 7. The license will be applied to the cluster and the license status will reflect NKP Pro in the top right corner of the dashboard
 
-### Enable GPU Operator
+### Enable NKE Operators
+
+Enable these NKE Operators from NKP GUI.
+
+1. In the NKP GUI, Go to **Clusters**
+2. Click on **Kommander Host**
+3. Go to **Applications** 
+4. Search and enable the following operators: follow this order to avoid dependency issues
+   - Prometheus Monitoring: version ``69.1.2`` or later
+   - Istio Service Mesh: version``1.20.8`` or later
+   - Knative-serving: version ``1.13.1`` or later
+
+#### GPU Operator
 
 We will need to enable GPU operator for deploying NKP application. 
 
@@ -897,7 +931,7 @@ We will need to enable GPU operator for deploying NKP application.
 
     As shown here:
 
-    ![alt text](images/gpu-operator-enable.png)
+    ![](images/gpu-operator-enable.png)
 
 8. Click on **Enable** on the top right-hand corner to enable GPU driver on the Ubuntu GPU nodes
 9. Check GPU operator resources and make sure they are running
@@ -974,62 +1008,6 @@ We will need to enable GPU operator for deploying NKP application.
         Done
         ```
 
+#### 
 
 Now we are ready to deploy our AI workloads.
-
-<!-- ## Optional - Cleanup
-
-Optionally, cleanup the workloads on nkp cluster by deleting it **after deploying and testing your AI/ML application**. 
-
-<!-- 1. Change cluster context to use the workload ``bootstrap`` cluster
-   
-    ```bash
-    kubectx kind-konvoy-capi-bootstrapper
-    ``` -->
-
-<!-- Delete the workload cluster
-
-=== "Command"
-
-    ```bash
-    nkp delete cluster -c ${NKP_CLUSTER_NAME}
-    ```
-
-=== "Command output"
-
-    ```{ .bash .no-copy }
-    nkp delete cluster -c nkpdev --self-managed
-
-    ✓ Upgrading CAPI components 
-    ✓ Waiting for CAPI components to be upgraded 
-    ✓ Initializing new CAPI components 
-    ✓ Creating ClusterClass resources 
-    ✓ Creating ClusterClass resources
-    ✓ Moving cluster resources 
-    ✓ Waiting for cluster infrastructure to be ready 
-    ✓ Waiting for cluster control-planes to be ready
-    ✓ Waiting for machines to be ready
-    ✓ Deleting cluster resources
-    ✓ Waiting for cluster to be fully deleted 
-    Deleted default/nkpdev cluster
-    ``` -->
-
-<!-- 1. Delete the Bootstrap cluster
-   
-    === "Command"
-
-        ```bash
-        nkp delete bootstrap
-        ```
-
-    === "Command output"
-
-        ```{ .bash .no-copy }
-        nkp delete bootstrap
-
-        ✓ Deleting bootstrap cluster
-        ``` -->
-
-<!-- !!! info
-
-    If the workload cluster was created as self-managed, then the following command will delete the cluster by creating a small bootstrap cluster. This bootstrap cluster will also be deleted automatically after the workload cluster is deleted. --> -->

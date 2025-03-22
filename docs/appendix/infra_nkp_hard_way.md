@@ -77,18 +77,17 @@ For ``nkpdev``, we will deploy an NKP Cluster of type "Development".
     === "Command"
 
         ```text title="Paste the download URL within double quotes"
-        curl -o nkp_v2.12.0_linux_amd64.tar.gz "_paste_download_URL_here"
+        curl -o nkp_v2.14.0_linux_amd64.tar.gz "_paste_download_URL_here"
         ```
 
     === "Sample command"
         
         ```bash
-        curl -o nkp_v2.12.0_linux_amd64.tar.gz "https://download.nutanix.com/downloads/nkp/v2.12.0/nkp_v2.12.0_linux_amd64.tar.gz?Expires=1729016864&........"
+        curl -o nkp_v2.14.0_linux_amd64.tar.gz "https://download.nutanix.com/downloads/nkp/v2.14.0/nkp_v2.14.0_linux_amd64.tar.gz?Expires=1729016864&........"
         ```
         
     ```bash
-    gunzip nkp_v2.12.0_linux_amd64.tar.gz
-    tar -xvf nkp_v2.12.0_linux_amd64.tar
+    tar xvfz nkp_v2.14.0_linux_amd64.tar
     ```
 
 10. Move the ``nkp`` binary to a directory that is included in your ``PATH`` environment variable
@@ -97,11 +96,11 @@ For ``nkpdev``, we will deploy an NKP Cluster of type "Development".
     sudo cp nkp /usr/local/bin/
     ```
 
-11. Verify the ``nkp`` binary is installed correctly. Ensure the version is latest
+12. Verify the ``nkp`` binary is installed correctly. Ensure the version is latest
     
     !!! note
-        
-        At the time of writing this lab nkp version is v2.12.1
+
+        At the time of writing this lab nkp version is v2.14.0
 
     === "Command"
 
@@ -110,15 +109,15 @@ For ``nkpdev``, we will deploy an NKP Cluster of type "Development".
         ```
 
     === "Command output"
-      
+
         ```{ .bash .no-copy }
         $ nkp version
         diagnose: v0.10.1
-        imagebuilder: v0.13.1
-        kommander: v2.12.0
-        konvoy: v2.12.0
-        mindthegap: v1.13.1
-        nkp: v2.12.0
+        imagebuilder: v0.22.3
+        kommander: v2.14.0
+        konvoy: v2.14.0
+        mindthegap: v1.16.0
+        nkp: v2.14.0
         ```
 
 ### Setup Docker on Jumphost
@@ -284,13 +283,21 @@ In this section we will go through creating a base image for all the control pla
           --subnet ${NUTANIX_SUBNET_NAME} --insecure
         ```
 
+    === "Example Command"
+
+        ```bash
+        nkp create image nutanix ubuntu-22.04 \
+          --endpoint pc.example.com --cluster pe \
+          --subnet User1 --insecure
+        ```
+
     === "Command output"
 
         ```{ .text .no-copy }
-        nkp create image nutanix ubuntu-22.04 \ 
-        --endpoint ${NUTANIX_ENDPOINT} --cluster ${NUTANIX_CLUSTER} \
-        --subnet ${NUTANIX_SUBNET_NAME} --insecure
-        
+        nkp create image nutanix ubuntu-22.04 \
+          --endpoint pc.example.com --cluster pe \
+          --subnet User1 --insecure
+          
         > Provisioning and configuring image
         Manifest files extracted to $HOME/nkp/.nkp-image-builder-3243021807
         nutanix.kib_image: output will be in this color.
@@ -309,32 +316,31 @@ In this section we will go through creating a base image for all the control pla
         --> nutanix.kib_image: nkp-ubuntu-22.04-1.29.6-20240717082720
         ```
 
-    !!! info "Image name"
+    !!! info "Image name - This will be different in your environment"
         
         Note image name from the previous ``nkp`` create image command output
 
         ```text hl_lines="2"
         ==> Builds finished. The artifacts of successful builds are:
-        --> nutanix.kib_image: nkp-ubuntu-22.04-1.29.6-20240717082720
-        --> nutanix.kib_image: nkp-ubuntu-22.04-1.29.6-20240717082720
+        --> nutanix.kib_image: nkp-ubuntu-22.04-1.31.4-20250320042646
         ```
 
-10. Populate the ``.env`` file with the NKP image name
+10.  Populate the ``.env`` file with the NKP image name by adding (appending) the following environment variables and save it
 
-    === "Command"
-    
+    === "Template .env"
+
         ```text
-        echo -e "export NKP_IMAGE=nkp-image-name" >> .env
-        source .env
+        export NKP_IMAGE=nkp-image-name
         ```
 
-    === "Sample command"
+    === "Sample .env"
 
-         ```text
-         echo -e "export NKP_IMAGE=nkp-ubuntu-22.04-1.29.6-20240717082720" >> .env
-         source .env
-         ```
-    Make sure to use image name that is generated in your environment for the next steps.
+        ```text
+        export NKP_IMAGE=nkp-ubuntu-22.04-1.31.4-20250320042646
+        ```
+    !!! warning
+
+        Make sure to use image name that is generated in your environment for the next steps.
 
 ## Create a Bootstrap K8S Cluster
 
