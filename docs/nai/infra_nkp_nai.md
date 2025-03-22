@@ -900,24 +900,30 @@ To generate a NKP Pro License for the NKP cluster:
 6. Confirm the license is applied to the cluster by cheking the **License Status** in the **License** menu
 7. The license will be applied to the cluster and the license status will reflect NKP Pro in the top right corner of the dashboard
 
-### Enable NKE Operators
+## Enable NKE Operators
 
 Enable these NKE Operators from NKP GUI.
 
+!!! note
+
+    In this lab, we will be using the **Management Cluster Workspace** to deploy our Nutanix Enterprise AI (NAI)
+
+        However, in a customer environment, it is recommended to use a separate workload NKP cluster.
+
 1. In the NKP GUI, Go to **Clusters**
-2. Click on **Kommander Host**
+2. Click on **Management Cluster Workspace**
 3. Go to **Applications** 
 4. Search and enable the following operators: follow this order to avoid dependency issues
    - Prometheus Monitoring: version ``69.1.2`` or later
    - Istio Service Mesh: version``1.20.8`` or later
    - Knative-serving: version ``1.13.1`` or later
 
-#### GPU Operator
+### GPU Operator
 
-We will need to enable GPU operator for deploying NKP application. 
+We will need to enable GPU operator for deploying NAI application. 
 
 1. In the NKP GUI, Go to **Clusters**
-2. Click on **Kommander Host**
+2. Click on **Management Cluster Workspace**
 3. Go to **Applications** 
 4. Search for **NVIDIA GPU Operator**
 5. Click on **Enable**

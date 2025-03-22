@@ -65,7 +65,12 @@ stateDiagram-v2
 
 ## Deploy NAI
 
-1. Add the nutanix-apps-catalog to NKP 
+We will use the NKP Applications Catalog to deploy NAI. 
+
+!!! warning
+    NAI catalog has to be added manually for now to NKP Application Catalog. However future releases of NKP v2.14 and beyond may be released with NAI application ready to setup.
+
+1. Add the ``nutanix-apps-catalog`` to NKP 
    
     === "Command"
 
