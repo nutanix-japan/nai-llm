@@ -908,7 +908,7 @@ Enable these NKE Operators from NKP GUI.
 
     In this lab, we will be using the **Management Cluster Workspace** to deploy our Nutanix Enterprise AI (NAI)
 
-        However, in a customer environment, it is recommended to use a separate workload NKP cluster.
+    However, in a customer environment, it is recommended to use a separate workload NKP cluster.
 
 1. In the NKP GUI, Go to **Clusters**
 2. Click on **Management Cluster Workspace**
@@ -916,8 +916,12 @@ Enable these NKE Operators from NKP GUI.
 4. Search and enable the following operators: follow this order to avoid dependency issues
    
     - Prometheus Monitoring: version ``69.1.2`` or later
+    - Prometheus Adapter: version ``v4.11.0`` or later
     - Istio Service Mesh: version``1.20.8`` or later
     - Knative-serving: version ``1.13.1`` or later
+
+!!! note
+    It may take a few minutes for each application to be up and running. Monitor the deployment to make sure that these applications are running before moving on to the next section.
 
 ### GPU Operator
 

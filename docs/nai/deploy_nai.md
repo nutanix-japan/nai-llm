@@ -1,8 +1,8 @@
 # Deploying Nutanix Enterprise AI (NAI) NVD Reference Application
 
-!!! info "Version 2.0.0"
+!!! info "Version 2.1.0"
 
-    This version of the NAI deployment is based on the Nutanix Enterprise AI (NAI) ``v2.0.0`` release.
+    This version of the NAI deployment is based on the Nutanix Enterprise AI (NAI) ``v2.1.0`` release.
 
 ```mermaid
 stateDiagram-v2
@@ -21,47 +21,6 @@ stateDiagram-v2
     DeployNAI --> TestNAI : next section
     TestNAI --> [*]
 ```
-
-## Prepare for NAI Deployment
-
-1. Validate if the resources are running in the following namespaces.
-
-    - `istio-system`, 
-    - `knative-serving`, and 
-    - `kserve`
-   
-    === "Command"
-
-        ```bash
-        kubectl get po -n istio-system
-        kubectl get po -n kserve
-        kubectl get po -n knative-serving
-        ```
-        
-    === "Command output"
-
-        ```{ .text .no-copy }
-        $ k get po -n istio-system
-        NAME                                    READY   STATUS    RESTARTS   AGE
-        istio-ingressgateway-6675867d85-qzrpq   1/1     Running   0          26d
-        istiod-6d96569c9b-2dww4                 1/1     Running   0          26d
-        ```
-        ```{ .text .no-copy }
-        $ k get po -n kserve
-        NAME                                        READY   STATUS    RESTARTS   AGE
-        kserve-controller-manager-ffb5bdbcb-c7mk5   2/2     Running   0          107m   
-        ```
-        ```{ .text .no-copy }
-        $ k get po -n knative-serving
-        NAME                                    READY   STATUS    RESTARTS   AGE
-        activator-8b96b9c97-9thnv               1/1     Running   0          23h
-        autoscaler-5467785bc-s4v8h              1/1     Running   0          23h
-        autoscaler-hpa-96dd77d4b-l4q2g          1/1     Running   0          23h
-        controller-5d9c7f4b77-gxpgz             1/1     Running   0          23h
-        net-istio-controller-6457c66fc5-6ltfk   1/1     Running   0          23h
-        net-istio-webhook-5ff7f55d85-hxn7m      1/1     Running   0          23h
-        webhook-57d994c7b8-z58nl                1/1     Running   0          23h
-        ```
 
 ## Prepare NAI Docker Download Credentials
 
@@ -101,7 +60,7 @@ In this section we will use the NKP Applications Catalog to deploy NAI.
         ```
 
 1. In the NKP GUI, Go to **Clusters**
-2. Click on **Kommander Host**
+2. Click on **Management Cluster Workspace**
 3. Go to **Applications** 
 4. Search for **Nutanix Enterprise AI**
 5. Click on **Enable**

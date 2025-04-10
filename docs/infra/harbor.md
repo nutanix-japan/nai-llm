@@ -11,7 +11,7 @@ Since the jumphost also will host the ``kind`` cluster, we will need to ensure t
 | #    | CPU | Memory | Disk | Purpose | 
 |-----| --- | ------ | ---- |----------|
 |Before | 4  | 16 GB   | 300 GB |  ``Jumphost`` + ``Tools``|
-|After |   `8`   | 16 GB   | 300 GB | ``Jumphost`` + ``Tools`` + ``Harbor`` + ``kind`` |
+|After |  8  | 16 GB   | 300 GB | ``Jumphost`` + ``Tools`` + ``Harbor`` + ``kind`` |
 
 !!! note 
     If the jumphost does not have the resources, make sure to stop the jumphost and add the resources in Prism Central.
