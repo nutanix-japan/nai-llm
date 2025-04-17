@@ -47,7 +47,7 @@ Below are the sizing requirements needed to successfully deploy NAI on a NKP Clu
 
     For a general example:
 
-    - To host a 8b(illion) parameter model, multiply the parameter number by 2 to get minimum GPU memory requirments. 
+    - To host a 8b(illion) parameter model, multiply the parameter number by 2 to get minimum GPU memory requirements. 
       e.g. 16GB of GPU memory is required for 8b parameter model.
   
     > So in the case of the `meta-llama/Meta-Llama-3-8B-Instruct` model, you'll need a min. 16 GiB GPU vRAM available
