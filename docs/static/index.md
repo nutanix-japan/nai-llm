@@ -32,7 +32,7 @@ We are covering four scenarios in this section. We will add more as it becomes a
     - Recreate
     - Blue/Green
 
-    [:octicons-arrow-right-24: Simulation](../static/nai-llm-model-selectr.html)
+    [:octicons-arrow-right-24: Simulation](../static/k8s-deployment-strategies-visualizer.html)
 
 
 
@@ -45,7 +45,7 @@ We are covering four scenarios in this section. We will add more as it becomes a
 
     This Simulation helps you visualize and choose LLMs for your use case. 
 
-    [:octicons-arrow-right-24: Simulation](../static/k8s-deployment-strategies-visualizer.html)
+    [:octicons-arrow-right-24: Simulation](../static/nai-llm-model-selectr.html)
 </div>
 
 <div class="grid cards" markdown>
