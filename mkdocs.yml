@@ -60,6 +60,8 @@ nav:
   - static/index.md
   - Pods and Nodepools Simulation: static/scheduling-mixed-pods-and-nodepool-v1.html
   - K8S Deployment Strategies: static/k8s-deployment-strategies-visualizer.html
+  - LLM Model Selector: static/nai-llm-model-selectr.html
+  - LLM Scheduling Kubernetes Clusters: static/nai-llm-simulation-v1-nim-rag.html
 - Takeaways: takeaways/takeaways.md
 
 
