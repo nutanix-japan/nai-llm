@@ -91,7 +91,7 @@ We will use the following commands to install Harbor on the jumphost.
 8. Add all possible FQDNs and IPs to the certificate's subjectAltName (SAN) field and generate the certificate for Harbor
    
     ```bash
-    openssl x509 -req -extfile <(printf "subjectAltName=IP:${HARBOR_HOST_EXTERNAL},IP:`hostname -I | awk '{print $1}'`,DNS:harbor.10.x.x.111.nip.io,DNS:10.x.x.111.nip.io") -days 1024 -in harbor.csr -CA ca.crt -CAkey ca.key -CAcreateserial -out harbor.crt
+    openssl x509 -req -extfile <(printf "subjectAltName=IP:${HARBOR_HOST_EXTERNAL},IP:`hostname -I | awk '{print $1}'`,DNS:harbor.${HARBOR_HOST}.nip.io,DNS:${HARBOR_HOST}.nip.io") -days 1024 -in harbor.csr -CA ca.crt -CAkey ca.key -CAcreateserial -out harbor.crt
     ```
 
 9. Convert the cert from PEM to DER for Docker
