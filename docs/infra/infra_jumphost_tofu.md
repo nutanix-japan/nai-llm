@@ -279,11 +279,11 @@ In the following section, we will create a `Jump Host` VM on Nutanix AHV using b
 
     ![](images/1.png)
 
-7. Click on **+ Add New SSH Host** and t
+7. Click on **+ Add New SSH Host**
 
     ![](images/2.png)
 
-8. Type ``ssh ubuntu@jumphost_VM-IP-ADDRESS>``and hit **Enter**.
+8. Type ``ssh ubuntu@jumphost_VM-IP-ADDRESS``and hit **Enter**.
 
     ![](images/2b.png)
 

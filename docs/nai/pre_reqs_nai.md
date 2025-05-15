@@ -30,7 +30,6 @@ We will create Nutanix Files storage class which will be used to create a pvc th
 1. Run the following command to check K8S status of the ``nkpdev`` cluster
     
     ```bash
-    kubectx ${NKP_CLUSTER_NAME}-admin@${NKP_CLUSTER_NAME} 
     kubectl get nodes
     ```
 
@@ -48,13 +47,7 @@ We will create Nutanix Files storage class which will be used to create a pvc th
         export FILES_CREDENTIALS_STRING='10.x.x.37:9440:admin:password'
         ```
 
-3. Source the .env file to load the latest $FILES_CREDENTIALS_STRING environment variable
-
-    ```bash
-    source $HOME/.env
-    ```
-
-4. Create a secret for Nutanix Files CSI Driver
+3. Create a secret for Nutanix Files CSI Driver
 
     ```bash
     kubectl create secret generic nutanix-csi-credentials-files \
@@ -62,7 +55,7 @@ We will create Nutanix Files storage class which will be used to create a pvc th
     --dry-run -o yaml | kubectl apply -f -
     ```
 
-5. In VSC Explorer, click on **New File** :material-file-plus-outline: and create a config file with the following name:
+4. In VSC Explorer, click on **New File** :material-file-plus-outline: and create a config file with the following name:
 
     ```bash
     nai-nfs-storage.yaml

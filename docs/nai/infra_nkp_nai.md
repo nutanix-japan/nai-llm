@@ -611,33 +611,23 @@ We are now ready to install the workload ``nkpdev`` cluster
   
 4. Observe the events in the shell and in Prism Central events
 
-2. Store kubeconfig file for bootstrap cluster
-   
-    ```bash
-    kind get kubeconfig --name konvoy-capi-bootstrapper > bs.cfg
-    export KUBECONFIG=bs.cfg
-    ```
-
 5. Store kubeconfig files for the workload cluster
 
     ```bash
     nkp get kubeconfig -c ${NKP_CLUSTER_NAME} > ${NKP_CLUSTER_NAME}.cfg
     ```
 
-7. Combine the bootstrap and workload clusters ``KUBECONFIG`` file so that we can use it with ``kubectx``command to change context between clusters
+6. Combine the bootstrap and workload clusters ``KUBECONFIG`` file so that we can use it with ``kubectx``command to change context between clusters
    
     ```bash
-    export KUBECONFIG=bs.cfg:${NKP_CLUSTER_NAME}.cfg
-    kubectl config view --flatten > all-in-one-kubeconfig.yaml
-    export KUBECONFIG=all-in-one-kubeconfig.yaml
+    export KUBECONFIG=${NKP_CLUSTER_NAME}.cfg
     ```
 
-8. Run the following command to check K8S status of the ``nkpdev`` cluster
+7. Run the following command to check K8S status of the ``nkpdev`` cluster
  
     === "Command"
     
         ```bash
-        kubectx ${NKP_CLUSTER_NAME}-admin@${NKP_CLUSTER_NAME} 
         kubectl get nodes
         ```
 
@@ -913,12 +903,44 @@ Enable these NKE Operators from NKP GUI.
 1. In the NKP GUI, Go to **Clusters**
 2. Click on **Management Cluster Workspace**
 3. Go to **Applications** 
-4. Search and enable the following operators: follow this order to avoid dependency issues
+4. Search and enable the following applications: follow this order to install dependencies for NAI application
    
     - Prometheus Monitoring: version ``69.1.2`` or later
     - Prometheus Adapter: version ``v4.11.0`` or later
     - Istio Service Mesh: version``1.20.8`` or later
-    - Knative-serving: version ``1.13.1`` or later
+  
+5. The next application to enable is
+    - Knative: version `v1.17.0` or later
+
+    - Search for Knative in the **Applications**
+
+    - Use the following configuration parameters in **Workspace Configuration**:
+
+    ```yaml
+    serving:
+      config:
+        features:
+          kubernetes.podspec-nodeselector: enabled
+        autoscaler:
+          enable-scale-to-zero: false
+      knativeIngressGateway:
+        spec:
+          selector:
+            istio: ingressgateway
+          servers:
+          - hosts:
+            - '*'
+            port:
+              name: https
+              number: 443
+              protocol: HTTPS
+            tls:
+              mode: SIMPLE
+              credentialName: nai-cert # (1)
+    ```
+
+    1. We will create this credential in the next section of the lab
+ 
 
 !!! note
     It may take a few minutes for each application to be up and running. Monitor the deployment to make sure that these applications are running before moving on to the next section.

@@ -24,180 +24,60 @@ stateDiagram-v2
 
 ## Prepare for NAI Deployment
 
-1. Login to VSC on the jumphost VM, Click on **New Folder** :material-folder-plus-outline: and name it: ``nai``
+## Enable NKE Operators
+
+Enable these NKE Operators from NKP GUI.
+
+!!! note
+
+    In this lab, we will be using the **Management Cluster Workspace** to deploy our Nutanix Enterprise AI (NAI)
+
+    However, in a customer environment, it is recommended to use a separate workload NKP cluster.
+
+1. In the NKP GUI, Go to **Clusters**
+2. Click on **Management Cluster Workspace**
+3. Go to **Applications** 
+4. Search and enable the following applications: follow this order to install dependencies for NAI application
    
-2. Create a new ``.env`` file add the following environment variables to the and save it
-   
-    === "Template .env"
+    - Prometheus Monitoring: version ``69.1.2`` or later
+    - Prometheus Adapter: version ``v4.11.0`` or later
+    - Istio Service Mesh: version``1.20.8`` or later
+  
+5. The next application to enable is
+    - Knative: version `v1.17.0` or later
 
-        ```text
-        export ISTIO_VERSION=_your_istio_version
-        export KNATIVE_VERSION=_your_knative_version
-        export KSERVE_VERSION=_your_kserve_version
-        export KUBE_PROMETHEUS_STACK_VERSION=_your_kube_prometheus_stack_version
-        export NAI_CORE_VERSION=_your_nai_core_version
-        export NAI_API_VERSION=_your_nai_api_version
-        ```
-    
-    === "Sample .env"
-        
-        ```text
-        export ISTIO_VERSION=1.20.8
-        export KNATIVE_VERSION=1.13.1
-        export KSERVE_VERSION=v0.14.0
-        export KUBE_PROMETHEUS_STACK_VERSION=61.3.1
-        export NAI_CORE_VERSION=v2.0.0
-        export NAI_API_VERSION=v2.0.0
-        ```
+    - Search for Knative in the **Applications**
 
-3. Run the following commands to source the environment variables
+    - Use the following configuration parameters in **Workspace Configuration**:
 
-    ```bash
-    source $HOME/nai/.env
+    ```yaml
+    serving:
+      config:
+        features:
+          kubernetes.podspec-nodeselector: enabled
+        autoscaler:
+          enable-scale-to-zero: false
+      knativeIngressGateway:
+        spec:
+          selector:
+            istio: ingressgateway
+          servers:
+          - hosts:
+            - '*'
+            port:
+              name: https
+              number: 443
+              protocol: HTTPS
+            tls:
+              mode: SIMPLE
+              credentialName: nai-cert # (1)
     ```
 
-4. In ``VSCode``, under the newly created ``nai`` folder, click on **New File** :material-file-plus-outline: and create file with the following name:
+    1. We will create this credential in the next section
+ 
 
-    ```bash
-    nai-prepare.sh
-    ```
-
-    with the following content:
-
-
-    ```bash
-    #!/usr/bin/env bash
-
-    set -ex
-    set -o pipefail
-
-    ## Deploy Istio
-    #
-    helm --insecure-skip-tls-verify=true upgrade --install istio-base base --repo ${INTERNAL_REPO} --version=${ISTIO_VERSION} -n istio-system --create-namespace --wait
-
-    helm --insecure-skip-tls-verify=true upgrade --install istiod istiod --repo ${INTERNAL_REPO} --version=${ISTIO_VERSION} -n istio-system \
-    --set gateways.securityContext.runAsUser=0 \
-    --set gateways.securityContext.runAsGroup=0 --wait
-
-    helm --insecure-skip-tls-verify=true upgrade --install istio-ingressgateway gateway --repo ${INTERNAL_REPO} --version=${ISTIO_VERSION} -n istio-system \
-    --set securityContext.runAsUser=0 --set securityContext.runAsGroup=0 \
-    --set containerSecurityContext.runAsUser=0 --set containerSecurityContext.runAsGroup=0 --wait
-
-    ## Deploy Knative 
-    #
-    helm --insecure-skip-tls-verify=true upgrade --install knative-serving-crds nai-knative-serving-crds --repo ${INTERNAL_REPO} --version=${KNATIVE_VERSION} -n knative-serving --create-namespace --wait
-
-    helm --insecure-skip-tls-verify=true upgrade --install knative-serving nai-knative-serving --repo ${INTERNAL_REPO} -n knative-serving --version=${KNATIVE_VERSION} --wait
-
-
-    helm --insecure-skip-tls-verify=true upgrade --install knative-istio-controller nai-knative-istio-controller --repo ${INTERNAL_REPO} -n knative-serving --version=${KNATIVE_VERSION} --wait
-
-    # Patch configurations stored in configmaps
-    #
-    kubectl patch configmap config-features -n knative-serving -p '{"data":{"kubernetes.podspec-nodeselector":"enabled"}}'
-
-    kubectl patch configmap config-autoscaler -n knative-serving -p '{"data":{"enable-scale-to-zero":"false"}}'
-
-    kubectl patch configmap  config-domain -n knative-serving --type merge -p '{"data":{"example.com":""}}'
-
-    ## Deploy Kserve
-    #
-    helm --insecure-skip-tls-verify=true upgrade --install kserve-crd kserve-crd --repo ${INTERNAL_REPO} --version=${KSERVE_VERSION} -n kserve --create-namespace
-    ```
-
-4. Run the script from the Terminal
-
-    === "Command"
-
-        ```bash
-        chmod +x $HOME/nai/nai-prepare.sh
-        $HOME/nai/nai-prepare.sh
-        ```
-        
-    === "Command output"
-
-        ```{ .text .no-copy }
-        Release "istiod" has been upgraded. Happy Helming!
-        NAME: istiod
-        LAST DEPLOYED: Tue Oct 15 02:01:58 2024
-        NAMESPACE: istio-system
-        STATUS: deployed
-        REVISION: 2
-        TEST SUITE: None
-        NOTES:
-        "istiod" successfully installed!
-
-        NAME: istio-ingressgateway
-        LAST DEPLOYED: Tue Oct 15 02:02:01 2024
-        NAMESPACE: istio-system
-        STATUS: deployed
-
-        NAME: knative-serving-crds
-        LAST DEPLOYED: Tue Oct 15 02:02:03 2024
-        NAMESPACE: knative-serving
-        STATUS: deployed
-
-        NAME: knative-serving
-        LAST DEPLOYED: Tue Oct 15 02:02:05 2024
-        NAMESPACE: knative-serving
-        STATUS: deployed
-
-        NAME: kserve-crd
-        LAST DEPLOYED: Tue Oct 15 02:02:16 2024
-        NAMESPACE: kserve
-        STATUS: deployed
-
-        NAME: kserve
-        LAST DEPLOYED: Tue Oct 15 02:02:19 2024
-        NAMESPACE: kserve
-        STATUS: deployed
-        ```
-
-    ??? tip "Check helm deployment status"
-
-        Check the status of the ``nai`` helm deployments using the following command:
-        
-        ```bash
-        helm list -n istio-system
-        helm list -n kserve
-        helm list -n knative-serving
-        ```
-
-
-5. Validate if the resources are running in the following namespaces.
-
-    - `istio-system`, 
-    - `knative-serving`, and 
-    - `kserve`
-   
-    === "Command"
-
-        ```bash
-        kubectl get po -n istio-system
-        k get po -n kserve
-        k get po -n knative-serving
-        ```
-        
-    === "Command output"
-
-        ```{ .text .no-copy }
-        $ k get po -n istio-system
-        NAME                                    READY   STATUS    RESTARTS   AGE
-        istio-ingressgateway-6675867d85-qzrpq   1/1     Running   0          26d
-        istiod-6d96569c9b-2dww4                 1/1     Running   0          26d
-
-        $ k get po -n kserve
-        NAME                                         READY   STATUS    RESTARTS   AGE
-        kserve-controller-manager-6654f69d5c-45n64   2/2     Running   0          26d
-
-        $ k get po -n knative-serving
-        NAME                                   READY   STATUS    RESTARTS   AGE
-        activator-58db57894b-g2nx8             1/1     Running   0          26d
-        autoscaler-76f95fff78-c8q9m            1/1     Running   0          26d
-        controller-7dd875844b-4clqb            1/1     Running   0          26d
-        net-istio-controller-57486f879-85vml   1/1     Running   0          26d
-        net-istio-webhook-7ccdbcb557-54dn5     1/1     Running   0          26d
-        webhook-d8674645d-mscsc                1/1     Running   0          26d
+!!! note
+    It may take a few minutes for each application to be up and running. Monitor the deployment to make sure that these applications are running before moving on to the next section.
         ```
 
 ## Deploy NAI
@@ -242,7 +122,7 @@ We will use the Docker login credentials we created in the previous section to d
 5. Click on **New File** :material-file-plus-outline: and create file with the following name:
 
     ```bash
-    iep-values-nkp.yaml
+    nkp-values.yaml
     ```
 
     with the following content:
@@ -250,6 +130,7 @@ We will use the Docker login credentials we created in the previous section to d
     ```yaml
     # nai-monitoring stack values for nai-monitoring stack deployment in NKE environment
     naiMonitoring:
+          
       ## Component scraping node exporter
       ##
       nodeExporter:
@@ -266,7 +147,7 @@ We will use the Docker login credentials we created in the previous section to d
             matchLabels:
               app.kubernetes.io/name: prometheus-node-exporter
               app.kubernetes.io/component: metrics
-              app.kubernetes.io/version: 1.8.1
+    
       ## Component scraping dcgm exporter
       ##
       dcgmExporter:
@@ -283,6 +164,20 @@ We will use the Docker login credentials we created in the previous section to d
               app: nvidia-dcgm-exporter
     ```
 
+    !!!tip
+
+           It is possible to get the values file using the following command
+      
+           ```bash
+           helm repo add ntnx-charts https://nutanix.github.io/helm-releases
+           helm repo update ntnx-charts
+           helm pull ntnx-charts/nai-core --version=nai-core-version --untar=true
+           ```
+
+           All the files will be untar'ed to a folder nai-core in the present working directory
+
+           Use the ``nkp-values.yaml`` file in the installation command
+
 6. In ``VSCode``, Under ``$HOME/nai`` folder, click on **New File** :material-file-plus-outline: and create a file with the following name:
 
     ```bash
@@ -291,7 +186,7 @@ We will use the Docker login credentials we created in the previous section to d
 
     with the following content:
 
-    ```bash
+    ```bash hl_lines="14"
     #!/usr/bin/env bash
 
     set -ex
@@ -305,7 +200,7 @@ We will use the Docker login credentials we created in the previous section to d
     --set imagePullSecret.credentials.username=$DOCKER_USERNAME \
     --set imagePullSecret.credentials.password=$DOCKER_PASSWORD \
     --insecure-skip-tls-verify \
-    -f iep-values-nkp.yaml
+    -f nkp-values.yaml
     ```
    
 7.  Run the following command to deploy NAI
@@ -332,7 +227,7 @@ We will use the Docker login credentials we created in the previous section to d
         --set imagePullSecret.credentials.username=$DOCKER_USERNAME \
         --set imagePullSecret.credentials.password=$DOCKER_PASSWORD \
         --insecure-skip-tls-verify \
-        -f iep-values-nkp.yaml
+        -f nkp-values.yaml
         Release "nai-core" has been upgraded. Happy Helming!
         NAME: nai-core
         LAST DEPLOYED: Mon Sep 16 22:07:24 2024
@@ -454,32 +349,6 @@ The following steps show how cert-manager can be used to generate a self signed 
     ```bash
     kubectl apply -f $HOME/airgap-nai/nai-cert.yaml
     ```
-
-7. Patch the ingress gateway's IP address to the certificate file.
-    
-    === "Command"
-   
-        ```bash
-        kubectl patch gateway -n knative-serving knative-ingress-gateway --type merge --patch-file=/dev/stdin <<EOF
-        spec:
-          servers:
-          - hosts:
-            - '*'
-            port:
-              name: https
-              number: 443
-              protocol: HTTPS
-            tls:
-              mode: SIMPLE
-              credentialName: nai-cert
-        EOF
-        ```
-
-    === "Command output"
-     
-        ```{ .text .no-copy }
-        gateway.networking.istio.io/knative-ingress-gateway patched 
-        ```
 
 ## Accessing the UI
 

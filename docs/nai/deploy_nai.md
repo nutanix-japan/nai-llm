@@ -59,13 +59,29 @@ In this section we will use the NKP Applications Catalog to deploy NAI.
         Catalog GitRepository nutanix-apps-catalog created. Use 'nkp edit gitrepository -n kommander nutanix-apps-catalog' to change its configuration.
         ```
 
-1. In the NKP GUI, Go to **Clusters**
-2. Click on **Management Cluster Workspace**
-3. Go to **Applications** 
-4. Search for **Nutanix Enterprise AI**
-5. Click on **Enable**
-6. Click on Configuration tab
-7. Click on Workspace Application Configuration Override and paste the following yaml content
+2. Validate if the catalog is added. Make sure the status of the`` nutanix-apps-catalog`` is ``Ready`` as shown in the command output
+   
+    === "Command"
+
+        ```bash
+        kubectl get gitrepo -A
+        ```
+    === "Command output"
+
+        ```bash hl_lines="3"
+        NAMESPACE        NAME                   URL                                                                                                   AGE     READY   STATUS
+        kommander-flux   management             https://git-operator-git.git-operator-system.svc.cluster.local/repositories/kommander/kommander.git   5h47m   True    stored artifact for revision 'main@sha1:d5638636da96c752eac79b0d1710eea3f6b57215'
+        kommander        nutanix-apps-catalog   https://github.com/nutanix-cloud-native/nkp-nutanix-product-catalog                                   2s      True    stored artifact for revision 'main@sha1:662482cce8cc5f22189e09a85a0dce5d69266145'
+        ```
+
+
+3. In the NKP GUI, Go to **Clusters**
+4. Click on **Management Cluster Workspace**
+5. Go to **Applications** 
+6. Search for **Nutanix Enterprise AI**
+7. Click on **Enable**
+8. Click on Configuration tab
+9.  Click on Workspace Application Configuration Override and paste the following yaml content
 
     === "Template yaml"
 
@@ -97,13 +113,13 @@ In this section we will use the NKP Applications Catalog to deploy NAI.
         storageClassName: nai-nfs-storage
         ```
 
-8. Click on **Enable** on the top right-hand corner to enable **Nutanix Enterprise AI**
+10. Click on **Enable** on the top right-hand corner to enable **Nutanix Enterprise AI**
 
-9. Wait until **Nutanix Enterprise AI** operator is Enabled. 
+11. Wait until **Nutanix Enterprise AI** operator is Enabled. 
     
     ![](images/nai-app-nkp.png)
 
-10. Verify that the NAI Core Pods are running and healthy
+12. Verify that the NAI Core Pods are running and healthy
     
     === "Command"
 
