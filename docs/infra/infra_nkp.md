@@ -880,6 +880,12 @@ To generate a NKP Pro License for the NKP cluster:
 
 ### Enable GPU Operator
 
+!!!tip
+
+    Enabling GPU Operator in NKP is not essential for NAI ``v2.3``. 
+
+    NAI v2.3 can host LLM upto 7 billion parameters on CPU. 
+
 We will need to enable GPU operator for deploying NKP application. 
 
 1. In the NKP GUI, Go to **Clusters**

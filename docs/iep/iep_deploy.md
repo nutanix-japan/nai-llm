@@ -74,7 +74,60 @@ Enable these NKE Operators from NKP GUI.
     ```
 
     1. We will create this credential in the next section
- 
+
+
+6. Install ``kserve`` using the following commands
+
+    === "Command"
+    
+        ```bash
+        export KSERVE_VERSION=v0.15.0
+         
+        helm upgrade --install kserve-crd oci://ghcr.io/kserve/charts/kserve-crd --version ${KSERVE_VERSION} -n kserve --create-namespace
+        ```
+        ```bash
+        helm upgrade --install kserve oci://ghcr.io/kserve/charts/kserve --version ${KSERVE_VERSION} --namespace kserve --create-namespace --wait 
+        ```
+
+    === "Output"
+    
+        ```{ .text .no-copy }
+        Pulled: ghcr.io/kserve/charts/kserve-crd:v0.15.0
+        Digest: sha256:57ad1a5475fd625cb558214ba711752aa77b7d91686a391a5f5320cfa72f3fa8
+        Release "kserve-crd" has been upgraded. Happy Helming!
+        NAME: kserve-crd
+        LAST DEPLOYED: Mon May 19 06:11:30 2025
+        NAMESPACE: kserve
+        STATUS: deployed
+        REVISION: 2
+        TEST SUITE: None
+        (devbox) 
+        ```
+        ```{ .text .no-copy }
+        Pulled: ghcr.io/kserve/charts/kserve:v0.15.0
+        Digest: sha256:905abce80e975c53b40fba7a12b0b9a1e24bdf65cceebb88fba4ef62bba01406
+        Release "kserve" has been upgraded. Happy Helming!
+        NAME: kserve
+        LAST DEPLOYED: Mon May 19 05:48:45 2025
+        NAMESPACE: kserve
+        STATUS: deployed
+        REVISION: 2
+        TEST SUITE: None
+        ```
+7. Check if ``kserve`` pods are running
+    === "Command"
+    
+        ```bash
+        kubens kserve
+        kubectl get pods 
+        ```
+
+    === "Output"
+    
+        ```{ .text .no-copy }
+        NAME                                         READY   STATUS    RESTARTS   AGE
+        kserve-controller-manager-58946fd54d-vsxvn   2/2     Running   0          18m
+        ```
 
 !!! note
     It may take a few minutes for each application to be up and running. Monitor the deployment to make sure that these applications are running before moving on to the next section.
