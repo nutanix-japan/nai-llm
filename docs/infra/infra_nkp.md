@@ -775,12 +775,6 @@ In this section we will create a nodepool to host the AI apps with a GPU.
 
 6. Monitor the progress of the command and check Prism Central events for creation of the GPU worker node
 
-    Change to workload ``nkpdev`` cluster context
-
-    ```bash
-    kubectx ${NKP_CLUSTER_NAME}-admin@${NKP_CLUSTER_NAME}
-    ```
-
 7. Check nodes status in workload ``nkpdev`` cluster and note the gpu worker node
 
     === "Command"
