@@ -603,33 +603,17 @@ We are now ready to install the workload ``nkpdev`` cluster
   
 4. Observe the events in the shell and in Prism Central events
 
-2. Store kubeconfig file for bootstrap cluster
+2. Store kubeconfig file for ``nkpdev`` cluster
    
     ```bash
-    kind get kubeconfig --name konvoy-capi-bootstrapper > bs.cfg
-    export KUBECONFIG=bs.cfg
+    export KUBECONFIG=$HOME/nkp/nkpdev.conf
     ```
 
-5. Store kubeconfig files for the workload cluster
-
-    ```bash
-    nkp get kubeconfig -c ${NKP_CLUSTER_NAME} > ${NKP_CLUSTER_NAME}.cfg
-    ```
-
-7. Combine the bootstrap and workload clusters ``KUBECONFIG`` file so that we can use it with ``kubectx``command to change context between clusters
-   
-    ```bash
-    export KUBECONFIG=bs.cfg:${NKP_CLUSTER_NAME}.cfg
-    kubectl config view --flatten > all-in-one-kubeconfig.yaml
-    export KUBECONFIG=all-in-one-kubeconfig.yaml
-    ```
-
-8. Run the following command to check K8S status of the ``nkpdev`` cluster
+5. Confirm the access to ``nkpdev`` cluster
  
     === "Command"
     
         ```bash
-        kubectx ${NKP_CLUSTER_NAME}-admin@${NKP_CLUSTER_NAME} 
         kubectl get nodes
         ```
 
