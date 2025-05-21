@@ -82,7 +82,7 @@ Enable these NKE Operators from NKP GUI.
     
         ```bash
         export KSERVE_VERSION=v0.15.0
-         
+
         helm upgrade --install kserve-crd oci://ghcr.io/kserve/charts/kserve-crd --version ${KSERVE_VERSION} -n kserve --create-namespace
         ```
         ```bash
@@ -161,7 +161,7 @@ We will use the Docker login credentials we created in the previous section to d
         ```text
         export DOCKER_USERNAME=ntnxsvcgpt
         export DOCKER_PASSWORD=dckr_pat_xxxxxxxxxxxxxxxxxxxxxxxx
-        export NAI_CORE_VERSION=v2.0.0
+        export NAI_CORE_VERSION=v2.3.0
         ```
 
 3. Source the environment variables (if not done so already)
