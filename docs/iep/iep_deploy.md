@@ -396,13 +396,7 @@ The following steps show how cert-manager can be used to generate a self signed 
       - ${INGRESS_HOST}
     EOF
     ```
-
-6. Create the certificate using the following command
     
-    ```bash
-    kubectl apply -f $HOME/airgap-nai/nai-cert.yaml
-    ```
-
 ## Accessing the UI
 
 6. In a browser, open the following URL to connect to the NAI UI
@@ -553,7 +547,7 @@ In this section we will create an inference endpoint using the downloaded model.
         deployment.apps/llama8b-predictor-00001-deployment   1/1     1            0           3d17h
         ```
 
-5. Check the events in the ``nai-admin`` namespace for resource usage to make sure all 
+5. Check the events in the ``nai-admin`` namespace for resource usage to make sure there are no errors
    
     === "Command"
        
