@@ -752,7 +752,7 @@ In this section we will create a NKP Management (bootstrap)  ``nkpmanage`` clust
     export KUBECONFIG=${PWD}/${NKP_WORKLOAD_CLUSTER_NAME}.conf
     ```
 
-7. Combine the bootstrap and workload clusters ``KUBECONFIG`` file so that we can use it with ``kubectx`` command to change context between clusters
+7. Combine the management and workload clusters ``KUBECONFIG`` file so that we can use it with ``kubectx`` command to change context between clusters
    
     ```bash
     export KUBECONFIG=${NKP_MGT_CLUSTER_NAME}.cfg:${NKP_WORKLOAD_CLUSTER_NAME}.conf
@@ -806,10 +806,10 @@ In this section we will create a NKP Management (bootstrap)  ``nkpmanage`` clust
 
 In this section we will create a nodepool to host the AI apps with a GPU.
 
-1. Change KUBECONFIG context to use the workload ``bootstrap`` cluster
+1. Change KUBECONFIG context to use the workload ``nkpmanage`` cluster if not already there.
    
     ```bash
-    kubectx kind-konvoy-capi-bootstrapper
+    kubectx ${NKP_MGT_CLUSTER_NAME}-admin@${NKP_MGT_CLUSTER_NAME}
     ```
 
 2. Open .env file in VSC and add (append) the following environment variables to your ``.env`` file and save it
@@ -945,7 +945,7 @@ Optionally, cleanup the workloads on nkp cluster by deleting it after deploying 
 1. Change cluster context to use the workload ``bootstrap`` cluster
    
     ```bash
-    kubectx kind-konvoy-capi-bootstrapper
+    kubectx ${NKP_MGT_CLUSTER_NAME}-admin@${NKP_MGT_CLUSTER_NAME}
     ```
 
 2. Delete the workload cluster
@@ -953,13 +953,13 @@ Optionally, cleanup the workloads on nkp cluster by deleting it after deploying 
     === "Command"
 
         ```bash
-        nkp delete cluster -c ${NKP_MGT_CLUSTER_NAME}
+        nkp delete cluster -c ${NKP_WORKLOAD_CLUSTER_NAME}
         ```
 
     === "Command output"
 
         ```{ .bash .no-copy }
-        nkp delete cluster -c nkpdev --self-managed
+        nkp delete cluster -c nkpdev
 
         ✓ Upgrading CAPI components 
         ✓ Waiting for CAPI components to be upgraded 
@@ -973,22 +973,6 @@ Optionally, cleanup the workloads on nkp cluster by deleting it after deploying 
         ✓ Deleting cluster resources
         ✓ Waiting for cluster to be fully deleted 
         Deleted default/nkpdev cluster
-        ```
-
-3. Delete the Bootstrap cluster
-   
-    === "Command"
-
-        ```bash
-        nkp delete bootstrap
-        ```
-
-    === "Command output"
-
-        ```{ .bash .no-copy }
-        nkp delete bootstrap
-
-        ✓ Deleting bootstrap cluster
         ```
 
 !!! info
