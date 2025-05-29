@@ -158,7 +158,7 @@ Below are minimum requirements for deploying NAI on the NKP Demo Cluster.
     
     !!! note
 
-        At the time of writing this lab nkp version is v2.12.1
+        At the time of writing this lab nkp version is ``v2.15.0``
 
     === "Command"
 

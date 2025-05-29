@@ -29,7 +29,9 @@ stateDiagram-v2
 
     This lab will focus on deploying NKP to host NAI workloads. However, the steps can also be used deploy a custom NKP deployment if that's the aim.
 
-    Consider using [NKP The Hard Way](../appendix/infra_nkp_hard_way.md) section to create a customized version of your NKP cluster.
+    We will only deploy 1 (one) NKP cluster and have the management and workload part in this. For production environments, it is advised to have separate NKP clusters for management and workloads.
+
+    Consider using [NKP The Hard Way](../appendix/infra_nkp_hard_way.md) section to create a customized version of your NKP cluster with separate NKP clusters for management and workloads.
 
     Once you have determined the resource requirements for a custom NKP deployment, modify the environment variables and values in the ``.env`` file to suit your resource needs for your NKP cluster.
 
@@ -112,17 +114,17 @@ Below are minimum requirements for deploying NAI on the NKP Demo Cluster.
     === "Command"
 
         ```text title="Paste the download URL within double quotes"
-        curl -o nkp_v2.14.1_linux_amd64.tar.gz "_paste_download_URL_here"
+        curl -o nkp_v2.15.0_linux_amd64.tar.gz "_paste_download_URL_here"
         ```
 
     === "Sample command"
         
         ```bash
-        curl -o nkp_v2.14.1_linux_amd64.tar.gz "https://download.nutanix.com/downloads/nkp/v2.14.1/nkp_v2.14.1_linux_amd64.tar.gz?Expires=1729016864&........"
+        curl -o nkp_v2.15.0_linux_amd64.tar.gz "https://download.nutanix.com/downloads/nkp/v2.15.0/nkp_v2.15.0_linux_amd64.tar.gz?Expires=1729016864&........"
         ```
         
     ```bash
-    tar xvfz nkp_v2.14.1_linux_amd64.tar
+    tar xvfz nkp_v2.15.0_linux_amd64.tar
     ```
 
 11. Move the ``nkp`` binary to a directory that is included in your ``PATH`` environment variable
@@ -136,7 +138,7 @@ Below are minimum requirements for deploying NAI on the NKP Demo Cluster.
     
     !!! note
 
-        At the time of writing this lab nkp version is v2.14.1
+        At the time of writing this lab nkp version is ``v2.15.0``
 
     === "Command"
 
@@ -150,10 +152,10 @@ Below are minimum requirements for deploying NAI on the NKP Demo Cluster.
         $ nkp version
         diagnose: v0.10.1
         imagebuilder: v0.13.3
-        kommander: v2.14.1
-        konvoy: v2.14.1
+        kommander: v2.15.0
+        konvoy: v2.15.0
         mindthegap: v1.13.1
-        nkp: v2.14.1
+        nkp: v2.15.0
         ```
 
 ### Setup Docker on Jumphost
@@ -394,11 +396,15 @@ In this section we will go through creating a base image for all the control pla
         export NKP_IMAGE=nkp-ubuntu-22.04-1.29.6-20240717082720
         ```
 
-
-
 We are now ready to install the workload ``nkpdev`` cluster
 
 ## Create NKP Workload Cluster
+
+!!!note
+   
+    In this lab the workload cluster will have the Management cluster role as well to reduce resource consumption in a lab environment. 
+
+    However, for production environments, the ideal design is to have a separate management and workload clusters. 
 
 1. Open .env file in VSC and add (append) the following environment variables to your ``.env`` file and save it
 
@@ -592,24 +598,24 @@ We are now ready to install the workload ``nkpdev`` cluster
 
         Usually preferred by customer DevOps teams to have more control over the deployment process. This way the customer can do the following:
         
-        - Deploy bootstrap (``kind``) cluster
+        - Deploy bootstrap (``Kind``) cluster
         - Deploy NKP Management cluster
         - Choose to migrate the CAPI components over to NKP Management cluster
         - Choose to customize Kommander Managment component instllation
         - Choose to deploy workload clusters from NKP Kommander GUI or
-        - Choose to deploy workload clusters using scripts if they wish to automate the process
+        - Choose to deploy workload clusters using scripts to automate the process
         
         See [NKP the Hard Way](../appendix/infra_nkp_hard_way.md) section for more information for customizable NKP cluster deployments. 
   
 4. Observe the events in the shell and in Prism Central events
 
-2. Store kubeconfig file for ``nkpdev`` cluster
+5. Store kubeconfig file for ``nkpdev`` cluster
    
     ```bash
     export KUBECONFIG=$HOME/nkp/nkpdev.conf
     ```
 
-5. Confirm the access to ``nkpdev`` cluster
+6. Confirm the access to ``nkpdev`` cluster
  
     === "Command"
     
@@ -632,10 +638,74 @@ We are now ready to install the workload ``nkpdev`` cluster
         nkpdev-r4fwl-q888c                      Ready    control-plane   4h49m   v1.29.6
         ```
 
+## Licensing
+
+We need to generate a license for the NKP cluster which is the total for all the vCPUs used by worker nodes.
+
+For example, in the [Sizing Requirements](#sizing-requirements) section, the NKP Demo Cluster `Total vCPU count` is equal to ``60``, whereas the actual worker nodes total vCPU count is only `48`.
+
+#### Generate NKP Pro License
+
+To generate a NKP Pro License for the NKP cluster:
+
+!!! note
+
+    Nutanix Internal users should logon using Nutanix SSO
+
+    Nutanix Partners/Customers should logon to Portal using their Nutanix Portal account credentials
+
+1. Login to [Nutanix Portal](https://portal.nutanix.com/page/licensing) using your credentials
+2. Go to **Licensing** > **License Summary**
+3. Click on the small drop down arrow :material-chevron-down: on Manage Licenses and choose Nutanix Kubernetes Platform (NKP)
+4. Input the NKP cluster name
+5. Click on the plus icon :material-plus:
+6. Click on **Next** in the bottom right corner
+7. Select NKP Pro License
+8. Select Apply to cluster
+9. Choose Non-production license and Save
+10. Select the cluster name and click on **Next**
+11. Input the number of vCPU (``60``) from our calculations in the previous [section](#calculate-the-required-vcpus)
+12. Click on **Save**
+13. Download the csv file and store it in a safe place
+
+#### Applying NKP Pro License to NKP Cluster
+
+1. Login to the Kommander URL for ``nkpdev`` cluster with the generated credentials that was generated in the previous [section](../infra/infra_nkp.md#create-nkp-workload-cluster). The following commands will give you the credentials and URL.
+
+    === "Command"
+
+        ```bash
+        nkp get dashboard
+        ```
+
+    === "Command output"
+
+        ```{ .bash .no-copy }
+        nkp get dashboard
+
+        Username: recursing_xxxxxxxxx
+        Password: YHbPsslIDB7p7rqwnfxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+        URL: https://10.x.x.215/dkp/kommander/dashboard
+        ```
+
+2. Go to **Licensing** and click on **Remove License** to remove the Starter license
+3. Type **nutanix-license** in the confirmation box and click on **Remove License**
+4. Click on **Add License**, choose Nutanix platform and paste the license key from the previous [section](#generate-license-for-nkp-cluster)
+5. Click on **Save**
+6. Confirm the license is applied to the cluster by cheking the **License Status** in the **License** menu
+7. The license will be applied to the cluster and the license status will reflect NKP Pro in the top right corner of the dashboard
+   
 ## Add NKP GPU Workload Pool
 
-!!! note "Are you just deploying NKP?"
-    If you are doing this lab only to deploy NKP, then you can skip this GPU section.
+!!!tip "CPU only LLM Hosting"
+
+    Enabling GPU and NVIDIA GPU Operator in NKP is not essential for NAI ``v2.3``
+
+    NAI ``v2.3`` can host LLM up to 7 billion parameters on CPU
+
+!!!warning
+     
+    Skip this section if no GPUs are required
 
 The steps below covers the following:
     - Retrieving and Applying NKP Pro License
@@ -799,70 +869,7 @@ In this section we will create a nodepool to host the AI apps with a GPU.
         nkpdev-ncnww-hldm9                      Ready    control-plane   75m     v1.29.6
         ```
 
-## Licensing
-
-We need to generate a license for the NKP cluster which is the total for all the vCPUs used by worker nodes.
-
-For example, in the [Sizing Requirements](#sizing-requirements) section, the NKP Demo Cluster `Total vCPU count` is equal to ``60``, whereas the actual worker nodes total vCPU count is only `48`.
-
-#### Generate NKP Pro License
-
-To generate a NKP Pro License for the NKP cluster:
-
-!!! note
-
-    Nutanix Internal users should logon using Nutanix SSO
-
-    Nutanix Partners/Customers should logon to Portal using their Nutanix Portal account credentials
-
-1. Login to [Nutanix Portal](https://portal.nutanix.com/page/licensing) using your credentials
-2. Go to **Licensing** > **License Summary**
-3. Click on the small drop down arrow :material-chevron-down: on Manage Licenses and choose Nutanix Kubernetes Platform (NKP)
-4. Input the NKP cluster name
-5. Click on the plus icon :material-plus:
-6. Click on **Next** in the bottom right corner
-7. Select NKP Pro License
-8. Select Apply to cluster
-9. Choose Non-production license and Save
-10. Select the cluster name and click on **Next**
-11. Input the number of vCPU (``60``) from our calculations in the previous [section](#calculate-the-required-vcpus)
-12. Click on **Save**
-13. Download the csv file and store it in a safe place
-
-#### Applying NKP Pro License to NKP Cluster
-
-1. Login to the Kommander URL for ``nkpdev`` cluster with the generated credentials that was generated in the previous [section](../infra/infra_nkp.md#create-nkp-workload-cluster). The following commands will give you the credentials and URL.
-
-    === "Command"
-
-        ```bash
-        nkp get dashboard
-        ```
-
-    === "Command output"
-
-        ```{ .bash .no-copy }
-        nkp get dashboard
-
-        Username: recursing_xxxxxxxxx
-        Password: YHbPsslIDB7p7rqwnfxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
-        URL: https://10.x.x.215/dkp/kommander/dashboard
-        ```
-
-2. Go to **Licensing** and click on **Remove License** to remove the Starter license
-3. Type **nutanix-license** in the confirmation box and click on **Remove License**
-4. Click on **Add License**, choose Nutanix platform and paste the license key from the previous [section](#generate-license-for-nkp-cluster)
-5. Click on **Save**
-6. Confirm the license is applied to the cluster by cheking the **License Status** in the **License** menu
-7. The license will be applied to the cluster and the license status will reflect NKP Pro in the top right corner of the dashboard
-
 ### Enable GPU Operator
-
-!!!tip
-
-    Enabling GPU Operator in NKP is not essential for NAI ``v2.3``. 
-
-    NAI v2.3 can host LLM upto 7 billion parameters on CPU. 
 
 We will need to enable GPU operator for deploying NKP application. 
 
@@ -957,63 +964,5 @@ We will need to enable GPU operator for deploying NKP application.
         Test PASSED
         Done
         ```
-
-
+        
 Now we are ready to deploy our AI workloads.
-
-<!-- ## Optional - Cleanup
-
-Optionally, cleanup the workloads on nkp cluster by deleting it **after deploying and testing your AI/ML application**. 
-
-<!-- 1. Change cluster context to use the workload ``bootstrap`` cluster
-   
-    ```bash
-    kubectx kind-konvoy-capi-bootstrapper
-    ``` -->
-
-<!-- Delete the workload cluster
-
-=== "Command"
-
-    ```bash
-    nkp delete cluster -c ${NKP_CLUSTER_NAME}
-    ```
-
-=== "Command output"
-
-    ```{ .bash .no-copy }
-    nkp delete cluster -c nkpdev --self-managed
-
-    ✓ Upgrading CAPI components 
-    ✓ Waiting for CAPI components to be upgraded 
-    ✓ Initializing new CAPI components 
-    ✓ Creating ClusterClass resources 
-    ✓ Creating ClusterClass resources
-    ✓ Moving cluster resources 
-    ✓ Waiting for cluster infrastructure to be ready 
-    ✓ Waiting for cluster control-planes to be ready
-    ✓ Waiting for machines to be ready
-    ✓ Deleting cluster resources
-    ✓ Waiting for cluster to be fully deleted 
-    Deleted default/nkpdev cluster
-    ``` -->
-
-<!-- 1. Delete the Bootstrap cluster
-   
-    === "Command"
-
-        ```bash
-        nkp delete bootstrap
-        ```
-
-    === "Command output"
-
-        ```{ .bash .no-copy }
-        nkp delete bootstrap
-
-        ✓ Deleting bootstrap cluster
-        ``` -->
-
-<!-- !!! info
-
-    If the workload cluster was created as self-managed, then the following command will delete the cluster by creating a small bootstrap cluster. This bootstrap cluster will also be deleted automatically after the workload cluster is deleted. --> -->

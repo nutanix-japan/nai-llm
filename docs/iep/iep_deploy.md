@@ -1,8 +1,8 @@
 # Deploying Nutanix Enterprise AI (NAI) NVD Reference Application
 
-!!! info "Version 2.0.0"
+!!! info "Version 2.3.0"
 
-    This version of the NAI deployment is based on the Nutanix Enterprise AI (NAI) ``v2.0.0`` release.
+    This version of the NAI deployment is based on the Nutanix Enterprise AI (NAI) ``v2.3.0`` release.
 
 ```mermaid
 stateDiagram-v2
@@ -24,9 +24,9 @@ stateDiagram-v2
 
 ## Prepare for NAI Deployment
 
-## Enable NKE Operators
+## Enable NKP Operators
 
-Enable these NKE Operators from NKP GUI.
+Enable these NKP Operators from NKP GUI.
 
 !!! note
 
@@ -75,14 +75,26 @@ Enable these NKE Operators from NKP GUI.
 
     1. We will create this credential in the next section
 
+1. Open ``$HOME/.env`` file in ``VSCode``
 
-6. Install ``kserve`` using the following commands
+2. Add (append) the following line and save it
+
+
+    ```text
+    export KSERVE_VERSION=v0.15.0
+    ```
+
+3. Run the command to load the environment variables
+   
+    ```bash
+    source $HOME/.env
+    ```
+
+4. Install ``kserve`` using the following commands
 
     === "Command"
     
         ```bash
-        export KSERVE_VERSION=v0.15.0
-
         helm upgrade --install kserve-crd oci://ghcr.io/kserve/charts/kserve-crd --version ${KSERVE_VERSION} -n kserve --create-namespace
         ```
         ```bash
@@ -114,7 +126,9 @@ Enable these NKE Operators from NKP GUI.
         REVISION: 2
         TEST SUITE: None
         ```
-7. Check if ``kserve`` pods are running
+
+5. Check if ``kserve`` pods are running
+   
     === "Command"
     
         ```bash
@@ -396,7 +410,7 @@ The following steps show how cert-manager can be used to generate a self signed 
       - ${INGRESS_HOST}
     EOF
     ```
-    
+
 ## Accessing the UI
 
 6. In a browser, open the following URL to connect to the NAI UI
@@ -515,15 +529,30 @@ After a successful model import, you will see it in **Active** status in the NAI
 In this section we will create an inference endpoint using the downloaded model.
 
 1. Navigate to **Inference Endpoints** menu and click on **Create Endpoint** button
-2. Fill the following details:
+2. Fill the following details based on GPU or CPU availability:
+    
+    !!! tip
+       
+        NAI ``v2.3`` can host a model up to 7 billion parameters on CPU only nodes
    
-    - **Endpoint Name**: ``llama-8b``
-    - **Model Instance Name**: ``Meta-LLaMA-8B-Instruct``
-    - **Use GPUs for running the models** : ``Checked``
-    - **No of GPUs (per instance)**:
-    - **GPU Card**: ``NVIDIA-L40S`` (or other available GPU)
-    - **No of Instances**: ``1``
-    - **API Keys**: Create a new API key or use an existing one
+    === "GPU Access"
+
+        - **Endpoint Name**: ``llama-8b``
+        - **Model Instance Name**: ``Meta-LLaMA-8B-Instruct``
+        - **Use GPUs for running the models** : ``Checked``
+        - **No of GPUs (per instance)**:
+        - **GPU Card**: ``NVIDIA-L40S`` (or other available GPU)
+        - **No of Instances**: ``1``
+        - **API Keys**: Create a new API key or use an existing one
+    
+    === "CPU Access"
+
+        - **Endpoint Name**: ``llama-8b``
+        - **Model Instance Name**: ``Meta-LLaMA-8B-Instruct``
+        - **Use GPUs for running the models** : ``leave unchecked``
+        - **No of Instances**: ``1``
+        - **API Keys**: Create a new API key or use an existing one
+
 
 3. Click on **Create**
 4. Monitor the ``nai-admin`` namespace to check if the services are coming up
