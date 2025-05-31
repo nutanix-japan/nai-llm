@@ -31,7 +31,7 @@ nav:
     - Pre-requisites NAI: iep/iep_pre_reqs.md
     - Deploy NAI: iep/iep_deploy.md
     - Test NAI: iep/iep_test.md
-  - Air-gapped Nutanix Enterprise AI v2.0 (NAI):
+  - Air-gapped Nutanix Enterprise AI v2.3.0 (NAI):
     - Getting Started: airgap_nai/index.md
     - Harbor Container Registry: airgap_nai/harbor.md
     - Setup Air-gapped NKP Cluster: airgap_nai/infra_nkp_airgap.md
