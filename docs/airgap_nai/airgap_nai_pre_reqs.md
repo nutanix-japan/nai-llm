@@ -32,42 +32,41 @@ Prepare the following pre-requisites needed to deploy NAI on target kubernetes c
 
 We will create Nutanix Files storage class which will be used to create a pvc that will store the ``LLama-3-8B`` model files.
 
-1. Run the following command to check K8S status of the ``nkpdarksite`` cluster
+1. In **Prism Central**, choose **Files** from the menu
+3. Choose the file server (e.g. labFS)
+4. Click on **Shares & Exports**
+5. Click on **+New Share or Export**
+6. Fill the details of the Share
+   
+    - **Name** - model_share
+    - **Description** - for NAI model store
+    - **Share path** - leave blank
+    - **Max Size** - 10 GiB (adjust to the model file size)
+    - **Primary Protocol Access** - NFS
+
+7. Click **Next** and make sure **Enable compression** in checked
+8. Click **Next** 
+9. In NFS Protocol Access, choose the following: 
+   
+    - **Authentication** - System
+    - **Default Access (for all clients)** - Read-Write 
+    - **Squash** - Root Squash
+
+    !!! note
+        Consider changing access options for Production environment
+  
+10. Click **Next**
+11. Confirm the share details and click on **Create**
+
+### Create the Files Storage Class
+
+12. Run the following command to check K8S status of the ``nkpdev`` cluster
     
     ```bash
-    kubectx ${NKP_CLUSTER_NAME}-admin@${NKP_CLUSTER_NAME} 
     kubectl get nodes
     ```
 
-2. Add (append) the following environment variable to  ``$HOME/airgap-nkp/.env`` file
-   
-    === "Template .env"
-    
-        ```text
-        export FILES_CREDENTIALS_STRING='_prism_element_ip_addres:9440:admin:_your_password'
-        ```
-
-    === "Sample .env"
-
-        ```text
-        export FILES_CREDENTIALS_STRING='10.x.x.37:9440:admin:password'
-        ```
-
-3. Source the .env file to load the latest $FILES_CREDENTIALS_STRING environment variable
-
-    ```bash
-    source $HOME/airgap-nkp/.env
-    ```
-
-4. Create a secret for Nutanix Files CSI Driver
-
-    ```bash
-    kubectl create secret generic nutanix-csi-credentials-files \
-    -n ntnx-system --from-literal=key=${FILES_CREDENTIALS_STRING} \
-    --dry-run -o yaml | kubectl apply -f -
-    ```
-
-5. In VSC Explorer, click on **New File** :material-file-plus-outline: and create a config file with the following name:
+12. In VSC Explorer, click on **New File** :material-file-plus-outline: and create a config file with the following name:
 
     ```bash
     nai-nfs-storage.yaml
@@ -80,55 +79,43 @@ We will create Nutanix Files storage class which will be used to create a pvc th
 
     === "Template YAML"
 
-        ```yaml hl_lines="9"
-        kind: StorageClass
+        ```yaml hl_lines="6 7"
         apiVersion: storage.k8s.io/v1
+        kind: StorageClass
         metadata:
-            name: nai-nfs-storage
-        provisioner: csi.nutanix.com
+          name: nai-nfs-storage
         parameters:
-          dynamicProv: ENABLED
-          nfsServerName: _your_nutanix_files_server_name
-          nfsServer: _your_nutanix_files_server_fqdn
-          csi.storage.k8s.io/provisioner-secret-name: nutanix-csi-credentials-files
-          csi.storage.k8s.io/provisioner-secret-namespace: ntnx-system
-          csi.storage.k8s.io/node-publish-secret-name: nutanix-csi-credentials-files
-          csi.storage.k8s.io/node-publish-secret-namespace: ntnx-system
-          csi.storage.k8s.io/controller-expand-secret-name: nutanix-csi-credentials-files
-          csi.storage.k8s.io/controller-expand-secret-namespace: ntnx-system
+          nfsPath: <nfs-path>
+          nfsServer: <nfs-server>
           storageType: NutanixFiles
-        allowVolumeExpansion: true
+        provisioner: csi.nutanix.com
+        reclaimPolicy: Delete
+        volumeBindingMode: Immediate
         ```
 
     === "Sample YAML"
 
-        ```yaml hl_lines="9"
-        kind: StorageClass
+        ```yaml hl_lines="6 7"
         apiVersion: storage.k8s.io/v1
+        kind: StorageClass
         metadata:
-            name: nai-nfs-storage
-        provisioner: csi.nutanix.com
+          name: nai-nfs-storage
         parameters:
-          dynamicProv: ENABLED
-          nfsServerName: labFS
+          nfsPath: /model_share
           nfsServer: labFS.ntnxlab.local
-          csi.storage.k8s.io/provisioner-secret-name: nutanix-csi-credentials-files
-          csi.storage.k8s.io/provisioner-secret-namespace: ntnx-system
-          csi.storage.k8s.io/node-publish-secret-name: nutanix-csi-credentials-files
-          csi.storage.k8s.io/node-publish-secret-namespace: ntnx-system
-          csi.storage.k8s.io/controller-expand-secret-name: nutanix-csi-credentials-files
-          csi.storage.k8s.io/controller-expand-secret-namespace: ntnx-system
           storageType: NutanixFiles
-        allowVolumeExpansion: true
+        provisioner: csi.nutanix.com
+        reclaimPolicy: Delete
+        volumeBindingMode: Immediate
         ```
 
-6. Create the storage class
+13. Create the storage class
 
     ```bash
     kubectl apply -f nai-nfs-storage.yaml
     ```
 
-7. Check storage classes in the cluster for the Nutanix Files storage class
+14. Check storage classes in the cluster for the Nutanix Files storage class
 
     === "Command"
 

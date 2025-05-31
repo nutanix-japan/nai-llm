@@ -120,8 +120,8 @@ For ``nkpdev``, we will deploy an NKP Cluster of with the following resources to
 
         ```{ .bash .no-copy }
         $ nkp version
-        diagnose: v0.10.1
-        imagebuilder: v0.22.3
+        diagnose: v0.11.0
+        imagebuilder: v2.15.0
         kommander: v2.15.0
         konvoy: v2.15.0
         mindthegap: v1.16.0
@@ -152,6 +152,7 @@ We will need a total of three IPs for the following:
   
 | Cluster Role   | Cluster Name   | Control Plane IP   |    MetalLB  IP  |
 | -------------  | --------       |  ------------      |  --------       |
+| Manage         |``nkpmanage``      |  1                 |  2              |  
 | Dev            |``nkpdev``      |  1                 |  2              |  
 
 1. Get the CIDR range for the AHV network(subnet) where the application will be deployed
@@ -169,7 +170,7 @@ We will need a total of three IPs for the following:
     devbox add nmap
     ```
 
-4. Find three unused static IP addresses in the subnet
+4. Find six unused static IP addresses in the subnet
 
     === "Command"
     
@@ -184,11 +185,17 @@ We will need a total of three IPs for the following:
         ```
 
     ```text title="Sample output - choose the first three consecutive IPs"
-    Nmap scan report for 10.x.x.214 [host down]
-    Nmap scan report for 10.x.x.215 [host down]
+    Nmap scan report for 10.x.x.210 [host down]
+    Nmap scan report for 10.x.x.211 [host down]
+    Nmap scan report for 10.x.x.212 [host down]
+    Nmap scan report for 10.x.x.213
+    Host is up (-0.098s latency).
+    Nmap scan report for 10.x.x.214 [host down] 
+    Nmap scan report for 10.x.x.215 [host down] 
     Nmap scan report for 10.x.x.216 [host down]
     Nmap scan report for 10.x.x.217
     Host is up (-0.098s latency).
+    
     ```
 
 5. Logon to any CVM in your Nutanix cluster and execute the following to add chosen static IPs to the AHV IPAM network
@@ -200,14 +207,14 @@ We will need a total of three IPs for the following:
     
         ```text
         acli net.add_to_ip_blacklist <your-ipam-ahv-network> \
-        ip_list=10.x.x.214,10.x.x.215,10.x.x.216
+        ip_list=10.x.x.210,10.x.x.211,10.x.x.212,10.x.x.214,10.x.x.215,10.x.x.216
         ```
 
     === "Sample command"
 
          ```text
          acli net.add_to_ip_blacklist User1 \
-         ip_list=10.x.x.214,10.x.x.215,10.x.x.216
+         ip_list=10.x.x.210,10.x.x.211,10.x.x.212,10.x.x.214,10.x.x.215,10.x.x.216
          ```
 
 ### Optional - Find GPU Details
@@ -265,8 +272,8 @@ In this section we will go through creating a base image for all the control pla
         export NUTANIX_SUBNET_NAME=User1
         export STORAGE_CONTAINER=default
         export SSH_PUBLIC_KEY=$HOME/.ssh/id_rsa.pub
-        export CONTROLPLANE_VIP=10.x.x.214
-        export LB_IP_RANGE=10.x.x.215-10.x.x.216
+        export CONTROLPLANE_VIP=10.x.x.210
+        export LB_IP_RANGE=10.x.x.211-10.x.x.212
         ```
 
 8. Using VSC Terminal, load the environment variables and its values
@@ -556,9 +563,50 @@ In this section we will create a NKP Management (bootstrap)  ``nkpmanage`` clust
 
 6. Check connectivity to the NKP Managment cluster
    
-    ```bash
-    kubectl get nodes
-    ```
+    === "Command"
+
+        ```bash
+        nkp get nodes
+        ```
+
+    === "Command output"
+
+        ```{ .bash .no-copy }
+        NAME                               STATUS   ROLES           AGE   VERSION
+        nkpmanage-md-0-4w2xc-cm5xm-dwhdh   Ready    <none>          40m   v1.32.3
+        nkpmanage-md-0-4w2xc-cm5xm-qbsv7   Ready    <none>          40m   v1.32.3
+        nkpmanage-rhl4q-2pfpd              Ready    control-plane   41m   v1.32.3
+        ```
+    
+
+
+7. Get management cluster's dashboard credentials to login to the NKP UI
+   
+    === "Command"
+
+        ```bash
+        nkp get dashboard
+        ```
+
+    === "Command output"
+
+        ```{ .bash .no-copy }
+        nkp get dashboard
+
+        Username: recursing_xxxxxxxxx
+        Password: YHbPsslIDB7p7rqwnfxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+        URL: https://10.x.x.215/dkp/kommander/dashboard
+        ```
+
+## License Management Cluster
+
+It is necessary to install license to the Management Cluster ``nkpmanage`` to be able to deploy workload clusters. Especially if the OS of the workload clusters' nodes is going to be ``Ubuntu``
+
+Follow the steps in this [document](../infra/infra_nkp.md#licensing) to create and apply licenses on the management cluster.
+
+!!! note
+
+    This Pro/Ultimate licensing requirement to deploy workload clusters with Ubuntu OS may change in the future. We will be sure to update here.
 
 ## Create NKP Workload Cluster
 
@@ -580,6 +628,8 @@ In this section we will create a NKP Management (bootstrap)  ``nkpmanage`` clust
         export CSI_FILESYSTEM=_preferred_filesystem_ext4/xfs
         export CSI_HYPERVISOR_ATTACHED=_true/false
         export NUTANIX_PROJECT_NAME=_your_pc_project_name
+        export CONTROLPLANE_VIP=_your_nkp_cluster_controlplane_ip
+        export LB_IP_RANGE=_your_range_of_two_ips
         ```
 
     === "Sample .env"
@@ -597,6 +647,8 @@ In this section we will create a NKP Management (bootstrap)  ``nkpmanage`` clust
         export CSI_FILESYSTEM=ext4
         export CSI_HYPERVISOR_ATTACHED=true
         export NUTANIX_PROJECT_NAME=dev-lab
+        export CONTROLPLANE_VIP=10.x.x.214
+        export LB_IP_RANGE=10.x.x.215-10.x.x.216
         ```
 
 3.  Source the new variables and values to the environment
@@ -680,7 +732,6 @@ In this section we will create a NKP Management (bootstrap)  ``nkpmanage`` clust
     === "Command output"
 
         ```{ .bash .no-copy }
-        > ✓ Creating a bootstrap cluster 
         ✓ Upgrading CAPI components 
         ✓ Waiting for CAPI components to be upgraded 
         ✓ Initializing new CAPI components 
@@ -707,32 +758,6 @@ In this section we will create a NKP Management (bootstrap)  ``nkpmanage`` clust
         You can now view resources in the new cluster by using the --kubeconfig flag with kubectl.
         For example: kubectl --kubeconfig="$HOME/nkp/nkpdev.conf" get nodes
 
-        > Starting kommander installation
-        ✓ Deploying Flux 
-        ✓ Deploying Ingress certificate 
-        ✓ Creating kommander-overrides ConfigMap
-        ✓ Deploying Git Operator 
-        ✓ Creating GitClaim for management GitRepository 
-        ✓ Creating GitClaimUser for accessing management GitRepository 
-        ✓ Creating HTTP Proxy configuration
-        ✓ Deploying Flux configuration
-        ✓ Deploying Kommander Operator 
-        ✓ Creating KommanderCore resource 
-        ✓ Cleaning up kommander bootstrap resources
-        ✓ Deploying Substitution variables
-        ✓ Deploying Flux configuration 
-        ✓ Deploying Gatekeeper 
-        ✓ Deploying Kommander AppManagement 
-        ✓ Creating Core AppDeployments 
-        ✓ 4 out of 12 core applications have been installed (waiting for dex, dex-k8s-authenticator and 6 more) 
-        ✓ 5 out of 12 core applications have been installed (waiting for dex-k8s-authenticator, kommander and 5 more) 
-        ✓ 7 out of 12 core applications have been installed (waiting for dex-k8s-authenticator, kommander and 3 more) 
-        ✓ 8 out of 12 core applications have been installed (waiting for dex-k8s-authenticator, kommander-ui and 2 more) 
-        ✓ 9 out of 12 core applications have been installed (waiting for dex-k8s-authenticator, kommander-ui and 1 more) 
-        ✓ 10 out of 12 core applications have been installed (waiting for dex-k8s-authenticator, traefik-forward-auth-mgmt) 
-        ✓ 11 out of 12 core applications have been installed (waiting for traefik-forward-auth-mgmt) 
-        ✓ Creating cluster-admin credentials
-
         > Cluster was created successfully! Get the dashboard details with:
         > nkp get dashboard --kubeconfig="$HOME/nkp/nkpdev.conf"
         ```
@@ -755,7 +780,7 @@ In this section we will create a NKP Management (bootstrap)  ``nkpmanage`` clust
 7. Combine the management and workload clusters ``KUBECONFIG`` file so that we can use it with ``kubectx`` command to change context between clusters
    
     ```bash
-    export KUBECONFIG=${NKP_MGT_CLUSTER_NAME}.cfg:${NKP_WORKLOAD_CLUSTER_NAME}.conf
+    export KUBECONFIG=${NKP_MGT_CLUSTER_NAME}.conf:${NKP_WORKLOAD_CLUSTER_NAME}.conf
     kubectl config view --flatten > all-in-one-kubeconfig.yaml
     export KUBECONFIG=all-in-one-kubeconfig.yaml
     ```

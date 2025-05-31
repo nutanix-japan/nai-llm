@@ -170,12 +170,12 @@ Below are minimum requirements for deploying NAI on the NKP Demo Cluster.
 
         ```{ .bash .no-copy }
         $ nkp version
-        diagnose: v0.10.1
-        imagebuilder: v0.13.3
-        kommander: v2.12.1
-        konvoy: v2.12.1
-        mindthegap: v1.13.1
-        nkp: v2.12.1
+        diagnose: v0.11.0
+        imagebuilder: v2.15.0
+        kommander: v2.15.0
+        konvoy: v2.15.0
+        mindthegap: v1.16.0
+        nkp: v2.15.0
         ```
 
 ### Setup Docker on Jumphost
