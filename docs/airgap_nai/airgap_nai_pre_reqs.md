@@ -13,15 +13,15 @@ stateDiagram-v2
         CreateFilesShare --> PrepareHuggingFace
         PrepareHuggingFace --> [*]
     }
-    state CreateOfflineBundle {
+    state CreateOfflineHelmContainers {
         [*] --> PrepareNAIHelmCharts
         PrepareNAIHelmCharts --> PrepareNAIContainerImages
         PrepareNAIContainerImages --> [*]
     }
 
     [*] --> PreRequisites
-    PreRequisites --> CreateOfflineBundle
-    CreateOfflineBundle --> DeployNAI : next section
+    PreRequisites --> CreateOfflineHelmContainers
+    CreateOfflineHelmContainers --> DeployNAI : next section
     DeployNAI --> TestNAI
     TestNAI --> [*]
 ```
