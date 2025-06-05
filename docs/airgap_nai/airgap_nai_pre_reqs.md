@@ -208,76 +208,80 @@ Follow these steps to create a Hugging Face token with read permissions:
   
 Use this token for accessing Hugging Face resources with read-only permissions.
 
-## Prepare Helm Charts and Generate Bundle
+## Download Offline NKP Air-gapped Bundle and Helm Charts
 
-1. Login to the Jumphost VM
-2. In VSC Explorer, click on **New Folder** :material-folder-plus-outline: and name it: `airgap-nai`
-3. In ``VSC``, under the newly created ``airgap-nai`` folder, click on **New File** :material-file-plus-outline: and create file with the following name:
+1. Open new `VSCode` window on your jumphost VM
+
+2.  In `VSCode` Explorer pane, click on existing ``$HOME`` folder
+
+2.  Click on **New Folder** :material-folder-plus-outline: name it: ``airgap-nai``
+
+3.  On `VSCode` Explorer plane, click the ``$HOME/airgap-nai`` folder
+
+4.  On `VSCode` menu, select ``Terminal`` > ``New Terminal``
+
+5.  Browse to ``airgap-nai`` directory
+
+    ```bash
+    cd $HOME/airgap-nai
+    ```
+
+7. In ``VSC``, under the newly created ``airgap-nai`` folder, click on **New File** :material-file-plus-outline: and create file with the following name:
    
     ```bash
     .env
     ```
 
-4. Add (append) the following environment variables and save it
+2. Add (append) the following environment variables and save it
    
     === "Template .env"
 
         ```text
-        export ISTIO_VERSION=_your_istio_version
-        export KNATIVE_VERSION=_your_knative_version
         export KSERVE_VERSION=_your_kserve_version
-        export KUBE_PROMETHEUS_STACK_VERSION=_your_kube_prometheus_stack_version
         export NAI_CORE_VERSION=_your_nai_core_version
         export NAI_API_VERSION=_your_nai_api_version
-        export NAI_PROMETHEUS_VERSION=_your_nai_prometheus_version
-        export NAI_POSTGRESQL_VERSION=_your_nai_postgresql_version
-        export NAI_KSERVE_HF_SERVER_VERSION=_your_nai_kserve_hf_server_version
-        export NAI_TGI_RUNTIME_VERSION=_your_nai_tgi_runtime_version
         ```
     
-    === ".env for NAI v2.0.0"
+    === ".env for NAI v2.3.0"
         
         ```text
-        export ISTIO_VERSION=1.20.8
-        export KNATIVE_VERSION=1.13.1
-        export KSERVE_VERSION=v0.14.0
-        export KUBE_PROMETHEUS_STACK_VERSION=61.3.1
-        export NAI_CORE_VERSION=v2.0.0
-        export NAI_API_VERSION=v2.0.0
-        export NAI_PROMETHEUS_VERSION=v2.54.0
-        export NAI_POSTGRESQL_VERSION=16.1-alpine
-        export NAI_KSERVE_HF_SERVER_VERSION=v0.14.0
-        export NAI_TGI_RUNTIME_VERSION=2.3.1-825f39d
+        export KSERVE_VERSION=0.15.0
+        export NAI_CORE_VERSION=2.3.0
+        export NAI_API_VERSION=2.3.0
         ```
-    
-5. Create a new directory to store the custom helm charts
 
+3. Source the ``.env`` file to import environment variables
+   
     ```bash
-    mkdir custom-charts && cd custom-charts
+    source $HOME/airgap-nai/.env
     ```
 
-6. Fetch the helm charts using the following commands
+4. Login to [Nutanix Portal](https://portal.nutanix.com/page/downloads?product=nkp) using your credentials
+
+5. Go to **Downloads** > **NAI Airgapped Bundle**
+
+6.  Download and extract the NAI air-gap ``helm`` bundle from the link you copied earlier
+    
+    === "Command"
+
+        ```text title="Paste the download URL within double quotes"
+        curl -o nai-core-2.3.0.tgz "_paste_download_URL_here"
+        ```
+
+    === "Sample command"
+        
+        ```bash
+        curl -o nai-core-2.3.0.tgz "https://download.nutanix.com/downloads/nai/2.3.0/nai-core-2.3.0.tgz?........"
+        ```
+
+7.  Fetch the ``kserve`` helm charts using the following commands
    
     === "Command"
 
         ```bash
-        helm fetch base --repo https://istio-release.storage.googleapis.com/charts --version=${ISTIO_VERSION}
-
-        helm fetch istiod --repo https://istio-release.storage.googleapis.com/charts --version=${ISTIO_VERSION}
-
-        helm fetch gateway --repo https://istio-release.storage.googleapis.com/charts --version=${ISTIO_VERSION}
-
-        helm fetch nai-knative-serving-crds --repo https://nutanix.github.io/helm-releases --version=${KNATIVE_VERSION}
-
-        helm fetch nai-knative-serving --repo https://nutanix.github.io/helm-releases --version=${KNATIVE_VERSION}
-
-        helm fetch nai-knative-istio-controller  --repo https://nutanix.github.io/helm-releases --version=${KNATIVE_VERSION}
-
         helm fetch oci://ghcr.io/kserve/charts/kserve-crd --version=${KSERVE_VERSION}
 
         helm fetch oci://ghcr.io/kserve/charts/kserve --version=${KSERVE_VERSION}
-
-        helm fetch nai-core --repo https://nutanix.github.io/helm-releases --version=${NAI_CORE_VERSION}
         ```
     
     === "Command output"
@@ -290,17 +294,27 @@ Use this token for accessing Hugging Face resources with read-only permissions.
         Digest: sha256:25129d39a4aa85f96159db6933729ea9f35e9d0f7f7cac7918c0a8013672eccb
         ```
 
-7. Create a tar ball of the helm charts and compress it
-
-    ```bash
-    tar -czvf nai-iep-chartbundle.tar.gz *.tgz
-    ```
-
-8. Upload the helm charts to ChartMuseum instance deployed automatically by Kommander. This will make this consistent with other NKP catalog items and will work seamlessly when this is converted to a catalog item.
+8.  Upload the downloaded and prepared helm charts to ChartMuseum instance deployed automatically by Kommander. This will make this consistent with other NKP catalog items and will work seamlessly when this is converted to a catalog item.
     
     ```bash
-    nkp push chart-bundle nai-iep-chartbundle.tar.gz
+    nkp push chart-bundle kserve-crd-v0.15.0.tgz
+    nkp push chart-bundle kserve-v0.15.0.tgz
+    nkp push chart-bundle nai-core-2.3.0.tgz
     ```
+
+9.   Download the NAI air-gap binaries (NAI container images) from the link you copied earlier
+    
+    === "Command"
+
+        ```text title="Paste the download URL within double quotes"
+        curl -o nai-2.3.0.tar "_paste_download_URL_here"
+        ```
+
+    === "Sample command"
+        
+        ```bash title="This download is about 44 GBs"
+        curl -o nai-2.3.0.tar "https://download.nutanix.com/downloads/nai/2.3.0/nai-2.3.0.tar?..."
+        ```
 
 ## Prepare NAI Container Images
 
@@ -326,117 +340,18 @@ stateDiagram-v2
     PrepareNAIDockerImages --> [*]
 ```
 
-### Prepare NAI Docker Download Credentials
-
-All NAI Docker images will be downloaded from the public Docker Hub registry. In order to download the images, you will need to logon to [Nutanix Portal - NAI](https://portal.nutanix.com/page/downloads?product=nai) and create a Docker ID and access token.
-
-
-1. Login to [Nutanix Portal - NAI](https://portal.nutanix.com/page/downloads?product=nai) using your credentials
-2. Click on **Generate Access Token** option
-3. Copy the generated Docker ID and access token
-4. Login to the Docker CLI on your jumphost VM
-   
-    === "Command"
-
-        ```bash
-        docker login --username ntnxsvcgpt -p _docker_id_and_access_token_
-        ```
-
-    === "Command output"
-
-        ```{ .bash .no-copy }
-        docker login --username ntnxsvcgpt -p dckr_pat_xxxxxxxxxxxxxxxxxxxxxxxx
-        ```
-
-!!! warning
-    
-    Currently there are issues with the Nutanix Portal to create a Docker ID and access token. This will be fixed soon.
-
-    Click on the **Manage Access Token** option and use the credentials listed there until the Nutanix Portal is fixed.
-
 ### Upload NAI Docker Images to Harbor
 
 !!! info
     
-    The download and upload of the container images will be done in one ``nkp`` command which will use the internal Harbor container registry details.
+    The download and upload of the container images will be done in one ``docker push`` command which will use the internal Harbor container registry details.
 
     ``nkp`` command will do this in a three-step process.
 
-    1. Download the container images to the jumphost VM
-    2. Create a tar ball of the container images and 
-    3. Upload it to the internal Harbor container registry
+    1. Updload the container images from the downloaded ``nai-2.x.x.tar`` to the jumphost VM local docker images store
+    2. Upload it to the internal Harbor container registry 
 
-1. Create images yaml file for all the required container images
-   
-2. Change to ``$HOME/airgap-nai`` directory if you are not already there
-   
-    ```bash
-    cd $HOME/airgap-nai
-    ```
-
-3. In VSC Explorer, click on **New File** :material-file-plus-outline: and create file with the following name:
-   
-    ```bash
-    nai-prereq-images.yaml
-    ```
-
-    with the following content:
-
-    ```yaml
-    docker.io/istio/proxyv2:1.20.8
-    docker.io/istio/pilot:1.20.8
-    docker.io/library/busybox:1.28
-    k8s.gcr.io/cuda-vector-add:v0.1
-    gcr.io/knative-releases/knative.dev/serving/cmd/activator:v1.13.1
-    gcr.io/knative-releases/knative.dev/serving/cmd/autoscaler:v1.13.1
-    gcr.io/knative-releases/knative.dev/serving/cmd/controller:v1.13.1
-    gcr.io/knative-releases/knative.dev/serving/cmd/webhook:v1.13.1
-    gcr.io/knative-releases/knative.dev/serving/cmd/queue:v1.13.1
-    gcr.io/knative-releases/knative.dev/net-istio/cmd/controller:v1.13.1
-    gcr.io/knative-releases/knative.dev/net-istio/cmd/webhook:v1.13.1
-    ghcr.io/mesosphere/dkp-container-images/nvcr.io/nvidia/cloud-native/gpu-operator-validator:v24.3.0-d2iq.0
-    ghcr.io/mesosphere/dkp-container-images/nvcr.io/nvidia/k8s-device-plugin:v0.15.0-ubi8-d2iq.0
-    harbor.infrastructure.cloudnative.nvdlab.net/nvidia/driver:535.161.08-ubuntu22.04
-    nvcr.io/nvidia/cloud-native/dcgm:3.3.5-1-ubuntu22.04
-    nvcr.io/nvidia/cloud-native/k8s-driver-manager:v0.6.8
-    nvcr.io/nvidia/k8s-device-plugin:v0.15.0-ubi8
-    nvcr.io/nvidia/k8s/container-toolkit:v1.15.0-ubuntu20.04
-    nvcr.io/nvidia/k8s/dcgm-exporter:3.3.5-3.4.1-ubuntu22.04
-    gcr.io/kubebuilder/kube-rbac-proxy:v0.13.1
-    docker.io/kserve/kserve-controller:v0.13.1
-    docker.io/kserve/modelmesh-controller:v0.12.0-rc0
-    ```
-
-4. In VSC Explorer, click on **New File** :material-file-plus-outline: and create file with the following name:
-
-    ```bash
-    nai-core-images.yaml
-    ```
-
-    with the following content:
-
-    ```yaml
-    docker.io/nutanix/nai-iep-operator:v2.0.0
-    docker.io/nutanix/nai-model-processor:v2.0.0
-    docker.io/nutanix/nai-inference-ui:v2.0.0
-    docker.io/nutanix/nai-api:v2.0.0
-    docker.io/nutanix/nai-postgres:16.1-alpine
-    docker.io/nutanix/nai-kserve-controller:v0.13.1
-    nutanix/nai-kserve-huggingfaceserver:v0.13.1
-    nutanix/nai-tgi:2.3.1-825f39d
-    quay.io/karbon/prometheus:v2.41.0
-    quay.io/prometheus-operator/prometheus-config-reloader:v0.74.0
-    ```
-
-5. Create image bundle with the following command
-
-    ```bash
-    nkp create image-bundle --images-file nai-prereq-images.yaml --output-file nai-prereq-images.tar --overwrite
-
-    nkp create image-bundle --images-file nai-core-images.yaml --output-file nai-core-images.tar --overwrite
-    ```
-
-6. Since we will be using the same internal Harbor container registry to upload container images, make sure the following environment variables are set (these were already set during air-gap NKP preparation)
+1. Since we will be using the same internal Harbor container registry to upload container images, make sure the following environment variables are set (these were already set during air-gap NKP preparation)
    
     ```bash
     export REGISTRY_URL=harbor.10.x.x.111.nip.io/nkp
@@ -445,36 +360,48 @@ All NAI Docker images will be downloaded from the public Docker Hub registry. In
     export REGISTRY_CACERT=$HOME/harbor/certs/ca.crt
     ```
 
-7. Push the images to the internal Harbor container registry
-   
+2. **(Optional)** - To view the container images loaded in your local docker container registry, run the following command:
+
     === "Command"
-    
-        ```bash
-        nkp push bundle --bundle nai-prereq-images.tar --to-registry ${REGISTRY_URL} \
-        --to-registry-username ${REGISTRY_USERNAME} --to-registry-password ${REGISTRY_PASSWORD} \ 
-        --to-registry-ca-cert-file ${REGISTRY_CACERT}  
-        ```
-        ```bash
-        nkp push bundle --bundle nai-core-images.tar --to-registry ${REGISTRY_URL} \ 
-        --to-registry-username ${REGISTRY_USERNAME} --to-registry-password ${REGISTRY_PASSWORD} \ 
-        --to-registry-ca-cert-file ${REGISTRY_CACERT}
-        ``` 
-    
-    === "Command output"
 
-        ```{ .text .no-copy }    
-        ✓ Creating temporary directory
-        ✓ Unarchiving image bundle "nai-prereq-images.tar" 
-        ✓ Parsing image bundle config
-        ✓ Starting temporary Docker registry
-        ✓ Pushing bundled images [================================>24/24] (time elapsed 153s) 
-        ```
-        ```{ .text .no-copy } 
-        ✓ Creating temporary directory
-        ✓ Unarchiving image bundle "nai-core-images.tar" 
-        ✓ Parsing image bundle config
-        ✓ Starting temporary Docker registry
-        ✓ Pushing bundled images [================================>10/10] (time elapsed 25s)
-        ```
+         ```bash
+         docker images --format '{{.Repository}}:{{.Tag}}' | grep nai
+         ```
+    === "Output"
+    
+         ```bash
+         nutanix/nai-api:v2.3.0
+         nutanix/nai-inference-ui:v2.3.0
+         nutanix/nai-model-processor:v2.3.0
+         nutanix/nai-iep-operator:v2.3.0
+         nutanix/nai-tgi:3.2.0-b6a29e9
+         nutanix/nai-tgi:3.2.3-10d65dc
+         nutanix/nai-kserve-huggingfaceserver:e7295f58
+         nutanix/nai-kserve-huggingfaceserver:e7295f58-gpu
+         nutanix/nai-kserve-huggingfaceserver:e2e99fcd1-gpu
+         nutanix/nai-kserve-controller:v0.14.0
+         nutanix/nai-postgres:16.1-alpine
+         ```
 
-Now we are ready to deploy our AI workloads.
+2. Push the images to the jumphost VM local docker images store
+   
+    ```bash
+    docker image load -i nai-2.3.0.tar
+    ```
+
+3. Login to the internal Harbor registy if the harbor project needs authentication
+   
+    ```bash
+    docker login harbor.10.x.x.111.nip.io
+    ```
+
+4. Tag and push all the NAI images to refer to the internal harbor registry
+
+    ```bash
+    for image in $(docker images --format '{{.Repository}}:{{.Tag}}' | grep 'nai' | grep -v $REGISTRY_URL); do
+      docker tag $image $REGISTRY_URL/$(echo $image);
+      docker push $REGISTRY_URL/$(echo $image);
+    done
+    ```
+
+Now we are ready to deploy our NAI workloads.

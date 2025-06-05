@@ -1,8 +1,8 @@
 # Deploying Nutanix Enterprise AI (NAI) NVD Reference Application
 
-!!! info "Version 2.3.0"
+!!! info "Version 2.0.0"
 
-    This version of the NAI deployment is based on the Nutanix Enterprise AI (NAI) ``v2.3.0`` release.
+    This version of the NAI deployment is based on the Nutanix Enterprise AI (NAI) ``v2.0.0`` release.
 
 ```mermaid
 stateDiagram-v2
@@ -22,93 +22,9 @@ stateDiagram-v2
     TestNAI --> [*]
 ```
 
-## Enable NKP Operators
+## Prepare for NAI Deployment
 
-Enable these NKP Operators from NKP GUI.
-
-!!! note
-
-    In this lab, we will be using the **Management Cluster Workspace** to deploy our Nutanix Enterprise AI (NAI)
-
-    However, in a customer environment, it is recommended to use a separate workload NKP cluster.
-
-!!! info
-
-    The helm charts for these applications are stores in NKP's Chart Museum
-    The container images are stored in internal Harbor registry. These images got uploaded to Harbor at the time of install NKE in this [section](../airgap_nai/infra_nkp_airgap.md#push-container-images-to-localprivate-registry-to-be-used-by-nkp).
-
-1. In the NKP GUI, Go to **Clusters**
-2. Click on **Management Cluster Workspace**
-3. Go to **Applications** 
-4. Search and enable the following applications: follow this order to install dependencies for NAI application
-   
-    - Prometheus Monitoring: version ``69.1.2`` or later
-    - Prometheus Adapter: version ``v4.11.0`` or later
-    - Istio Service Mesh: version``1.20.8`` or later
-  
-5. The next application to enable is
-    - Knative: version `v1.17.0` or later
-
-    - Search for Knative in the **Applications**
-
-    - Use the following configuration parameters in **Workspace Configuration**:
-
-    ```yaml
-    serving:
-      config:
-        features:
-          kubernetes.podspec-nodeselector: enabled
-        autoscaler:
-          enable-scale-to-zero: false
-      knativeIngressGateway:
-        spec:
-          selector:
-            istio: ingressgateway
-          servers:
-          - hosts:
-            - '*'
-            port:
-              name: https
-              number: 443
-              protocol: HTTPS
-            tls:
-              mode: SIMPLE
-              credentialName: nai-cert # (1)
-    ```
-
-    1. We will create this ``nai-cert`` secret/cert in the next section
-
-6. Validate if the resources are running in the following namespaces.
-
-    - `istio-system`, and
-    - `knative-serving`, 
-
-    === "Command"
-
-        ```bash
-        kubectl get po -n istio-system
-        k get po -n knative-serving
-        ```
-        
-    === "Command output"
-
-        ```{ .text .no-copy }
-        $ k get po -n istio-system
-        NAME                                    READY   STATUS    RESTARTS   AGE
-        istio-ingressgateway-6675867d85-qzrpq   1/1     Running   0          26d
-        istiod-6d96569c9b-2dww4                 1/1     Running   0          26d
-
-        $ k get po -n knative-serving
-        NAME                                   READY   STATUS    RESTARTS   AGE
-        activator-58db57894b-g2nx8             1/1     Running   0          26d
-        autoscaler-76f95fff78-c8q9m            1/1     Running   0          26d
-        controller-7dd875844b-4clqb            1/1     Running   0          26d
-        net-istio-controller-57486f879-85vml   1/1     Running   0          26d
-        net-istio-webhook-7ccdbcb557-54dn5     1/1     Running   0          26d
-        webhook-d8674645d-mscsc                1/1     Running   0          26d
-        ```
-
-7. Login to VSC on the jumphost VM, append the following environment variables to the ``$HOME\airgap-nai\.env`` file and save it
+1. Login to VSC on the jumphost VM, append the following environment variables to the ``$HOME\airgap-nai\.env`` file and save it
    
     === "Template .env"
 
@@ -130,13 +46,13 @@ Enable these NKP Operators from NKP GUI.
         export REGISTRY_HOST="harbor.10.x.x.111.nip.io/nkp"
         ```
 
-8. IN VSC,go to **Terminal** :octicons-terminal-24: and run the following commands to source the environment variables
+2. IN VSC,go to **Terminal** :octicons-terminal-24: and run the following commands to source the environment variables
 
     ```bash
     source $HOME/airgap-nai/.env
     ```
 
-9.  In ``VSCode``, under the newly created ``airgap-nai`` folder, click on **New File** :material-file-plus-outline: and create file with the following name:
+3. In ``VSCode``, under the newly created ``airgap-nai`` folder, click on **New File** :material-file-plus-outline: and create file with the following name:
 
     ```bash
     nai-prepare.sh
@@ -150,6 +66,24 @@ Enable these NKP Operators from NKP GUI.
     set -ex
     set -o pipefail
 
+    ## Deploy Istio 1.20.8
+    helm --insecure-skip-tls-verify=true upgrade --install istio-base base --repo ${INTERNAL_REPO} --version=${ISTIO_VERSION} -n istio-system --create-namespace --wait
+
+    helm --insecure-skip-tls-verify=true upgrade --install istiod istiod --repo ${INTERNAL_REPO} --version=${ISTIO_VERSION} -n istio-system \
+    --set gateways.securityContext.runAsUser=0 \
+    --set gateways.securityContext.runAsGroup=0 --wait
+
+    helm --insecure-skip-tls-verify=true upgrade --install istio-ingressgateway gateway --repo ${INTERNAL_REPO} --version=${ISTIO_VERSION} -n istio-system \
+    --set securityContext.runAsUser=0 --set securityContext.runAsGroup=0 \
+    --set containerSecurityContext.runAsUser=0 --set containerSecurityContext.runAsGroup=0 --wait
+
+    ## Deploy Knative 
+    helm --insecure-skip-tls-verify=true upgrade --install knative-serving-crds nai-knative-serving-crds --repo ${INTERNAL_REPO} --version=${KNATIVE_VERSION} -n knative-serving --create-namespace --wait
+
+    helm --insecure-skip-tls-verify=true upgrade --install knative-serving nai-knative-serving --repo ${INTERNAL_REPO} -n knative-serving --version=${KNATIVE_VERSION} --wait
+
+    
+    helm --insecure-skip-tls-verify=true upgrade --install knative-istio-controller nai-knative-istio-controller --repo ${INTERNAL_REPO} -n knative-serving --version=${KNATIVE_VERSION} --wait
 
     # Patch configurations stored in configmaps
 
@@ -168,9 +102,12 @@ Enable these NKP Operators from NKP GUI.
   
     ## Deploy Kserve
 
-    helm upgrade --install kserve-crd --repo ${INTERNAL_REPO} --version ${KSERVE_VERSION} -n kserve --create-namespace
-
-    helm upgrade --install kserve --repo ${INTERNAL_REPO} --version ${KSERVE_VERSION} --namespace kserve --create-namespace 
+    helm --insecure-skip-tls-verify=true upgrade --install kserve-crd kserve-crd --repo ${INTERNAL_REPO} --version=${KSERVE_VERSION} -n kserve --create-namespace
+    
+    helm --insecure-skip-tls-verify=true upgrade --install kserve kserve --repo ${INTERNAL_REPO} --version=${KSERVE_VERSION} -n kserve \
+    --set kserve.modelmesh.enabled=false \
+    --set kserve.controller.image="${REGISTRY_HOST}/nutanix/nai-kserve-controller" \
+    --set kserve.controller.tag=${KSERVE_VERSION} --wait
     ```
 
 4. Run the script from the Terminal
@@ -185,6 +122,31 @@ Enable these NKP Operators from NKP GUI.
     === "Command output"
 
         ```{ .text .no-copy }
+        Release "istiod" has been upgraded. Happy Helming!
+        NAME: istiod
+        LAST DEPLOYED: Tue Oct 15 02:01:58 2024
+        NAMESPACE: istio-system
+        STATUS: deployed
+        REVISION: 2
+        TEST SUITE: None
+        NOTES:
+        "istiod" successfully installed!
+
+        NAME: istio-ingressgateway
+        LAST DEPLOYED: Tue Oct 15 02:02:01 2024
+        NAMESPACE: istio-system
+        STATUS: deployed
+
+        NAME: knative-serving-crds
+        LAST DEPLOYED: Tue Oct 15 02:02:03 2024
+        NAMESPACE: knative-serving
+        STATUS: deployed
+
+        NAME: knative-serving
+        LAST DEPLOYED: Tue Oct 15 02:02:05 2024
+        NAMESPACE: knative-serving
+        STATUS: deployed
+
         NAME: kserve-crd
         LAST DEPLOYED: Tue Oct 15 02:02:16 2024
         NAMESPACE: kserve
@@ -204,6 +166,43 @@ Enable these NKP Operators from NKP GUI.
         helm list -n istio-system
         helm list -n kserve
         helm list -n knative-serving
+        ```
+
+
+5. Validate if the resources are running in the following namespaces.
+
+    - `istio-system`, 
+    - `knative-serving`, and 
+    - `kserve`
+   
+    === "Command"
+
+        ```bash
+        kubectl get po -n istio-system
+        k get po -n kserve
+        k get po -n knative-serving
+        ```
+        
+    === "Command output"
+
+        ```{ .text .no-copy }
+        $ k get po -n istio-system
+        NAME                                    READY   STATUS    RESTARTS   AGE
+        istio-ingressgateway-6675867d85-qzrpq   1/1     Running   0          26d
+        istiod-6d96569c9b-2dww4                 1/1     Running   0          26d
+
+        $ k get po -n kserve
+        NAME                                         READY   STATUS    RESTARTS   AGE
+        kserve-controller-manager-6654f69d5c-45n64   2/2     Running   0          26d
+
+        $ k get po -n knative-serving
+        NAME                                   READY   STATUS    RESTARTS   AGE
+        activator-58db57894b-g2nx8             1/1     Running   0          26d
+        autoscaler-76f95fff78-c8q9m            1/1     Running   0          26d
+        controller-7dd875844b-4clqb            1/1     Running   0          26d
+        net-istio-controller-57486f879-85vml   1/1     Running   0          26d
+        net-istio-webhook-7ccdbcb557-54dn5     1/1     Running   0          26d
+        webhook-d8674645d-mscsc                1/1     Running   0          26d
         ```
         
 ## Deploy NAI
@@ -310,21 +309,21 @@ Enable these NKP Operators from NKP GUI.
         naiApi:
           naiApiImage:
             image: harbor.10.x.x.111.nip.io/nkp/nutanix/nai-api
-            tag: v2.3.0  
+            tag: v2.0.0  
           supportedRuntimeImage: harbor.10.x.x.111.nip.io/nkp/nutanix/nai-kserve-huggingfaceserver:v0.14.0
           supportedTGIImage: harbor.10.x.x.111.nip.io/nkp/nutanix/nai-tgi
           supportedTGIImageTag: "2.3.1-825f39d"
         naiIepOperator:
           iepOperatorImage:
             image:  harbor.10.x.x.111.nip.io/nkp/nutanix/nai-iep-operator
-            tag: v2.3.0
+            tag: v2.0.0
           modelProcessorImage:
             image:  harbor.10.x.x.111.nip.io/nkp/nutanix/nai-model-processor
-            tag: v2.3.0
+            tag: v2.0.0
         naiInferenceUi:
           naiUiImage:
             image:  harbor.10.x.x.111.nip.io/nkp/nutanix/nai-inference-ui
-            tag: v2.3.0
+            tag: v2.0.0
         naiDatabase:
           naiDbImage:
             image:  harbor.10.x.x.111.nip.io/nkp/nutanix/nai-postgres:16.1-alpine
@@ -383,7 +382,7 @@ Enable these NKP Operators from NKP GUI.
     set -ex
     set -o pipefail
 
-    helm upgrade --install nai-core --repo ${INTERNAL_REPO} \
+    helm upgrade --install nai-core nai-core --repo ${INTERNAL_REPO} \
     --version=${NAI_CORE_VERSION} -n nai-system --create-namespace \
     --insecure-skip-tls-verify \
     -f ${ENVIRONMENT}-values.yaml --wait
@@ -402,14 +401,23 @@ Enable these NKP Operators from NKP GUI.
         ```{ .text .no-copy }
         $HOME/airgap-nai/nai-deploy.sh 
 
-        Release "nai-core" does not exist. Installing it now.
-        Pulled: harbor.10.x.x.111.nip.io/nkp/nai-core:2.3.0
-        Digest: sha256:1024f50d2b423cfa66ff867461b8672b46af4d8a6cfa6be9d97bcb3ac859cb76
+        + set -o pipefail
+        + helm repo add ntnx-charts https://nutanix.github.io/helm-releases
+        "ntnx-charts" already exists with the same configuration, skipping
+        + helm repo update ntnx-charts
+        Hang tight while we grab the latest from your chart repositories...
+        ...Successfully got an update from the "ntnx-charts" chart repository
+        Update Complete. ⎈Happy Helming!⎈
+        helm upgrade --install nai-core ntnx-charts/nai-core --version=$NAI_CORE_VERSION -n nai-system --create-namespace --wait \
+        --set naiApi.naiApiImage.tag=v1.0.0-rc2 \
+        --insecure-skip-tls-verify \
+        -f nkp-values.yaml
+        Release "nai-core" has been upgraded. Happy Helming!
         NAME: nai-core
-        LAST DEPLOYED: Thu Jun  5 08:42:26 2025
+        LAST DEPLOYED: Mon Sep 16 22:07:24 2024
         NAMESPACE: nai-system
         STATUS: deployed
-        REVISION: 1
+        REVISION: 7
         TEST SUITE: None
         ```
 
@@ -429,18 +437,19 @@ Enable these NKP Operators from NKP GUI.
 
         $ kubectl get po,deploy
 
-        NAME                                       READY   UP-TO-DATE   AVAILABLE   AGE
-        deployment.apps/nai-api                    1/1     1            1           123m
-        deployment.apps/nai-iep-model-controller   1/1     1            1           123m
-        deployment.apps/nai-ui                     1/1     1            1           123m
-
         NAME                                            READY   STATUS      RESTARTS   AGE
-        pod/nai-api-5f84568c7c-vvjr2                    1/1     Running     0          123m
-        pod/nai-api-db-migrate-3yx4b-cdb75              0/1     Completed   0          123m
-        pod/nai-db-0                                    1/1     Running     0          123m
-        pod/nai-iep-model-controller-7cddd8b886-h5ffn   1/1     Running     0          123m
-        pod/nai-ui-69bfdcd99b-7fhqq                     1/1     Running     0          123m
-        pod/prometheus-nai-0                            2/2     Running     0          123m
+        pod/nai-api-55c665dd67-746b9                    1/1     Running     0          5d1h
+        pod/nai-api-db-migrate-fdz96-xtmxk              0/1     Completed   0          40h
+        pod/nai-db-789945b4df-lb4sd                     1/1     Running     0          43h
+        pod/nai-iep-model-controller-84ff5b5b87-6jst9   1/1     Running     0          5d8h
+        pod/nai-ui-7fc65fc6ff-clcjl                     1/1     Running     0          5d8h
+        pod/prometheus-nai-0                            2/2     Running     0          43h
+
+        NAME                                       READY   UP-TO-DATE   AVAILABLE   AGE
+        deployment.apps/nai-api                    1/1     1            1           5d8h
+        deployment.apps/nai-db                     1/1     1            1           5d8h
+        deployment.apps/nai-iep-model-controller   1/1     1            1           5d8h
+        deployment.apps/nai-ui                     1/1     1            1           5d8h
         ```
 
 ## Install SSL Certificate
