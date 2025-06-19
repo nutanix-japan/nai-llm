@@ -162,6 +162,33 @@ Below are minimum requirements for deploying NAI on the NKP Demo Cluster.
 
 If not already done, follow the steps in [Setup Docker on Jumphost](../infra/infra_jumphost_tofu.md#setup-docker-on-jumphost) section. 
 
+1. Login to docker on the jumphost
+
+    === "Command"
+    
+         ```bash
+         docker login
+         ```
+        
+    === "Command output"
+    
+         ```{ .bash .no-copy }
+         ~$ docker login
+     
+         USING WEB-BASED LOGIN
+         To sign in with credentials on the command line, use 'docker login -u <username>'
+         
+         Your one-time device confirmation code is: JXXX-VXXX
+         Press ENTER to open your browser or submit your device code here: https://login.docker.com/activate
+         
+         Waiting for authentication in the browser…
+         WARNING! Your password will be stored unencrypted in /home/ubuntu/.docker/config.json.
+         Configure a credential helper to remove this warning. See
+         https://docs.docker.com/engine/reference/commandline/login/#credential-stores
+         ```
+         
+2. Open the docker login URL in a browser after you enter the ``docker login`` command.
+
 ## Reserve Control Plane and MetalLB IP
 
 Nutanix AHV IPAM network allows you to black list IPs that needs to be reserved for specific application endpoints. We will use this feature to find and reserve three IPs. 
@@ -308,6 +335,8 @@ In this section we will go through creating a base image for all the control pla
         export NKP_CLUSTER_NAME=_your_nkp_cluster_name
         export CONTROLPLANE_VIP=_your_nkp_cluster_controlplane_ip
         export LB_IP_RANGE=_your_range_of_two_ips
+        export DOCKER_USERNAME=_your_docker_username
+        export DOCKER_PASSWORD=_your_docker_password
         ```
 
     === "Sample .env"
@@ -323,6 +352,8 @@ In this section we will go through creating a base image for all the control pla
         export NKP_CLUSTER_NAME=nkpdev
         export CONTROLPLANE_VIP=10.x.x.214
         export LB_IP_RANGE=10.x.x.215-10.x.x.216
+        export DOCKER_USERNAME=_your_docker_username
+        export DOCKER_PASSWORD=_your_docker_password_pat
         ```
 
 6. Using VSC Terminal, load the environment variables and its values
