@@ -186,7 +186,7 @@ If not already done, follow the steps in [Setup Docker on Jumphost](../infra/inf
          Configure a credential helper to remove this warning. See
          https://docs.docker.com/engine/reference/commandline/login/#credential-stores
          ```
-         
+
 2. Open the docker login URL in a browser after you enter the ``docker login`` command.
 
 ## Reserve Control Plane and MetalLB IP
@@ -430,6 +430,16 @@ In this section we will go through creating a base image for all the control pla
 We are now ready to install the workload ``nkpdev`` cluster
 
 ## Create NKP Workload Cluster
+
+!!!warning
+
+    Do no use hyphens ``-`` in the nkp cluster name. 
+ 
+    ```text title="Validation Rules"
+    a lowercase RFC 1123 subdomain must consist of lower case alphanumeric       │
+    │characters, '-' or '.', and must start and end with an alphanumeric character (e.g. 'example.com',  │
+    │regex used for validation is '[a-z0-9]([-a-z0-9]*[a-z0-9])?(\.[a-z0-9]([-a-z0-9]*[a-z0-9])?)*')
+    ```
 
 !!!note
    
