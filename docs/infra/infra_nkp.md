@@ -433,7 +433,7 @@ We are now ready to install the workload ``nkpdev`` cluster
 
 !!!warning
 
-    Do no use hyphens ``-`` in the nkp cluster name. 
+    Do not use hyphens ``-`` in the nkp cluster name. 
  
     ```text title="Validation Rules"
     a lowercase RFC 1123 subdomain must consist of lower case alphanumeric       │
