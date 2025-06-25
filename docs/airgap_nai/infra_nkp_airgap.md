@@ -595,12 +595,12 @@ We are now ready to install the workload ``nkpdarksite`` cluster
 
     Do not use hyphens ``-`` in the nkp cluster name. 
  
-    ```text title="Validation Rules"
+    ```text title="Clustername Validation Rules"
     a lowercase RFC 1123 subdomain must consist of lower case alphanumeric       │
     │characters, '-' or '.', and must start and end with an alphanumeric character (e.g. 'example.com',  │
     │regex used for validation is '[a-z0-9]([-a-z0-9]*[a-z0-9])?(\.[a-z0-9]([-a-z0-9]*[a-z0-9])?)*')
     ```
-    
+
 !!!note
    
     In this lab the workload cluster will have the Management cluster role as well to reduce resource consumption in a lab environment. 
