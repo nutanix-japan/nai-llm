@@ -270,7 +270,7 @@ Use this token for accessing Hugging Face resources with read-only permissions.
 
     === "Sample command"
         
-        ```bash
+        ```{ .text .no-copy }
         curl -o nai-core-2.3.0.tgz "https://download.nutanix.com/downloads/nai/2.3.0/nai-core-2.3.0.tgz?........"
         ```
 

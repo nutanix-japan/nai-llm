@@ -18,7 +18,7 @@ nav:
   - Jumphost VM Tofu: infra/infra_jumphost_tofu.md
   # - Setup NKE Cluster: infra/infra_nke.md
   # - Setup NKP Cluster: infra/infra_nkp.md
-- Tutorials:
+- NAI on NKP Tutorials:
   # - Nutanix Enterprise AI in NKP Workspace (NAI):
   #   - Getting Started: nai/index.md
   #   - Setup NKP Cluster: nai/infra_nkp_nai.md
@@ -45,6 +45,8 @@ nav:
     - Deploy Management Cluster: llmmgmt/llm_mgt_deploy.md
     - Deploy Dev Cluster: llmmgmt/llm_dev_deploy.md
     - Test LLM App: llmmgmt/llm_test.md
+- NKP Workload Tutorials:
+  - NKP and NDB: nkp_tutorials/nkp_ndb_lab.md
 - Appendix:
   - Jumphost VM Manual: infra/infra_jumphost.md
   - NKP The Hard Way: appendix/infra_nkp_hard_way.md
