@@ -46,7 +46,10 @@ nav:
     - Deploy Dev Cluster: llmmgmt/llm_dev_deploy.md
     - Test LLM App: llmmgmt/llm_test.md
 - NKP Workload Tutorials:
-  - NKP and NDB: nkp_tutorials/nkp_ndb_lab.md
+  - NKP and NDB: 
+    - Getting Started: nkp_tutorials/index.md
+    - Install NDB Operator on NKP: nkp_tutorials/nkp_ndb_lab.md
+    - Install Workload: nkp_tutorials/nkp_ndb_install_app.md
 - Appendix:
   - Jumphost VM Manual: infra/infra_jumphost.md
   - NKP The Hard Way: appendix/infra_nkp_hard_way.md
