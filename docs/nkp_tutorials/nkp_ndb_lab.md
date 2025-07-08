@@ -4,7 +4,7 @@ lastupdate: git
 lastupdateauthor: "Lakshmi Balaramane"
 ---
 
-# Kubernetes and Nutanix NDB Integration
+# Nutanix NKP and Nutanix NDB Integration
 
 This lab sets up a custom microservices-based application with a VM-based Nutanix Database Service ([NDB](https://www.nutanix.com/products/database-service)). It demonstrates integrating NDB-provisioned databases with a vanilla Kubernetes cluster, replacing OpenShift-specific features like Routes with Ingress and Security Context Constraints (SCCs) with Kubernetes security contexts.
 
@@ -23,7 +23,7 @@ NDB provides Database-as-a-Service for Microsoft SQL Server, Oracle, PostgreSQL,
 - Nutanix Kubernetes Platform NKP cluster ``v1.15`` or later deployed, accessible via `kubectl`. See [NKP Deployment](../infra/infra_nkp.md) for NKP install instructions.
 - Nutanix CSI driver installed for storage integration.
 - Networking configured to allow communication between the Kubernetes cluster and NDB.
-- NGINX Ingress controller installed for external access.
+- Traefik Ingress controller installed for external access.
 - Linux Tools VM or equivalent environment with `kubectl`, `helm`, `curl`, and `jq` installed.
 - NDB server credentials and SSH key pair for database provisioning.
 

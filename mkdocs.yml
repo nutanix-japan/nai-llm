@@ -42,6 +42,11 @@ nav:
     - Getting Started: nkp_tutorials/index.md
     - Install NDB Operator on NKP: nkp_tutorials/nkp_ndb_lab.md
     - Install Workload: nkp_tutorials/nkp_ndb_install_app.md
+- NKP Data Protection Tutorials:
+  - NKP and NDK: 
+    - Getting Started: nkp_ndk/index.md
+    - Preparing NDK: nkp_ndk/nkp_ndk.md
+    - Single PC/PE/K8s Workflow: nkp_ndk/nkp_ndk_singlek8s.md
 - Appendix:
   - Jumphost VM Manual: infra/infra_jumphost.md
   - NKP The Hard Way: appendix/infra_nkp_hard_way.md
@@ -135,6 +140,7 @@ theme:
   - content.code.annotate
   - content.code.copy
   - content.code.annotate
+  - content.code.select
   #- content.tabs.link
 
 markdown_extensions:

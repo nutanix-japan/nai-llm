@@ -236,7 +236,7 @@ Use this token for accessing Hugging Face resources with read-only permissions.
    
     === "Template .env"
 
-        ```text
+        ```bash
         export KSERVE_VERSION=_your_kserve_version
         export NAI_CORE_VERSION=_your_nai_core_version
         export NAI_API_VERSION=_your_nai_api_version
