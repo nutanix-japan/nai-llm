@@ -231,53 +231,53 @@ For the purposes of this lab, we will call the source NKP cluster as ``nkpprimar
 
     === ":octicons-command-palette-16: Command"
 
-        ```text
-        helm upgrade -n ntnx-system --install ndk chart/ \
-        --set manager.repository="$IMAGE_REGISTRY/ndk/manager" \
-        --set manager.tag=${NDK_VERSION} \
-        --set infraManager.repository="$IMAGE_REGISTRY/ndk/infra-manager" \
-        --set infraManager.tag=${NDK_VERSION} \
-        --set kubeRbacProxy.repository="$IMAGE_REGISTRY/ndk/kube-rbac-proxy" \
-        --set kubeRbacProxy.tag=${KUBE_RBAC_PROXY_VERSION} \
-        --set bitnamiKubectl.repository="$IMAGE_REGISTRY/ndk/bitnami-kubectl" \
-        --set bitnamiKubectl.tag=${KUBECTL_VERSION} \
-        --set jobScheduler.repository="$IMAGE_REGISTRY/ndk/job-scheduler" \
-        --set jobScheduler.tag=${NDK_VERSION} \
-        --set config.secret.name=nutanix-csi-credentials \
-        --set tls.server.enable=false
-        ```
+         ```text
+         helm upgrade -n ntnx-system --install ndk chart/ \
+         --set manager.repository="$IMAGE_REGISTRY/ndk/manager" \
+         --set manager.tag=${NDK_VERSION} \
+         --set infraManager.repository="$IMAGE_REGISTRY/ndk/infra-manager" \
+         --set infraManager.tag=${NDK_VERSION} \
+         --set kubeRbacProxy.repository="$IMAGE_REGISTRY/ndk/kube-rbac-proxy" \
+         --set kubeRbacProxy.tag=${KUBE_RBAC_PROXY_VERSION} \
+         --set bitnamiKubectl.repository="$IMAGE_REGISTRY/ndk/bitnami-kubectl" \
+         --set bitnamiKubectl.tag=${KUBECTL_VERSION} \
+         --set jobScheduler.repository="$IMAGE_REGISTRY/ndk/job-scheduler" \
+         --set jobScheduler.tag=${NDK_VERSION} \
+         --set config.secret.name=nutanix-csi-credentials \
+         --set tls.server.enable=false
+         ```
 
     === ":octicons-command-palette-16:  Sample Command"
         
-        ```{ .text .no-copy }
-        helm upgrade -n ntnx-system --install ndk chart/         
-        --set manager.repository=harbor.example.com/nkp/ndk/manager         
-        --set manager.tag=1.2.0         
-        --set infraManager.repository=harbor.example.com/nkp/ndk/infra-manager         
-        --set infraManager.tag=1.2.0         
-        --set kubeRbacProxy.repository=harbor.example.com/nkp/ndk/kube-rbac-proxy         
-        --set kubeRbacProxy.tag=v0.17.0         
-        --set bitnamiKubectl.repository=harbor.example.com/nkp/ndk/bitnami-kubectl         
-        --set bitnamiKubectl.tag=1.30.3         
-        --set jobScheduler.repository=harbor.example.com/nkp/ndk/job-scheduler         
-        --set jobScheduler.tag=1.2.0         
-        --set config.secret.name=nutanix-csi-credentials         
-        --set tls.server.enable=false
-        ```
+         ```{ .text .no-copy }
+         helm upgrade -n ntnx-system --install ndk chart/         
+         --set manager.repository=harbor.example.com/nkp/ndk/manager         
+         --set manager.tag=1.2.0         
+         --set infraManager.repository=harbor.example.com/nkp/ndk/infra-manager         
+         --set infraManager.tag=1.2.0         
+         --set kubeRbacProxy.repository=harbor.example.com/nkp/ndk/kube-rbac-proxy         
+         --set kubeRbacProxy.tag=v0.17.0         
+         --set bitnamiKubectl.repository=harbor.example.com/nkp/ndk/bitnami-kubectl         
+         --set bitnamiKubectl.tag=1.30.3         
+         --set jobScheduler.repository=harbor.example.com/nkp/ndk/job-scheduler         
+         --set jobScheduler.tag=1.2.0         
+         --set config.secret.name=nutanix-csi-credentials         
+         --set tls.server.enable=false
+         ```
 
-    === "Output"
+    === ":octicons-command-palette-16: Command output"
+    
+         ```{ .text .no-copy }
+         Release "ndk" does not exist. Installing it now.
+         NAME: ndk
+         LAST DEPLOYED: Mon Jul  7 06:33:28 2025
+         NAMESPACE: ntnx-system
+         STATUS: deployed
+         REVISION: 1
+         TEST SUITE: None
+         ```
 
-        ```{ .text .no-copy }
-        Release "ndk" does not exist. Installing it now.
-        NAME: ndk
-        LAST DEPLOYED: Mon Jul  7 06:33:28 2025
-        NAMESPACE: ntnx-system
-        STATUS: deployed
-        REVISION: 1
-        TEST SUITE: None
-        ```
-
-5. Check if all NDK resources are running (4 of 4 containers should be running inside the ``ndk-controller-manger`` pod)
+5. Check if all NDK custom resources are running (4 of 4 containers should be running inside the ``ndk-controller-manger`` pod)
    
     === ":octicons-command-palette-16: Command"
 
@@ -316,7 +316,7 @@ The first component we would configure in NDK is ``StorageCluster``. This is use
 - Prism Central (PC)
 - Prism Element (PE)
 
-By configuring ``StorageCluster`` resource with NDK, we are providing Nutanix infrastructure information to NDK.
+By configuring ``StorageCluster`` custom resource with NDK, we are providing Nutanix infrastructure information to NDK.
 
 1. Logon to PC
  
@@ -406,7 +406,7 @@ By configuring ``StorageCluster`` resource with NDK, we are providing Nutanix in
          source $HOME/ndk/.env
          ```
 
-6. Create the StorageCluster resource
+6. Create the StorageCluster custom resource
    
     === ":octicons-command-palette-16: Command"
 
@@ -428,7 +428,7 @@ By configuring ``StorageCluster`` resource with NDK, we are providing Nutanix in
          storagecluster.dataservices.nutanix.com/primary-storage-cluster created
          ```
 
-Now we are ready to create local cluster snapshots and snapshot restores using the following NDK resources:
+Now we are ready to create local cluster snapshots and snapshot restores using the following NDK custom resources:
 
 -  ``ApplicationSnapshot`` and
 -  ``ApplicationSnapshotRestore``

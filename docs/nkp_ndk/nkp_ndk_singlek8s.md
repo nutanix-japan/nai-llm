@@ -111,7 +111,7 @@ Now we have a stateful workload which we can replicate and recover using NDK
     NDK uses labels to select kubernetes resources to act upon. 
 
 
-1. Define a NDK ``Application`` resource to replicate our deployed application with label ``app1``
+1. Define a NDK ``Application`` custom resource to replicate our deployed application with label ``app1``
 
     === ":octicons-command-palette-16: Command"
     
@@ -234,7 +234,7 @@ Now we have a stateful workload which we can replicate and recover using NDK
          kubectl delete po,pvc -l app=app1 --force
          ```
 
-7. Restore the app from ``applicationSnapshot`` resource
+7. Restore the app from ``applicationSnapshot`` custom resource
    
     === ":octicons-command-palette-16: Command"
     
@@ -266,7 +266,7 @@ Now we have a stateful workload which we can replicate and recover using NDK
          app1-restore   app1-snap       true
          ```
 
-8. Monitor the progress of ``ApplicationSnapshotRestore`` resource
+8. Monitor the progress of ``ApplicationSnapshotRestore`` custom resource
    
     === ":octicons-command-palette-16: Command"
     
@@ -327,7 +327,7 @@ Now we have a stateful workload which we can replicate and recover using NDK
 
 ## Cross Namespace Recovery
 
-NDK offers cross-namespace recovery capabilites. With this NKP or any supported K8s platform administrator can recover ``applicationSnapshot`` resource to a different namespace within the same K8s cluster.
+NDK offers cross-namespace recovery capabilites. With this NKP or any supported K8s platform administrator can recover ``applicationSnapshot`` custom resource to a different namespace within the same K8s cluster.
 
 1. Create a referenceGrant resouce to grant permission to restore specific application snapshots from one namespace to another.
    
@@ -371,7 +371,7 @@ NDK offers cross-namespace recovery capabilites. With this NKP or any supported 
              name: app1-snap
          EOF
          ```
-    === "Output"
+    === ":octicons-command-palette-16: Command output"
     
          ```bash
          referencegrant.gateway.networking.k8s.io/cross-ns-rg created
@@ -394,7 +394,7 @@ NDK offers cross-namespace recovery capabilites. With this NKP or any supported 
          Active namespace is "restore".
          ```
 
-3. Create and ``applicationSnapshotRestore`` resource to restore to target ``restore`` namespace
+3. Create and ``applicationSnapshotRestore`` custom resource to restore to target ``restore`` namespace
 
     === ":octicons-command-palette-16: Template Command"
     
@@ -427,7 +427,7 @@ NDK offers cross-namespace recovery capabilites. With this NKP or any supported 
          ```
 
 
-5. Monitor the progress of ``ApplicationSnapshotRestore`` resource
+5. Monitor the progress of ``ApplicationSnapshotRestore`` custom resource
    
     === ":octicons-command-palette-16: Command"
     
@@ -440,7 +440,7 @@ NDK offers cross-namespace recovery capabilites. With this NKP or any supported 
 
     === ":octicons-command-palette-16: Command Output"
     
-         ```text title="Wait until the status of ApplicationSnapshotRestore resource is true"
+         ```text title="Wait until the status of ApplicationSnapshotRestore custom resource is true"
          Name:         cross-ns-asr
          Namespace:    restore
 
@@ -500,7 +500,7 @@ NDK offers cross-namespace recovery capabilites. With this NKP or any supported 
          Start Time:              2025-07-08 05:40:31
          ```
          ```text
-         kubectl et applicationsnapshotrestore/cross-ns-asr -w
+         kubectl get applicationsnapshotrestore/cross-ns-asr -w
          NAME           SNAPSHOT-NAME   COMPLETED
          cross-ns-asr   app1-snap       true
          ```
