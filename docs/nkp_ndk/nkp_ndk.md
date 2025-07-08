@@ -309,6 +309,31 @@ For the purposes of this lab, we will call the source NKP cluster as ``nkpprimar
          replicaset.apps/ndk-controller-manager-57fd7fc56b   1         1         1       19m
          ```
 
+## NDK Custom Resources for K8s
+
+To begin protecting applications with NDK, it is good to become familiar with the NDK custom resources and how they are used to manage data protection. The following table provides a brief overview of the NDK custom resources and their purposes.
+
+For more information about the NDK custom resources, see the [NDK Custom Resources](https://portal.nutanix.com/page/documents/details?targetId=Nutanix-Data-Services-for-Kubernetes:top-terminology-k8s-r.html) section of the NDK
+documentation.
+
+!!! tip
+
+    We will be using NDK custom resources throughout the lab for accomplising data protection tasks and show the relationship between these custom resources as well.
+
+| Custom Resource          | Purpose                                           |
+|--------------------------|---------------------------------------------------|
+| ``StorageCluster``           | Defines the Nutanix storage fabric and UUIDs for PE and PC. |
+| ``Application``              | Defines a logical group of K8s resources for data protection. |
+| ``ApplicationSnapshotContent`` | Stores infrastructure-level data of an application snapshot. |
+| ``ApplicationSnapshot``      | Takes a snapshot of an application and its volumes. |
+| ``ApplicationSnapshotRestore`` | Restores an application snapshot. |
+| ``Remote``                   | Defines a target Kubernetes cluster for replication. |
+| ``ReplicationTarget``        | Specifies where to replicate an application snapshot. |
+| ``ApplicationSnapshotReplication`` | Triggers snapshot replication to another cluster. |
+| ``JobScheduler``             | Defines schedules for data protection jobs. |
+| ``ProtectionPlan``           | Defines snapshot and replication rules and retention. |
+| ``AppProtectionPlan``        | Applies one or more ProtectionPlans to an application. |
+
 ## Configure NDK
 
 The first component we would configure in NDK is ``StorageCluster``. This is used to represent the Nutanix Cluster components including the following:

@@ -78,13 +78,13 @@ In this section we will deploy a sample workload, snapshot the Application compo
 
 6. Watch the workload components until they are running
     
-    === ":octicons-file-code-16:  Command"
+    === ":octicons-command-palette-16: Command"
 
         ```bash
         kubectl get po,pvc -l app=app1
         ```
 
-    === ":octicons-file-code-16: Sample command"
+    === ":octicons-command-palette-16: Sample command"
         
         ```bash hl_lines="2 5"
         NAME        READY   STATUS    RESTARTS   AGE
@@ -203,6 +203,56 @@ Now we have a stateful workload which we can replicate and recover using NDK
             Normal  VolumeSnapshotWaiting    2m45s  NDK   ApplicationSnapshotContent's volume snapshot phase is waiting to be processed
             Normal  FinalizeSnapshotWaiting  2m16s  NDK   ApplicationSnapshotContent's finalize phase is waiting to be processed
           ```
+
+    ??? info "Relationship between NDK custom resources"
+ 
+        We can observe that the ``ApplicationSnapshot`` and ``ApplicationSnapshotContent`` NDK custom resources are related.
+
+        ``ApplicationSnapshotContent`` also shows the Nutanix infrastructure components of the ``ApplicationSnapshot`` custom resources such as Nutanix volumes.
+        
+        Refer to the highlighted parts in the following command output.
+  
+        ```bash hl_lines="4"
+        kubectl get ApplicationSnapshot
+    
+        NAMESPACE   NAME        AGE     READY-TO-USE   BOUND-SNAPSHOTCONTENT                      SNAPSHOT-AGE
+        default     app1-snap   4h33m   true           asc-8af85cca-3da7-468c-96fb-db54ec2cf940   4h33m
+        ```
+
+        ```bash hl_lines="17 18 22 23 29 31"
+        kubectl get ApplicationSnapshotContent -oyaml
+        
+        apiVersion: v1
+        items:
+        - apiVersion: dataservices.nutanix.com/v1alpha1
+          kind: ApplicationSnapshotContent
+          metadata:
+            creationTimestamp: "2025-07-08T02:00:06Z"
+            finalizers:
+            - dataservices.nutanix.com/app-snap
+            - dataservices.nutanix.com/app-snap-content
+            generation: 1
+            name: asc-8af85cca-3da7-468c-96fb-db54ec2cf940
+            resourceVersion: "7484635"
+            uid: 9ed65107-b400-4d75-9acd-c0a7a0aede81
+          spec:
+            applicationSnapshotRef:
+              name: app1-snap
+              namespace: default
+            source:
+              applicationRef:
+                name: app-1
+                namespace: default
+          status:
+            applicationSnapshotSummary:
+              applicationSnapshotHandle:
+                name: asc-8af85cca-3da7-468c-96fb-db54ec2cf940
+              volumeClaimHandleMap:
+                az-claim-1: NutanixVolumes-0d77026f-f513-4b20-4c4f-822d31e0c4d4
+              volumeSnapshotHandleMap:
+                NutanixVolumes-0d77026f-f513-4b20-4c4f-822d31e0c4d4: 5acbcd9e-fde3-4fe5-aabd-11a4b080a044:ea8518bb-3453-4748-bbd0-713eb9358c5b
+        ```
+
 
 4. The NDK controller manager will also have logs of the snapshot operation. This will be useful for troubleshooting purposes
    
