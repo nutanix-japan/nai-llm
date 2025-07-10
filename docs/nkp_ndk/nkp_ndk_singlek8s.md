@@ -433,7 +433,7 @@ NDK offers cross-namespace recovery capabilites. With this NKP or any supported 
     
          ```bash
          kubectl create namespace restore
-         kubend restore
+         kubens restore
          ```
     === ":octicons-command-palette-16: Sample Command"
     

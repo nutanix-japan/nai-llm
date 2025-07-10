@@ -70,7 +70,7 @@ For the purposes of this lab, we will call the source NKP cluster as ``nkpprimar
 
 7. In ``VSC``, under the newly created ``ndk`` folder, click on **New File** :material-file-plus-outline: and create file with the following name:
    
-    === ":octicons-command-palette-16: Command"
+    === ":octicons-file-code-16: File"
     
          ```bash
          .env
@@ -250,18 +250,18 @@ For the purposes of this lab, we will call the source NKP cluster as ``nkpprimar
     === ":octicons-command-palette-16:  Sample Command"
         
          ```{ .text .no-copy }
-         helm upgrade -n ntnx-system --install ndk chart/         
-         --set manager.repository=harbor.example.com/nkp/ndk/manager         
-         --set manager.tag=1.2.0         
-         --set infraManager.repository=harbor.example.com/nkp/ndk/infra-manager         
-         --set infraManager.tag=1.2.0         
-         --set kubeRbacProxy.repository=harbor.example.com/nkp/ndk/kube-rbac-proxy         
-         --set kubeRbacProxy.tag=v0.17.0         
-         --set bitnamiKubectl.repository=harbor.example.com/nkp/ndk/bitnami-kubectl         
-         --set bitnamiKubectl.tag=1.30.3         
-         --set jobScheduler.repository=harbor.example.com/nkp/ndk/job-scheduler         
-         --set jobScheduler.tag=1.2.0         
-         --set config.secret.name=nutanix-csi-credentials         
+         helm upgrade -n ntnx-system --install ndk chart/ \
+         --set manager.repository="harbor.example.com/nkp/ndk/manager" \
+         --set manager.tag=1.2.0 \
+         --set infraManager.repository="harbor.example.com/nkp/ndk/infra-manager" \
+         --set infraManager.tag=1.2.0 \
+         --set kubeRbacProxy.repository="harbor.example.com/nkp/ndk/kube-rbac-proxy" \
+         --set kubeRbacProxy.tag=v0.17.0 \
+         --set bitnamiKubectl.repository="harbor.example.com/nkp/ndk/bitnami-kubectl" \
+         --set bitnamiKubectl.tag=1.30.3 \
+         --set jobScheduler.repository="harbor.example.com/nkp/ndk/job-scheduler" \
+         --set jobScheduler.tag=1.2.0 \
+         --set config.secret.name=nutanix-csi-credentials \
          --set tls.server.enable=false
          ```
 
@@ -343,59 +343,8 @@ The first component we would configure in NDK is ``StorageCluster``. This is use
 
 By configuring ``StorageCluster`` custom resource with NDK, we are providing Nutanix infrastructure information to NDK.
 
-1. Logon to PC
- 
-    === ":octicons-command-palette-16: Command"
-    
-         ```bash 
-         ssh -l nutanix pc.example.com
-         ```
 
-2. Find PC UUID
-   
-    === ":octicons-command-palette-16: Command"
-         
-         ```bash 
-         ncli cluster info
-         ```
-
-    === ":octicons-command-palette-16: Command Output"
-
-        ```bash hl_lines="4"
-        admin@NTNX-10-x-x-x-A-PCVM:~$ ncli cluster info
-
-            Cluster Id                : d0f1eb56-9ee6-4469-b21f-xxxxxxxxxx::3611790923605874030
-            Cluster Uuid              : d0f1eb56-9ee6-4469-b21f-xxxxxxxxxx
-            Cluster Name              : PC_10.x.x.x
-        ```
-
-1. Logon to PE
- 
-    === ":octicons-command-palette-16: Command"
-    
-         ```bash 
-         ssh -l nutanix pe.example.com
-         ```
-
-2. Find PE UUID
-   
-    === ":octicons-command-palette-16: Command"
-         
-         ```bash 
-         ncli cluster info
-         ```
-
-    === ":octicons-command-palette-16: Command Output"
-
-        ```bash hl_lines="4"
-        admin@NTNX-10-x-x-x-A-PCVM:~$ ncli cluster info
-
-            Cluster Id                : 00062f20-b2e0-fa8e-4b04-xxxxxxxxxx::5405509758989007242
-            Cluster Uuid              : 00062f20-b2e0-fa8e-4b04-xxxxxxxxxx
-            Cluster Name              : PE_10.x.x.x
-        ```
-
-3. Logon to Jumphost VM Terminal in ``VSCode``
+1. Logon to Jumphost VM Terminal in ``VSCode``
 
     === ":octicons-command-palette-16: Command"
     
@@ -403,13 +352,35 @@ By configuring ``StorageCluster`` custom resource with NDK, we are providing Nut
          cd $HOME/ndk
          ```
 
-4. Add (append) the following environment variables and save it
+2. Get uuid of PC and PE using the following command
+
+    === ":octicons-command-palette-16:  Template Command"
+
+        ```bash
+        kubectl get node _any_nkp_node_name -o jsonpath='{.metadata.labels}' | grep -o 'csi\.nutanix\.com/[^,]*' 
+        ```
+    
+    === ":octicons-command-palette-16:  Sample .command"
+        
+        ```text
+        kubectl get node nkprimary-md-0-vd5kr-ff8r8-hq764 -o jsonpath='{.metadata.labels}' | grep -o 'csi\.nutanix\.com/[^,]*' 
+        ```
+    === ":octicons-command-palette-16:  Command output"
+        
+        ```text hl_lines="3 4"
+        $ kubectl get node nkprimary-md-0-vd5kr-ff8r8-hq764 -o jsonpath='{.metadata.labels}' | grep -o 'csi\.nutanix\.com/[^,]*' 
+
+        csi.nutanix.com/prism-central-uuid":"d0f1eb56-9ee6-4469-b21f-xxxxxxxxxxxx"
+        csi.nutanix.com/prism-element-uuid":"00062f20-b2e0-fa8e-4b04-xxxxxxxxxxxx"
+        ```
+
+3. Add (append) the following environment variables and save it
    
     === ":octicons-file-code-16: Template .env"
 
-        ```bash
-        export PRISM_UUID=_pc_uuid_from_previous_commands
-        export ELEMENT_UUID=_pe_uuid_from_previous_commands
+        ```text
+        export PRISM_CENTRAL_UUID=_pc_uuid_from_previous_commands
+        export PRISM_ELEMENT_UUID=_pe_uuid_from_previous_commands
         export SC_NAME=_storage_cluster_name
         export KUBECONFIG=$HOME/nkp/_nkp_primary_cluster_name.conf
         ```
@@ -417,13 +388,13 @@ By configuring ``StorageCluster`` custom resource with NDK, we are providing Nut
     === ":octicons-file-code-16: Sample .env"
         
         ```text
-        export PRISM_UUID=ad0f1eb56-9ee6-4469-b21f-xxxxxxxxxx
-        export ELEMENT_UUID=00062f20-b2e0-fa8e-4b04-xxxxxxxxxx
+        export PRISM_CENTRAL_UUID=ad0f1eb56-9ee6-4469-b21f-xxxxxxxxxx
+        export PRISM_ELEMENT_UUID=00062f20-b2e0-fa8e-4b04-xxxxxxxxxx
         export SC_NAME=primary-storage-cluster
         export KUBECONFIG=$HOME/nkp/nkpprimary.conf
         ```
  
-5. Source the ``.env`` file
+4. Source the ``.env`` file
     
     === ":octicons-command-palette-16: Command"
     
@@ -431,7 +402,7 @@ By configuring ``StorageCluster`` custom resource with NDK, we are providing Nut
          source $HOME/ndk/.env
          ```
 
-6. Create the StorageCluster custom resource
+5. Create the StorageCluster custom resource
    
     === ":octicons-command-palette-16: Command"
 
@@ -442,8 +413,8 @@ By configuring ``StorageCluster`` custom resource with NDK, we are providing Nut
          metadata:
           name: $SC_NAME
          spec:
-          storageServerUuid: $ELEMENT_UUID
-          managementServerUuid: $PRISM_UUID
+          storageServerUuid: $PRISM_ELEMENT_UUID
+          managementServerUuid: $PRISM_CENTRAL_UUID
          EOF
          ```
 
