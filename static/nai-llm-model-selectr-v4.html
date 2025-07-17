@@ -1,0 +1,3980 @@
+<!DOCTYPE html><html lang="en"><head><meta http-equiv="Content-Security-Policy" content="default-src 'self' 'unsafe-inline' 'unsafe-eval' data: blob: https://cdnjs.cloudflare.com https://cdn.jsdelivr.net https://code.jquery.com https://unpkg.com https://d3js.org https://threejs.org https://cdn.plot.ly https://stackpath.bootstrapcdn.com https://maps.googleapis.com https://cdn.tailwindcss.com https://ajax.googleapis.com https://kit.fontawesome.com https://cdn.datatables.net https://maxcdn.bootstrapcdn.com https://code.highcharts.com https://tako-static-assets-production.s3.amazonaws.com https://www.youtube.com https://fonts.googleapis.com https://fonts.gstatic.com https://pfst.cf2.poecdn.net https://puc.poecdn.net https://i.imgur.com https://wikimedia.org https://*.icons8.com https://*.giphy.com https://picsum.photos https://images.unsplash.com; frame-src 'self' https://www.youtube.com https://trytako.com; child-src 'self'; manifest-src 'self'; worker-src 'self'; upgrade-insecure-requests; block-all-mixed-content;">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Model Selectr</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary-color: #5D5CDE;
+            --primary-light: #8B83FF;
+            --primary-dark: #4A49B0;
+            --bg-dark: #0D1117;
+            --bg-darker: #070A0F;
+            --card-bg: #111827;
+            --card-bg-hover: #1a2235;
+            --card-border-hf: #F59E0B;
+            --card-border-nim: #10B981;
+            --text-light: #F3F4F6;
+            --text-muted: #9CA3AF;
+            --tag-bg: #1E293B;
+            --border-color: rgba(255, 255, 255, 0.1);
+            --ai-agent-bg: rgba(59, 130, 246, 0.2);
+            --ai-agent-color: #60A5FA;
+            --tool-calling-bg: rgba(139, 92, 246, 0.2);
+            --tool-calling-color: #A78BFA;
+            --rag-bg: rgba(220, 38, 68, 0.2);
+            --rag-color: #F87171;
+            
+            /* Colors for icons */
+            --blue-icon: #3B82F6;
+            --green-icon: #10B981;
+            --purple-icon: #8B5CF6;
+            --red-icon: #EF4444;
+            --yellow-icon: #F59E0B;
+            --gray-icon: #6B7280;
+        }
+        
+        body {
+            font-family: 'Inter', system-ui, -apple-system, sans-serif;
+            background-color: var(--bg-dark);
+            color: var(--text-light);
+        }
+        
+        .sidebar {
+            background-color: var(--bg-dark);
+            width: 240px;
+            height: 100vh;
+            position: fixed;
+            top: 0;
+            left: 0;
+            overflow-y: auto;
+            padding: 1rem;
+        }
+        
+        .main-content {
+            margin-left: 240px;
+            min-height: 100vh;
+            padding: 1rem 1.5rem;
+            background-color: var(--bg-dark);
+        }
+        
+        .filter-section {
+            margin-bottom: 1rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .filter-header {
+            display: flex;
+            align-items: center;
+            font-weight: 500;
+            margin-bottom: 0.75rem;
+            color: var(--text-light);
+            font-size: 0.8rem;
+            letter-spacing: 0.5px;
+            cursor: pointer;
+            text-transform: uppercase;
+        }
+        
+        .filter-header .icon {
+            margin-right: 0.5rem;
+            font-size: 0.7rem;
+            transition: transform 0.2s;
+        }
+        
+        .filter-header .info-icon {
+            color: var(--text-muted);
+            font-size: 0.8rem;
+            cursor: help;
+            margin-left: auto;
+        }
+        
+        .filter-options {
+            margin-left: 0.5rem;
+        }
+        
+        .filter-option {
+            margin-bottom: 0.5rem;
+            color: var(--text-muted);
+            display: flex;
+            align-items: center;
+        }
+        
+        .filter-option input[type="checkbox"] {
+            appearance: none;
+            -webkit-appearance: none;
+            width: 14px;
+            height: 14px;
+            border: 1px solid var(--text-muted);
+            border-radius: 2px;
+            margin-right: 0.5rem;
+            position: relative;
+            cursor: pointer;
+        }
+        
+        .filter-option input[type="checkbox"]:checked {
+            background-color: var(--primary-color);
+            border-color: var(--primary-color);
+        }
+        
+        .filter-option input[type="checkbox"]:checked::after {
+            content: '✓';
+            position: absolute;
+            color: white;
+            font-size: 10px;
+            top: 0;
+            left: 2px;
+        }
+        
+        .filter-option label {
+            display: flex;
+            align-items: center;
+            cursor: pointer;
+            font-size: 0.8rem;
+            width: 100%;
+        }
+        
+        .filter-icon {
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 0.5rem;
+            font-size: 10px;
+            color: white;
+        }
+        
+        .filter-icon.blue {
+            background-color: var(--blue-icon);
+        }
+        
+        .filter-icon.green {
+            background-color: var(--green-icon);
+        }
+        
+        .filter-icon.purple {
+            background-color: var(--purple-icon);
+        }
+        
+        .filter-icon.red {
+            background-color: var(--red-icon);
+        }
+        
+        .filter-icon.yellow {
+            background-color: var(--yellow-icon);
+        }
+        
+        .filter-icon.gray {
+            background-color: var(--gray-icon);
+        }
+        
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+        
+        .model-count {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+        }
+        
+        .model-card {
+            background-color: var(--card-bg);
+            border-radius: 0.375rem;
+            position: relative;
+            transition: transform 0.15s, box-shadow 0.15s;
+            font-size: 0.8rem;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            height: auto;
+            margin-bottom: 0.75rem;
+        }
+        
+        .model-card:hover {
+            background-color: var(--card-bg-hover);
+            transform: translateY(-1px);
+        }
+        
+        .model-card.hf {
+            border-left: 4px solid var(--card-border-hf);
+        }
+        
+        .model-card.nim {
+            border-left: 4px solid var(--card-border-nim);
+        }
+        
+        .model-header {
+            padding: 1rem 1rem 0.5rem 1rem;
+        }
+        
+        .model-tag {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            font-size: 0.7rem;
+            font-weight: 600;
+            padding: 0.15rem 0.3rem;
+            border-radius: 0.15rem;
+            display: flex;
+            align-items: center;
+        }
+        
+        .model-tag.hf {
+            background-color: rgba(245, 158, 11, 0.15);
+            color: #F59E0B;
+        }
+        
+        .model-tag.nim {
+            background-color: rgba(16, 185, 129, 0.15);
+            color: #10B981;
+        }
+        
+        .model-name {
+            font-size: 0.9rem;
+            font-weight: 600;
+            margin-bottom: 0.2rem;
+            display: flex;
+            align-items: center;
+            padding-right: 3rem;
+        }
+        
+        .model-name .verified {
+            color: #10B981;
+            margin-left: 0.25rem;
+            font-size: 0.7rem;
+        }
+        
+        .model-provider {
+            font-size: 0.8rem;
+            margin-bottom: 0.2rem;
+            color: var(--text-muted);
+        }
+        
+        .model-description {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            margin-bottom: 0.5rem;
+        }
+        
+        .model-specs {
+            display: flex;
+            padding: 0.75rem 1rem;
+            gap: 1rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.05);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        }
+        
+        .spec-item {
+            display: flex;
+            align-items: center;
+            color: var(--text-muted);
+            font-size: 0.75rem;
+        }
+        
+        .spec-item i {
+            margin-right: 0.4rem;
+        }
+        
+        .model-capabilities {
+            display: flex;
+            gap: 0.5rem;
+            padding: 0.75rem 1rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        }
+        
+        .capability-tag {
+            border-radius: 0.25rem;
+            font-size: 0.7rem;
+            font-weight: 500;
+            padding: 0.2rem 0.4rem;
+        }
+        
+        .capability-tag.tool-calling {
+            background-color: var(--tool-calling-bg);
+            color: var(--tool-calling-color);
+        }
+        
+        .capability-tag.ai-agent {
+            background-color: var(--ai-agent-bg);
+            color: var(--ai-agent-color);
+        }
+        
+        .capability-tag.rag {
+            background-color: var(--rag-bg);
+            color: var(--rag-color);
+        }
+        
+        .capability-tag.text-generation {
+            background-color: rgba(16, 185, 129, 0.2);
+            color: #10B981;
+        }
+        
+        .capability-tag.embedding {
+            background-color: rgba(245, 158, 11, 0.2);
+            color: #F59E0B;
+        }
+        
+        .capability-tag.reranking {
+            background-color: rgba(59, 130, 246, 0.2);
+            color: #60A5FA;
+        }
+        
+        .capability-tag.content-safety {
+            background-color: rgba(239, 68, 68, 0.2);
+            color: #F87171;
+        }
+        
+        .capability-tag.guardrails {
+            background-color: rgba(124, 58, 237, 0.2);
+            color: #A78BFA;
+        }
+        
+        .model-best-for {
+            padding: 0.75rem 1rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        }
+        
+        .best-for-header {
+            font-size: 0.75rem;
+            font-weight: 500;
+            margin-bottom: 0.5rem;
+        }
+        
+        .best-for-content {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            line-height: 1.4;
+        }
+        
+        .model-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.75rem 1rem;
+        }
+        
+        .model-links {
+            display: flex;
+            gap: 1rem;
+        }
+        
+        .model-link {
+            color: #3B82F6;
+            font-size: 0.75rem;
+            text-decoration: none;
+            cursor: pointer;
+        }
+        
+        .model-link.card {
+            display: flex;
+            align-items: center;
+        }
+        
+        .model-link.card i {
+            margin-right: 0.25rem;
+        }
+        
+        .compare-btn {
+            padding: 0.25rem 0.5rem;
+            border-radius: 0.25rem;
+            font-size: 0.75rem;
+            background-color: rgba(59, 130, 246, 0.1);
+            color: #3B82F6;
+            cursor: pointer;
+            border: none;
+            display: flex;
+            align-items: center;
+        }
+        
+        .compare-btn i {
+            margin-right: 0.3rem;
+        }
+        
+        .compare-btn:hover {
+            background-color: rgba(59, 130, 246, 0.2);
+        }
+        
+        .selected-btn {
+            padding: 0.25rem 0.5rem;
+            border-radius: 0.25rem;
+            font-size: 0.75rem;
+            background-color: rgba(139, 92, 246, 0.2);
+            color: #8B5CF6;
+            cursor: pointer;
+            border: none;
+            display: flex;
+            align-items: center;
+        }
+        
+        .selected-btn i {
+            margin-right: 0.3rem;
+        }
+        
+        .view-toggle {
+            display: flex;
+            overflow: hidden;
+            border-radius: 0.25rem;
+            background-color: var(--tag-bg);
+        }
+        
+        .view-option {
+            padding: 0.4rem 0.5rem;
+            cursor: pointer;
+            transition: background-color 0.2s;
+            color: var(--text-muted);
+            font-size: 0.8rem;
+        }
+        
+        .view-option.active {
+            background-color: #3B82F6;
+            color: white;
+        }
+        
+        .sort-select {
+            padding: 0.4rem 0.75rem;
+            border-radius: 0.25rem;
+            background-color: var(--tag-bg);
+            color: var(--text-light);
+            border: none;
+            font-size: 0.8rem;
+            appearance: none;
+            -webkit-appearance: none;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%239CA3AF' width='18px' height='18px'%3E%3Cpath d='M7 10l5 5 5-5z'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 0.5rem center;
+            padding-right: 2rem;
+        }
+        
+        .app-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+        
+        .app-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+        }
+        
+        .header-right {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+        
+        .search-input {
+            background-color: rgba(31, 41, 55, 0.5);
+            border: none;
+            border-radius: 0.25rem;
+            padding: 0.4rem 0.75rem 0.4rem 2rem;
+            color: var(--text-light);
+            width: 250px;
+            font-size: 0.8rem;
+        }
+        
+        .search-input::placeholder {
+            color: var(--text-muted);
+        }
+        
+        .search-container {
+            position: relative;
+        }
+        
+        .search-icon {
+            position: absolute;
+            left: 0.5rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-muted);
+            font-size: 0.8rem;
+        }
+        
+        .grid-view {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(400px, 1fr));
+            gap: 0.75rem;
+        }
+        
+        .list-view {
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+        }
+        
+        .list-view .model-card {
+            display: grid;
+            grid-template-columns: 1fr 120px 140px 220px;
+            grid-template-rows: auto;
+            grid-template-areas: 
+                "header specs capabilities footer";
+            align-items: center;
+        }
+        
+        .list-view .model-header {
+            grid-area: header;
+            padding: 1rem;
+        }
+        
+        .list-view .model-specs {
+            grid-area: specs;
+            flex-direction: column;
+            gap: 0.25rem;
+            padding: 0.75rem;
+            border-top: none;
+            border-left: 1px solid rgba(255, 255, 255, 0.05);
+            height: 100%;
+        }
+        
+        .list-view .model-capabilities {
+            grid-area: capabilities;
+            padding: 0.75rem;
+            flex-wrap: wrap;
+            border-bottom: none;
+            border-left: 1px solid rgba(255, 255, 255, 0.05);
+            height: 100%;
+        }
+        
+        .list-view .model-footer {
+            grid-area: footer;
+            flex-direction: column;
+            gap: 0.5rem;
+            align-items: flex-start;
+            border-left: 1px solid rgba(255, 255, 255, 0.05);
+            height: 100%;
+        }
+        
+        .list-view .model-best-for {
+            display: none;
+        }
+        
+        .clear-all-btn {
+            color: #3B82F6;
+            font-size: 0.8rem;
+            background: transparent;
+            border: none;
+            cursor: pointer;
+        }
+        
+        .clear-all-btn:hover {
+            color: #60A5FA;
+            text-decoration: underline;
+        }
+        
+        /* Toggle switch */
+        .switch {
+            position: relative;
+            display: inline-block;
+            width: 36px;
+            height: 20px;
+        }
+        
+        .switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+        
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(31, 41, 55, 0.8);
+            transition: .4s;
+            border-radius: 20px;
+        }
+        
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 16px;
+            width: 16px;
+            left: 2px;
+            bottom: 2px;
+            background-color: white;
+            transition: .4s;
+            border-radius: 50%;
+        }
+        
+        input:checked + .slider {
+            background-color: #3B82F6;
+        }
+        
+        input:checked + .slider:before {
+            transform: translateX(16px);
+        }
+        
+        /* Context length slider */
+        .context-slider {
+            width: 100%;
+            margin: 0.5rem 0;
+            -webkit-appearance: none;
+            height: 4px;
+            background: rgba(59, 130, 246, 0.3);
+            border-radius: 2px;
+            outline: none;
+        }
+        
+        .context-slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 14px;
+            height: 14px;
+            border-radius: 50%;
+            background: #3B82F6;
+            cursor: pointer;
+        }
+        
+        .context-slider::-moz-range-thumb {
+            width: 14px;
+            height: 14px;
+            border-radius: 50%;
+            background: #3B82F6;
+            cursor: pointer;
+            border: none;
+        }
+        
+        /* Filter headers */
+        .section-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 0.75rem;
+            font-size: 0.7rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            color: var(--text-light);
+        }
+        
+        .section-header i {
+            margin-right: 0.4rem;
+        }
+        
+        .section-header .info-icon {
+            margin-left: auto;
+            color: var(--text-muted);
+            cursor: help;
+        }
+        
+        /* Context Length label */
+        .context-length-label {
+            font-size: 0.7rem;
+            color: var(--text-muted);
+            margin-bottom: 0.5rem;
+        }
+        
+        /* Model details modal */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.7);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .modal-content {
+            background-color: var(--card-bg);
+            border-radius: 0.5rem;
+            width: 90%;
+            max-width: 800px;
+            max-height: 90vh;
+            overflow-y: auto;
+            position: relative;
+        }
+        
+        .modal-header {
+            padding: 1rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .modal-title {
+            font-size: 1.2rem;
+            font-weight: 600;
+        }
+        
+        .modal-close {
+            background: none;
+            border: none;
+            color: var(--text-muted);
+            font-size: 1.5rem;
+            cursor: pointer;
+        }
+        
+        .modal-body {
+            padding: 1rem;
+        }
+        
+        .modal-section {
+            margin-bottom: 1.5rem;
+        }
+        
+        .modal-section-title {
+            font-size: 0.9rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            color: var(--text-light);
+        }
+        
+        .modal-footer {
+            padding: 1rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            display: flex;
+            justify-content: flex-end;
+        }
+        
+        .modal-btn {
+            padding: 0.5rem 1rem;
+            border-radius: 0.25rem;
+            border: none;
+            font-size: 0.8rem;
+            cursor: pointer;
+            margin-left: 0.5rem;
+        }
+        
+        .modal-btn-primary {
+            background-color: var(--primary-color);
+            color: white;
+        }
+        
+        .modal-btn-secondary {
+            background-color: var(--tag-bg);
+            color: var(--text-light);
+        }
+        
+        .modal-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.8rem;
+        }
+        
+        .modal-table tr {
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        }
+        
+        .modal-table th {
+            text-align: left;
+            padding: 0.5rem;
+            color: var(--text-muted);
+            font-weight: 500;
+            width: 30%;
+        }
+        
+        .modal-table td {
+            padding: 0.5rem;
+            color: var(--text-light);
+        }
+    /* Compare Drawer */
+        .compare-drawer {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background-color: var(--card-bg);
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            z-index: 100;
+            transition: transform 0.3s ease-in-out;
+            box-shadow: 0 -4px 6px -1px rgba(0, 0, 0, 0.1), 0 -2px 4px -1px rgba(0, 0, 0, 0.06);
+        }
+        
+        .compare-drawer.compare-drawer-closed {
+            transform: translateY(calc(100% - 50px));
+        }
+        
+        .compare-drawer.compare-drawer-open {
+            transform: translateY(0);
+        }
+        
+        .compare-drawer-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.75rem 1rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            min-height: 50px;
+        }
+        
+        .compare-drawer-title {
+            font-weight: 600;
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+        }
+        
+        .compare-count {
+            background-color: var(--primary-color);
+            color: white;
+            border-radius: 9999px;
+            font-size: 0.7rem;
+            padding: 0.15rem 0.4rem;
+            margin-left: 0.5rem;
+        }
+        
+        .compare-toggle-btn {
+            color: var(--text-muted);
+            font-size: 0.75rem;
+            cursor: pointer;
+            padding: 0.25rem 0.5rem;
+            border-radius: 0.25rem;
+            background-color: rgba(255, 255, 255, 0.1);
+            border: none;
+        }
+        
+        .compare-toggle-btn:hover {
+            background-color: rgba(255, 255, 255, 0.15);
+        }
+        
+        .compare-actions {
+            display: flex;
+            gap: 0.5rem;
+        }
+        
+        .compare-clear-btn {
+            font-size: 0.75rem;
+            background-color: rgba(239, 68, 68, 0.2);
+            color: #F87171;
+            border: none;
+            border-radius: 0.25rem;
+            padding: 0.25rem 0.5rem;
+            cursor: pointer;
+        }
+        
+        .compare-clear-btn:hover {
+            background-color: rgba(239, 68, 68, 0.3);
+        }
+        
+        .compare-table-container {
+            padding: 1rem;
+            overflow-x: auto;
+            max-height: 60vh;
+            overflow-y: auto;
+        }
+        
+        .compare-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.8rem;
+        }
+        
+        .compare-table th,
+        .compare-table td {
+            padding: 0.6rem 0.5rem;
+            text-align: left;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            vertical-align: top;
+        }
+        
+        .compare-table th {
+            font-weight: 500;
+            color: var(--text-muted);
+            position: sticky;
+            top: 0;
+            background-color: var(--card-bg);
+            z-index: 1;
+        }
+        
+        .compare-table th:first-child {
+            width: 140px;
+        }
+        
+        .remove-compare-btn {
+            color: #F87171;
+            background: rgba(239, 68, 68, 0.2);
+            border: none;
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
+            font-size: 0.7rem;
+            cursor: pointer;
+            padding: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0.25rem auto 0;
+        }
+        
+        .compare-btn.active {
+            background-color: rgba(59, 130, 246, 0.2);
+        }
+        
+        .hidden {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <!-- Sidebar with Filters -->
+    <div class="sidebar">
+        <div class="filter-section">
+            <div class="flex justify-between items-center mb-4">
+                <div class="font-bold uppercase">Filters</div>
+                <button id="clearAllFilters" class="clear-all-btn">Clear All</button>
+            </div>
+        </div>
+
+        <div class="filter-section">
+            <div class="section-header">
+                <i class="fas fa-square-poll-horizontal"></i> SOURCE
+                <i class="fas fa-info-circle info-icon"></i>
+            </div>
+            <div class="filter-options">
+                <div class="filter-option">
+                    <input type="checkbox" id="source-hf" class="source-filter" value="huggingface" checked="">
+                    <label for="source-hf">
+                        <div class="filter-icon blue"><i class="fas fa-fire-alt"></i></div>
+                        <span>Hugging Face</span>
+                    </label>
+                </div>
+                <div class="filter-option">
+                    <input type="checkbox" id="source-nim" class="source-filter" value="nvidia" checked="">
+                    <label for="source-nim">
+                        <div class="filter-icon green"><i class="fas fa-microchip"></i></div>
+                        <span>NVIDIA NIM</span>
+                    </label>
+                </div>
+            </div>
+        </div>
+
+        <div class="filter-section">
+            <div class="section-header" id="preValidatedHeader">
+                <i class="fas fa-check-circle"></i> Pre-validated Only
+                <i class="fas fa-info-circle info-icon" title="Only show models that have been validated to work correctly"></i>
+            </div>
+            <div class="flex items-center ml-6 mt-2">
+                <label class="switch mr-2">
+                    <input type="checkbox" id="validatedFilter">
+                    <span class="slider"></span>
+                </label>
+                <span class="text-xs text-gray-400" id="validatedStatus">Off</span>
+            </div>
+        </div>
+        
+        <div class="filter-section">
+            <div class="section-header">
+                <i class="fas fa-tag"></i> USE CASES
+                <i class="fas fa-info-circle info-icon"></i>
+            </div>
+            <div class="filter-options">
+                <div class="filter-option">
+                    <input type="checkbox" id="usecase-code" class="usecase-filter" value="code">
+                    <label for="usecase-code">
+                        <div class="filter-icon blue"><i class="fas fa-code"></i></div>
+                        <span>Code Generation</span>
+                    </label>
+                </div>
+                <div class="filter-option">
+                    <input type="checkbox" id="usecase-agent" class="usecase-filter" value="agent">
+                    <label for="usecase-agent">
+                        <div class="filter-icon blue"><i class="fas fa-robot"></i></div>
+                        <span>AI Agent</span>
+                    </label>
+                </div>
+                <div class="filter-option">
+                    <input type="checkbox" id="usecase-img" class="usecase-filter" value="image">
+                    <label for="usecase-img">
+                        <div class="filter-icon green"><i class="fas fa-image"></i></div>
+                        <span>Image Classification</span>
+                    </label>
+                </div>
+                <div class="filter-option">
+                    <input type="checkbox" id="usecase-img2txt" class="usecase-filter" value="img2txt">
+                    <label for="usecase-img2txt">
+                        <div class="filter-icon yellow"><i class="fas fa-exchange-alt"></i></div>
+                        <span>Image-To-Text</span>
+                    </label>
+                </div>
+                <div class="filter-option">
+                    <input type="checkbox" id="usecase-rag" class="usecase-filter" value="rag">
+                    <label for="usecase-rag">
+                        <div class="filter-icon red"><i class="fas fa-database"></i></div>
+                        <span>Retrieval Augmented Generation</span>
+                    </label>
+                </div>
+            </div>
+        </div>
+        
+        <div class="filter-section">
+            <div class="section-header">
+                <i class="fas fa-cogs"></i> MODEL CAPABILITIES
+                <i class="fas fa-info-circle info-icon"></i>
+            </div>
+            <div class="filter-options">
+                <div class="filter-option">
+                    <input type="checkbox" id="cap-text" class="capability-filter" value="Text Generation">
+                    <label for="cap-text">
+                        <div class="filter-icon gray"><i class="fas fa-comment-alt"></i></div>
+                        <span>Text Generation</span>
+                    </label>
+                </div>
+                <div class="filter-option">
+                    <input type="checkbox" id="cap-tool" class="capability-filter" value="Tool Calling">
+                    <label for="cap-tool">
+                        <div class="filter-icon purple"><i class="fas fa-tools"></i></div>
+                        <span>Tool Calling</span>
+                    </label>
+                </div>
+                <div class="filter-option">
+                    <input type="checkbox" id="cap-embed" class="capability-filter" value="Embedding">
+                    <label for="cap-embed">
+                        <div class="filter-icon gray"><i class="fas fa-plus"></i></div>
+                        <span>Embedding</span>
+                    </label>
+                </div>
+                <div class="filter-option">
+                    <input type="checkbox" id="cap-rerank" class="capability-filter" value="Reranking">
+                    <label for="cap-rerank">
+                        <div class="filter-icon gray"><i class="fas fa-sort-amount-up"></i></div>
+                        <span>Reranking</span>
+                    </label>
+                </div>
+                <div class="filter-option">
+                    <input type="checkbox" id="cap-safety" class="capability-filter" value="Content Safety">
+                    <label for="cap-safety">
+                        <div class="filter-icon gray"><i class="fas fa-shield-alt"></i></div>
+                        <span>Content Safety</span>
+                    </label>
+                </div>
+                <div class="filter-option">
+                    <input type="checkbox" id="cap-guard" class="capability-filter" value="Guardrails">
+                    <label for="cap-guard">
+                        <div class="filter-icon red"><i class="fas fa-shield-alt"></i></div>
+                        <span>Guardrails</span>
+                    </label>
+                </div>
+                <div class="filter-option">
+                    <input type="checkbox" id="cap-vision" class="capability-filter" value="Vision">
+                    <label for="cap-vision">
+                        <div class="filter-icon gray"><i class="fas fa-eye"></i></div>
+                        <span>Vision</span>
+                    </label>
+                </div>
+            </div>
+        </div>
+        
+        <div class="filter-section">
+            <div class="section-header">
+                <i class="fas fa-microchip"></i> MODEL SIZE
+                <i class="fas fa-info-circle info-icon"></i>
+            </div>
+            <div class="filter-options">
+                <div class="filter-option">
+                    <input type="checkbox" id="size-small" class="size-filter" value="small">
+                    <label for="size-small">
+                        <div class="filter-icon green"><i class="fas fa-microchip"></i></div>
+                        <span>Small (&lt; 7B)</span>
+                    </label>
+                </div>
+                <div class="filter-option">
+                    <input type="checkbox" id="size-medium" class="size-filter" value="medium">
+                    <label for="size-medium">
+                        <div class="filter-icon blue"><i class="fas fa-microchip"></i></div>
+                        <span>Medium (7B - 13B)</span>
+                    </label>
+                </div>
+                <div class="filter-option">
+                    <input type="checkbox" id="size-large" class="size-filter" value="large">
+                    <label for="size-large">
+                        <div class="filter-icon purple"><i class="fas fa-microchip"></i></div>
+                        <span>Large (14B - 70B)</span>
+                    </label>
+                </div>
+                <div class="filter-option">
+                    <input type="checkbox" id="size-xlarge" class="size-filter" value="xlarge">
+                    <label for="size-xlarge">
+                        <div class="filter-icon red"><i class="fas fa-microchip"></i></div>
+                        <span>X-Large (&gt; 70B)</span>
+                    </label>
+                </div>
+            </div>
+        </div>
+        
+        <div class="filter-section">
+            <div class="section-header">
+                <i class="fas fa-exchange-alt"></i> CONTEXT LENGTH
+                <i class="fas fa-info-circle info-icon"></i>
+            </div>
+            <div class="filter-options">
+                <div class="context-length-label">Min Context Length: <span id="contextLengthValue">8K</span></div>
+                <input type="range" id="contextLengthSlider" min="0" max="5" value="1" class="context-slider">
+            </div>
+        </div>
+        
+        <div class="filter-section">
+            <div class="section-header">
+                <i class="fas fa-file-contract"></i> LICENSE TYPE
+                <i class="fas fa-info-circle info-icon"></i>
+            </div>
+            <div class="filter-options">
+                <div class="filter-option">
+                    <input type="checkbox" id="license-open" class="license-filter" value="Open">
+                    <label for="license-open">
+                        <div class="filter-icon green"><i class="fas fa-unlock-alt"></i></div>
+                        <span>Open Source</span>
+                    </label>
+                </div>
+                <div class="filter-option">
+                    <input type="checkbox" id="license-community" class="license-filter" value="Community">
+                    <label for="license-community">
+                        <div class="filter-icon blue"><i class="fas fa-users"></i></div>
+                        <span>Community</span>
+                    </label>
+                </div>
+            </div>
+        </div>
+        
+        <div class="filter-section">
+            <div class="section-header">
+                <i class="fas fa-bolt"></i> RUNTIME ENGINE
+                <i class="fas fa-info-circle info-icon"></i>
+            </div>
+            <div class="filter-options">
+                <div class="filter-option">
+                    <input type="checkbox" id="runtime-vllm" class="runtime-filter" value="vllm">
+                    <label for="runtime-vllm">
+                        <div class="filter-icon blue"><i class="fas fa-bolt"></i></div>
+                        <span>vLLM</span>
+                    </label>
+                </div>
+                <div class="filter-option">
+                    <input type="checkbox" id="runtime-tgi" class="runtime-filter" value="tgi">
+                    <label for="runtime-tgi">
+                        <div class="filter-icon purple"><i class="fas fa-server"></i></div>
+                        <span>TGI</span>
+                    </label>
+                </div>
+                <div class="filter-option">
+                    <input type="checkbox" id="runtime-nim" class="runtime-filter" value="nim">
+                    <label for="runtime-nim">
+                        <div class="filter-icon green"><i class="fas fa-microchip"></i></div>
+                        <span>NVIDIA NIM</span>
+                    </label>
+                </div>
+                <div class="filter-option">
+                    <input type="checkbox" id="runtime-cpu" class="runtime-filter" value="cpu-only">
+                    <label for="runtime-cpu">
+                        <div class="filter-icon gray"><i class="fas fa-desktop"></i></div>
+                        <span>CPU Only</span>
+                    </label>
+                </div>
+            </div>
+        </div>
+        
+        <div class="filter-section">
+            <div class="section-header">
+                <i class="fas fa-building"></i> PROVIDER/DEVELOPER
+                <i class="fas fa-info-circle info-icon"></i>
+            </div>
+            <div class="filter-options">
+                <div class="filter-option">
+                    <input type="checkbox" id="provider-meta" class="provider-filter" value="Meta">
+                    <label for="provider-meta">
+                        <div class="filter-icon blue"><i class="fas fa-infinity"></i></div>
+                        <span>Meta</span>
+                    </label>
+                </div>
+                <div class="filter-option">
+                    <input type="checkbox" id="provider-google" class="provider-filter" value="Google">
+                    <label for="provider-google">
+                        <div class="filter-icon blue"><i class="fab fa-google"></i></div>
+                        <span>Google</span>
+                    </label>
+                </div>
+                <div class="filter-option">
+                    <input type="checkbox" id="provider-mistral" class="provider-filter" value="Mistral AI">
+                    <label for="provider-mistral">
+                        <div class="filter-icon purple"><i class="fas fa-wind"></i></div>
+                        <span>Mistral AI</span>
+                    </label>
+                </div>
+                <div class="filter-option">
+                    <input type="checkbox" id="provider-nvidia" class="provider-filter" value="NVIDIA">
+                    <label for="provider-nvidia">
+                        <div class="filter-icon green"><i class="fas fa-microchip"></i></div>
+                        <span>NVIDIA</span>
+                    </label>
+                </div>
+                <div class="filter-option">
+                    <input type="checkbox" id="provider-ai21" class="provider-filter" value="AI21">
+                    <label for="provider-ai21">
+                        <div class="filter-icon red"><i class="fas fa-brain"></i></div>
+                        <span>AI21 Labs</span>
+                    </label>
+                </div>
+            </div>
+        </div>
+        
+        <div class="filter-section">
+            <div class="section-header">
+                <i class="fas fa-ruler-vertical"></i> QUANTIZATION
+                <i class="fas fa-info-circle info-icon"></i>
+            </div>
+            <div class="filter-options">
+                <div class="filter-option">
+                    <input type="checkbox" id="quant-float16" class="quant-filter" value="float16">
+                    <label for="quant-float16">
+                        <div class="filter-icon blue"><i class="fas fa-microchip"></i></div>
+                        <span>float16</span>
+                    </label>
+                </div>
+                <div class="filter-option">
+                    <input type="checkbox" id="quant-fp8" class="quant-filter" value="fp8">
+                    <label for="quant-fp8">
+                        <div class="filter-icon green"><i class="fas fa-microchip"></i></div>
+                        <span>fp8</span>
+                    </label>
+                </div>
+                <div class="filter-option">
+                    <input type="checkbox" id="quant-bf16" class="quant-filter" value="bf16">
+                    <label for="quant-bf16">
+                        <div class="filter-icon purple"><i class="fas fa-microchip"></i></div>
+                        <span>bf16</span>
+                    </label>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="main-content">
+        <!-- Header -->
+        <div class="app-header">
+            <h1 class="app-title">All Models</h1>
+            <div class="search-container">
+                <i class="fas fa-search search-icon"></i>
+                <input type="text" class="search-input" id="searchInput" placeholder="Search models...">
+            </div>
+        </div>
+        
+        <!-- Subheader -->
+        <div class="header">
+            <div class="model-count">Showing <span id="modelCount">33</span> of <span id="totalModels">33</span> models</div>
+            <div class="flex items-center gap-4">
+                <div class="view-toggle">
+                    <div class="view-option active" data-view="grid">
+                        <i class="fas fa-th-large"></i>
+                    </div>
+                    <div class="view-option" data-view="list">
+                        <i class="fas fa-bars"></i>
+                    </div>
+                </div>
+                <select id="sortSelect" class="sort-select">
+                    <option value="popularity">Sort by: Popularity</option>
+                    <option value="nameAsc">Name (A-Z)</option>
+                    <option value="nameDesc">Name (Z-A)</option>
+                    <option value="sizeAsc">Size (Small to Large)</option>
+                    <option value="sizeDesc">Size (Large to Small)</option>
+                    <option value="contextAsc">Context (Low to High)</option>
+                    <option value="contextDesc">Context (High to Low)</option>
+                </select>
+            </div>
+        </div>
+
+        <!-- Model Cards -->
+        <div id="modelsContainer" class="grid-view">
+            <!-- Will be populated dynamically in JavaScript -->
+        </div>
+    </div>
+    
+    <!-- Compare Drawer -->
+    <div id="compareDrawer" class="compare-drawer compare-drawer-closed hidden">
+        <div class="compare-drawer-header">
+            <div class="compare-drawer-title">
+                Compare Models <span id="compareCounter" class="compare-count">0</span>
+            </div>
+            <div class="compare-actions">
+                <button id="compareClearBtn" class="compare-clear-btn">
+                    <i class="fas fa-trash-alt"></i> Clear All
+                </button>
+                <button id="compareToggleBtn" class="compare-toggle-btn">
+                    <i class="fas fa-chevron-up"></i> Show Comparison (0)
+                </button>
+            </div>
+        </div>
+        <div class="compare-table-container">
+            <table class="compare-table">
+                <thead id="compareTableHeader">
+                    <tr>
+                        <th>Property</th>
+                    </tr>
+                </thead>
+                <tbody id="compareTableBody">
+                    <tr>
+                        <td colspan="2" class="text-center py-4">No models selected for comparison</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+    
+    <!-- Model Details Modal -->
+    <div id="modelDetailsModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <div class="modal-title">Model Details</div>
+                <button class="modal-close">×</button>
+            </div>
+            <div class="modal-body">
+                <div id="modelDetailsContent">
+                    <!-- Details will be populated dynamically -->
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="modal-btn modal-btn-secondary" id="modalCloseBtn">Close</button>
+                <button class="modal-btn modal-btn-primary" id="selectModelBtn">Select Model</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Track models being compared
+        const comparedModels = new Set();
+        let compareDrawerOpen = false;
+
+        // Toggle the comparison drawer
+        function toggleCompareDrawer() {
+            const drawer = document.getElementById('compareDrawer');
+            
+            if (comparedModels.size === 0) {
+                drawer.classList.add('hidden');
+                compareDrawerOpen = false;
+                return;
+            }
+            
+            if (compareDrawerOpen) {
+                drawer.classList.add('compare-drawer-closed');
+                drawer.classList.remove('compare-drawer-open');
+                compareDrawerOpen = false;
+                document.getElementById('compareToggleBtn').innerHTML = `
+                    <i class="fas fa-chevron-up"></i> Show Comparison (${comparedModels.size})
+                `;
+            } else {
+                drawer.classList.remove('compare-drawer-closed');
+                drawer.classList.add('compare-drawer-open');
+                drawer.classList.remove('hidden');
+                compareDrawerOpen = true;
+                document.getElementById('compareToggleBtn').innerHTML = `
+                    <i class="fas fa-chevron-down"></i> Hide Comparison
+                `;
+                updateComparisonTable();
+            }
+        }
+        
+        // Update comparison table with selected models
+        function updateComparisonTable() {
+            const tableBody = document.getElementById('compareTableBody');
+            const tableHeader = document.getElementById('compareTableHeader');
+            
+            // Clear existing content
+            tableBody.innerHTML = '';
+            tableHeader.innerHTML = '<tr><th>Property</th></tr>';
+            
+            if (comparedModels.size === 0) {
+                tableBody.innerHTML = '<tr><td colspan="2" class="text-center py-4">No models selected for comparison</td></tr>';
+                return;
+            }
+            
+            // Get models from IDs
+            const models = Array.from(comparedModels).map(id => allModels.find(m => m.id === id)).filter(m => m);
+            
+            // Add model names to header
+            models.forEach(model => {
+                const th = document.createElement('th');
+                th.innerHTML = `
+                    <div class="flex flex-col items-center">
+                        <div class="font-semibold text-sm mb-1">${model.name}</div>
+                        <button class="remove-compare-btn" data-id="${model.id}">
+                            <i class="fas fa-times"></i>
+                        </button>
+                    </div>
+                `;
+                tableHeader.querySelector('tr').appendChild(th);
+            });
+            
+            // Create rows for each property
+            const properties = [
+                { label: 'Provider', key: 'provider' },
+                { label: 'Source', key: 'source', format: (val) => val === 'huggingface' ? 'Hugging Face' : 'NVIDIA NIM' },
+                { label: 'Parameters', key: 'parameters' },
+                { label: 'Context Length', key: 'context' },
+                { label: 'License', key: 'license' },
+                { label: 'Runtimes', key: 'runtimes', format: (val) => val.join(', ') },
+                { label: 'Quantization', key: 'quantization', format: (val) => val || 'N/A' },
+                { 
+                    label: 'Hardware Requirements', 
+                    key: '_custom_hardware', 
+                    format: (_, model) => {
+                        // Get the hardware requirements using the existing function
+                        const hwReqs = getHardwareRequirements(model);
+                        // Get the primary runtime (first one in the list)
+                        const primaryRuntime = model.runtimes[0];
+                        const reqs = hwReqs[primaryRuntime] || { gpu: 'N/A', cpu: 'N/A', memory: 'N/A' };
+                        
+                        return `
+                            <div><strong>GPU:</strong> ${reqs.gpu}</div>
+                            <div><strong>CPU:</strong> ${reqs.cpu}</div>
+                            <div><strong>Memory:</strong> ${reqs.memory}</div>
+                        `;
+                    }
+                },
+                { 
+                    label: 'Capabilities', 
+                    key: 'capabilities', 
+                    format: (val) => {
+                        if (!val || val.length === 0) return 'None';
+                        return val.map(cap => {
+                            let className = '';
+                            if (cap === 'Tool Calling') className = 'tool-calling';
+                            if (cap === 'AI Agent') className = 'ai-agent';
+                            if (cap === 'RAG') className = 'rag';
+                            if (cap === 'Text Generation') className = 'text-generation';
+                            if (cap === 'Reranking') className = 'reranking';
+                            if (cap === 'Embedding') className = 'embedding';
+                            if (cap === 'Content Safety') className = 'content-safety';
+                            if (cap === 'Guardrails') className = 'guardrails';
+                            return `<div class="capability-tag ${className} inline-block mr-1 mb-1">${cap}</div>`;
+                        }).join('');
+                    }
+                },
+                { 
+                    label: 'Best For', 
+                    key: 'bestFor',
+                    format: (val) => val.replace(/•/g, '<br>•')
+                },
+                {
+                    label: 'Model Card',
+                    key: 'modelURL',
+                    format: (val) => val ? `<a href="${val}" target="_blank" class="text-blue-500 hover:underline flex items-center"><i class="fas fa-external-link-alt mr-1"></i> View Card</a>` : 'N/A'
+                }
+            ];
+            
+            properties.forEach(prop => {
+                const row = document.createElement('tr');
+                
+                // Property name
+                const labelCell = document.createElement('td');
+                labelCell.className = 'font-medium';
+                labelCell.textContent = prop.label;
+                row.appendChild(labelCell);
+                
+                // Values for each model
+                models.forEach(model => {
+                    const cell = document.createElement('td');
+                    const value = model[prop.key];
+                    
+                    // Special handling for Provider row to include icon
+                    if (prop.key === 'provider') {
+                        cell.innerHTML = `
+                            <div class="flex items-center">
+                                <span class="mr-2">${getProviderIcon(model.provider)}</span>
+                                <span>${model.provider}</span>
+                            </div>
+                        `;
+                    } else if (prop.format) {
+                        cell.innerHTML = prop.format(value);
+                    } else {
+                        cell.textContent = value;
+                    }
+                    
+                    row.appendChild(cell);
+                });
+                
+                tableBody.appendChild(row);
+            });
+            
+            // Add event listeners for remove buttons
+            document.querySelectorAll('.remove-compare-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    removeFromComparison(this.dataset.id);
+                });
+            });
+        }
+        
+        // Add a model to comparison
+        function addToComparison(modelId) {
+            if (comparedModels.size >= 4) {
+                alert('You can compare up to 4 models at a time');
+                return;
+            }
+            
+            comparedModels.add(modelId);
+            
+            // Update button state
+            document.querySelectorAll(`.compare-btn[data-id="${modelId}"]`).forEach(btn => {
+                btn.innerHTML = '<i class="fas fa-minus"></i> Compare';
+                btn.classList.add('active');
+            });
+            
+            // Update compare drawer
+            document.getElementById('compareCounter').textContent = comparedModels.size;
+            document.getElementById('compareToggleBtn').innerHTML = `
+                <i class="fas fa-chevron-up"></i> Show Comparison (${comparedModels.size})
+            `;
+            
+            if (comparedModels.size === 1) {
+                document.getElementById('compareDrawer').classList.remove('hidden');
+            }
+            
+            if (compareDrawerOpen) {
+                updateComparisonTable();
+            }
+        }
+        
+        // Remove a model from comparison
+        function removeFromComparison(modelId) {
+            comparedModels.delete(modelId);
+            
+            // Update button state
+            document.querySelectorAll(`.compare-btn[data-id="${modelId}"]`).forEach(btn => {
+                btn.innerHTML = '<i class="fas fa-plus"></i> Compare';
+                btn.classList.remove('active');
+            });
+            
+            // Update compare drawer
+            document.getElementById('compareCounter').textContent = comparedModels.size;
+            document.getElementById('compareToggleBtn').innerHTML = `
+                <i class="fas fa-chevron-up"></i> Show Comparison (${comparedModels.size})
+            `;
+            
+            if (comparedModels.size === 0) {
+                document.getElementById('compareDrawer').classList.add('hidden');
+                compareDrawerOpen = false;
+            } else if (compareDrawerOpen) {
+                updateComparisonTable();
+            }
+        }
+        
+        // Clear all compared models
+        function clearComparison() {
+            // Get a copy of the IDs before clearing
+            const modelIds = Array.from(comparedModels);
+            
+            // Clear the set
+            comparedModels.clear();
+            
+            // Update all buttons
+            modelIds.forEach(id => {
+                document.querySelectorAll(`.compare-btn[data-id="${id}"]`).forEach(btn => {
+                    btn.innerHTML = '<i class="fas fa-plus"></i> Compare';
+                    btn.classList.remove('active');
+                });
+            });
+            
+            // Hide drawer
+            document.getElementById('compareCounter').textContent = '0';
+            document.getElementById('compareDrawer').classList.add('hidden');
+            compareDrawerOpen = false;
+        }
+        
+        // Helper function to get hardware requirements based on runtime engine
+        // TGI detailed configuration database for HuggingFace models
+        const tgiConfigData = {
+            // Detailed GPU configurations from latest TGI runtime data
+            "Meta-Llama-3.1-8B-Instruct": {
+                gpuConfigs: [
+                    { 
+                        gpuType: "NVIDIA-A100-80GB-PCIe", 
+                        gpuCounts: [1, 2, 4, 8], 
+                        contextLengths: [32768, 32768, 32768, 32768]
+                    },
+                    { 
+                        gpuType: "NVIDIA-H100-80GB-HBM3", 
+                        gpuCounts: [1, 2, 4, 8], 
+                        contextLengths: [32768, 32768, 32768, 32768]
+                    },
+                    { 
+                        gpuType: "NVIDIA-H100-NVL", 
+                        gpuCounts: [1, 2, 4, 8], 
+                        contextLengths: [32768, 32768, 32768, 32768]
+                    },
+                    { 
+                        gpuType: "NVIDIA-L4", 
+                        gpuCounts: [1, 2, 4, 8], 
+                        contextLengths: [4096, 8192, 16384, 16384]
+                    },
+                    { 
+                        gpuType: "NVIDIA-L40S", 
+                        gpuCounts: [1, 2, 4, 8], 
+                        contextLengths: [32768, 32768, 32768, 32768]
+                    }
+                ]
+            },
+            "Llama-3.3-70B-Instruct": {
+                gpuConfigs: [
+                    { 
+                        gpuType: "NVIDIA-A100-80GB-PCIe", 
+                        gpuCounts: [2, 4, 8], 
+                        contextLengths: [8192, 32768, 32768]
+                    },
+                    { 
+                        gpuType: "NVIDIA-H100-80GB-HBM3", 
+                        gpuCounts: [2, 4, 8], 
+                        contextLengths: [8192, 32768, 32768]
+                    },
+                    { 
+                        gpuType: "NVIDIA-H100-NVL", 
+                        gpuCounts: [2, 4, 8], 
+                        contextLengths: [8192, 32768, 32768]
+                    },
+                    { 
+                        gpuType: "NVIDIA-L4", 
+                        gpuCounts: [8], 
+                        contextLengths: [4096]
+                    },
+                    { 
+                        gpuType: "NVIDIA-L40S", 
+                        gpuCounts: [4, 8], 
+                        contextLengths: [8192, 32768]
+                    }
+                ]
+            },
+            "Mixtral-8x7B-Instruct-v0.1": {
+                gpuConfigs: [
+                    { 
+                        gpuType: "NVIDIA-A100-80GB-PCIe", 
+                        gpuCounts: [2, 4, 8], 
+                        contextLengths: [32768, 32768, 32768]
+                    },
+                    { 
+                        gpuType: "NVIDIA-H100-80GB-HBM3", 
+                        gpuCounts: [2, 4, 8], 
+                        contextLengths: [32768, 32768, 32768]
+                    },
+                    { 
+                        gpuType: "NVIDIA-H100-NVL", 
+                        gpuCounts: [2, 4, 8], 
+                        contextLengths: [32768, 32768, 32768]
+                    },
+                    { 
+                        gpuType: "NVIDIA-L40S", 
+                        gpuCounts: [4, 8], 
+                        contextLengths: [32768, 32768]
+                    }
+                ]
+            },
+            "Mistral-Nemo-Instruct-2407": {
+                gpuConfigs: [
+                    { 
+                        gpuType: "NVIDIA-A100-80GB-PCIe", 
+                        gpuCounts: [1, 2, 4, 8], 
+                        contextLengths: [32768, 32768, 32768, 32768]
+                    },
+                    { 
+                        gpuType: "NVIDIA-H100-80GB-HBM3", 
+                        gpuCounts: [1, 2, 4, 8], 
+                        contextLengths: [32768, 32768, 32768, 32768]
+                    },
+                    { 
+                        gpuType: "NVIDIA-H100-NVL", 
+                        gpuCounts: [1, 2, 4, 8], 
+                        contextLengths: [32768, 32768, 32768, 32768]
+                    },
+                    { 
+                        gpuType: "NVIDIA-L4", 
+                        gpuCounts: [2, 4, 8], 
+                        contextLengths: [8192, 8192, 16384]
+                    },
+                    { 
+                        gpuType: "NVIDIA-L40S", 
+                        gpuCounts: [1, 2, 4, 8], 
+                        contextLengths: [16384, 32768, 32768, 32768]
+                    }
+                ]
+            },
+            "Mistral-7B-Instruct-v0.3": {
+                gpuConfigs: [
+                    { 
+                        gpuType: "NVIDIA-A100-80GB-PCIe", 
+                        gpuCounts: [1, 2, 4, 8], 
+                        contextLengths: [32768, 32768, 32768, 32768]
+                    },
+                    { 
+                        gpuType: "NVIDIA-H100-80GB-HBM3", 
+                        gpuCounts: [1, 2, 4, 8], 
+                        contextLengths: [32768, 32768, 32768, 32768]
+                    },
+                    { 
+                        gpuType: "NVIDIA-H100-NVL", 
+                        gpuCounts: [1, 2, 4, 8], 
+                        contextLengths: [32768, 32768, 32768, 32768]
+                    },
+                    { 
+                        gpuType: "NVIDIA-L4", 
+                        gpuCounts: [1, 2, 4, 8], 
+                        contextLengths: [8192, 16384, 32768, 32768]
+                    },
+                    { 
+                        gpuType: "NVIDIA-L40S", 
+                        gpuCounts: [1, 2, 4, 8], 
+                        contextLengths: [32768, 32768, 32768, 32768]
+                    }
+                ]
+            },
+            "CodeLlama-70b-Instruct-hf": {
+                gpuConfigs: [
+                    { 
+                        gpuType: "NVIDIA-A100-80GB-PCIe", 
+                        gpuCounts: [2, 4, 8], 
+                        contextLengths: [4096, 4096, 4096]
+                    },
+                    { 
+                        gpuType: "NVIDIA-H100-80GB-HBM3", 
+                        gpuCounts: [2, 4, 8], 
+                        contextLengths: [4096, 4096, 4096]
+                    },
+                    { 
+                        gpuType: "NVIDIA-H100-NVL", 
+                        gpuCounts: [2, 4, 8], 
+                        contextLengths: [4096, 4096, 4096]
+                    },
+                    { 
+                        gpuType: "NVIDIA-L40S", 
+                        gpuCounts: [4, 8], 
+                        contextLengths: [2048, 2048]
+                    }
+                ]
+            },
+            "CodeLlama-34b-Instruct-hf": {
+                gpuConfigs: [
+                    { 
+                        gpuType: "NVIDIA-A100-80GB-PCIe", 
+                        gpuCounts: [1, 2, 4, 8], 
+                        contextLengths: [16384, 16384, 16384, 16384]
+                    },
+                    { 
+                        gpuType: "NVIDIA-H100-80GB-HBM3", 
+                        gpuCounts: [1, 2, 4, 8], 
+                        contextLengths: [16384, 16384, 16384, 16384]
+                    },
+                    { 
+                        gpuType: "NVIDIA-H100-NVL", 
+                        gpuCounts: [1, 2, 4, 8], 
+                        contextLengths: [16384, 16384, 16384, 16384]
+                    },
+                    { 
+                        gpuType: "NVIDIA-L4", 
+                        gpuCounts: [4, 8], 
+                        contextLengths: [8192, 16384]
+                    },
+                    { 
+                        gpuType: "NVIDIA-L40S", 
+                        gpuCounts: [2, 4, 8], 
+                        contextLengths: [16384, 16384, 16384]
+                    }
+                ]
+            },
+            "CodeLlama-13b-Instruct-hf": {
+                gpuConfigs: [
+                    { 
+                        gpuType: "NVIDIA-A100-80GB-PCIe", 
+                        gpuCounts: [1, 2, 4, 8], 
+                        contextLengths: [16384, 16384, 16384, 16384]
+                    },
+                    { 
+                        gpuType: "NVIDIA-H100-80GB-HBM3", 
+                        gpuCounts: [1, 2, 4, 8], 
+                        contextLengths: [16384, 16384, 16384, 16384]
+                    },
+                    { 
+                        gpuType: "NVIDIA-H100-NVL", 
+                        gpuCounts: [1, 2, 4, 8], 
+                        contextLengths: [16384, 16384, 16384, 16384]
+                    },
+                    { 
+                        gpuType: "NVIDIA-L4", 
+                        gpuCounts: [2, 4, 8], 
+                        contextLengths: [8192, 8192, 16384]
+                    },
+                    { 
+                        gpuType: "NVIDIA-L40S", 
+                        gpuCounts: [1, 2, 4, 8], 
+                        contextLengths: [8192, 16384, 16384, 16384]
+                    }
+                ]
+            },
+            "CodeLlama-7b-Instruct-hf": {
+                gpuConfigs: [
+                    { 
+                        gpuType: "NVIDIA-A100-80GB-PCIe", 
+                        gpuCounts: [1, 2, 4, 8], 
+                        contextLengths: [16384, 16384, 16384, 16384]
+                    },
+                    { 
+                        gpuType: "NVIDIA-H100-80GB-HBM3", 
+                        gpuCounts: [1, 2, 4, 8], 
+                        contextLengths: [16384, 16384, 16384, 16384]
+                    },
+                    { 
+                        gpuType: "NVIDIA-H100-NVL", 
+                        gpuCounts: [1, 2, 4, 8], 
+                        contextLengths: [16384, 16384, 16384, 16384]
+                    },
+                    { 
+                        gpuType: "NVIDIA-L4", 
+                        gpuCounts: [1, 2, 4, 8], 
+                        contextLengths: [4096, 16384, 16384, 16384]
+                    },
+                    { 
+                        gpuType: "NVIDIA-L40S", 
+                        gpuCounts: [1, 2, 4, 8], 
+                        contextLengths: [16384, 16384, 16384, 16384]
+                    }
+                ]
+            },
+            "Llama-2-13b-chat-hf": {
+                gpuConfigs: [
+                    { 
+                        gpuType: "NVIDIA-A100-80GB-PCIe", 
+                        gpuCounts: [1, 2, 4, 8], 
+                        contextLengths: [4096, 4096, 4096, 4096]
+                    },
+                    { 
+                        gpuType: "NVIDIA-H100-80GB-HBM3", 
+                        gpuCounts: [1, 2, 4, 8], 
+                        contextLengths: [4096, 4096, 4096, 4096]
+                    },
+                    { 
+                        gpuType: "NVIDIA-H100-NVL", 
+                        gpuCounts: [1, 2, 4, 8], 
+                        contextLengths: [4096, 4096, 4096, 4096]
+                    },
+                    { 
+                        gpuType: "NVIDIA-L4", 
+                        gpuCounts: [2, 4, 8], 
+                        contextLengths: [4096, 4096, 4096]
+                    },
+                    { 
+                        gpuType: "NVIDIA-L40S", 
+                        gpuCounts: [1, 2, 4, 8], 
+                        contextLengths: [4096, 4096, 4096, 4096]
+                    }
+                ]
+            },
+            "Llama-3.2-1B-Instruct": {
+                gpuConfigs: [
+                    { 
+                        gpuType: "NVIDIA-A100-80GB-PCIe", 
+                        gpuCounts: [1, 2, 4, 8], 
+                        contextLengths: [32768, 32768, 32768, 32768]
+                    },
+                    { 
+                        gpuType: "NVIDIA-H100-80GB-HBM3", 
+                        gpuCounts: [1, 2, 4, 8], 
+                        contextLengths: [32768, 32768, 32768, 32768]
+                    },
+                    { 
+                        gpuType: "NVIDIA-H100-NVL", 
+                        gpuCounts: [1, 2, 4, 8], 
+                        contextLengths: [32768, 32768, 32768, 32768]
+                    },
+                    { 
+                        gpuType: "NVIDIA-L4", 
+                        gpuCounts: [1, 2, 4, 8], 
+                        contextLengths: [32768, 32768, 32768, 32768]
+                    },
+                    { 
+                        gpuType: "NVIDIA-L40S", 
+                        gpuCounts: [1, 2, 4, 8], 
+                        contextLengths: [32768, 32768, 32768, 32768]
+                    }
+                ]
+            },
+            "Llama-3.2-3B-Instruct": {
+                gpuConfigs: [
+                    { 
+                        gpuType: "NVIDIA-A100-80GB-PCIe", 
+                        gpuCounts: [1, 2, 4, 8], 
+                        contextLengths: [32768, 32768, 32768, 32768]
+                    },
+                    { 
+                        gpuType: "NVIDIA-H100-80GB-HBM3", 
+                        gpuCounts: [1, 2, 4, 8], 
+                        contextLengths: [32768, 32768, 32768, 32768]
+                    },
+                    { 
+                        gpuType: "NVIDIA-H100-NVL", 
+                        gpuCounts: [1, 2, 4, 8], 
+                        contextLengths: [32768, 32768, 32768, 32768]
+                    },
+                    { 
+                        gpuType: "NVIDIA-L4", 
+                        gpuCounts: [1, 2, 4, 8], 
+                        contextLengths: [16384, 16384, 16384, 16384]
+                    },
+                    { 
+                        gpuType: "NVIDIA-L40S", 
+                        gpuCounts: [1, 2, 4, 8], 
+                        contextLengths: [32768, 32768, 32768, 32768]
+                    }
+                ]
+            },
+            "Mixtral-8x22B-Instruct-v0.1": {
+                gpuConfigs: [
+                    { 
+                        gpuType: "NVIDIA-A100-80GB-PCIe", 
+                        gpuCounts: [4, 8], 
+                        contextLengths: [32768, 32768]
+                    },
+                    { 
+                        gpuType: "NVIDIA-H100-80GB-HBM3", 
+                        gpuCounts: [4, 8], 
+                        contextLengths: [32768, 32768]
+                    },
+                    { 
+                        gpuType: "NVIDIA-H100-NVL", 
+                        gpuCounts: [4, 8], 
+                        contextLengths: [32768, 32768]
+                    },
+                    { 
+                        gpuType: "NVIDIA-L40S", 
+                        gpuCounts: [8], 
+                        contextLengths: [32768]
+                    }
+                ]
+            },
+            "Gemma-2-9b-it": {
+                gpuConfigs: [
+                    { 
+                        gpuType: "NVIDIA-A100-80GB-PCIe", 
+                        gpuCounts: [1, 2, 4, 8], 
+                        contextLengths: [8192, 8192, 8192, 8192]
+                    },
+                    { 
+                        gpuType: "NVIDIA-H100-80GB-HBM3", 
+                        gpuCounts: [1, 2, 4, 8], 
+                        contextLengths: [8192, 8192, 8192, 8192]
+                    },
+                    { 
+                        gpuType: "NVIDIA-H100-NVL", 
+                        gpuCounts: [1, 2, 4, 8], 
+                        contextLengths: [8192, 8192, 8192, 8192]
+                    },
+                    { 
+                        gpuType: "NVIDIA-L4", 
+                        gpuCounts: [1, 2, 4, 8], 
+                        contextLengths: [1024, 4096, 8192, 8192]
+                    },
+                    { 
+                        gpuType: "NVIDIA-L40S", 
+                        gpuCounts: [1, 2, 4, 8], 
+                        contextLengths: [8192, 8192, 8192, 8192]
+                    }
+                ]
+            },
+            "Gemma-2-2b-it": {
+                gpuConfigs: [
+                    { 
+                        gpuType: "NVIDIA-A100-80GB-PCIe", 
+                        gpuCounts: [1, 2, 4, 8], 
+                        contextLengths: [8192, 8192, 8192, 8192]
+                    },
+                    { 
+                        gpuType: "NVIDIA-H100-80GB-HBM3", 
+                        gpuCounts: [1, 2, 4, 8], 
+                        contextLengths: [8192, 8192, 8192, 8192]
+                    },
+                    { 
+                        gpuType: "NVIDIA-H100-NVL", 
+                        gpuCounts: [1, 2, 4, 8], 
+                        contextLengths: [8192, 8192, 8192, 8192]
+                    },
+                    { 
+                        gpuType: "NVIDIA-L4", 
+                        gpuCounts: [1, 2, 4, 8], 
+                        contextLengths: [8192, 8192, 8192, 4096]
+                    },
+                    { 
+                        gpuType: "NVIDIA-L40S", 
+                        gpuCounts: [1, 2, 4, 8], 
+                        contextLengths: [8192, 8192, 8192, 8192]
+                    }
+                ]
+            },
+            "Llama-2-70b-chat-hf": {
+                gpuConfigs: [
+                    { 
+                        gpuType: "NVIDIA-A100-80GB-PCIe", 
+                        gpuCounts: [2, 4, 8], 
+                        contextLengths: [4096, 4096, 4096]
+                    },
+                    { 
+                        gpuType: "NVIDIA-H100-80GB-HBM3", 
+                        gpuCounts: [2, 4, 8], 
+                        contextLengths: [4096, 4096, 4096]
+                    },
+                    { 
+                        gpuType: "NVIDIA-H100-NVL", 
+                        gpuCounts: [2, 4, 8], 
+                        contextLengths: [4096, 4096, 4096]
+                    }
+                ]
+            },
+            // "Jais-13b-chat": {
+            //     gpuConfigs: [
+            //         { 
+            //             gpuType: "NVIDIA-A100-80GB-PCIe", 
+            //             gpuCounts: [1, 2, 4, 8], 
+            //             contextLengths: [8192, 8192, 8192, 8192]
+            //         },
+            //         { 
+            //             gpuType: "NVIDIA-H100-80GB-HBM3", 
+            //             gpuCounts: [1, 2, 4, 8], 
+            //             contextLengths: [8192, 8192, 8192, 8192]
+            //         },
+            //         { 
+            //             gpuType: "NVIDIA-L40S", 
+            //             gpuCounts: [1, 2, 4, 8], 
+            //             contextLengths: [8192, 8192, 8192, 8192]
+            //         }
+            //     ]
+            // },
+            // Default configurations for models not explicitly listed
+            "_default_small": { // < 7B
+                gpuConfigs: [
+                    { 
+                        gpuType: "NVIDIA-A100-80GB-PCIe", 
+                        gpuCounts: [1, 2, 4, 8], 
+                        contextLengths: [8192, 8192, 8192, 8192]
+                    },
+                    { 
+                        gpuType: "NVIDIA-H100-80GB-HBM3", 
+                        gpuCounts: [1, 2, 4, 8], 
+                        contextLengths: [8192, 8192, 8192, 8192]
+                    },
+                    { 
+                        gpuType: "NVIDIA-L4", 
+                        gpuCounts: [1, 2, 4, 8], 
+                        contextLengths: [4096, 8192, 8192, 8192]
+                    },
+                    { 
+                        gpuType: "NVIDIA-L40S", 
+                        gpuCounts: [1, 2, 4, 8], 
+                        contextLengths: [8192, 8192, 8192, 8192]
+                    }
+                ]
+            },
+            "_default_medium": { // 7B-13B
+                gpuConfigs: [
+                    { 
+                        gpuType: "NVIDIA-A100-80GB-PCIe", 
+                        gpuCounts: [1, 2, 4, 8], 
+                        contextLengths: [8192, 8192, 8192, 8192]
+                    },
+                    { 
+                        gpuType: "NVIDIA-H100-80GB-HBM3", 
+                        gpuCounts: [1, 2, 4, 8], 
+                        contextLengths: [8192, 8192, 8192, 8192]
+                    },
+                    { 
+                        gpuType: "NVIDIA-L4", 
+                        gpuCounts: [1, 2, 4, 8], 
+                        contextLengths: [4096, 8192, 8192, 8192]
+                    },
+                    { 
+                        gpuType: "NVIDIA-L40S", 
+                        gpuCounts: [1, 2, 4, 8], 
+                        contextLengths: [8192, 8192, 8192, 8192]
+                    }
+                ]
+            },
+            "_default_large": { // 14B-70B
+                gpuConfigs: [
+                    { 
+                        gpuType: "NVIDIA-A100-80GB-PCIe", 
+                        gpuCounts: [1, 2, 4, 8], 
+                        contextLengths: [8192, 8192, 8192, 8192]
+                    },
+                    { 
+                        gpuType: "NVIDIA-H100-80GB-HBM3", 
+                        gpuCounts: [1, 2, 4, 8], 
+                        contextLengths: [8192, 8192, 8192, 8192]
+                    },
+                    { 
+                        gpuType: "NVIDIA-L40S", 
+                        gpuCounts: [2, 4, 8], 
+                        contextLengths: [8192, 8192, 8192]
+                    }
+                ]
+            },
+            "_default_xlarge": { // >70B
+                gpuConfigs: [
+                    { 
+                        gpuType: "NVIDIA-A100-80GB-PCIe", 
+                        gpuCounts: [2, 4, 8], 
+                        contextLengths: [8192, 8192, 8192]
+                    },
+                    { 
+                        gpuType: "NVIDIA-H100-80GB-HBM3", 
+                        gpuCounts: [2, 4, 8], 
+                        contextLengths: [8192, 8192, 8192]
+                    }
+                ]
+            }
+        };
+
+        function getHardwareRequirements(model) {
+            // Helper to get GPU display with counts
+            // Configuration database for NVIDIA NIM models
+        const nimConfigData = {
+            // Detailed GPU configurations for NIM models
+            "llama-3.1-8b-instruct": {
+                gpuConfigs: [
+                    { 
+                        gpuType: "NVIDIA-L40S",
+                        gpuCounts: [1, 2], 
+                        contextLengths: [131072, 131072]
+                    },
+                    { 
+                        gpuType: "NVIDIA-H100-NVL", 
+                        gpuCounts: [1], 
+                        contextLengths: [131072]
+                    }
+                ]
+            },
+            "Mixtral-8x7B-Instruct-v0.1": {
+                gpuConfigs: [
+                    { 
+                        gpuType: "NVIDIA-L40S", 
+                        gpuCounts: [4], 
+                        contextLengths: [32768]
+                    },
+                    { 
+                        gpuType: "NVIDIA-H100-NVL", 
+                        gpuCounts: [2], 
+                        contextLengths: [32768]
+                    }
+                ]
+            },
+            "Llama-3.1-70b-instruct": {
+                gpuConfigs: [
+                    { 
+                        gpuType: "NVIDIA-L40S", 
+                        gpuCounts: [4], 
+                        contextLengths: [131072]
+                    },
+                    { 
+                        gpuType: "NVIDIA-H100-NVL", 
+                        gpuCounts: [2], 
+                        contextLengths: [131072]
+                    }
+                ]
+            },
+            "Llama-3.3-70b-instruct": {
+                gpuConfigs: [
+                    { 
+                        gpuType: "NVIDIA-L40S", 
+                        gpuCounts: [4], 
+                        contextLengths: [131072]
+                    },
+                    { 
+                        gpuType: "NVIDIA-H100-NVL", 
+                        gpuCounts: [4], 
+                        contextLengths: [131072]
+                    }
+                ]
+            },
+            "Llama-3.1-nemoguard-8b-content-safety": {
+                gpuConfigs: [
+                    { 
+                        gpuType: "NVIDIA-L40S", 
+                        gpuCounts: [1], 
+                        contextLengths: [131072]
+                    },
+                    { 
+                        gpuType: "NVIDIA-H100-NVL", 
+                        gpuCounts: [1], 
+                        contextLengths: [131072]
+                    }
+                ]
+            },
+            "Llama-3.2-nv-rerankqa-1b-v2": {
+                gpuConfigs: [
+                    { 
+                        gpuType: "NVIDIA-L40S", 
+                        gpuCounts: [1], 
+                        contextLengths: [8192]
+                    },
+                    { 
+                        gpuType: "NVIDIA-H100-NVL", 
+                        gpuCounts: [1], 
+                        contextLengths: [8192]
+                    }
+                ]
+            },
+            "Llama-3.2-nv-embedqa-1b-v2": {
+                gpuConfigs: [
+                    { 
+                        gpuType: "NVIDIA-L40S", 
+                        gpuCounts: [1], 
+                        contextLengths: [8192]
+                    },
+                    { 
+                        gpuType: "NVIDIA-H100-NVL", 
+                        gpuCounts: [1], 
+                        contextLengths: [8192]
+                    }
+                ]
+            },
+            // Default configurations for models not explicitly listed
+            "_default_small": { // < 7B
+                gpuConfigs: [
+                    { 
+                        gpuType: "NVIDIA-L40S", 
+                        gpuCounts: [1], 
+                        contextLengths: [8192]
+                    },
+                    { 
+                        gpuType: "NVIDIA-H100-NVL", 
+                        gpuCounts: [1], 
+                        contextLengths: [8192]
+                    }
+                ]
+            },
+            "_default_medium": { // 7B-13B
+                gpuConfigs: [
+                    { 
+                        gpuType: "NVIDIA-L40S", 
+                        gpuCounts: [1], 
+                        contextLengths: [8192]
+                    },
+                    { 
+                        gpuType: "NVIDIA-H100-NVL", 
+                        gpuCounts: [1], 
+                        contextLengths: [8192]
+                    }
+                ]
+            },
+            "_default_large": { // 14B-70B
+                gpuConfigs: [
+                    { 
+                        gpuType: "NVIDIA-L40S", 
+                        gpuCounts: [2, 4], 
+                        contextLengths: [8192, 8192]
+                    },
+                    { 
+                        gpuType: "NVIDIA-H100-NVL", 
+                        gpuCounts: [1, 2], 
+                        contextLengths: [8192, 8192]
+                    }
+                ]
+            },
+            "_default_xlarge": { // >70B
+                gpuConfigs: [
+                    { 
+                        gpuType: "NVIDIA-L40S", 
+                        gpuCounts: [4, 8], 
+                        contextLengths: [8192, 8192]
+                    },
+                    { 
+                        gpuType: "NVIDIA-H100-NVL", 
+                        gpuCounts: [2, 4], 
+                        contextLengths: [8192, 8192]
+                    }
+                ]
+            }
+        };
+        
+        function getGpuDisplay(gpus, runtime) {
+                if (!gpus || gpus.length === 0) return 'undefined';
+                
+                // For TGI runtime with HuggingFace models, use the specific TGI configuration
+                if (runtime === 'tgi' && model.source === 'huggingface') {
+                    // Find configuration for this model, or use default based on size
+                    let tgiConfig = tgiConfigData[model.name];
+                    
+                    if (!tgiConfig) {
+                        // Determine model size category for default config
+                        const paramSize = parseFloat(model.parameters.replace(/[^\d.]/g, ''));
+                        if (paramSize < 7) {
+                            tgiConfig = tgiConfigData['_default_small'];
+                        } else if (paramSize >= 7 && paramSize <= 13) {
+                            tgiConfig = tgiConfigData['_default_medium'];
+                        } else if (paramSize > 13 && paramSize <= 70) {
+                            tgiConfig = tgiConfigData['_default_large'];
+                        } else {
+                            tgiConfig = tgiConfigData['_default_xlarge'];
+                        }
+                    }
+                    
+                    // Format the output using the TGI config data
+                    return tgiConfig.gpuConfigs.map(config => {
+                        const gpuType = config.gpuType.replace('NVIDIA-', '');
+                        return `${config.gpuCounts[0]}x ${gpuType}`;
+                    }).join(' or ');
+                }
+                
+                // For NIM runtime with NVIDIA models, use the specific NIM configuration
+                if (runtime === 'nim' && model.source === 'nvidia') {
+                    // Find configuration for this model, or use default based on size
+                    let nimConfig = nimConfigData[model.name];
+                    
+                    if (!nimConfig) {
+                        // Determine model size category for default config
+                        const paramSize = parseFloat(model.parameters.replace(/[^\d.]/g, ''));
+                        if (paramSize < 7) {
+                            nimConfig = nimConfigData['_default_small'];
+                        } else if (paramSize >= 7 && paramSize <= 13) {
+                            nimConfig = nimConfigData['_default_medium'];
+                        } else if (paramSize > 13 && paramSize <= 70) {
+                            nimConfig = nimConfigData['_default_large'];
+                        } else {
+                            nimConfig = nimConfigData['_default_xlarge'];
+                        }
+                    }
+                    
+                    // Format the output using the NIM config data
+                    return nimConfig.gpuConfigs.map(config => {
+                        const gpuType = config.gpuType.replace('NVIDIA-', '');
+                        return `${config.gpuCounts[0]}x ${gpuType}`;
+                    }).join(' or ');
+                }
+                
+                // For other combinations, use the generic approach
+                const gpuCounts = {};
+                gpus.forEach(gpu => {
+                    // Default all GPUs to need 1 unit
+                    gpuCounts[gpu] = gpuCounts[gpu] || 1;
+                });
+                
+                // Special case for large models - increase GPU count for certain model sizes
+                const paramSize = parseFloat(model.parameters.replace(/[^\d.]/g, ''));
+                if (paramSize >= 70) {
+                    // Large models might need more GPUs for A100
+                    if (gpuCounts['a100']) {
+                        // Set minimum of 2 for A100 if it's a 70B+ model
+                        gpuCounts['a100'] = Math.max(gpuCounts['a100'], 2);
+                    }
+                }
+                
+                // Format the output
+                return Object.keys(gpuCounts).map(gpu => {
+                    return `${gpuCounts[gpu]}x NVIDIA ${gpu.toUpperCase()}`;
+                }).join(', ');
+            }
+            
+            // Define base requirements for each runtime engine
+            const runtimeRequirements = {
+                'vllm': {
+                    'gpu': model.gpus && model.gpus.length > 0 ? getGpuDisplay(model.gpus) : 'undefined',
+                    'cpu': '8 cores+',
+                    'memory': '16GB+'
+                },
+                'tgi': {
+                    'gpu': model.gpus && model.gpus.length > 0 ? getGpuDisplay(model.gpus) : 'undefined',
+                    'cpu': '4 cores+',
+                    'memory': '8GB+'
+                },
+                'nim': {
+                    'gpu': model.gpus && model.gpus.length > 0 ? getGpuDisplay(model.gpus) : 'undefined',
+                    'cpu': '8 cores+',
+                    'memory': '32GB+'
+                },
+                'cpu-only': {
+                    'gpu': 'None required',
+                    'cpu': '32 cores+',
+                    'memory': '64GB+'
+                }
+            };
+            
+            // For large models, increase memory and CPU requirements
+            const paramSize = parseFloat(model.parameters.replace(/[^\d.]/g, ''));
+            if (paramSize >= 70) {
+                runtimeRequirements['vllm'].memory = '64GB+';
+                runtimeRequirements['tgi'].memory = '48GB+';
+                runtimeRequirements['nim'].memory = '80GB+';
+                runtimeRequirements['cpu-only'].memory = '256GB+';
+                
+                runtimeRequirements['vllm'].cpu = '16 cores+';
+                runtimeRequirements['tgi'].cpu = '16 cores+';
+                runtimeRequirements['nim'].cpu = '16 cores+';
+                runtimeRequirements['cpu-only'].cpu = '64 cores+';
+            } else if (paramSize >= 13) {
+                runtimeRequirements['vllm'].memory = '32GB+';
+                runtimeRequirements['tgi'].memory = '32GB+';
+                runtimeRequirements['nim'].memory = '48GB+';
+                runtimeRequirements['cpu-only'].memory = '128GB+';
+            }
+            
+            return runtimeRequirements;
+        }
+
+        // Show model details in modal
+        // Get provider icon
+        function getProviderIcon(provider) {
+            switch(provider) {
+                case 'Meta': return '<i class="fas fa-infinity"></i>';
+                case 'Google': return '<i class="fab fa-google"></i>';
+                case 'Mistral AI': return '<i class="fas fa-wind"></i>';
+                case 'NVIDIA': return '<i class="fas fa-microchip"></i>';
+                case 'AI21': return '<i class="fas fa-brain"></i>';
+                default: return '<i class="fas fa-cube"></i>';
+            }
+        }
+
+        // Get provider color class
+        function getProviderColorClass(provider) {
+            switch(provider) {
+                case 'Meta': return 'blue';
+                case 'Google': return 'blue';
+                case 'Mistral AI': return 'purple';
+                case 'NVIDIA': return 'green';
+                case 'AI21': return 'red';
+                default: return 'gray';
+            }
+        }
+            
+        function showModelDetails(model) {
+            const modal = document.getElementById('modelDetailsModal');
+            const contentDiv = document.getElementById('modelDetailsContent');
+            const modalTitle = document.querySelector('.modal-title');
+            
+            // Set modal title
+            modalTitle.textContent = model.name;
+            
+            // Format context length - convert from K format to numeric if needed
+            let contextDisplay = model.context;
+            if (typeof contextDisplay === 'string' && contextDisplay.includes('K')) {
+                const numericValue = parseInt(contextDisplay.replace(/[^0-9]/g, '')) * 1024;
+                contextDisplay = `${model.context} (${numericValue.toLocaleString()} tokens)`;
+            }
+            
+            // Get GPU compatibility info
+            let gpuCompatibilityHtml = 'N/A';
+            if (model.gpus && model.gpus.length > 0) {
+                gpuCompatibilityHtml = model.gpus.map(gpu => 'NVIDIA ' + gpu.toUpperCase()).join(', ');
+            }
+            
+            // Get hardware requirements for each runtime
+            const hardwareRequirements = getHardwareRequirements(model);
+            
+            // Generate hardware requirements HTML
+            let hardwareHTML = `
+                <div class="modal-section">
+                    <div class="modal-section-title">Hardware Requirements</div>
+                    <table class="modal-table mt-2">
+                        <tr>
+                            <th>Runtime</th>
+                            <th>GPU</th>
+                            <th>CPU</th>
+                            <th>Memory</th>
+                        </tr>
+            `;
+            
+            // Add rows for each runtime the model supports
+            model.runtimes.forEach(runtime => {
+                const requirements = hardwareRequirements[runtime] || { 
+                    gpu: 'undefined', 
+                    cpu: 'undefined', 
+                    memory: 'undefined' 
+                };
+                
+                hardwareHTML += `
+                    <tr>
+                        <td>${runtime}</td>
+                        <td>${requirements.gpu}</td>
+                        <td>${requirements.cpu}</td>
+                        <td>${requirements.memory}</td>
+                    </tr>
+                `;
+            });
+            
+            hardwareHTML += `</table></div>`;
+            
+            // Generate modal content
+            let content = `
+                <div class="modal-section">
+                    <table class="modal-table">
+                        <tr>
+                            <th>Provider</th>
+                            <td>${model.provider}</td>
+                        </tr>
+                        <tr>
+                            <th>Source</th>
+                            <td><span class="flex items-center">
+                                <div class="filter-icon ${model.source === 'huggingface' ? 'yellow' : 'green'} mr-2">
+                                    <i class="fas ${model.source === 'huggingface' ? 'fa-fire-alt' : 'fa-microchip'}"></i>
+                                </div>
+                                ${model.source === 'huggingface' ? 'Hugging Face' : 'NVIDIA NIM'}
+                            </span></td>
+                        </tr>
+                        <tr>
+                            <th>Description</th>
+                            <td>${model.description}</td>
+                        </tr>
+                        <tr>
+                            <th>Parameters</th>
+                            <td>${model.parameters}</td>
+                        </tr>
+                        <tr>
+                            <th>Context Length</th>
+                            <td>${contextDisplay}</td>
+                        </tr>
+                        <tr>
+                            <th>License</th>
+                            <td>${model.license}</td>
+                        </tr>
+                        <tr>
+                            <th>Runtime Engines</th>
+                            <td>${model.runtimes.join(', ')}</td>
+                        </tr>
+                        <tr>
+                            <th>Quantization</th>
+                            <td>${model.quantization || 'N/A'}</td>
+                        </tr>
+                        <tr>
+                            <th>GPU Compatibility</th>
+                            <td>${gpuCompatibilityHtml}</td>
+                        </tr>
+                    </table>
+                </div>
+                
+                ${hardwareHTML}
+                
+                <div class="modal-section">
+                    <div class="modal-section-title">Capabilities</div>
+                    <div class="flex flex-wrap gap-2 mt-2">
+                        ${model.capabilities && model.capabilities.length > 0 ? 
+                            model.capabilities.map(capability => {
+                                let className = '';
+                                if (capability === 'Tool Calling') className = 'tool-calling';
+                                if (capability === 'AI Agent') className = 'ai-agent';
+                                if (capability === 'RAG') className = 'rag';
+                                if (capability === 'Text Generation') className = 'text-generation';
+                                if (capability === 'Reranking') className = 'reranking';
+                                if (capability === 'Embedding') className = 'embedding';
+                                if (capability === 'Content Safety') className = 'content-safety';
+                                if (capability === 'Guardrails') className = 'guardrails';
+                                return `<div class="capability-tag ${className}">${capability}</div>`;
+                            }).join('') : 
+                            '<span class="text-gray-400">No specific capabilities listed</span>'
+                        }
+                    </div>
+                </div>
+                
+                <div class="modal-section">
+                    <div class="modal-section-title">Best For</div>
+                    <div class="text-sm text-gray-300 mt-2">
+                        ${model.bestFor}
+                    </div>
+                </div>
+            `;
+            
+            // Set content
+            contentDiv.innerHTML = content;
+            
+            // Show modal
+            modal.style.display = 'flex';
+            
+            // Set up button handlers
+            const closeBtn = document.querySelector('.modal-close');
+            const closeBtnFooter = document.getElementById('modalCloseBtn');
+            const selectBtn = document.getElementById('selectModelBtn');
+            
+            // Always show "Select Model" since we removed the selected property
+            selectBtn.textContent = 'Select Model';
+            selectBtn.disabled = false;
+            selectBtn.style.opacity = '1';
+            
+            // Close button event handlers
+            const closeModal = () => {
+                modal.style.display = 'none';
+            };
+            
+            closeBtn.onclick = closeModal;
+            closeBtnFooter.onclick = closeModal;
+            
+            // Close on click outside modal content
+            modal.onclick = function(event) {
+                if (event.target === modal) {
+                    closeModal();
+                }
+            };
+            
+            // Select button handler
+            selectBtn.onclick = function() {
+                // Mark this model as selected (in a real app, would trigger actual selection)
+                console.log(`Selected model: ${model.name}`);
+                closeModal();
+                
+                // In a real app, this would update the UI to show this model as selected
+                alert(`Model "${model.name}" has been selected.`);
+            };
+        }
+        
+        // Complete model data for all 33 models
+        const allModels = [
+            {
+                id: "meta-llama-3-1-8b-instruct",
+                name: "Meta-Llama-3.1-8B-Instruct",
+                provider: "Meta",
+                description: "Llama-3.1 8B HF Instruct model",
+                source: "huggingface",
+                sourceLabel: "HF",
+                parameters: "8B",
+                context: "128K",
+                license: "Community",
+                runtimes: ["vllm", "tgi", "cpu-only"],
+                capabilities: ["Tool Calling", "AI Agent", "RAG"],
+                bestFor: "Processing very long documents • API integration & tool use",
+                verified: true,
+                quantization: "float16",
+                gpus: ["a100", "h100", "l40s"],
+                useCases: ["rag", "agent"],
+                modelURL: "https://hf.co/meta-llama/Meta-Llama-3.1-8B-Instruct"
+            },
+            {
+                id: "llama-3-3-70b-instruct",
+                name: "Llama-3.3-70B-Instruct",
+                provider: "Meta",
+                description: "Llama-3.3 70B HF Instruct model",
+                source: "huggingface",
+                sourceLabel: "HF",
+                parameters: "~70B",
+                context: "128K",
+                license: "Community",
+                runtimes: ["vllm", "tgi", "cpu-only"],
+                capabilities: ["Tool Calling", "AI Agent", "RAG"],
+                bestFor: "Complex reasoning tasks requiring deep knowledge • Processing very long documents • API integration & tool use",
+                verified: true,
+                quantization: "float16",
+                gpus: ["a100", "h100"],
+                useCases: ["rag", "agent"],
+                modelURL: "https://hf.co/meta-llama/Llama-3.3-70B-Instruct"
+            },
+            {
+                id: "llama-3-1-70b-instruct-nim",
+                name: "Llama-3.1-70b-instruct",
+                provider: "NVIDIA",
+                description: "Llama-3.1-70b-instruct NIM model",
+                source: "nvidia",
+                sourceLabel: "NIM",
+                parameters: "~70B",
+                context: "128K",
+                license: "Community",
+                runtimes: ["nim"],
+                capabilities: ["Tool Calling", "AI Agent", "RAG"],
+                bestFor: "Processing very long documents • API integration & tool use",
+                verified: true,
+                quantization: "bf16",
+                gpus: ["a100", "h100"],
+                useCases: ["rag", "agent"],
+                modelURL: "https://catalog.ngc.nvidia.com/orgs/nim/teams/meta/containers/llama-3.1-70b-instruct"
+            },
+            {
+                id: "mixtral-8x7b-instruct-v0-1",
+                name: "Mixtral-8x7B-Instruct-v0.1",
+                provider: "Mistral AI",
+                description: "mixtral 8x7B instruct v1 model",
+                source: "huggingface",
+                sourceLabel: "HF",
+                parameters: "~70B",
+                context: "33K",
+                license: "Open",
+                runtimes: ["vllm", "tgi", "cpu-only"],
+                capabilities: ["RAG"],
+                bestFor: "Multi-document analysis",
+                verified: true,
+                quantization: "float16",
+                gpus: ["a100", "h100", "l40s"],
+                useCases: ["rag"],
+                modelURL: "https://huggingface.co/mistral-ai/mixtral-8x7b-instruct-v0-1"
+            },
+            {
+                id: "llama-3-3-70b-instruct-nim",
+                name: "Llama-3.3-70b-instruct",
+                provider: "NVIDIA",
+                description: "Llama-3.3-70b-instruct NIM model",
+                source: "nvidia",
+                sourceLabel: "NIM",
+                parameters: "~70B",
+                context: "131K",
+                license: "Community",
+                runtimes: ["nim"],
+                capabilities: ["Tool Calling", "AI Agent", "RAG"],
+                bestFor: "Processing very long documents • API integration & tool use",
+                verified: true,
+                quantization: "bf16",
+                gpus: ["a100", "h100"],
+                useCases: ["rag", "agent"],
+                modelURL: "https://catalog.ngc.nvidia.com/orgs/nim/teams/meta/containers/llama-3.3-70b-instruct"
+            },
+            {
+                id: "mistral-nemo-instruct-2407",
+                name: "Mistral-Nemo-Instruct-2407",
+                provider: "Mistral AI",
+                description: "mistral nemo 12B instruct model",
+                source: "huggingface",
+                sourceLabel: "HF",
+                parameters: "13B",
+                context: "131K",
+                license: "Open",
+                runtimes: ["vllm", "tgi", "cpu-only"],
+                capabilities: ["RAG"],
+                bestFor: "Processing very long documents",
+                verified: true,
+                quantization: "float16",
+                gpus: ["a100", "h100", "l40s"],
+                useCases: ["rag"],
+                modelURL: "https://huggingface.co/mistral-nemo-instruct-2407"
+            },
+            {
+                id: "llama-3-1-nemoguard-8b-content-safety",
+                name: "Llama-3.1-nemoguard-8b-content-safety",
+                provider: "NVIDIA",
+                description: "Llama-3.1-nemoguard-8b-content-safety NIM model",
+                source: "nvidia",
+                sourceLabel: "NIM",
+                parameters: "8B",
+                context: "131K",
+                license: "Community",
+                runtimes: ["nim"],
+                capabilities: ["Content Safety"],
+                bestFor: "Processing very long documents • Content moderation",
+                verified: true,
+                quantization: "bf16",
+                gpus: ["a100", "h100", "l40s"],
+                useCases: ["content-safety"],
+                modelURL: "https://catalog.ngc.nvidia.com/orgs/nvidia/teams/nemoguard/models/llama-3.1-nemoguard-8b-content-safety"
+            },
+            {
+                id: "mistral-7b-instruct-v0-3",
+                name: "Mistral-7B-Instruct-v0.3",
+                provider: "Mistral AI",
+                description: "mistral 7B instruct v0.3 model",
+                source: "huggingface",
+                sourceLabel: "HF",
+                parameters: "7B",
+                context: "33K",
+                license: "Open",
+                runtimes: ["vllm", "tgi", "cpu-only"],
+                capabilities: ["RAG"],
+                bestFor: "Multi-document analysis",
+                verified: true,
+                quantization: "float16",
+                gpus: ["a100", "h100", "l40s", "l4"],
+                useCases: ["rag"],
+                modelURL: "https://huggingface.co/mistral-7b-instruct-v0-3"
+            },
+            {
+                id: "meta-codelama-70b",
+                name: "CodeLlama-70b-Instruct-hf",
+                provider: "Meta",
+                description: "CodeLlama 70B HF instruct model",
+                source: "huggingface",
+                sourceLabel: "HF",
+                parameters: "70B",
+                context: "16K",
+                license: "Community",
+                runtimes: ["vllm", "tgi", "cpu-only"],
+                capabilities: ["Text Generation"],
+                bestFor: "Code generation & completion",
+                verified: true,
+                quantization: "float16",
+                gpus: ["a100", "h100"],
+                useCases: ["code"],
+                modelURL: "https://hf.co/meta-llama/CodeLlama-70b-Instruct-hf"
+            },
+            {
+                id: "meta-codelama-34b",
+                name: "CodeLlama-34b-Instruct-hf",
+                provider: "Meta",
+                description: "CodeLlama 34B HF instruct model",
+                source: "huggingface",
+                sourceLabel: "HF",
+                parameters: "34B",
+                context: "16K",
+                license: "Community",
+                runtimes: ["vllm", "tgi", "cpu-only"],
+                capabilities: ["Text Generation"],
+                bestFor: "Code generation & completion",
+                verified: true,
+                quantization: "float16",
+                gpus: ["a100", "h100", "l40s"],
+                useCases: ["code"],
+                modelURL: "https://hf.co/meta-llama/CodeLlama-34b-Instruct-hf"
+            },
+            {
+                id: "meta-codelama-13b",
+                name: "CodeLlama-13b-Instruct-hf",
+                provider: "Meta",
+                description: "CodeLlama 13B HF instruct model",
+                source: "huggingface",
+                sourceLabel: "HF",
+                parameters: "13B",
+                context: "16K",
+                license: "Community",
+                runtimes: ["vllm", "tgi", "cpu-only"],
+                capabilities: ["Text Generation"],
+                bestFor: "Code generation & completion",
+                verified: true,
+                quantization: "float16",
+                gpus: ["a100", "h100", "l40s", "l4"],
+                useCases: ["code"],
+                modelURL: "https://hf.co/meta-llama/CodeLlama-13b-Instruct-hf"
+            },
+            {
+                id: "meta-codelama-7b",
+                name: "CodeLlama-7b-Instruct-hf",
+                provider: "Meta",
+                description: "CodeLlama 7B HF instruct model",
+                source: "huggingface",
+                sourceLabel: "HF",
+                parameters: "7B",
+                context: "16K",
+                license: "Community",
+                runtimes: ["vllm", "tgi", "cpu-only"],
+                capabilities: ["Text Generation"],
+                bestFor: "Code generation & completion",
+                verified: true,
+                quantization: "float16",
+                gpus: ["a100", "h100", "l40s", "l4"],
+                useCases: ["code"],
+                modelURL: "https://hf.co/meta-llama/CodeLlama-7b-Instruct-hf"
+            },
+            {
+                id: "mixtral-8x7b-instruct-fp8",
+                name: "Mixtral-8x7B-Instruct-FP8",
+                provider: "NVIDIA",
+                description: "NVIDIA-optimized Mixtral-8x7B-Instruct model with FP8 quantization",
+                source: "nvidia",
+                sourceLabel: "NIM",
+                parameters: "~56B",
+                context: "33K",
+                license: "Community",
+                runtimes: ["nim"],
+                capabilities: ["RAG"],
+                bestFor: "Multi-document analysis with optimized performance",
+                verified: true,
+                quantization: "fp8",
+                gpus: ["a100", "h100", "l40s"],
+                useCases: ["rag"],
+                modelURL: "https://catalog.ngc.nvidia.com/orgs/nvidia/teams/nemo/models/mixtral-8x7b-instruct-fp8"
+            },
+            {
+                id: "meta-llama-2-13b",
+                name: "Llama-2-13b-chat-hf",
+                provider: "Meta",
+                description: "Llama-2 13B chat model",
+                source: "huggingface",
+                sourceLabel: "HF",
+                parameters: "13B",
+                context: "4K",
+                license: "Community",
+                runtimes: ["vllm", "tgi", "cpu-only"],
+                capabilities: ["Text Generation"],
+                bestFor: "General chat applications",
+                verified: true,
+                quantization: "float16",
+                gpus: ["a100", "h100", "l40s", "l4"],
+                useCases: ["chat"],
+                modelURL: "https://hf.co/meta-llama/Llama-2-13b-chat-hf"
+            },
+            {
+                id: "llama-3-2-1b",
+                name: "Llama-3.2-1B-Instruct",
+                provider: "Meta",
+                description: "Llama-3.2 1B instruct model",
+                source: "huggingface",
+                sourceLabel: "HF",
+                parameters: "1B",
+                context: "128K",
+                license: "Community",
+                runtimes: ["vllm", "tgi", "cpu-only"],
+                capabilities: ["Text Generation"],
+                bestFor: "Efficient deployment on resource-constrained environments",
+                verified: true,
+                quantization: "float16",
+                gpus: ["a100", "h100", "l40s", "l4"],
+                useCases: ["chat"],
+                modelURL: "https://hf.co/meta-llama/Llama-3.2-1B-Instruct"
+            },
+            {
+                id: "llama-3-2-3b",
+                name: "Llama-3.2-3B-Instruct",
+                provider: "Meta",
+                description: "Llama-3.2 3B instruct model",
+                source: "huggingface",
+                sourceLabel: "HF",
+                parameters: "3B",
+                context: "128K",
+                license: "Community",
+                runtimes: ["vllm", "tgi", "cpu-only"],
+                capabilities: ["Text Generation"],
+                bestFor: "Efficient deployment on resource-constrained environments",
+                verified: true,
+                quantization: "float16",
+                gpus: ["a100", "h100", "l40s", "l4"],
+                useCases: ["chat"],
+                modelURL: "https://hf.co/meta-llama/Llama-3.2-3B-Instruct"
+            },
+            {
+                id: "mixtral-8x22b-instruct-v0-1",
+                name: "Mixtral-8x22B-Instruct-v0.1",
+                provider: "Mistral AI",
+                description: "mixtral 8x22B instruct v0.1 model",
+                source: "huggingface",
+                sourceLabel: "HF",
+                parameters: "~176B",
+                context: "65K",
+                license: "Community",
+                runtimes: ["vllm", "tgi", "cpu-only"],
+                capabilities: ["RAG"],
+                bestFor: "Multi-document analysis",
+                verified: true,
+                quantization: "float16",
+                gpus: ["a100", "h100"],
+                useCases: ["rag"],
+                modelURL: "https://hf.co/mistral-ai/mixtral-8x22b-instruct-v0-1"
+            },
+            {
+                id: "gemma-2-9b-it",
+                name: "Gemma-2-9b-it",
+                provider: "Google",
+                description: "Google Gemma-2 9B instruct model",
+                source: "huggingface",
+                sourceLabel: "HF",
+                parameters: "9B",
+                context: "8K",
+                license: "Community",
+                runtimes: ["vllm", "tgi", "cpu-only"],
+                capabilities: ["Text Generation"],
+                bestFor: "General text generation",
+                verified: true,
+                quantization: "float16",
+                gpus: ["a100", "h100", "l40s", "l4"],
+                useCases: ["chat"],
+                modelURL: "https://hf.co/google/gemma-2-9b-it"
+            },
+            {
+                id: "gemma-2-2b-it",
+                name: "Gemma-2-2b-it",
+                provider: "Google",
+                description: "Google Gemma-2 2B instruct model",
+                source: "huggingface",
+                sourceLabel: "HF",
+                parameters: "2B",
+                context: "8K",
+                license: "Community",
+                runtimes: ["vllm", "tgi", "cpu-only"],
+                capabilities: ["Text Generation"],
+                bestFor: "Efficient deployment on resource-constrained environments",
+                verified: true,
+                quantization: "float16",
+                gpus: ["a100", "h100", "l40s", "l4"],
+                useCases: ["chat"],
+                modelURL: "https://hf.co/google/gemma-2-2b-it"
+            },
+            {
+                id: "jamba-1-5-mini",
+                name: "AI21-Jamba-1.5-Mini",
+                provider: "AI21",
+                description: "Jamba 1.5 Mini model",
+                source: "huggingface",
+                sourceLabel: "HF",
+                parameters: "3B",
+                context: "256K",
+                license: "Community",
+                runtimes: ["vllm", "tgi", "cpu-only"],
+                capabilities: ["Text Generation"],
+                bestFor: "Fast response generation",
+                verified: true,
+                quantization: "float16",
+                gpus: ["a100", "h100", "l40s", "l4"],
+                useCases: ["chat"],
+                modelURL: "https://hf.co/AI21Labs/Jamba-1.5-Mini"
+            },
+            {
+                id: "llama-3-2-nv-embedqa-1b-v2",
+                name: "Llama-3.2-nv-embedqa-1b-v2",
+                provider: "NVIDIA",
+                description: "Llama-3.2-nv-embedqa-1b-v2 NIM model",
+                source: "nvidia",
+                sourceLabel: "NIM",
+                parameters: "1B",
+                context: "8K",
+                license: "Community",
+                runtimes: ["nim"],
+                capabilities: ["Embedding", "RAG"],
+                bestFor: "Efficient deployment on resource-constrained environments • Semantic search & document retrieval",
+                verified: true,
+                quantization: "fp8",
+                gpus: ["a100", "h100", "l40s", "l4"],
+                useCases: ["embedding", "rag"],
+                modelURL: "https://catalog.ngc.nvidia.com/orgs/nvidia/teams/nemo/models/llama-3.2-nv-embedqa-1b-v2"
+            },
+            {
+                id: "llama-3-2-nv-rerankqa-1b-v2",
+                name: "Llama-3.2-nv-rerankqa-1b-v2",
+                provider: "NVIDIA",
+                description: "Llama-3.2-nv-rerankqa-1b-v2 NIM model",
+                source: "nvidia",
+                sourceLabel: "NIM",
+                parameters: "1B",
+                context: "8K",
+                license: "Community",
+                runtimes: ["nim"],
+                capabilities: ["Reranking", "RAG"],
+                bestFor: "Efficient deployment on resource-constrained environments • Search result optimization",
+                verified: true,
+                quantization: "fp8",
+                gpus: ["a100", "h100", "l40s", "l4"],
+                useCases: ["reranking", "rag"],
+                modelURL: "https://catalog.ngc.nvidia.com/orgs/nvidia/teams/nemo/models/llama-3.2-nv-rerankqa-1b-v2"
+            },
+            {
+                id: "llama-3-1-70b-instruct-pb24h2",
+                name: "Llama-3.1-70b-instruct-pb24h2",
+                provider: "NVIDIA",
+                description: "Llama-3.1-70b-instruct-pb24h2 NIM model",
+                source: "nvidia",
+                sourceLabel: "NIM",
+                parameters: "~70B",
+                context: "131K",
+                license: "Community",
+                runtimes: ["nim"],
+                capabilities: ["Tool Calling", "AI Agent", "RAG"],
+                bestFor: "Processing very long documents • API integration & tool use",
+                verified: false,
+                quantization: "bf16",
+                gpus: ["a100", "h100"],
+                useCases: ["rag", "agent"],
+                modelURL: "https://catalog.ngc.nvidia.com/orgs/nvidia/teams/nemo/models/llama-3.1-70b-instruct-pb24h2"
+            },
+            {
+                id: "arctic-embed-l",
+                name: "Arctic-embed-l",
+                provider: "NVIDIA",
+                description: "Arctic embedding model",
+                source: "nvidia",
+                sourceLabel: "NIM",
+                parameters: "1.6B",
+                context: "8K",
+                license: "Community",
+                runtimes: ["nim"],
+                capabilities: ["Embedding", "RAG"],
+                bestFor: "Semantic text embedding • Document retrieval pipelines",
+                verified: false,
+                quantization: "bf16",
+                gpus: ["a100", "h100", "l40s", "l4"],
+                useCases: ["embedding", "rag"],
+                modelURL: "https://catalog.ngc.nvidia.com/orgs/nvidia/teams/nemo/models/arctic_embed_l"
+            },
+            {
+                id: "nv-embedqa-e5-v5",
+                name: "Nv-embedqa-e5-v5",
+                provider: "NVIDIA",
+                description: "NVIDIA embedding model",
+                source: "nvidia",
+                sourceLabel: "NIM",
+                parameters: "1.3B",
+                context: "4K",
+                license: "Community",
+                runtimes: ["nim"],
+                capabilities: ["Embedding", "RAG"],
+                bestFor: "Efficient embedding for search applications • RAG pipelines",
+                verified: false,
+                quantization: "bf16",
+                gpus: ["a100", "h100", "l40s", "l4"],
+                useCases: ["embedding", "rag"],
+                modelURL: "https://catalog.ngc.nvidia.com/orgs/nvidia/teams/nemo/models/nv-embedqa-e5-v5"
+            },
+            {
+                id: "llama3-8b-instruct",
+                name: "Llama3-8b-instruct",
+                provider: "NVIDIA",
+                description: "NVIDIA optimized Llama-3 8B",
+                source: "nvidia",
+                sourceLabel: "NIM",
+                parameters: "8B",
+                context: "131K",
+                license: "Community",
+                runtimes: ["nim"],
+                capabilities: ["Tool Calling", "AI Agent"],
+                bestFor: "Efficient deployment with tool use capabilities",
+                verified: false,
+                quantization: "bf16",
+                gpus: ["a100", "h100", "l40s", "l4"],
+                useCases: ["agent"],
+                modelURL: "https://catalog.ngc.nvidia.com/orgs/nvidia/teams/nemo/models/llama3-8b-instruct"
+            },
+            {
+                id: "llama-3-1-nemoguard-8b-topic-control",
+                name: "Llama-3.1-nemoguard-8b-topic-control",
+                provider: "NVIDIA",
+                description: "Llama-3.1-nemoguard-8b-topic-control NIM model",
+                source: "nvidia",
+                sourceLabel: "NIM",
+                parameters: "8B",
+                context: "131K",
+                license: "Community",
+                runtimes: ["nim"],
+                capabilities: ["Guardrails"],
+                bestFor: "Processing very long documents • Content moderation",
+                verified: false,
+                quantization: "bf16",
+                gpus: ["a100", "h100", "l40s", "l4"],
+                useCases: ["guardrails"],
+                modelURL: "https://catalog.ngc.nvidia.com/orgs/nvidia/teams/nemoguard/models/llama-3.1-nemoguard-8b-topic-control"
+            },
+            {
+                id: "llama-3-1-nemotron-70b-instruct",
+                name: "Llama-3.1-nemotron-70b-instruct",
+                provider: "NVIDIA",
+                description: "Llama-3.1-nemotron-70b-instruct NIM model",
+                source: "nvidia",
+                sourceLabel: "NIM",
+                parameters: "~70B",
+                context: "131K",
+                license: "Community",
+                runtimes: ["nim"],
+                capabilities: ["Tool Calling", "AI Agent", "RAG"],
+                bestFor: "Advanced reasoning and tool use applications",
+                verified: false,
+                quantization: "bf16",
+                gpus: ["a100", "h100"],
+                useCases: ["rag", "agent"],
+                modelURL: "https://catalog.ngc.nvidia.com/orgs/nvidia/teams/nemo/models/llama-3.1-nemotron-70b-instruct"
+            },
+            {
+                id: "mistral-nemo-12b-instruct",
+                name: "Mistral-nemo-12b-instruct",
+                provider: "NVIDIA",
+                description: "NVIDIA optimized Mistral 12B",
+                source: "nvidia",
+                sourceLabel: "NIM",
+                parameters: "12B",
+                context: "32K",
+                license: "Community",
+                runtimes: ["nim"],
+                capabilities: ["RAG"],
+                bestFor: "Multi-document processing",
+                verified: false,
+                quantization: "bf16",
+                gpus: ["a100", "h100", "l40s"],
+                useCases: ["rag"],
+                modelURL: "https://catalog.ngc.nvidia.com/orgs/nvidia/teams/nemo/models/mistral-nemo-12b-instruct"
+            },
+            {
+                id: "llama-3-1-8b-instruct-nim",
+                name: "Llama-3.1-8b-instruct-nim",
+                provider: "NVIDIA",
+                description: "Llama-3.1-8b-instruct NIM model",
+                source: "nvidia",
+                sourceLabel: "NIM",
+                parameters: "8B",
+                context: "131K",
+                license: "Community",
+                runtimes: ["nim"],
+                capabilities: ["Tool Calling", "AI Agent", "RAG"],
+                bestFor: "Efficient deployment with tool use capabilities",
+                verified: true,
+                quantization: "bf16",
+                gpus: ["a100", "h100", "l40s", "l4"],
+                useCases: ["rag", "agent"],
+                modelURL: "https://catalog.ngc.nvidia.com/orgs/nim/teams/meta/containers/llama-3.1-8b-instruct"
+            },
+            {
+                id: "llama-3-2-nv-moe-35b-instruct",
+                name: "Llama-3.2-NV-MoE-35B-Instruct",
+                provider: "NVIDIA",
+                description: "Experimental MoE variant of Llama 3.2 with 35B parameters",
+                source: "nvidia",
+                sourceLabel: "NIM",
+                parameters: "35B",
+                context: "131K",
+                license: "Community",
+                runtimes: ["nim"],
+                capabilities: ["Tool Calling", "AI Agent", "RAG"],
+                bestFor: "Processing very long documents • Complex reasoning tasks requiring deep knowledge",
+                verified: true,
+                quantization: "bf16",
+                gpus: ["a100", "h100"],
+                useCases: ["rag", "agent"],
+                modelURL: "https://catalog.ngc.nvidia.com/orgs/nvidia/teams/nemo/models/llama-3.2-nv-moe-35b-instruct"
+            },
+            {
+                id: "llama-2-70b-chat",
+                name: "Llama-2-70b-chat-hf",
+                provider: "Meta",
+                description: "Llama-2 70B chat model",
+                source: "huggingface",
+                sourceLabel: "HF",
+                parameters: "70B",
+                context: "4K",
+                license: "Community",
+                runtimes: ["vllm", "tgi", "cpu-only"],
+                capabilities: ["Text Generation"],
+                bestFor: "General chat applications",
+                verified: true,
+                quantization: "float16",
+                gpus: ["a100", "h100"],
+                useCases: ["chat"]
+            },
+            // {
+            //     id: "jais-13b-chat",
+            //     name: "Jais-13b-chat",
+            //     provider: "Mistral AI",
+            //     description: "Multilingual Arabic-English LLM",
+            //     source: "huggingface",
+            //     sourceLabel: "HF",
+            //     parameters: "13B",
+            //     context: "8K",
+            //     license: "Community",
+            //     runtimes: ["vllm", "tgi", "cpu-only"],
+            //     capabilities: ["Text Generation"],
+            //     bestFor: "Multilingual Arabic-English applications",
+            //     verified: true,
+            //     quantization: "float16",
+            //     gpus: ["a100", "h100", "l40s"],
+            //     useCases: ["chat"]
+            // },
+            {
+                id: "nv-rerank-1b",
+                name: "NV-rerank-1b",
+                provider: "NVIDIA",
+                description: "NVIDIA reranking model",
+                source: "nvidia",
+                sourceLabel: "NIM",
+                parameters: "1B",
+                context: "4K",
+                license: "Community",
+                runtimes: ["nim"],
+                capabilities: ["Reranking", "RAG"],
+                bestFor: "Search result optimization • RAG pipelines for enhanced retrieval",
+                verified: false,
+                quantization: "bf16",
+                gpus: ["a100", "h100", "l40s", "l4"],
+                useCases: ["reranking", "rag"],
+                modelURL: "https://catalog.ngc.nvidia.com/orgs/nvidia/teams/nemo/models/nv-rerank-1b"
+            }
+        ];
+
+        // Filter state
+        const activeFilters = {
+            sources: new Set(["huggingface", "nvidia"]),
+            validated: false,
+            capabilities: new Set(),
+            runtimes: new Set(),
+            useCases: new Set(),
+            sizes: new Set(),
+            providers: new Set(),
+            gpus: new Set(),
+            licenses: new Set(),
+            quantizations: new Set(),
+            minContextLength: 8192, // Default 8K
+            search: ""
+        };
+
+        // Context length values mapping
+        const contextLengthValues = {
+            0: { label: "4K", value: 4096 },
+            1: { label: "8K", value: 8192 },
+            2: { label: "16K", value: 16384 },
+            3: { label: "32K", value: 32768 },
+            4: { label: "60K", value: 61440 },
+            5: { label: "128K+", value: 131072 }
+        };
+
+        // View mode handling (grid vs list view)
+        let currentViewMode = 'grid';
+        
+        function switchViewMode(viewMode) {
+            const container = document.getElementById('modelsContainer');
+            const viewOptions = document.querySelectorAll('.view-option');
+            
+            // Update view buttons
+            viewOptions.forEach(option => {
+                if (option.dataset.view === viewMode) {
+                    option.classList.add('active');
+                } else {
+                    option.classList.remove('active');
+                }
+            });
+            
+            // Update container class
+            container.className = viewMode === 'grid' ? 'grid-view' : 'list-view';
+            currentViewMode = viewMode;
+            
+            // Reapply filters to refresh the display with the new view
+            applyFilters();
+        }
+
+        // Initialize the app
+        document.addEventListener('DOMContentLoaded', function() {
+            // Fix potential source value inconsistency
+            allModels.forEach(model => {
+                // Make sure nvidia models have correct source
+                if (model.source === 'nvidia') {
+                    model.source = 'nvidia';
+                }
+                if (model.sourceLabel === 'NIM' && model.source !== 'nvidia') {
+                    model.source = 'nvidia';
+                }
+            });
+            
+            // Set total models count
+            document.getElementById('totalModels').textContent = allModels.length;
+            
+            // Set up context length slider
+            const contextSlider = document.getElementById('contextLengthSlider');
+            const contextValue = document.getElementById('contextLengthValue');
+            
+            contextSlider.addEventListener('input', function() {
+                const index = parseInt(this.value);
+                const contextInfo = contextLengthValues[index];
+                contextValue.textContent = contextInfo.label;
+                activeFilters.minContextLength = contextInfo.value;
+                applyFilters();
+            });
+            
+            // Reset min context length to 0 to ensure all models are visible
+            activeFilters.minContextLength = 0;
+            
+            // Set up view toggle listeners
+            document.querySelectorAll('.view-option').forEach(option => {
+                option.addEventListener('click', function() {
+                    switchViewMode(this.dataset.view);
+                });
+            });
+            
+            // Set up filter event listeners
+            setupFilterListeners();
+            
+            // Set up comparison drawer event listeners
+            document.getElementById('compareToggleBtn').addEventListener('click', toggleCompareDrawer);
+            document.getElementById('compareClearBtn').addEventListener('click', clearComparison);
+            
+            // Initial display of all models
+            applyFilters();
+        });
+
+        // Set up filter event listeners
+        function setupFilterListeners() {
+            // Source filters
+            document.querySelectorAll('.source-filter').forEach(checkbox => {
+                checkbox.addEventListener('change', function() {
+                    if (this.checked) {
+                        activeFilters.sources.add(this.value);
+                    } else {
+                        activeFilters.sources.delete(this.value);
+                    }
+                    applyFilters();
+                });
+            });
+            
+            // Validated filter - with visual feedback
+            const validatedFilterCheckbox = document.getElementById('validatedFilter');
+            const validatedStatusText = document.getElementById('validatedStatus');
+            
+            validatedFilterCheckbox.addEventListener('change', function() {
+                activeFilters.validated = this.checked;
+                
+                // Add visual feedback
+                const validatedLabel = document.getElementById('preValidatedHeader');
+                if (this.checked) {
+                    validatedLabel.classList.add('text-green-500');
+                    validatedLabel.querySelector('i').classList.add('text-green-500');
+                    validatedStatusText.textContent = 'On';
+                    validatedStatusText.classList.remove('text-gray-400');
+                    validatedStatusText.classList.add('text-green-500');
+                } else {
+                    validatedLabel.classList.remove('text-green-500');
+                    validatedLabel.querySelector('i').classList.remove('text-green-500');
+                    validatedStatusText.textContent = 'Off';
+                    validatedStatusText.classList.add('text-gray-400');
+                    validatedStatusText.classList.remove('text-green-500');
+                }
+                
+                applyFilters();
+            });
+            
+            // Use case filters
+            document.querySelectorAll('.usecase-filter').forEach(checkbox => {
+                checkbox.addEventListener('change', function() {
+                    if (this.checked) {
+                        activeFilters.useCases.add(this.value);
+                    } else {
+                        activeFilters.useCases.delete(this.value);
+                    }
+                    applyFilters();
+                });
+            });
+            
+            // Capability filters
+            document.querySelectorAll('.capability-filter').forEach(checkbox => {
+                checkbox.addEventListener('change', function() {
+                    if (this.checked) {
+                        activeFilters.capabilities.add(this.value);
+                    } else {
+                        activeFilters.capabilities.delete(this.value);
+                    }
+                    applyFilters();
+                });
+            });
+            
+            // Model size filters
+            document.querySelectorAll('.size-filter').forEach(checkbox => {
+                checkbox.addEventListener('change', function() {
+                    if (this.checked) {
+                        activeFilters.sizes.add(this.value);
+                    } else {
+                        activeFilters.sizes.delete(this.value);
+                    }
+                    applyFilters();
+                });
+            });
+            
+            // License filters
+            document.querySelectorAll('.license-filter').forEach(checkbox => {
+                checkbox.addEventListener('change', function() {
+                    if (this.checked) {
+                        activeFilters.licenses.add(this.value);
+                    } else {
+                        activeFilters.licenses.delete(this.value);
+                    }
+                    applyFilters();
+                });
+            });
+            
+            // Runtime filters
+            document.querySelectorAll('.runtime-filter').forEach(checkbox => {
+                checkbox.addEventListener('change', function() {
+                    if (this.checked) {
+                        activeFilters.runtimes.add(this.value);
+                    } else {
+                        activeFilters.runtimes.delete(this.value);
+                    }
+                    applyFilters();
+                });
+            });
+            
+            // GPU filters
+            document.querySelectorAll('.gpu-filter').forEach(checkbox => {
+                checkbox.addEventListener('change', function() {
+                    if (this.checked) {
+                        activeFilters.gpus.add(this.value);
+                    } else {
+                        activeFilters.gpus.delete(this.value);
+                    }
+                    applyFilters();
+                });
+            });
+            
+            // Provider filters
+            document.querySelectorAll('.provider-filter').forEach(checkbox => {
+                checkbox.addEventListener('change', function() {
+                    if (this.checked) {
+                        activeFilters.providers.add(this.value);
+                    } else {
+                        activeFilters.providers.delete(this.value);
+                    }
+                    applyFilters();
+                });
+            });
+            
+            // Quantization filters
+            document.querySelectorAll('.quant-filter').forEach(checkbox => {
+                checkbox.addEventListener('change', function() {
+                    if (this.checked) {
+                        activeFilters.quantizations.add(this.value);
+                    } else {
+                        activeFilters.quantizations.delete(this.value);
+                    }
+                    applyFilters();
+                });
+            });
+            
+            // Search filter
+            document.getElementById('searchInput').addEventListener('input', function() {
+                activeFilters.search = this.value.toLowerCase().trim();
+                applyFilters();
+            });
+            
+            // Sort functionality
+            document.getElementById('sortSelect').addEventListener('change', applyFilters);
+            
+            // Clear all filters
+            document.getElementById('clearAllFilters').addEventListener('click', function() {
+                // Reset all checkboxes except source filters
+                document.querySelectorAll('input[type="checkbox"]:not(.source-filter)').forEach(checkbox => {
+                    checkbox.checked = false;
+                });
+                
+                // Ensure source filters are checked
+                document.querySelectorAll('.source-filter').forEach(checkbox => {
+                    checkbox.checked = true;
+                });
+                
+                // Reset validated filter
+                document.getElementById('validatedFilter').checked = false;
+                
+                // Reset context length slider
+                document.getElementById('contextLengthSlider').value = 0;
+                document.getElementById('contextLengthValue').textContent = "4K";
+                
+                // Reset search input
+                document.getElementById('searchInput').value = "";
+                
+                // Reset filter state
+                activeFilters.sources = new Set(["huggingface", "nvidia"]);
+                activeFilters.validated = false;
+                activeFilters.capabilities.clear();
+                activeFilters.runtimes.clear();
+                activeFilters.useCases.clear();
+                activeFilters.sizes.clear();
+                activeFilters.providers.clear();
+                activeFilters.gpus.clear();
+                activeFilters.licenses.clear();
+                activeFilters.quantizations.clear();
+                activeFilters.minContextLength = 0; // Set to 0 to show all models
+                activeFilters.search = "";
+                
+                console.log("Filters cleared, showing all models");
+                console.log("Current filter state:", JSON.stringify({
+                    sources: Array.from(activeFilters.sources),
+                    minContextLength: activeFilters.minContextLength
+                }));
+                
+                // Apply filters
+                applyFilters();
+            });
+        }
+
+        // Apply filters and display models
+        function applyFilters() {
+            console.log("Applying filters...");
+            console.log("Total models:", allModels.length);
+            
+            // For debugging - check if any model has missing properties
+            allModels.forEach(model => {
+                if (!model.source || !model.capabilities || !model.runtimes || !model.useCases || !model.gpus) {
+                    console.warn("Model with missing properties:", model.id);
+                }
+            });
+            
+            // Filter models
+            let filteredModels = allModels.filter(model => {
+                // Source filter
+                if (activeFilters.sources.size > 0 && !activeFilters.sources.has(model.source)) {
+                    return false;
+                }
+                
+                // Validated filter - verify all models have proper verified property
+                if (activeFilters.validated) {
+                    // Ensure all models have consistent verified property
+                    // Explicitly check for true, not truthy values
+                    if (model.verified !== true) {
+                        // Special debug for NIM models
+                        if (model.source === 'nvidia') {
+                            console.log(`Filtering out NIM model: ${model.id}, verified=${model.verified}`);
+                        }
+                        return false;
+                    }
+                }
+                
+                // Capabilities filter
+                if (activeFilters.capabilities.size > 0) {
+                    if (!model.capabilities) {
+                        console.warn("Model missing capabilities:", model.id);
+                        return false;
+                    }
+                    
+                    const hasAnyCapability = Array.from(activeFilters.capabilities).some(cap => {
+                        return model.capabilities.includes(cap);
+                    });
+                    
+                    if (!hasAnyCapability) {
+                        return false;
+                    }
+                }
+                
+                // Runtime filter
+                if (activeFilters.runtimes.size > 0) {
+                    if (!model.runtimes) {
+                        console.warn("Model missing runtimes:", model.id);
+                        return false;
+                    }
+                    
+                    const hasAnyRuntime = Array.from(activeFilters.runtimes).some(runtime => {
+                        return model.runtimes.includes(runtime);
+                    });
+                    
+                    if (!hasAnyRuntime) {
+                        return false;
+                    }
+                }
+                
+                // Use case filter
+                if (activeFilters.useCases.size > 0) {
+                    if (!model.useCases) {
+                        console.warn("Model missing useCases:", model.id);
+                        return false;
+                    }
+                    
+                    const hasAnyUseCase = Array.from(activeFilters.useCases).some(useCase => {
+                        return model.useCases.includes(useCase);
+                    });
+                    
+                    if (!hasAnyUseCase) {
+                        return false;
+                    }
+                }
+                
+                // Model size filter - skip if no sizes are selected
+                if (activeFilters.sizes.size > 0) {
+                    // Determine model size category
+                    let sizeCategory = "";
+                    const paramSize = parseFloat(model.parameters.replace(/[^\d.]/g, ''));
+                    
+                    if (paramSize < 7) sizeCategory = "small";
+                    else if (paramSize >= 7 && paramSize <= 13) sizeCategory = "medium";
+                    else if (paramSize > 13 && paramSize <= 70) sizeCategory = "large";
+                    else if (paramSize > 70) sizeCategory = "xlarge";
+                    
+                    if (!activeFilters.sizes.has(sizeCategory)) {
+                        return false;
+                    }
+                }
+                
+                // Context length filter - only apply if min length is set
+                if (activeFilters.minContextLength > 0) {
+                    if (!model.context) {
+                        console.warn("Model missing context length:", model.id);
+                        return true; // Allow through if context is missing
+                    }
+                    
+                    // Parse context length - model.context could be a number or a string with units
+                    let contextValue;
+                    
+                    if (typeof model.context === 'number') {
+                        // If it's already a number, use it directly
+                        contextValue = model.context;
+                    } else {
+                        // Otherwise parse as string with possible K, M units
+                        const contextStr = String(model.context).toUpperCase();
+                        if (contextStr.includes('K')) {
+                            // If K is present (e.g., 32K), multiply by 1024
+                            contextValue = parseInt(contextStr.replace(/[^0-9]/g, '')) * 1024;
+                        } else if (contextStr.includes('M')) {
+                            // If M is present (e.g., 1M), multiply by 1024*1024
+                            contextValue = parseInt(contextStr.replace(/[^0-9]/g, '')) * 1024 * 1024;
+                        } else {
+                            // Otherwise, just parse the number
+                            contextValue = parseInt(contextStr.replace(/[^0-9]/g, ''));
+                        }
+                    }
+                    
+                    console.log(`Model ${model.id} context: ${model.context}, parsed as ${contextValue}, min required: ${activeFilters.minContextLength}`);
+                    
+                    if (isNaN(contextValue) || contextValue < activeFilters.minContextLength) {
+                        return false;
+                    }
+                }
+                
+                // License filter - skip if no licenses selected
+                if (activeFilters.licenses.size > 0) {
+                    if (!model.license) {
+                        console.warn("Model missing license:", model.id);
+                        return false;
+                    }
+                    
+                    if (!activeFilters.licenses.has(model.license)) {
+                        return false;
+                    }
+                }
+                
+                // GPU filter - skip if no GPUs selected
+                if (activeFilters.gpus.size > 0) {
+                    if (!model.gpus) {
+                        console.warn("Model missing gpus:", model.id);
+                        return false;
+                    }
+                    
+                    const hasAnyGPU = Array.from(activeFilters.gpus).some(gpu => {
+                        return model.gpus.includes(gpu);
+                    });
+                    
+                    if (!hasAnyGPU) {
+                        return false;
+                    }
+                }
+                
+                // Provider filter - skip if no providers selected
+                if (activeFilters.providers.size > 0) {
+                    if (!model.provider) {
+                        console.warn("Model missing provider:", model.id);
+                        return false;
+                    }
+                    
+                    if (!activeFilters.providers.has(model.provider)) {
+                        return false;
+                    }
+                }
+                
+                // Quantization filter - skip if no quantizations selected
+                if (activeFilters.quantizations.size > 0) {
+                    if (!model.quantization) {
+                        console.warn("Model missing quantization:", model.id);
+                        return false;
+                    }
+                    
+                    if (!activeFilters.quantizations.has(model.quantization)) {
+                        return false;
+                    }
+                }
+                
+                // Search filter - only apply if search text is entered
+                if (activeFilters.search) {
+                    const searchTerms = activeFilters.search.toLowerCase().split(" ");
+                    return searchTerms.every(term => {
+                        return (
+                            model.name.toLowerCase().includes(term) ||
+                            model.provider.toLowerCase().includes(term) ||
+                            model.description.toLowerCase().includes(term) ||
+                            (model.capabilities && model.capabilities.some(cap => cap.toLowerCase().includes(term)))
+                        );
+                    });
+                }
+                
+                return true;
+            });
+            
+            console.log("Filtered models count:", filteredModels.length);
+            
+            // Sort models
+            const sortBy = document.getElementById('sortSelect').value;
+            if (sortBy !== 'popularity') {
+                sortModels(filteredModels, sortBy);
+            }
+            
+            // Display filtered models
+            displayModels(filteredModels);
+        }
+
+        // Sort models based on selected option
+        function sortModels(models, sortBy) {
+            switch (sortBy) {
+                case 'nameAsc':
+                    models.sort((a, b) => a.name.localeCompare(b.name));
+                    break;
+                case 'nameDesc':
+                    models.sort((a, b) => b.name.localeCompare(a.name));
+                    break;
+                case 'sizeAsc':
+                    models.sort((a, b) => {
+                        const sizeA = parseFloat(a.parameters.replace(/[^\d.]/g, ''));
+                        const sizeB = parseFloat(b.parameters.replace(/[^\d.]/g, ''));
+                        return isNaN(sizeA) || isNaN(sizeB) ? 0 : sizeA - sizeB;
+                    });
+                    break;
+                case 'sizeDesc':
+                    models.sort((a, b) => {
+                        const sizeA = parseFloat(a.parameters.replace(/[^\d.]/g, ''));
+                        const sizeB = parseFloat(b.parameters.replace(/[^\d.]/g, ''));
+                        return isNaN(sizeA) || isNaN(sizeB) ? 0 : sizeB - sizeA;
+                    });
+                    break;
+                case 'contextAsc':
+                    models.sort((a, b) => {
+                        const getValue = ctx => parseInt(ctx.replace(/\D/g, ''));
+                        return getValue(a.context) - getValue(b.context);
+                    });
+                    break;
+                case 'contextDesc':
+                    models.sort((a, b) => {
+                        const getValue = ctx => parseInt(ctx.replace(/\D/g, ''));
+                        return getValue(b.context) - getValue(a.context);
+                    });
+                    break;
+            }
+        }
+
+        // Display models in the grid
+        function displayModels(models) {
+            const container = document.getElementById('modelsContainer');
+            container.innerHTML = '';
+            document.getElementById('modelCount').textContent = models.length;
+            
+            models.forEach(model => {
+                const card = document.createElement('div');
+                card.className = `model-card ${model.source === 'huggingface' ? 'hf' : 'nim'}`;
+                
+                // Get provider icon based on provider name
+                function getProviderIcon(provider) {
+                    switch(provider) {
+                        case 'Meta': return '<i class="fas fa-infinity"></i>';
+                        case 'Google': return '<i class="fab fa-google"></i>';
+                        case 'Mistral AI': return '<i class="fas fa-wind"></i>';
+                        case 'NVIDIA': return '<i class="fas fa-microchip"></i>';
+                        case 'AI21': return '<i class="fas fa-brain"></i>';
+                        default: return '<i class="fas fa-cube"></i>';
+                    }
+                }
+                
+                // Create capability tags HTML
+                let capabilitiesHTML = '';
+                if (model.capabilities && model.capabilities.length > 0) {
+                    capabilitiesHTML = model.capabilities.map(capability => {
+                        let className = '';
+                        if (capability === 'Tool Calling') className = 'tool-calling';
+                        if (capability === 'AI Agent') className = 'ai-agent';
+                        if (capability === 'RAG') className = 'rag';
+                        if (capability === 'Text Generation') className = 'text-generation';
+                        if (capability === 'Reranking') className = 'reranking';
+                        if (capability === 'Embedding') className = 'embedding';
+                        if (capability === 'Content Safety') className = 'content-safety';
+                        if (capability === 'Guardrails') className = 'guardrails';
+                        return `<div class="capability-tag ${className}">${capability}</div>`;
+                    }).join('');
+                }
+                
+                // Get provider icon HTML
+                const providerIcon = getProviderIcon(model.provider);
+                
+                card.innerHTML = `
+                    <div class="model-header">
+                        <div class="model-tag ${model.source === 'huggingface' ? 'hf' : 'nim'}">
+                            <i class="fas ${model.source === 'huggingface' ? 'fa-fire-alt' : 'fa-cube'} mr-1"></i> ${model.sourceLabel}
+                        </div>
+                        <div class="model-name">
+                            ${model.name}
+                            ${model.verified ? '<i class="fas fa-check-circle verified"></i>' : ''}
+                        </div>
+                        <div class="model-provider">
+                            <span class="inline-flex items-center">
+                                ${providerIcon}
+                                <span class="ml-1">${model.provider}</span>
+                            </span>
+                        </div>
+                        <div class="model-description">${model.description}</div>
+                    </div>
+                    
+                    <div class="model-specs">
+                        <div class="spec-item">
+                            <i class="fas fa-microchip"></i> ${model.parameters}
+                        </div>
+                        <div class="spec-item">
+                            <i class="fas fa-exchange-alt"></i> ${model.context}
+                        </div>
+                        <div class="spec-item">
+                            <i class="fas fa-users"></i> ${model.license}
+                        </div>
+                        <div class="spec-item">
+                            <i class="fas fa-server"></i> ${model.runtimes.join(', ')}
+                        </div>
+                    </div>
+                    
+                    <div class="model-capabilities">
+                        ${capabilitiesHTML}
+                    </div>
+                    
+                    <div class="model-best-for">
+                        <div class="best-for-header">Best for:</div>
+                        <div class="best-for-content">${model.bestFor}</div>
+                    </div>
+                    
+                    <div class="model-footer">
+                        <div class="model-links">
+                            <a href="#" class="model-link details-link" data-id="${model.id}">Details</a>
+                            ${model.modelURL ? `
+                                <a href="${model.modelURL}" target="_blank" class="model-link card" data-id="${model.id}">
+                                    <i class="fas fa-external-link-alt"></i> Card
+                                </a>
+                            ` : `
+                                <span class="model-link text-gray-500 cursor-not-allowed" style="opacity: 0.6;">
+                                    <i class="fas fa-external-link-alt"></i> No Card
+                                </span>
+                            `}
+                        </div>
+                        <button class="compare-btn" data-id="${model.id}">
+                            <i class="fas fa-plus"></i> Compare
+                        </button>
+                    </div>
+                `;
+                
+                container.appendChild(card);
+            });
+            
+            // Add event listeners for card interactions
+            addCardInteractions();
+        }
+
+        // Add event listeners for card interactions
+        function addCardInteractions() {
+            // Compare buttons
+            document.querySelectorAll('.compare-btn').forEach(btn => {
+                const modelId = btn.dataset.id;
+                
+                // Set initial state based on whether model is in comparison
+                if (comparedModels.has(modelId)) {
+                    btn.innerHTML = '<i class="fas fa-minus"></i> Compare';
+                    btn.classList.add('active');
+                }
+                
+                btn.addEventListener('click', function() {
+                    const modelId = this.dataset.id;
+                    
+                    if (this.innerHTML.includes('fa-plus')) {
+                        addToComparison(modelId);
+                    } else {
+                        removeFromComparison(modelId);
+                    }
+                });
+            });
+            
+            // Selected buttons
+            document.querySelectorAll('.selected-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const modelId = this.dataset.id;
+                    console.log(`Model ${modelId} is already selected`);
+                });
+            });
+            
+            // Details links
+            document.querySelectorAll('.details-link').forEach(link => {
+                link.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    const modelId = this.dataset.id;
+                    const model = allModels.find(m => m.id === modelId);
+                    if (model) {
+                        showModelDetails(model);
+                    }
+                });
+            });
+            
+            // Card links
+            document.querySelectorAll('.model-link.card').forEach(link => {
+                link.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    const modelId = this.dataset.id;
+                    const model = allModels.find(m => m.id === modelId);
+                    if (model && model.modelURL) {
+                        // Open the actual model URL in a new tab
+                        window.open(model.modelURL, "_blank");
+                    } else {
+                        console.warn(`Model ${modelId} has no modelURL property`);
+                        // Fallback to a placeholder URL if no modelURL is defined
+                        window.open("#model-card-" + modelId, "_blank");
+                    }
+                });
+            });
+        }
+    </script>
+
+
+</body></html>
