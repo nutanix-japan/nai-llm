@@ -186,7 +186,7 @@ For the purposes of this lab, we will call the source NKP cluster as ``nkpprimar
         for img in ndk/manager:1.2.0 ndk/infra-manager:1.2.0 ndk/job-scheduler:1.2.0 ndk/kube-rbac-proxy:v0.17.0 ndk/bitnami-kubectl:1.30.3; do docker tag ndk/bitnami-kubectl:1.30.3 harbor.example.com/nkp/ndk/bitnami-kubectl:1.30.3; docker push harbor.example.com/nkp/ndk/bitnami-kubectl:1.30.3;done
         ```
 
-## Install NDK ``v1.2.0``
+## Install NDK on Primary NKP Cluster
     
 
 1. Login to VSCode Terminal
@@ -374,7 +374,7 @@ By configuring ``StorageCluster`` custom resource with NDK, we are providing Nut
         csi.nutanix.com/prism-element-uuid":"00062f20-b2e0-fa8e-4b04-xxxxxxxxxxxx"
         ```
 
-3. Add (append) the following environment variables and save it
+3. Add (append) the following environment variables ``$HOME/ndk/.env`` and save it
    
     === ":octicons-file-code-16: Template .env"
 
@@ -393,8 +393,24 @@ By configuring ``StorageCluster`` custom resource with NDK, we are providing Nut
         export SC_NAME=primary-storage-cluster
         export KUBECONFIG=$HOME/nkp/nkpprimary.conf
         ```
- 
-4. Source the ``.env`` file
+
+6. Note and export the external  IP assigned to the NDK intercom service on the Primary Cluster
+
+    ```bash
+    export PRIMARY_NDK_IP=$(k get svc -n ntnx-system ndk-intercom-service -o jsonpath='{.status.loadBalancer.ingress[0].ip}')
+    echo $PRIMARY_NDK_IP
+    ```
+
+3. Add (append) the following environment variables file ``$HOME/ndk/.env`` and save it
+   
+    === ":octicons-file-code-16: Template .env"
+
+        ```text
+        export PRIMARY_NDK_PORT=2021
+        export PRIMARY_NDK_IP=$(k get svc -n ntnx-system ndk-intercom-service -o jsonpath='{.status.loadBalancer.ingress[0].ip}')
+        ```
+
+4. Source the ``$HOME/ndk/.env`` file
     
     === ":octicons-command-palette-16: Command"
     
@@ -423,7 +439,8 @@ By configuring ``StorageCluster`` custom resource with NDK, we are providing Nut
          ```bash
          storagecluster.dataservices.nutanix.com/primary-storage-cluster created
          ```
-
+        
+    
 Now we are ready to create local cluster snapshots and snapshot restores using the following NDK custom resources:
 
 -  ``ApplicationSnapshot`` and

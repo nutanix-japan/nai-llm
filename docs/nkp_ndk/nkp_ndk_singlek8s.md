@@ -1,4 +1,4 @@
-# Replicating and Recovering Application 
+# Recovering Application within the same K8S Cluster
 
 In this section we will deploy a sample workload, snapshot the Application components and recover.
 
