@@ -355,10 +355,10 @@ Since we have a sample workload configured on the primary NKP cluster, we will:
         apiVersion: dataservices.nutanix.com/v1alpha1
         kind: Remote
         metadata:
-        name: nkpsecondary
+          name: nkpsecondary
         spec:
-        ndkServiceIp: 10.38.19.32
-        ndkServicePort: 2021
+          ndkServiceIp: 10.x.x.32
+          ndkServicePort: 2021
         EOF
         ```
 
@@ -460,7 +460,7 @@ Since we have a sample workload configured on the primary NKP cluster, we will:
          apiVersion: dataservices.nutanix.com/v1alpha1
          kind: ApplicationSnapshotReplication
          metadata:
-           name: replcation-1
+           name: replication-1
            namespace: default
          spec:
            applicationSnapshotName: app1-snap
@@ -475,7 +475,7 @@ Since we have a sample workload configured on the primary NKP cluster, we will:
          apiVersion: dataservices.nutanix.com/v1alpha1
          kind: ApplicationSnapshotReplication
          metadata:
-           name: replcation-1
+           name: replication-1
            namespace: default
          spec:
            applicationSnapshotName: app1-snap
@@ -488,7 +488,7 @@ Since we have a sample workload configured on the primary NKP cluster, we will:
     === ":octicons-command-palette-16: Command"
 
          ```bash
-         kubectl describe ApplicationSnapshotReplication
+         kubectl describe ApplicationSnapshotReplication replication-1
          ```
 
     === ":octicons-command-palette-16: Command output"
@@ -537,7 +537,7 @@ Since we have a sample workload configured on the primary NKP cluster, we will:
   
     === ":octicons-command-palette-16: Command output"
  
-         ```bash
+         ```bash hl_lines="4"
          k get applicationsnapshot -n default
 
          NAMESPACE   NAME        AGE   READY-TO-USE   BOUND-SNAPSHOTCONTENT                                  SNAPSHOT-AGE

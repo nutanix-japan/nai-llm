@@ -130,6 +130,12 @@ Now we have a stateful workload which we can replicate and recover using NDK
          EOF
          ```
 
+    === ":octicons-command-palette-16: Command output"
+    
+         ```bash
+         application.dataservices.nutanix.com/app-1 created
+         ```
+
 2. Take a local cluster snapshot of the ``app1`` application
    
     === ":octicons-command-palette-16: Command"
@@ -146,6 +152,12 @@ Now we have a stateful workload which we can replicate and recover using NDK
                name: app-1                           # This is Application reference for the snapshot operation
            expiresAfter:  48h
          EOF
+         ```
+
+    === ":octicons-command-palette-16: Command output"
+    
+         ```bash
+         applicationsnapshot.dataservices.nutanix.com/app1-snap created
          ```
 
 3. View the progress
