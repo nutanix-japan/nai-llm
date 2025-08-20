@@ -464,7 +464,6 @@ We are now ready to install the workload ``nkpdev`` cluster
         export CSI_HYPERVISOR_ATTACHED=_true/false
         export DOCKER_USERNAME=_your_docker_username
         export DOCKER_PASSWORD=_your_docker_password
-        export NUTANIX_PROJECT_NAME=_your_pc_project_name
         ```
 
     === "Sample .env"
@@ -482,7 +481,6 @@ We are now ready to install the workload ``nkpdev`` cluster
         export CSI_HYPERVISOR_ATTACHED=true
         export DOCKER_USERNAME=_your_docker_username
         export DOCKER_PASSWORD=_your_docker_password
-        export NUTANIX_PROJECT_NAME=dev-lab
         ```
 
 2. Source the new variables and values to the environment
@@ -523,8 +521,6 @@ We are now ready to install the workload ``nkpdev`` cluster
                 --registry-mirror-url "https://registry-1.docker.io" \
                 --registry-mirror-username ${DOCKER_USERNAME} \
                 --registry-mirror-password ${DOCKER_PASSWORD} \
-                --control-plane-pc-project ${NUTANIX_PROJECT_NAME} \
-                --worker-pc-project ${NUTANIX_PROJECT_NAME} \
                 --self-managed \
                 --insecure"
         ```
@@ -565,8 +561,6 @@ We are now ready to install the workload ``nkpdev`` cluster
             --registry-mirror-url "https://registry-1.docker.io" \
             --registry-mirror-username ${DOCKER_USERNAME} \
             --registry-mirror-password ${DOCKER_PASSWORD} \
-            --control-plane-pc-project ${NUTANIX_PROJECT_NAME} \
-            --worker-pc-project ${NUTANIX_PROJECT_NAME} \
             --self-managed \
             --insecure
         ```

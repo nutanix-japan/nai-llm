@@ -471,16 +471,7 @@ Since we have a sample workload configured on the primary NKP cluster, we will:
     === ":octicons-command-palette-16: Command output"
 
          ```bash
-         k apply -f -<<EOF
-         apiVersion: dataservices.nutanix.com/v1alpha1
-         kind: ApplicationSnapshotReplication
-         metadata:
-           name: replication-1
-           namespace: default
-         spec:
-           applicationSnapshotName: app1-snap
-           replicationTargetName: ${NDK_REPLICATION_CLUSTER_NAME}
-         EOF
+         applicationsnapshotreplication.dataservices.nutanix.com/replication-1 created
          ```
 
 5. Monitor the progress of the replication and make sure to complete it

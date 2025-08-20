@@ -17,7 +17,7 @@ nav:
   - Workstation Setup: infra/workstation.md
   - Jumphost VM Tofu: infra/infra_jumphost_tofu.md
 - NAI on NKP Tutorials:
-  - Nutanix Enterprise AI v2.3.0 (NAI):
+  - Nutanix Enterprise AI v2.4.0 (NAI):
     - Getting Started: iep/index.md
     - Setup NKP Cluster: infra/infra_nkp.md
     - Pre-requisites NAI: iep/iep_pre_reqs.md

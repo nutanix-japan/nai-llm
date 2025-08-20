@@ -24,7 +24,7 @@ stateDiagram-v2
 
 ## Prepare for NAI Deployment
 
-## Enable NKP Operators
+### Enable NKP Applications through NKP GUI
 
 Enable these NKP Operators from NKP GUI.
 
@@ -39,11 +39,10 @@ Enable these NKP Operators from NKP GUI.
 3. Go to **Applications** 
 4. Search and enable the following applications: follow this order to install dependencies for NAI application
    
-    - Prometheus Monitoring: version ``69.1.2`` or later
-    - Prometheus Adapter: version ``v4.11.0`` or later
-    - Istio Service Mesh: version``1.20.8`` or later
-  
-5. The next application to enable is
+    - Kube-prometheus-stack: version ``70.4.2`` or later (pre-installed on NKP cluster)   
+
+<!-- 1. The next application to enable is
+1. 
     - Knative: version `v1.17.0` or later
 
     - Search for Knative in the **Applications**
@@ -73,8 +72,18 @@ Enable these NKP Operators from NKP GUI.
               credentialName: nai-cert # (1)
     ```
 
-    1. We will create this credential in the next section
+    1. We will create this credential in the next section -->
 
+### Enable Pre-requisite Applications  
+
+We will enable the following pre-requisite applications through command line:
+
+   - Kserve: ``v0.15.0``
+   - Envoy Gateway ``v1.3.2``
+
+<!-- !!! note
+    The following will be done in command line. -->
+   
 1. Open ``$HOME/.env`` file in ``VSCode``
 
 2. Add (append) the following line and save it
@@ -143,9 +152,26 @@ Enable these NKP Operators from NKP GUI.
         kserve-controller-manager-58946fd54d-vsxvn   2/2     Running   0          18m
         ```
 
+6. Install Envoy Gateway ``v1.3.2``
+   
+    ```bash
+    helm install eg oci://docker.io/envoyproxy/gateway-helm --version v1.3.3 -n envoy-gateway-system --create-namespace
+    ```
+
+7. Check if Envoy Gateway resources are ready
+
+    ```bash
+    kubectl wait --timeout=5m -n envoy-gateway-system deployment/envoy-gateway --for=condition=Available
+    ```
+
+8. Check if Cert Manager is installed (pre-installed on NKP cluster)
+   
+    ```bash
+    kubectl get all -n cert-manager
+    ```
+
 !!! note
     It may take a few minutes for each application to be up and running. Monitor the deployment to make sure that these applications are running before moving on to the next section.
-        ```
 
 ## Deploy NAI
 
@@ -168,6 +194,8 @@ We will use the Docker login credentials we created in the previous section to d
         export DOCKER_USERNAME=_GA_release_docker_username
         export DOCKER_PASSWORD=_GA_release_docker_password
         export NAI_CORE_VERSION=_GA_release_nai_core_version
+        export NAI_DEFAULT_RWO_STORAGECLASS=_RWO_storage_class_name
+        export NAI_API_RWX_STORAGECLASS=_RWX_storage_class_name
         ```
 
     === "Sample .env"
@@ -175,7 +203,9 @@ We will use the Docker login credentials we created in the previous section to d
         ```text
         export DOCKER_USERNAME=ntnxsvcgpt
         export DOCKER_PASSWORD=dckr_pat_xxxxxxxxxxxxxxxxxxxxxxxx
-        export NAI_CORE_VERSION=v2.3.0
+        export NAI_CORE_VERSION=v2.4.0
+        export NAI_DEFAULT_RWO_STORAGECLASS=nutanix-volume
+        export NAI_API_RWX_STORAGECLASS=nai-nfs-storage
         ```
 
 3. Source the environment variables (if not done so already)
@@ -267,6 +297,8 @@ We will use the Docker login credentials we created in the previous section to d
     --set imagePullSecret.credentials.username=$DOCKER_USERNAME \
     --set imagePullSecret.credentials.password=$DOCKER_PASSWORD \
     --insecure-skip-tls-verify \
+    --set naiApi.storageClassName=$NAI_API_RWX_STORAGECLASS \
+    --set defaultStorageClassName=$NAI_DEFAULT_RWO_STORAGECLASS \
     -f nkp-values.yaml
     ```
    
@@ -297,7 +329,7 @@ We will use the Docker login credentials we created in the previous section to d
         -f nkp-values.yaml
         Release "nai-core" has been upgraded. Happy Helming!
         NAME: nai-core
-        LAST DEPLOYED: Mon Sep 16 22:07:24 2024
+        LAST DEPLOYED: Mon Aug 18 22:07:24 2025
         NAMESPACE: nai-system
         STATUS: deployed
         REVISION: 7
@@ -337,7 +369,7 @@ We will use the Docker login credentials we created in the previous section to d
 
 ## Install SSL Certificate
 
-In this section we will install SSL Certificate to access the NAI UI. This is required as the endpoint will only work with a ssl endpoint with a valid certificate. 
+In this section we will install SSL Certificate to access the NAI UI. This is required as the endpoint will only work with a ssl endpoint with a valid certificate.
 
 NAI UI is accessible using the Ingress Gateway.
 
@@ -397,7 +429,7 @@ The following steps show how cert-manager can be used to generate a self signed 
     kind: Certificate
     metadata:
       name: nai-cert
-      namespace: istio-system
+      namespace: nai-system
     spec:
       issuerRef:
         name: selfsigned-issuer
@@ -411,16 +443,22 @@ The following steps show how cert-manager can be used to generate a self signed 
     EOF
     ```
 
+6. Patch the Envoy gateway with the ``nai-cert`` certificate details
+   
+    ```bash
+    kubectl patch gateway nai-ingress-gateway -n nai-system --type='json' -p='[{"op": "replace", "path": "/spec/listeners/1/tls/certificateRefs/0/name", "value": "nai-cert"}]'
+    ```
+
 ## Accessing the UI
 
-6. In a browser, open the following URL to connect to the NAI UI
+1. In a browser, open the following URL to connect to the NAI UI
    
     ```url
     https://nai.10.x.x.216.nip.io
     ```
 
-7. Change the password for the `admin` user
-8. Login using `admin` user and password.
+2. Change the password for the `admin` user
+3. Login using `admin` user and password.
    
     ![](images/nai-login.png)
 
