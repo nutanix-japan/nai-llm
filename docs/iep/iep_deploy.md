@@ -78,36 +78,103 @@ Enable these NKP Operators from NKP GUI.
 
 We will enable the following pre-requisite applications through command line:
 
-   - Kserve: ``v0.15.0``
    - Envoy Gateway ``v1.3.2``
-
-<!-- !!! note
-    The following will be done in command line. -->
+   - Kserve: ``v0.15.0`` in raw deployment mode
    
-1. Open ``$HOME/.env`` file in ``VSCode``
+!!! note
+    The following application are pre-installed on NKP cluster with Pro license
 
-2. Add (append) the following line and save it
+    - Cert Manager
+    
+    Check if Cert Manager is installed (pre-installed on NKP cluster)
+   
+    === "Command"
+    
+        ```bash
+        kubectl get deploy -n cert-manager
+        ```
+
+    === "Output"
+
+        ```{ .text .no-copy }
+        $ kubectl get deploy -n cert-manager
+
+        NAME                      READY   UP-TO-DATE   AVAILABLE   AGE
+        cert-manager              1/1     1            1           145m
+        cert-manager-cainjector   1/1     1            1           145m
+        cert-manager-webhook      1/1     1            1           145m
+        ```
+
+    If not installed, use the following command to install it
+
+    ```bash
+    kubectl apply -f https://github.com/cert-manager/cert-manager/releases/download/v1.16.4/cert-manager.yaml
+    ```
+   
+1. Open Terminal  in ``VSCode``
+
+2. Run the command to load the environment variables
+   
+    ```bash
+    source $HOME/.env
+    ```
+
+3. Install Envoy Gateway ``v1.3.2``
+   
+    === "Command"
+    
+        ```bash
+        helm install eg oci://docker.io/envoyproxy/gateway-helm --version v1.3.2 -n envoy-gateway-system --create-namespace
+        ```
+
+    === "Output"
+        
+        ```{ .text .no-copy }
+        helm install eg oci://docker.io/envoyproxy/gateway-helm --version v1.3.2 -n envoy-gateway-system --create-namespace
+        Pulled: docker.io/envoyproxy/gateway-helm:v1.3.2
+        Digest: sha256:0070bdddc186e6bd48007a84c6d264b796d14017436f38ccfe5ca621aefc1ca5
+        NAME: eg
+        LAST DEPLOYED: Mon Aug 25 04:31:06 2025
+        NAMESPACE: envoy-gateway-system
+        STATUS: deployed
+        REVISION: 1
+        TEST SUITE: None
+        ``` 
+
+4. Check if Envoy Gateway resources are ready
+   
+    === "Command"
+    
+        ```bash
+        kubectl wait --timeout=5m -n envoy-gateway-system deployment/envoy-gateway --for=condition=Available
+        ```
+
+    === "Output"
+
+        ```{ .text .no-copy }
+        deployment.apps/envoy-gateway condition met
+
+        ```
+5. Open ``$HOME/.env`` file in ``VSCode``
+
+6. Add (append) the following line and save it
 
 
     ```text
     export KSERVE_VERSION=v0.15.0
     ```
 
-3. Run the command to load the environment variables
-   
-    ```bash
-    source $HOME/.env
-    ```
-
-4. Install ``kserve`` using the following commands
+8. Install ``kserve`` using the following commands
 
     === "Command"
     
         ```bash
-        helm upgrade --install kserve-crd oci://ghcr.io/kserve/charts/kserve-crd --version ${KSERVE_VERSION} -n kserve --create-namespace
+        helm upgrade --install kserve-crd oci://ghcr.io/kserve/charts/kserve-crd --version ${KSERVE_VERSION} -n kserve --create-namespace 
         ```
         ```bash
-        helm upgrade --install kserve oci://ghcr.io/kserve/charts/kserve --version ${KSERVE_VERSION} --namespace kserve --create-namespace --wait 
+        helm upgrade --install kserve oci://ghcr.io/kserve/charts/kserve --version ${KSERVE_VERSION} --namespace kserve --create-namespace \
+        --set kserve.controller.deploymentMode=RawDeployment \
+      	--set kserve.controller.gateway.disableIngressCreation=true
         ```
 
     === "Output"
@@ -136,14 +203,16 @@ We will enable the following pre-requisite applications through command line:
         TEST SUITE: None
         ```
 
-5. Check if ``kserve`` pods are running
+9. Check if ``kserve`` pods are running
    
     === "Command"
     
         ```bash
         kubens kserve
-        kubectl get pods 
+        kubectl get pods    # (1)!
         ```
+
+        1. Make sure both the containers are running for ``kserve-controller-manager`` pod
 
     === "Output"
     
@@ -151,24 +220,6 @@ We will enable the following pre-requisite applications through command line:
         NAME                                         READY   STATUS    RESTARTS   AGE
         kserve-controller-manager-58946fd54d-vsxvn   2/2     Running   0          18m
         ```
-
-6. Install Envoy Gateway ``v1.3.2``
-   
-    ```bash
-    helm install eg oci://docker.io/envoyproxy/gateway-helm --version v1.3.3 -n envoy-gateway-system --create-namespace
-    ```
-
-7. Check if Envoy Gateway resources are ready
-
-    ```bash
-    kubectl wait --timeout=5m -n envoy-gateway-system deployment/envoy-gateway --for=condition=Available
-    ```
-
-8. Check if Cert Manager is installed (pre-installed on NKP cluster)
-   
-    ```bash
-    kubectl get all -n cert-manager
-    ```
 
 !!! note
     It may take a few minutes for each application to be up and running. Monitor the deployment to make sure that these applications are running before moving on to the next section.
@@ -261,7 +312,7 @@ We will use the Docker login credentials we created in the previous section to d
               app: nvidia-dcgm-exporter
     ```
 
-    !!!tip
+    ???tip "How to get nkp-values.yaml file?"
 
            It is possible to get the values file using the following command
       
@@ -283,7 +334,7 @@ We will use the Docker login credentials we created in the previous section to d
 
     with the following content:
 
-    ```bash hl_lines="14"
+    ```bash hl_lines="16"
     #!/usr/bin/env bash
 
     set -ex
@@ -316,8 +367,6 @@ We will use the Docker login credentials we created in the previous section to d
         $HOME/nai/nai-deploy.sh 
 
         + set -o pipefail
-        + helm repo add ntnx-charts https://nutanix.github.io/helm-releases
-        "ntnx-charts" already exists with the same configuration, skipping
         + helm repo update ntnx-charts
         Hang tight while we grab the latest from your chart repositories...
         ...Successfully got an update from the "ntnx-charts" chart repository
@@ -327,13 +376,12 @@ We will use the Docker login credentials we created in the previous section to d
         --set imagePullSecret.credentials.password=$DOCKER_PASSWORD \
         --insecure-skip-tls-verify \
         -f nkp-values.yaml
-        Release "nai-core" has been upgraded. Happy Helming!
+        Release "nai-core" does not exist. Installing it now.
         NAME: nai-core
-        LAST DEPLOYED: Mon Aug 18 22:07:24 2025
+        LAST DEPLOYED: Mon Aug 25 04:59:28 2025
         NAMESPACE: nai-system
         STATUS: deployed
-        REVISION: 7
-        TEST SUITE: None
+        REVISION: 1
         ```
 
 8.  Verify that the NAI Core Pods are running and healthy
@@ -347,24 +395,21 @@ We will use the Docker login credentials we created in the previous section to d
     === "Command output"
 
         ```{ .text .no-copy }
-        $ kubens nai-system
-        ✔ Active namespace is "nai-system"
-
         $ kubectl get po,deploy
-
+        Context "nkplb-admin@nkplb" modified.
+        Active namespace is "nai-system".
         NAME                                            READY   STATUS      RESTARTS   AGE
-        pod/nai-api-55c665dd67-746b9                    1/1     Running     0          5d1h
-        pod/nai-api-db-migrate-fdz96-xtmxk              0/1     Completed   0          40h
-        pod/nai-db-789945b4df-lb4sd                     1/1     Running     0          43h
-        pod/nai-iep-model-controller-84ff5b5b87-6jst9   1/1     Running     0          5d8h
-        pod/nai-ui-7fc65fc6ff-clcjl                     1/1     Running     0          5d8h
-        pod/prometheus-nai-0                            2/2     Running     0          43h
+        pod/nai-api-58cbd47f86-dqt5z                    1/1     Running     0          4m1s
+        pod/nai-api-db-migrate-q2urg-nb8zc              0/1     Completed   0          4m1s
+        pod/nai-db-0                                    1/1     Running     0          4m1s
+        pod/nai-iep-model-controller-64d88cd94f-q85hf   1/1     Running     0          4m1s
+        pod/nai-ui-dd8fb65c-zthbf                       1/1     Running     0          4m1s
+        pod/prometheus-nai-0                            2/2     Running     0          4m1s
 
         NAME                                       READY   UP-TO-DATE   AVAILABLE   AGE
-        deployment.apps/nai-api                    1/1     1            1           5d8h
-        deployment.apps/nai-db                     1/1     1            1           5d8h
-        deployment.apps/nai-iep-model-controller   1/1     1            1           5d8h
-        deployment.apps/nai-ui                     1/1     1            1           5d8h
+        deployment.apps/nai-api                    1/1     1            1           4m1s
+        deployment.apps/nai-iep-model-controller   1/1     1            1           4m1s
+        deployment.apps/nai-ui                     1/1     1            1           4m1s
         ```
 
 ## Install SSL Certificate
@@ -385,18 +430,18 @@ The following steps show how cert-manager can be used to generate a self signed 
 
     Skip the steps in this section to create a self-signed certificate resource.
 
-1. Get the Ingress host using the following command:
+1. Get the NAI UI ingress gateway host using the following command:
    
     ```bash
-    INGRESS_HOST=$(kubectl get svc -n istio-system istio-ingressgateway -o jsonpath='{.status.loadBalancer.ingress[0].ip}')
+    NAI_UI_ENDPOINT=$(kubectl get svc -n envoy-gateway-system -l "gateway.envoyproxy.io/owning-gateway-name=nai-ingress-gateway,gateway.envoyproxy.io/owning-gateway-namespace=nai-system" -o jsonpath='{.items[0].status.loadBalancer.ingress[0].ip}' | grep -v '^$' || kubectl get svc -n envoy-gateway-system -l "gateway.envoyproxy.io/owning-gateway-name=nai-ingress-gateway,gateway.envoyproxy.io/owning-gateway-namespace=nai-system" -o jsonpath='{.items[0].status.loadBalancer.ingress[0].hostname}')
     ```
 
-2. Get the value of ``INGRESS_HOST`` environment variable
+2. Get the value of ``NAI_UI_ENDPOINT`` environment variable
    
     === "Command"
 
         ```bash
-        echo $INGRESS_HOST
+        echo $NAI_UI_ENDPOINT
         ```
 
     === "Command output"
@@ -412,7 +457,7 @@ The following steps show how cert-manager can be used to generate a self signed 
     === "Template URL"
 
         ```bash
-        nai.${INGRESS_HOST}.nip.io
+        nai.${NAI_UI_ENDPOINT}.nip.io
         ```
 
     === "Sample URL"
@@ -435,11 +480,11 @@ The following steps show how cert-manager can be used to generate a self signed 
         name: selfsigned-issuer
         kind: ClusterIssuer
       secretName: nai-cert
-      commonName: nai.${INGRESS_HOST}.nip.io
+      commonName: nai.${NAI_UI_ENDPOINT}.nip.io
       dnsNames:
-      - nai.${INGRESS_HOST}.nip.io
+      - nai.${NAI_UI_ENDPOINT}.nip.io
       ipAddresses:
-      - ${INGRESS_HOST}
+      - ${NAI_UI_ENDPOINT}
     EOF
     ```
 
@@ -447,6 +492,41 @@ The following steps show how cert-manager can be used to generate a self signed 
    
     ```bash
     kubectl patch gateway nai-ingress-gateway -n nai-system --type='json' -p='[{"op": "replace", "path": "/spec/listeners/1/tls/certificateRefs/0/name", "value": "nai-cert"}]'
+    ```
+
+7. Create EnvoyProxy
+   
+    ```bash
+    k apply -f -<<EOF
+    apiVersion: gateway.envoyproxy.io/v1alpha1
+    kind: EnvoyProxy
+    metadata:
+      name: envoy-service-config
+      namespace: nai-system
+    spec:
+      provider:
+        type: Kubernetes
+        kubernetes:
+          envoyService:
+            type: LoadBalancer
+    EOF
+    ```
+
+8. Patch the ``nai-ingress-gateway`` resource with the new ``EnvoyProxy`` details
+
+    ```bash
+    kubectl patch gateway nai-ingress-gateway -n nai-system --type=merge \
+    -p '{
+        "spec": {
+            "infrastructure": {
+                "parametersRef": {
+                    "group": "gateway.envoyproxy.io",
+                    "kind": "EnvoyProxy",
+                    "name": "envoy-service-config"
+                }
+            }
+        }
+    }'
     ```
 
 ## Accessing the UI

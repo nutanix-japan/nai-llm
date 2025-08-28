@@ -146,7 +146,7 @@ Below are minimum requirements for deploying NAI on the NKP Demo Cluster.
         nkp version
         ```
 
-    === "Command output"
+    === "Command Output"
 
         ```{ .bash .no-copy }
         $ nkp version
@@ -170,7 +170,7 @@ If not already done, follow the steps in [Setup Docker on Jumphost](../infra/inf
          docker login
          ```
         
-    === "Command output"
+    === "Command Output"
     
          ```{ .bash .no-copy }
          ~$ docker login
@@ -375,7 +375,7 @@ In this section we will go through creating a base image for all the control pla
           --subnet ${NUTANIX_SUBNET_NAME} --insecure
         ```
 
-    === "Command output"
+    === "Command Output"
 
         ```{ .text .no-copy }
         nkp create image nutanix ubuntu-22.04 \ 
@@ -565,7 +565,7 @@ We are now ready to install the workload ``nkpdev`` cluster
             --insecure
         ```
 
-    === "Command output"
+    === "Command Output"
 
         ```{ .text .no-copy }
         > ✓ Creating a bootstrap cluster 
@@ -658,7 +658,7 @@ We are now ready to install the workload ``nkpdev`` cluster
         kubectl get nodes
         ```
 
-    === "Command output"
+    === "Command Output"
     
         ```bash
         $ kubectl get nodes
@@ -713,7 +713,7 @@ To generate a NKP Pro License for the NKP cluster:
         nkp get dashboard
         ```
 
-    === "Command output"
+    === "Command Output"
 
         ```{ .bash .no-copy }
         nkp get dashboard
@@ -808,7 +808,6 @@ In this section we will create a nodepool to host the AI apps with a GPU.
     nkp create nodepool nutanix \
         --cluster-name ${NKP_CLUSTER_NAME} \
         --prism-element-cluster ${NUTANIX_CLUSTER} \
-        --pc-project ${NUTANIX_PROJECT_NAME} \
         --subnets ${NUTANIX_SUBNET_NAME} \
         --vm-image ${NKP_IMAGE} \
         --disk-size ${GPU_NODE_DISK_SIZE_GIB} \
@@ -866,7 +865,7 @@ In this section we will create a nodepool to host the AI apps with a GPU.
                           name: Lovelace 40S
         ```
 
-4. Monitor Cluster-Api resources to ensure gpu machine will be successfully
+4. Monitor Cluster-Api resources (on a different shell) to ensure gpu machine will be successfully created
 
     ```bash
     watch kubectl get cluster-api
@@ -888,7 +887,7 @@ In this section we will create a nodepool to host the AI apps with a GPU.
         kubectl get nodes -w
         ```
 
-    === "Command output"
+    === "Command Output"
 
         ```bash hl_lines="4"
         $ kubectl get nodes
@@ -934,7 +933,7 @@ We will need to enable GPU operator for deploying NKP application.
         kubectl get po -A | grep -i nvidia
         ```
 
-    === "Command output"
+    === "Command Output"
 
         ```{ .text, no-copy}
         kubectl get po -A | grep -i nvidia
@@ -969,7 +968,7 @@ We will need to enable GPU operator for deploying NKP application.
         EOF
         ```
 
-    === "Command output"
+    === "Command Output"
 
         ```{ .text, no-copy}
         pod/cuda-vector-add created
@@ -988,7 +987,7 @@ We will need to enable GPU operator for deploying NKP application.
         kubectl logs cuda-vector-add-xxx
         ```
 
-    === "Command output"
+    === "Command Output"
 
         ```{ .text, no-copy}
         kubectl logs cuda-vector-add
