@@ -158,11 +158,11 @@ Nutanix also provides a sample chat application that uses NAI to provide chatbot
     kind: HTTPRoute
     metadata:
       name: nai-chatapp-route
-      namespace: nai-admin              # Same namespace as your Service
+      namespace: chat                   # Same namespace as your chat app service
     spec:
       parentRefs:
       - name: nai-ingress-gateway
-    namespace: chat                     # Namespace of the Gateway
+        namespace: nai-system           # Namespace of the Gateway
       hostnames:
       - "chat.nai.10.x.x.216.nip.io"    # Input Gateway IP address
       rules:
