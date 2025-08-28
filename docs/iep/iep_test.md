@@ -100,7 +100,46 @@ Nutanix also provides a sample chat application that uses NAI to provide chatbot
 1. Run the following command to deploy the chat application.
    
     ```bash
-    code $HOME/sol-cnai-infra/scripts/nai/chat.yaml
+    kubectl create ns chat
+    kubens chat
+    ```
+    ```bash
+    kubectl apply -f -<<EOF
+    apiVersion: apps/v1
+    kind: Deployment
+    metadata:
+      name: nai-chatapp
+      namespace: chat
+      labels:
+        app: nai-chatapp
+    spec:
+      replicas: 1
+      selector:
+        matchLabels:
+          app: nai-chatapp
+      template:
+        metadata:
+          labels:
+            app: nai-chatapp
+        spec:
+          containers:
+          - name: nai-chatapp
+            image: johnugeorge/nai-chatapp:0.12
+            ports:
+            - containerPort: 8502
+    ---
+    apiVersion: v1
+    kind: Service
+    metadata:
+      name: nai-chatapp
+      namespace: chat
+    spec:
+      selector:
+        app: nai-chatapp
+      ports:
+        - protocol: TCP
+          port: 8502
+    EOF
     ```
 
 2. Change this line to point to the IP address of your NAI cluster for the ``VirtualService`` resource
@@ -113,32 +152,42 @@ Nutanix also provides a sample chat application that uses NAI to provide chatbot
     chat.nai.10.x.x.216.nip.io
     ```
    
-    ```yaml hl_lines="9"
-    apiVersion: networking.istio.io/v1beta1
-    kind: VirtualService
+    ```yaml hl_lines="6 10 12"
+    kubectl apply -f -<<EOF
+    apiVersion: gateway.networking.k8s.io/v1
+    kind: HTTPRoute
     metadata:
-      name: nai-chat
+      name: nai-chatapp-route
+      namespace: nai-admin              # Same namespace as your Service
     spec:
-      gateways:
-      - knative-serving/knative-ingress-gateway
-      hosts:
-      - chat.nai.10.x.x.216.nip.io
-      http:
-      - match:
-        - uri:
-            prefix: /
-        route:
-        - destination:
-            host: nai-chatapp
-            port:
-            number: 8502
+      parentRefs:
+      - name: nai-ingress-gateway
+    namespace: chat                     # Namespace of the Gateway
+      hostnames:
+      - "chat.nai.10.x.x.216.nip.io"    # Input Gateway IP address
+      rules:
+      - matches:
+        - path:
+            type: PathPrefix
+            value: /
+        backendRefs:
+        - name: nai-chatapp
+          kind: Service
+          port: 8502
+    EOF
     ```
 
 4. We should be able to see the chat application running on the NAI cluster.
-   
-    ![](images/chat-iep.png)
 
-5. Input the endpoint URL and API key to start chatting with the LLM.
+5. Input the following:
+   
+    - Endpoint URL - e.g. ``https://nai.10.x.x.216.nip.io/api/v1/chat/completions`` (can be found in the Enpoints on NAI GUI)
+    - Endpoint Name - e.g. ``llama-8b``
+    - API key - created during Endpoint creation
+  
+    ![](images/chat-iep.png)
+   
+
 
 We have successfully deployed the following:
  
