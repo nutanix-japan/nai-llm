@@ -241,3 +241,7 @@ cython_debug/
 # Prototyping
 dataprotection/
 ndk_nkp.md
+
+#Local backup copies
+copy*
+copy_airgap_nai

@@ -502,21 +502,25 @@ In this section we will go through creating a base image for all the control pla
    
     === "Template .env"
 
-        ```text
+        ```bash
         export REGISTRY_URL=_your_registry_url
         export REGISTRY_USERNAME=_your_registry_username
         export REGISTRY_PASSWORD=_your_registry_password
-        export REGISTRY_CACERT=_path_to_ca_cert_of_registry
+        export REGISTRY_CACERT=_path_to_ca_cert_of_registry  # (1)!
         ```
+
+        1. File must contain CA server and Harbor server's public certificate in one file
 
     === "Sample .env"
 
-        ```text
+        ```bash
         export REGISTRY_URL=https://harbor.10.x.x.111.nip.io/nkp
         export REGISTRY_USERNAME=admin
         export REGISTRY_PASSWORD=xxxxxxxx
-        export REGISTRY_CACERT=$HOME/harbor/certs/ca.crt
+        export REGISTRY_CACERT=$HOME/harbor/certs/full_chain.pem  # (1)!
         ```
+
+        1. File must contain CA server and Harbor server's public certificate in one file
 
 2. Source the new variables and values to the environment
    

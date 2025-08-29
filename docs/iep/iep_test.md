@@ -95,14 +95,19 @@ We have a successful NAI deployment.
 
 ## Sample Chat Application
 
-Nutanix also provides a sample chat application that uses NAI to provide chatbot capabilities. We will install and use the chat application in this section. 
+We have a sample chat application that uses NAI to provide chatbot capabilities. We will install and use the chat application in this section.
 
 1. Run the following command to deploy the chat application.
-   
+    
+    Create the namespace
+
     ```bash
     kubectl create ns chat
     kubens chat
     ```
+
+    Create the application
+
     ```bash
     kubectl apply -f -<<EOF
     apiVersion: apps/v1
@@ -127,7 +132,13 @@ Nutanix also provides a sample chat application that uses NAI to provide chatbot
             image: johnugeorge/nai-chatapp:0.12
             ports:
             - containerPort: 8502
-    ---
+    EOF
+    ```
+
+    Create the service
+
+    ```bash
+    kubectl apply -f -<<EOF
     apiVersion: v1
     kind: Service
     metadata:
@@ -181,13 +192,11 @@ Nutanix also provides a sample chat application that uses NAI to provide chatbot
 
 5. Input the following:
    
-    - Endpoint URL - e.g. ``https://nai.10.x.x.216.nip.io/api/v1/chat/completions`` (can be found in the Enpoints on NAI GUI)
+    - Endpoint URL - e.g. ``https://nai.10.x.x.216.nip.io/api/v1/chat/completions`` (can be found in the Endpoints on NAI GUI)
     - Endpoint Name - e.g. ``llama-8b``
     - API key - created during Endpoint creation
   
     ![](images/chat-iep.png)
-   
-
 
 We have successfully deployed the following:
  

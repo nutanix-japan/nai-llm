@@ -35,9 +35,20 @@ We will use the following commands to install Harbor on the jumphost.
     tar -xzvf harbor-offline-installer-${HARBOR_VERSION}.tgz
     ```
 
-### Setup SSL Certificates for Harbor
+### Optional - Setup SSL Certificates for Harbor
 
-4. Setup up folders to hold certificates for Harbor
+!!! tip "Do you have your own certificates for Harbor?"
+
+    If there is domain of your ownership, generate the following:
+
+    - fullchain.pem - must contain both CA server's public and harbor server's public certificate
+    - privatekey.pem - contain Harbor's private certificate
+
+    Use these in the ``harbor.yml`` file during installation
+
+Use the following procedure to create a self-managed Certificate Authority, Certificate Signing Request and a certificate pair for Harbor.
+
+1. Setup up folders to hold certificates for Harbor
    
     ```bash
     cd $HOME/harbor
@@ -215,8 +226,10 @@ Follow the steps in this [Deploying Private CA Certificate to NKP Cluster sectio
           port: 80
         https:
           port: 443
-          certificate: /home/ubuntu/harbor/certs/harbor.crt
-          private_key: /home/ubuntu/harbor/certs/harbor.key
+          certificate: /home/ubuntu/harbor/certs/harbor.crt # Comment this line if using own public key
+          private_key: /home/ubuntu/harbor/certs/harbor.key # Comment this line if using own private key
+          # certificate: /etc/letsencrypt/live/harbor.apj-cxrules.win/fullchain.pem # Uncomment for your own public key
+          # private_key: /etc/letsencrypt/live/harbor.apj-cxrules.win/privkey.pem   # Uncomment for your own private key
         # Uncomment external_url if you want to enable external proxy
         # And when it enabled the hostname will no longer used
         external_url: https://harbor.10.x.x.111.nip.io/

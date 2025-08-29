@@ -208,19 +208,27 @@ Follow these steps to create a Hugging Face token with read permissions:
   
 Use this token for accessing Hugging Face resources with read-only permissions.
 
-## Download Offline NKP Air-gapped Bundle and Helm Charts
+## Prepare Helm Charts
+
+In this section we will prepare the helm charts necessary for NAI and pre-requisite applications install
+
+ - Envoy Gateway
+ - Kserve
+ - NAI
+
+The procedure will be done on the jumphost VM.
 
 1. Open new `VSCode` window on your jumphost VM
 
 2.  In `VSCode` Explorer pane, click on existing ``$HOME`` folder
 
-2.  Click on **New Folder** :material-folder-plus-outline: name it: ``airgap-nai``
+3.  Click on **New Folder** :material-folder-plus-outline: name it: ``airgap-nai``
 
-3.  On `VSCode` Explorer plane, click the ``$HOME/airgap-nai`` folder
+4.  On `VSCode` Explorer plane, click the ``$HOME/airgap-nai`` folder
 
-4.  On `VSCode` menu, select ``Terminal`` > ``New Terminal``
+5.  On `VSCode` menu, select ``Terminal`` > ``New Terminal``
 
-5.  Browse to ``airgap-nai`` directory
+6.  Browse to ``airgap-nai`` directory
 
     ```bash
     cd $HOME/airgap-nai
@@ -232,23 +240,38 @@ Use this token for accessing Hugging Face resources with read-only permissions.
     .env
     ```
 
-2. Add (append) the following environment variables and save it
+8. Add (append) the following environment variables and save it
    
     === "Template .env"
 
         ```bash
         export KSERVE_VERSION=_your_kserve_version
+        export ENVOY_GATEWAY_VERSION=_your_envoy_gateway_version
         export NAI_CORE_VERSION=_your_nai_core_version
         export NAI_API_VERSION=_your_nai_api_version
+        export REGISTRY_URL=harbor.10.x.x.111.nip.io/nkp
+        export REGISTRY_USERNAME=admin
+        export REGISTRY_CACERT=_path_to_ca_cert_of_registry  # (1)!
         ```
+
+        1. File must contain CA server and Harbor server's public certificate in one file
+
+
     
-    === ".env for NAI v2.3.0"
+    === ".env for NAI v2.4.0"
         
-        ```text
-        export KSERVE_VERSION=0.15.0
+        ```bash
+        export KSERVE_VERSION=v0.15.0
+        export ENVOY_GATEWAY_VERSION=v1.5.0
         export NAI_CORE_VERSION=2.3.0
         export NAI_API_VERSION=2.3.0
+        export REGISTRY_USERNAME=admin
+        export REGISTRY_PASSWORD=xxxxxxx
+        export REGISTRY_CACERT=$HOME/harbor/certs/full_chain.pem  # (1)!
         ```
+
+        1. File must contain CA server and Harbor server's public certificate in one file
+
 
 3. Source the ``.env`` file to import environment variables
    
@@ -265,28 +288,33 @@ Use this token for accessing Hugging Face resources with read-only permissions.
     === "Command"
 
         ```text title="Paste the download URL within double quotes"
-        curl -o nai-core-2.3.0.tgz "_paste_download_URL_here"
+        curl -o nai-core-2.4.0.tgz "_paste_download_URL_here"
         ```
 
     === "Sample command"
         
         ```{ .text .no-copy }
-        curl -o nai-core-2.3.0.tgz "https://download.nutanix.com/downloads/nai/2.3.0/nai-core-2.3.0.tgz?........"
+        curl -o nai-core-2.4.0.tgz "https://download.nutanix.com/downloads/nai/2.3.0/nai-core-2.4.0.tgz?........"
         ```
 
-7.  Fetch the ``kserve`` helm charts using the following commands
+7.  Pull the Kserve and Envoy Gateway helm charts using the following commands
    
     === "Command"
 
         ```bash
-        helm fetch oci://ghcr.io/kserve/charts/kserve-crd --version=${KSERVE_VERSION}
+        helm pull oci://docker.io/envoyproxy/gateway-helm --version ${ENVOY_GATEWAY_VERSION}
 
-        helm fetch oci://ghcr.io/kserve/charts/kserve --version=${KSERVE_VERSION}
+        helm pull oci://ghcr.io/kserve/charts/kserve-crd --version ${KSERVE_VERSION}
+
+        helm pull oci://ghcr.io/kserve/charts/kserve --version ${KSERVE_VERSION}
         ```
     
     === "Command output"
     
         ```{ .text .no-copy }
+        Pulled: docker.io/envoyproxy/gateway-helm:v1.5.0
+        Digest: sha256:a3dddd41ec3c58eae1b77dabe1f298bf92123fda6cac6f4940c23a11fc43c583
+        
         Pulled: ghcr.io/kserve/charts/kserve-crd:v0.14.0
         Digest: sha256:6ae5af970d9a9400e8456ad1dbc86360d03f4b6bb00be4f16c48bc0542283d42
 
@@ -294,15 +322,23 @@ Use this token for accessing Hugging Face resources with read-only permissions.
         Digest: sha256:25129d39a4aa85f96159db6933729ea9f35e9d0f7f7cac7918c0a8013672eccb
         ```
 
-8.  Upload the downloaded and prepared helm charts to ChartMuseum instance deployed automatically by Kommander. This will make this consistent with other NKP catalog items and will work seamlessly when this is converted to a catalog item.
+8. Login to Harbor registry on the command line (if not done so)
+   
+    ```bash
+    helm registry login harbor.10.x.x.111.nip.io --username ${REGISTRY_USERNAME} --password ${REGISTRY_PASSWORD}
+    ```
+   
+9.  Upload the downloaded and prepared helm charts to Harbor
     
     ```bash
-    nkp push chart-bundle kserve-crd-v0.15.0.tgz
-    nkp push chart-bundle kserve-v0.15.0.tgz
-    nkp push chart-bundle nai-core-2.3.0.tgz
+    # Push charts
+    helm push gateway-helm-v1.5.0.tgz oci://harbor.10.x.x.111.nip.io/nkp/
+    helm push kserve-crd-v0.15.0.tgz oci://harbor.10.x.x.111.nip.io/nkp/
+    helm push kserve-v0.15.0.tgz oci://harbor.10.x.x.111.nip.io/nkp/
+    helm push nai-core-2.4.0.tgz oci://harbor.10.x.x.111.nip.io/nkp/
     ```
 
-9.   Download the NAI air-gap binaries (NAI container images) from the link you copied earlier
+10.  Download the NAI air-gap binaries (NAI container images) from the link you copied earlier
     
     === "Command"
 
@@ -316,7 +352,7 @@ Use this token for accessing Hugging Face resources with read-only permissions.
         curl -o nai-2.3.0.tar "https://download.nutanix.com/downloads/nai/2.3.0/nai-2.3.0.tar?..."
         ```
 
-## Prepare NAI Container Images
+## Prepare Container Images
 
 The Jumphost VM will be used as a medium to download the NAI container images and upload them to the internal Harbor container registry.
 
@@ -346,9 +382,9 @@ stateDiagram-v2
     
     The download and upload of the container images will be done in one ``docker push`` command which will use the internal Harbor container registry details.
 
-    ``nkp`` command will do this in a three-step process.
+    This will be a two-step process.
 
-    1. Updload the container images from the downloaded ``nai-2.x.x.tar`` to the jumphost VM local docker images store
+    1. Upload the container images from the downloaded ``nai-2.x.x.tar`` to the jumphost VM local docker images store
     2. Upload it to the internal Harbor container registry 
 
 1. Since we will be using the same internal Harbor container registry to upload container images, make sure the following environment variables are set (these were already set during air-gap NKP preparation)
@@ -370,10 +406,10 @@ stateDiagram-v2
     === "Output"
     
          ```bash
-         nutanix/nai-api:v2.3.0
-         nutanix/nai-inference-ui:v2.3.0
-         nutanix/nai-model-processor:v2.3.0
-         nutanix/nai-iep-operator:v2.3.0
+         nutanix/nai-api:v2.4.0
+         nutanix/nai-inference-ui:v2.4.0
+         nutanix/nai-model-processor:v2.4.0
+         nutanix/nai-iep-operator:v2.4.0
          nutanix/nai-tgi:3.2.0-b6a29e9
          nutanix/nai-tgi:3.2.3-10d65dc
          nutanix/nai-kserve-huggingfaceserver:e7295f58
@@ -402,6 +438,14 @@ stateDiagram-v2
       docker tag $image $REGISTRY_URL/$(echo $image);
       docker push $REGISTRY_URL/$(echo $image);
     done
+    ```
+
+5. Push the Envoy Gateway container image from the jumphost VM to harbor container registry.
+   
+    ```bash
+    docker pull docker.io/envoyproxy/gateway-controller:v1.5.0
+    docker tag docker.io/envoyproxy/gateway-controller:v1.5.0 harbor.10.x.x.111.nip.io/nkp/gateway-controller:v1.5.0
+    docker push harbor.10.x.x.111.nip.io/nkp/gateway-controller:v1.5.0
     ```
 
 Now we are ready to deploy our NAI workloads.
