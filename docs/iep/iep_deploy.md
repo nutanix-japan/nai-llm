@@ -153,8 +153,8 @@ We will enable the following pre-requisite applications through command line:
 
         ```{ .text .no-copy }
         deployment.apps/envoy-gateway condition met
-
         ```
+
 5. Open ``$HOME/.env`` file in ``VSCode``
 
 6. Add (append) the following line and save it
@@ -412,7 +412,7 @@ We will use the Docker login credentials we created in the previous section to d
         deployment.apps/nai-ui                     1/1     1            1           4m1s
         ```
 
-## Install SSL Certificate
+## Install SSL Certificate and Gateway Elements
 
 In this section we will install SSL Certificate to access the NAI UI. This is required as the endpoint will only work with a ssl endpoint with a valid certificate.
 

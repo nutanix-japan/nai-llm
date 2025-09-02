@@ -22,9 +22,9 @@ stateDiagram-v2
     TestNAI --> [*]
 ```
 
-## Enable NKP Operators
+## Enable NKP Applications
 
-Enable these NKP Operators from NKP GUI.
+Enable these NKP Applications from NKP GUI.
 
 !!! note
 
@@ -42,158 +42,109 @@ Enable these NKP Operators from NKP GUI.
 3. Go to **Applications** 
 4. Search and enable the following applications: follow this order to install dependencies for NAI application
    
-    - Prometheus Monitoring: version ``69.1.2`` or later
-    - Prometheus Adapter: version ``v4.11.0`` or later
-    - Istio Service Mesh: version``1.20.8`` or later
+    - Kube-prometheus-stack: version ``70.4.2`` or later (pre-installed on NKP cluster)  
   
-5. The next application to enable is
-    - Knative: version `v1.17.0` or later
-
-    - Search for Knative in the **Applications**
-
-    - Use the following configuration parameters in **Workspace Configuration**:
-
-    ```yaml
-    serving:
-      config:
-        features:
-          kubernetes.podspec-nodeselector: enabled
-        autoscaler:
-          enable-scale-to-zero: false
-      knativeIngressGateway:
-        spec:
-          selector:
-            istio: ingressgateway
-          servers:
-          - hosts:
-            - '*'
-            port:
-              name: https
-              number: 443
-              protocol: HTTPS
-            tls:
-              mode: SIMPLE
-              credentialName: nai-cert # (1)
-    ```
-
-    1. We will create this ``nai-cert`` secret/cert in the next section
-
-6. Validate if the resources are running in the following namespaces.
-
-    - `istio-system`, and
-    - `knative-serving`, 
-
-    === "Command"
-
-        ```bash
-        kubectl get po -n istio-system
-        k get po -n knative-serving
-        ```
-        
-    === "Command output"
-
-        ```{ .text .no-copy }
-        $ k get po -n istio-system
-        NAME                                    READY   STATUS    RESTARTS   AGE
-        istio-ingressgateway-6675867d85-qzrpq   1/1     Running   0          26d
-        istiod-6d96569c9b-2dww4                 1/1     Running   0          26d
-
-        $ k get po -n knative-serving
-        NAME                                   READY   STATUS    RESTARTS   AGE
-        activator-58db57894b-g2nx8             1/1     Running   0          26d
-        autoscaler-76f95fff78-c8q9m            1/1     Running   0          26d
-        controller-7dd875844b-4clqb            1/1     Running   0          26d
-        net-istio-controller-57486f879-85vml   1/1     Running   0          26d
-        net-istio-webhook-7ccdbcb557-54dn5     1/1     Running   0          26d
-        webhook-d8674645d-mscsc                1/1     Running   0          26d
-        ```
-
-7. Login to VSC on the jumphost VM, append the following environment variables to the ``$HOME\airgap-nai\.env`` file and save it
+5. Login to VSC on the jumphost VM, append the following environment variables to the ``$HOME\airgap-nai\.env`` file and save it
    
     === "Template .env"
 
-        ```text
-        export KOMMANDER_CLUSTER_HOSTNAME=_ip_or_hostname_of_kommander_dashboard_url
-        export INTERNAL_REPO=https://${KOMMANDER_CLUSTER_HOSTNAME}/dkp/kommander/helm-mirror
+        ```bash
         export ENVIRONMENT=nkp
-        export REGISTRY_URL=_your_registry_url
-        export REGISTRY_HOST=_your_registry_hostname
+        export NAI_USER=_your_desired_nai_username
+        export NAI_TEMP_PASS=_your_desired_nai_password # At least 8 characters
         ```
 
     === "Sample .env"
 
-        ```text
-        export KOMMANDER_CLUSTER_HOSTNAME="10.x.x.214"
-        export INTERNAL_REPO=https://${KOMMANDER_CLUSTER_HOSTNAME}/dkp/kommander/helm-mirror
+        ```{ .text .no-copy }
         export ENVIRONMENT=nkp
-        export REGISTRY_URL="https://harbor.10.x.x.111.nip.io/nkp"
-        export REGISTRY_HOST="harbor.10.x.x.111.nip.io/nkp"
+        export NAI_USER=admin
+        export NAI_TEMP_PASS=_XXXXXXXXX # At least 8 characters
         ```
 
-8. IN VSC,go to **Terminal** :octicons-terminal-24: and run the following commands to source the environment variables
+6. IN VSC,go to **Terminal** :octicons-terminal-24: and run the following commands to source the environment variables
 
     ```bash
     source $HOME/airgap-nai/.env
     ```
 
-9.  In ``VSCode``, under the newly created ``airgap-nai`` folder, click on **New File** :material-file-plus-outline: and create file with the following name:
-
-    ```bash
-    nai-prepare.sh
-    ```
-
-    with the following content:
-
-    ```bash
-    #!/usr/bin/env bash
-
-    set -ex
-    set -o pipefail
-
-
-    # Patch configurations stored in configmaps
-
-    kubectl patch configmap config-features -n knative-serving -p '{"data":{"kubernetes.podspec-nodeselector":"enabled"}}'
-
-    kubectl patch configmap config-autoscaler -n knative-serving -p '{"data":{"enable-scale-to-zero":"false"}}'
-
-    kubectl patch configmap  config-domain -n knative-serving --type merge -p '{"data":{"example.com":""}}'
-    
-    # This patch of config-deployment config map 
-    # is necessary in air-gapped environment 
-    # kserve will to skip image tag checks
-    # for the self hosted registry if the following is configured
-
-    kubectl patch configmap  config-deployment -n knative-serving --type merge -p '{"data":{"registries-skipping-tag-resolving":"${REGISTRY_HOST"}}'
-  
-    ## Deploy Kserve
-
-    helm upgrade --install kserve-crd --repo ${INTERNAL_REPO} --version ${KSERVE_VERSION} -n kserve --create-namespace
-
-    helm upgrade --install kserve --repo ${INTERNAL_REPO} --version ${KSERVE_VERSION} --namespace kserve --create-namespace 
-    ```
-
-4. Run the script from the Terminal
-
+7. Enable Envoy Gateway ``v1.5.0`` using the following command
+   
     === "Command"
-
+    
         ```bash
-        chmod +x $HOME/airgap-nai/nai-prepare.sh
-        $HOME/airgap-nai/nai-prepare.sh
+        helm install envoy-gateway \
+          oci://${REGISTRY_HOST}/gateway-helm \
+          --version v1.5.0 \
+          --set image.repository=$REGISTRY_HOST/envoyproxy/gateway \
+          --set image.tag=v1.5.0 \
+          -n envoy-gateway-system \
+          --create-namespace
         ```
-        
-    === "Command output"
+
+    === "Output"
 
         ```{ .text .no-copy }
-        NAME: kserve-crd
-        LAST DEPLOYED: Tue Oct 15 02:02:16 2024
-        NAMESPACE: kserve
+        Pulled: harbor.10.x.x.111.nip.io/nkp/gateway-helm:v1.5.0
+        Digest: sha256:2435a9cfcf22043b5ea2cdfe1e5783ec81f1dc527bff3c46c80c3ecc3ed66915
+        NAME: envoy-gateway
+        LAST DEPLOYED: Fri Aug 29 06:08:29 2025
+        NAMESPACE: envoy-gateway-system
         STATUS: deployed
+        REVISION: 1
+        TEST SUITE: None
+        ```
 
+8. Check if Envoy Gateway resources are ready
+   
+    === "Command"
+    
+        ```bash
+        kubectl wait --timeout=5m -n envoy-gateway-system deployment/envoy-gateway --for=condition=Available
+        ```
+
+    === "Output"
+
+        ```{ .text .no-copy }
+        deployment.apps/envoy-gateway condition met
+        ```
+
+9.  Run the Kserve CRD installation
+     
+     ```bash
+     helm install kserve-crd \
+       oci://${REGISTRY_HOST}/kserve-crd \
+       --version v0.15.0 \
+       -n kserve \
+       --create-namespace 
+     ```
+
+10. Run the Kserve installation
+
+    === "Command"
+    
+        ```bash
+        helm install kserve \
+          oci://${REGISTRY_HOST}/kserve \
+          --version v0.15.0 \
+          -n kserve \
+          --set controller.image.repository=${REGISTRY_HOST}/kserve-controller \
+          --set controller.image.tag=v0.15.0 \
+          --set kserve.controller.deploymentMode=RawDeployment \
+          --set kserve.controller.gateway.disableIngressCreation=true
+        ```
+    
+    === "Output"
+    
+        ```{ .text .no-copy }
+        Pulled: harbor.apj-cxrules.win/nkp/kserve:v0.15.0
+        Digest: sha256:dae9d3e35c96d318bf3f5eb15e303ed6c268129f988f0b0b4ad698dc414d3f40
         NAME: kserve
-        LAST DEPLOYED: Tue Oct 15 02:02:19 2024
+        LAST DEPLOYED: Tue Sep  2 01:56:48 2025
         NAMESPACE: kserve
         STATUS: deployed
+        REVISION: 1
+        TEST SUITE: None
         ```
 
     ??? tip "Check helm deployment status"
@@ -201,9 +152,8 @@ Enable these NKP Operators from NKP GUI.
         Check the status of the ``nai`` helm deployments using the following command:
         
         ```bash
-        helm list -n istio-system
+        helm list -n envoy-gateway-system
         helm list -n kserve
-        helm list -n knative-serving
         ```
         
 ## Deploy NAI
@@ -222,151 +172,88 @@ Enable these NKP Operators from NKP GUI.
 
         ```bash
         cat << EOF > ${ENVIRONMENT}-values.yaml
-        ## Image pull secret. This is required for the huggingface image check by the Inference pod as that does not go via the kubelet and does a direct check.
-        imagePullSecret:
-          ## Name of the image pull secret
-          name: nai-iep-secret
-          ## Image registry credentials
-          credentials:
-            registry: ${REGISTRY_URL}
-            username: ${REGISTRY_USERNAME}
-            password: ${REGISTRY_PASSWORD}
-            email: ${REGISTRY_USERNAME}@foobar.com
-        naiApi:
-          naiApiImage:
-            image: ${REGISTRY_HOST}/nutanix/nai-api
-            tag: ${NAI_API_VERSION}  
-          supportedRuntimeImage: ${REGISTRY_HOST}/nutanix/nai-kserve-huggingfaceserver:${NAI_KSERVE_HF_SERVER_VERSION}
-          supportedTGIImage: ${REGISTRY_HOST}/nutanix/nai-tgi
-          supportedTGIImageTag: ${NAI_TGI_RUNTIME_VERSION}
         naiIepOperator:
           iepOperatorImage:
-            image: ${REGISTRY_HOST}/nutanix/nai-iep-operator
+            image: ${REGISTRY_HOST}/nai-iep-operator
             tag: ${NAI_API_VERSION}
           modelProcessorImage:
-            image: ${REGISTRY_HOST}/nutanix/nai-model-processor
+            image: ${REGISTRY_HOST}/nai-model-processor
             tag: ${NAI_API_VERSION}
         naiInferenceUi:
           naiUiImage:
-            image: ${REGISTRY_HOST}/nutanix/nai-inference-ui
+            image: ${REGISTRY_HOST}/nai-inference-ui
             tag: ${NAI_API_VERSION}
+        naiApi:
+          naiApiImage:
+            image: ${REGISTRY_HOST}/nai-api
+            tag: ${NAI_API_VERSION}
+          supportedKserveRuntimeImage: ${REGISTRY_HOST}/nai-kserve-huggingfaceserver
+          supportedKserveCPURuntimeImageTag: ${KSERVE_VERSION}
+          supportedKserveGPURuntimeImageTag: ${KSERVE_VERSION}-gpu
+          supportedKserveCustomModelServerRuntimeImage: ${REGISTRY_HOST}/nai-kserve-custom-model-server
+          supportedKserveCustomModelServerRuntimeImageTag: ${NAI_API_VERSION}
+          # Details of super admin (first user in the nai system)
+          superAdmin:
+            username: ${NAI_USER}
+            password: ${NAI_TEMP_PASS} # At least 8 characters
+            # email: admin@nutanix.com
+            # firstName: admin
+        #${REGISTRY_HOST}/nai-kserve-huggingfaceserver:kserve-version
+          supportedTGIImage: ${REGISTRY_HOST}/nai-tgi
+          supportedTGIImageTag: ${NAI_TGI_RUNTIME_VERSION}
         naiDatabase:
           naiDbImage:
-            image: ${REGISTRY_HOST}/nutanix/nai-postgres:16.1-alpine
+            image: ${REGISTRY_HOST}/nai-postgres:${NAI_POSTGRESQL_VERSION}
         naiMonitoring:
           prometheus:
             image: 
               registry: ${REGISTRY_HOST}
               repository: prometheus/prometheus
               tag: ${NAI_PROMETHEUS_VERSION}
-        ## nai-monitoring stack values for nai-monitoring stack deployment in NKE environment
-        naiMonitoring:
-          ## Component scraping node exporter
-          ##
-          nodeExporter:
-            serviceMonitor:
-              enabled: true
-              endpoint:
-                port: http-metrics
-                scheme: http
-                targetPort: 9100
-              namespaceSelector:
-                matchNames:
-                - kommander
-              serviceSelector:
-                matchLabels:
-                  app.kubernetes.io/name: prometheus-node-exporter
-                  app.kubernetes.io/component: metrics
-                  app.kubernetes.io/version: 1.8.1
-          ## Component scraping dcgm exporter
-          ##
-          dcgmExporter:
-            podLevelMetrics: true
-            serviceMonitor:
-              enabled: true
-              endpoint:
-                targetPort: 9400
-              namespaceSelector:
-                matchNames:
-                - kommander
-              serviceSelector:
-                matchLabels:
-                  app: nvidia-dcgm-exporter
         EOF
         ```
-    === "Sample nkp-values.yaml"
-    
-        ```yaml
-        ## Image pull secret. This is required for the huggingface image check by the Inference pod as that does not go via the kubelet and does a direct check.
-        imagePullSecret:
-          ## Name of the image pull secret
-          name: nai-iep-secret
-          ## Image registry credentials
-          credentials:
-            registry: https://harbor.10.x.x.111.nip.io/nkp
-            username: admin
-            password: xxxxxxx
-            email: admin@foobar.com
-        naiApi:
-          naiApiImage:
-            image: harbor.10.x.x.111.nip.io/nkp/nutanix/nai-api
-            tag: v2.3.0  
-          supportedRuntimeImage: harbor.10.x.x.111.nip.io/nkp/nutanix/nai-kserve-huggingfaceserver:v0.14.0
-          supportedTGIImage: harbor.10.x.x.111.nip.io/nkp/nutanix/nai-tgi
-          supportedTGIImageTag: "2.3.1-825f39d"
+
+    === "Sample NAI ``v2.4.0`` nkp-values.yaml"    
+       
+        ```yaml hl_lines="21"
         naiIepOperator:
           iepOperatorImage:
-            image:  harbor.10.x.x.111.nip.io/nkp/nutanix/nai-iep-operator
-            tag: v2.3.0
+            image: harbor.10.x.x.111.nip.io/nkp/nai-iep-operator
+            tag: v2.4.0
           modelProcessorImage:
-            image:  harbor.10.x.x.111.nip.io/nkp/nutanix/nai-model-processor
-            tag: v2.3.0
+            image: harbor.10.x.x.111.nip.io/nkp/nai-model-processor
+            tag: v2.4.0
         naiInferenceUi:
           naiUiImage:
-            image:  harbor.10.x.x.111.nip.io/nkp/nutanix/nai-inference-ui
-            tag: v2.3.0
+            image: harbor.10.x.x.111.nip.io/nkp/nai-inference-ui
+            tag: v2.4.0
+        naiApi:
+          naiApiImage:
+            image: harbor.10.x.x.111.nip.io/nkp/nai-api
+            tag: v2.4.0
+          supportedKserveRuntimeImage: harbor.10.x.x.111.nip.io/nkp/nai-kserve-huggingfaceserver
+          supportedKserveCPURuntimeImageTag: "v0.15.2"
+          supportedKserveGPURuntimeImageTag: "v0.15.2-gpu"
+          supportedKserveCustomModelServerRuntimeImage: harbor.10.x.x.111.nip.io/nkp/nai-kserve-custom-model-server
+          supportedKserveCustomModelServerRuntimeImageTag: "v2.4.0"
+        # harbor.10.x.x.111.nip.io/nkp/nai-kserve-huggingfaceserver:kserve-version
+          supportedTGIImage: harbor.10.x.x.111.nip.io/nkp/nai-tgi
+          supportedTGIImageTag: "3.3.4-b2485c9"
+          # Details of super admin (first user in the nai system)
+          superAdmin:
+            username: admin         
+            password: _XXXXXXXXXX # At least 8 characters
+            # email: admin@nutanix.com
+            # firstName: admin
         naiDatabase:
           naiDbImage:
-            image:  harbor.10.x.x.111.nip.io/nkp/nutanix/nai-postgres:16.1-alpine
+            image: harbor.10.x.x.111.nip.io/nkp/nai-postgres:16.1-alpine
         naiMonitoring:
           prometheus:
             image: 
               registry: harbor.10.x.x.111.nip.io/nkp
               repository: prometheus/prometheus
-              tag: v2.53.0     
-        # nai-monitoring stack values for nai-monitoring stack deployment in NKE environment
-        naiMonitoring:
-          ## Component scraping node exporter
-          ##
-          nodeExporter:
-            serviceMonitor:
-              enabled: true
-              endpoint:
-                port: http-metrics
-                scheme: http
-                targetPort: 9100
-              namespaceSelector:
-                matchNames:
-                - kommander
-              serviceSelector:
-                matchLabels:
-                  app.kubernetes.io/name: prometheus-node-exporter
-                  app.kubernetes.io/component: metrics
-                  app.kubernetes.io/version: 1.8.1
-          ## Component scraping dcgm exporter
-          ##
-          dcgmExporter:
-            podLevelMetrics: true
-            serviceMonitor:
-              enabled: true
-              endpoint:
-                targetPort: 9400
-              namespaceSelector:
-                matchNames:
-                - kommander
-              serviceSelector:
-                matchLabels:
-                  app: nvidia-dcgm-exporter
+              tag: v2.54.0
         ```
         
 5. In ``VSCode``, Under ``$HOME/airgap-nai`` folder, click on **New File** :material-file-plus-outline: and create a file with the following name:
@@ -383,7 +270,7 @@ Enable these NKP Operators from NKP GUI.
     set -ex
     set -o pipefail
 
-    helm upgrade --install nai-core --repo ${INTERNAL_REPO} \
+    helm upgrade --install nai-core --repo oci://${REGISTRY_HOST}/nai-core \
     --version=${NAI_CORE_VERSION} -n nai-system --create-namespace \
     --insecure-skip-tls-verify \
     -f ${ENVIRONMENT}-values.yaml --wait
@@ -403,10 +290,10 @@ Enable these NKP Operators from NKP GUI.
         $HOME/airgap-nai/nai-deploy.sh 
 
         Release "nai-core" does not exist. Installing it now.
-        Pulled: harbor.10.x.x.111.nip.io/nkp/nai-core:2.3.0
-        Digest: sha256:1024f50d2b423cfa66ff867461b8672b46af4d8a6cfa6be9d97bcb3ac859cb76
+        Pulled: harbor.10.x.x.111.nip.i/nkp/nai-core:2.4.0
+        Digest: sha256:283b8373ca76088d89fbf91482ef8530f6608f30085f84863e17edae77efe673
         NAME: nai-core
-        LAST DEPLOYED: Thu Jun  5 08:42:26 2025
+        LAST DEPLOYED: Tue Sep  2 01:31:15 2025
         NAMESPACE: nai-system
         STATUS: deployed
         REVISION: 1
@@ -429,23 +316,23 @@ Enable these NKP Operators from NKP GUI.
 
         $ kubectl get po,deploy
 
-        NAME                                       READY   UP-TO-DATE   AVAILABLE   AGE
-        deployment.apps/nai-api                    1/1     1            1           123m
-        deployment.apps/nai-iep-model-controller   1/1     1            1           123m
-        deployment.apps/nai-ui                     1/1     1            1           123m
+        NAME                                           READY   STATUS      RESTARTS   AGE
+        pod/nai-api-db-migrate-tt6rn-cp5fc             0/1     Completed   1          7m
+        pod/nai-api-fbc4f956d-h5vk2                    1/1     Running     0          7m
+        pod/nai-db-0                                   1/1     Running     0          7m
+        pod/nai-iep-model-controller-f84596945-ck5tk   1/1     Running     0          7m
+        pod/nai-ui-d5b546bfc-82x6l                     1/1     Running     0          7m
+        pod/prometheus-nai-0                           2/2     Running     0          7m
 
-        NAME                                            READY   STATUS      RESTARTS   AGE
-        pod/nai-api-5f84568c7c-vvjr2                    1/1     Running     0          123m
-        pod/nai-api-db-migrate-3yx4b-cdb75              0/1     Completed   0          123m
-        pod/nai-db-0                                    1/1     Running     0          123m
-        pod/nai-iep-model-controller-7cddd8b886-h5ffn   1/1     Running     0          123m
-        pod/nai-ui-69bfdcd99b-7fhqq                     1/1     Running     0          123m
-        pod/prometheus-nai-0                            2/2     Running     0          123m
+        NAME                                       READY   UP-TO-DATE   AVAILABLE   AGE
+        deployment.apps/nai-api                    1/1     1            1           7m
+        deployment.apps/nai-iep-model-controller   1/1     1            1           7m
+        deployment.apps/nai-ui                     1/1     1            1           7m
         ```
 
-## Install SSL Certificate
+## Install SSL Certificate and Gateway Elements
 
-In this section we will install SSL Certificate to access the NAI UI. This is required as the endpoint will only work with a ssl endpoint with a valid certificate. 
+In this section we will install SSL Certificate to access the NAI UI. This is required as the endpoint will only work with a ssl endpoint with a valid certificate.
 
 NAI UI is accessible using the Ingress Gateway.
 
@@ -461,18 +348,18 @@ The following steps show how cert-manager can be used to generate a self signed 
 
     Skip the steps in this section to create a self-signed certificate resource.
 
-1. Get the Ingress host using the following command:
+1. Get the NAI UI ingress gateway host using the following command:
    
     ```bash
-    INGRESS_HOST=$(kubectl get svc -n istio-system istio-ingressgateway -o jsonpath='{.status.loadBalancer.ingress[0].ip}')
+    NAI_UI_ENDPOINT=$(kubectl get svc -n envoy-gateway-system -l "gateway.envoyproxy.io/owning-gateway-name=nai-ingress-gateway,gateway.envoyproxy.io/owning-gateway-namespace=nai-system" -o jsonpath='{.items[0].status.loadBalancer.ingress[0].ip}' | grep -v '^$' || kubectl get svc -n envoy-gateway-system -l "gateway.envoyproxy.io/owning-gateway-name=nai-ingress-gateway,gateway.envoyproxy.io/owning-gateway-namespace=nai-system" -o jsonpath='{.items[0].status.loadBalancer.ingress[0].hostname}')
     ```
 
-2. Get the value of ``INGRESS_HOST`` environment variable
+2. Get the value of ``NAI_UI_ENDPOINT`` environment variable
    
     === "Command"
 
         ```bash
-        echo $INGRESS_HOST
+        echo $NAI_UI_ENDPOINT
         ```
 
     === "Command output"
@@ -488,7 +375,7 @@ The following steps show how cert-manager can be used to generate a self signed 
     === "Template URL"
 
         ```bash
-        nai.${INGRESS_HOST}.nip.io
+        nai.${NAI_UI_ENDPOINT}.nip.io
         ```
 
     === "Sample URL"
@@ -505,45 +392,60 @@ The following steps show how cert-manager can be used to generate a self signed 
     kind: Certificate
     metadata:
       name: nai-cert
-      namespace: istio-system
+      namespace: nai-system
     spec:
       issuerRef:
         name: selfsigned-issuer
         kind: ClusterIssuer
       secretName: nai-cert
-      commonName: nai.${INGRESS_HOST}.nip.io
+      commonName: nai.${NAI_UI_ENDPOINT}.nip.io
       dnsNames:
-      - nai.${INGRESS_HOST}.nip.io
+      - nai.${NAI_UI_ENDPOINT}.nip.io
       ipAddresses:
-      - ${INGRESS_HOST}
+      - ${NAI_UI_ENDPOINT}
     EOF
     ```
 
-6. Patch the ingress gateway's IP address to the certificate file.
-    
-    === "Command"
+6. Patch the Envoy gateway with the ``nai-cert`` certificate details
    
-        ```bash
-        kubectl patch gateway -n knative-serving knative-ingress-gateway --type merge --patch-file=/dev/stdin <<EOF
-        spec:
-          servers:
-          - hosts:
-            - '*'
-            port:
-              name: https
-              number: 443
-              protocol: HTTPS
-            tls:
-              mode: SIMPLE
-              credentialName: nai-cert
-        EOF
-        ```
+    ```bash
+    kubectl patch gateway nai-ingress-gateway -n nai-system --type='json' -p='[{"op": "replace", "path": "/spec/listeners/1/tls/certificateRefs/0/name", "value": "nai-cert"}]'
+    ```
 
-    === "Command output"
-     
-        ```{ .text .no-copy }
-        gateway.networking.istio.io/knative-ingress-gateway patched 
-        ```
+7. Create EnvoyProxy
+   
+    ```bash
+    k apply -f -<<EOF
+    apiVersion: gateway.envoyproxy.io/v1alpha1
+    kind: EnvoyProxy
+    metadata:
+      name: envoy-service-config
+      namespace: nai-system
+    spec:
+      provider:
+        type: Kubernetes
+        kubernetes:
+          envoyService:
+            type: LoadBalancer
+    EOF
+    ```
+
+8. Patch the ``nai-ingress-gateway`` resource with the new ``EnvoyProxy`` details
+
+    ```bash
+    kubectl patch gateway nai-ingress-gateway -n nai-system --type=merge \
+    -p '{
+        "spec": {
+            "infrastructure": {
+                "parametersRef": {
+                    "group": "gateway.envoyproxy.io",
+                    "kind": "EnvoyProxy",
+                    "name": "envoy-service-config"
+                }
+            }
+        }
+    }'
+    ```
 
 ## Accessing the UI
 
@@ -553,8 +455,10 @@ The following steps show how cert-manager can be used to generate a self signed 
     https://nai.10.x.x.216.nip.io
     ```
 
-7. Change the password for the `admin` user
-8. Login using `admin` user and password.
+7. Use the ``${NAI_USER}`` and ``${NAI_TEMP_PASS}`` values set in ``${ENVIRONMENT}-values.yaml`` files during ``helm`` installation of NAI ``v.2.4.0``
+   
+8. Change the password for the `admin` user
+9.  Login using `admin` user and password.
    
     ![](images/nai-login.png)
 
