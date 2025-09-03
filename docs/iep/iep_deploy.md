@@ -24,6 +24,12 @@ stateDiagram-v2
 
 ## Prepare for NAI Deployment
 
+Changes in NAI ``v2.4.0``
+
+  - Istio Ingress gateway is replaced with Envoy Gateway
+  - Knative is removed from NAI 
+  - Kserve has been upgraded to 0.15.0
+
 ### Enable NKP Applications through NKP GUI
 
 Enable these NKP Operators from NKP GUI.
@@ -39,40 +45,7 @@ Enable these NKP Operators from NKP GUI.
 3. Go to **Applications** 
 4. Search and enable the following applications: follow this order to install dependencies for NAI application
    
-    - Kube-prometheus-stack: version ``70.4.2`` or later (pre-installed on NKP cluster)   
-
-<!-- 1. The next application to enable is
-1. 
-    - Knative: version `v1.17.0` or later
-
-    - Search for Knative in the **Applications**
-
-    - Use the following configuration parameters in **Workspace Configuration**:
-
-    ```yaml
-    serving:
-      config:
-        features:
-          kubernetes.podspec-nodeselector: enabled
-        autoscaler:
-          enable-scale-to-zero: false
-      knativeIngressGateway:
-        spec:
-          selector:
-            istio: ingressgateway
-          servers:
-          - hosts:
-            - '*'
-            port:
-              name: https
-              number: 443
-              protocol: HTTPS
-            tls:
-              mode: SIMPLE
-              credentialName: nai-cert # (1)
-    ```
-
-    1. We will create this credential in the next section -->
+    - Kube-prometheus-stack: version ``70.4.2`` or later (pre-installed on NKP cluster)
 
 ### Enable Pre-requisite Applications  
 
@@ -411,6 +384,30 @@ We will use the Docker login credentials we created in the previous section to d
         deployment.apps/nai-iep-model-controller   1/1     1            1           4m1s
         deployment.apps/nai-ui                     1/1     1            1           4m1s
         ```
+
+??? "Uninstall NAI ``v2.3.0`` Dependencies"
+
+    If you are upgrading NAI from ``v2.3.0`` to ``v2.4.0``, uninstall the following:
+
+    If Helm was used:
+
+    ```bash title="Uninstall Istio"
+    helm uninstall istio-ingressgateway -n istio-system --wait --ignore-not-found
+    helm uninstall istiod -n istio-system --wait --ignore-not-found
+    helm uninstall istio-base -n istio-system --wait --ignore-not-found
+    ```
+    ```bash title="Uninstall Knative"
+    kubectl delete --ignore-not-found=true KnativeServing knative-serving -n knative-serving
+    helm uninstall knative-operator -n knative-serving --wait --ignore-not-found
+    kubectl wait --for=delete pod --all -n knative-serving --timeout=300s
+    ```
+
+    If NKP Application were used for installation:
+
+    Go to NKP Cluster Dashboard > Application > Search and Uninstall the following:
+
+    1. Istio
+    2. Knative 
 
 ## Install SSL Certificate and Gateway Elements
 

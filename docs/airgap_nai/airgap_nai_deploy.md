@@ -22,6 +22,14 @@ stateDiagram-v2
     TestNAI --> [*]
 ```
 
+## Prepare for NAI Deployment
+
+Changes in NAI ``v2.4.0``
+
+  - Istio Ingress gateway is replaced with Envoy Gateway
+  - Knative is removed from NAI 
+  - Kserve has been upgraded to 0.15.0
+
 ## Enable NKP Applications
 
 Enable these NKP Applications from NKP GUI.
@@ -329,6 +337,30 @@ Enable these NKP Applications from NKP GUI.
         deployment.apps/nai-iep-model-controller   1/1     1            1           7m
         deployment.apps/nai-ui                     1/1     1            1           7m
         ```
+        
+??? "Uninstall NAI ``v2.3.0`` Dependencies"
+
+    If you are upgrading NAI from ``v2.3.0`` to ``v2.4.0``, uninstall the following:
+
+    If Helm was used:
+
+    ```bash title="Uninstall Istio"
+    helm uninstall istio-ingressgateway -n istio-system --wait --ignore-not-found
+    helm uninstall istiod -n istio-system --wait --ignore-not-found
+    helm uninstall istio-base -n istio-system --wait --ignore-not-found
+    ```
+    ```bash title="Uninstall Knative"
+    kubectl delete --ignore-not-found=true KnativeServing knative-serving -n knative-serving
+    helm uninstall knative-operator -n knative-serving --wait --ignore-not-found
+    kubectl wait --for=delete pod --all -n knative-serving --timeout=300s
+    ```
+
+    If NKP Application were used for installation:
+
+    Go to NKP Cluster Dashboard > Application > Search and Uninstall the following:
+
+    1. Istio
+    2. Knative 
 
 ## Install SSL Certificate and Gateway Elements
 

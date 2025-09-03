@@ -284,7 +284,7 @@ The procedure will be done on the jumphost VM.
         export NAI_TGI_RUNTIME_VERSION=_your_tgi_version
         export NAI_PROMETHEUS_VERSION=_your_prometheus_version
         export NAI_POSTGRESQL_VERSION=_your_postgres_version
-        export ${REGISTRY_HOST}=harbor.10.x.x.111.nip.io/nkp
+        export REGISTRY_HOST=harbor.10.x.x.111.nip.io/nkp
         export REGISTRY_USERNAME=admin
         export REGISTRY_CACERT=_path_to_ca_cert_of_registry  # (1)!
         ```
@@ -407,7 +407,7 @@ stateDiagram-v2
 1. Since we will be using the same internal Harbor container registry to upload container images, make sure the following environment variables are set (these were already set during air-gap NKP preparation)
    
     ```bash
-    export ${REGISTRY_HOST}=harbor.10.x.x.111.nip.io/nkp
+    export REGISTRY_HOST=harbor.10.x.x.111.nip.io/nkp
     export REGISTRY_USERNAME=admin
     export REGISTRY_PASSWORD=xxxxxxx
     export REGISTRY_CACERT=$HOME/harbor/certs/ca.crt
