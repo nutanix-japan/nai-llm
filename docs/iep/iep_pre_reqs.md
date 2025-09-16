@@ -206,7 +206,6 @@ Use this token for accessing Hugging Face resources with read-only permissions.
 
 All NAI Docker images will be downloaded from the public Docker Hub registry. In order to download the images, you will need to logon to [Nutanix Portal - NAI](https://portal.nutanix.com/page/downloads?product=nai) and create a Docker ID and access token.
 
-
 1. Login to [Nutanix Portal - NAI](https://portal.nutanix.com/page/downloads?product=nai) using your credentials
 2. Click on **Generate Access Token** option
 3. Copy the generated Docker ID and access token to a safe place as we will need it for the [Deploy NAI](../iep/iep_deploy.md#deploy-nai) section.

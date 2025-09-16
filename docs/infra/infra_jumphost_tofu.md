@@ -34,7 +34,7 @@ stateDiagram-v2
 
 Based on the [Nutanix GPT-in-a-Box](https://opendocs.nutanix.com/gpt-in-a-box/kubernetes/v0.2/getting_started/#spec) specifications, the following system resources are required for the `Jump Host` VM:
 
-- Target OS: `Ubuntu 22.04 LTS`
+- Target OS: `Ubuntu 24.04 LTS`
 
 Minimum System Requirements:
 

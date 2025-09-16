@@ -88,19 +88,19 @@ NDB provides Database-as-a-Service for Microsoft SQL Server, Oracle, PostgreSQL,
     === "Command"
  
          ```bash
-          helm install ndb-operator nutanix/ndb-operator --version 0.5.3 -n ndb-operator --create-namespace
-          ```
+         helm install ndb-operator nutanix/ndb-operator --version 0.5.3 -n ndb-operator --create-namespace
+         ```
  
     === "Output"
        
-          ```{ .text .no-copy }
-          NAME: ndb-operator
-          LAST DEPLOYED: [Timestamp]
-          NAMESPACE: ndb-operator
-          STATUS: deployed
-          REVISION: 1
-          TEST SUITE: None
-          ```
+        ```{ .text .no-copy }
+        NAME: ndb-operator
+        LAST DEPLOYED: [Timestamp]
+        NAMESPACE: ndb-operator
+        STATUS: deployed
+        REVISION: 1
+        TEST SUITE: None
+        ```
    
 3. Verify the NDB Operator is running:
    
