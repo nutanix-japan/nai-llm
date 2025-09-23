@@ -152,10 +152,10 @@ We have a sample chat application that uses NAI to provide chatbot capabilities.
           port: 8502
     EOF
     ```
-
-2. Change this line to point to the IP address of your NAI cluster for the ``VirtualService`` resource
    
-3. Insert ``chat`` as the subdomain in the ``nai.10.x.x.216.nip.io`` main domain.
+3. Create the route for application access
+   
+4. Insert ``chat`` as the subdomain in the ``nai.10.x.x.216.nip.io`` main domain.
    
     Example: complete URL
 
@@ -188,9 +188,9 @@ We have a sample chat application that uses NAI to provide chatbot capabilities.
     EOF
     ```
 
-4. We should be able to see the chat application running on the NAI cluster.
+5. We should be able to see the chat application running on the NAI cluster.
 
-5. Input the following:
+6. Input the following:
    
     - Endpoint URL - e.g. ``https://nai.10.x.x.216.nip.io/api/v1/chat/completions`` (can be found in the Endpoints on NAI GUI)
     - Endpoint Name - e.g. ``llama-8b``

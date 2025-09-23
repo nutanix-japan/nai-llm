@@ -164,6 +164,8 @@ We have a sample chat application that uses NAI to provide chatbot capabilities.
     EOF
     ```
    
+3. Create the route for application access
+   
 4. Insert ``chat`` as the subdomain in the ``nai.10.x.x.216.nip.io`` main domain.
    
     Example: complete URL
