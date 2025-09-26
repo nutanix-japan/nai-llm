@@ -227,7 +227,7 @@ We will use the Docker login credentials we created in the previous section to d
         ```text
         export DOCKER_USERNAME=ntnxsvcgpt
         export DOCKER_PASSWORD=dckr_pat_xxxxxxxxxxxxxxxxxxxxxxxx
-        export NAI_CORE_VERSION=v2.4.0
+        export NAI_CORE_VERSION=2.4.0
         export NAI_DEFAULT_RWO_STORAGECLASS=nutanix-volume
         export NAI_API_RWX_STORAGECLASS=nai-nfs-storage
         ```

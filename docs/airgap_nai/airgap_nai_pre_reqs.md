@@ -296,7 +296,7 @@ The procedure will be done on the jumphost VM.
         ```{ .text .no-copy }
         export KSERVE_VERSION=v0.15.0
         export ENVOY_GATEWAY_VERSION=v1.5.0
-        export NAI_CORE_VERSION=v2.4.0
+        export NAI_CORE_VERSION=2.4.0
         export NAI_API_VERSION=v2.4.0
         export NAI_TGI_RUNTIME_VERSION="3.3.4-b2485c9"
         export NAI_PROMETHEUS_VERSION=v2.54.0

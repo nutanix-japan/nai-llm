@@ -278,7 +278,7 @@ Enable these NKP Applications from NKP GUI.
     set -ex
     set -o pipefail
 
-    helm upgrade --install nai-core --repo oci://${REGISTRY_HOST}/nai-core \
+    helm upgrade --install nai-core oci://${REGISTRY_HOST}/nai-core \
     --version=${NAI_CORE_VERSION} -n nai-system --create-namespace \
     --insecure-skip-tls-verify \
     -f ${ENVIRONMENT}-values.yaml --wait
