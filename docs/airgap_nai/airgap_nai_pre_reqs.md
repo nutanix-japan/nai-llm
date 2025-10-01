@@ -293,7 +293,7 @@ The procedure will be done on the jumphost VM.
 
     === ".env for NAI v2.4.0"
         
-        ```{ .text .no-copy }
+        ```{ .bash .no-copy }
         export KSERVE_VERSION=v0.15.0
         export ENVOY_GATEWAY_VERSION=v1.5.0
         export NAI_CORE_VERSION=2.4.0
