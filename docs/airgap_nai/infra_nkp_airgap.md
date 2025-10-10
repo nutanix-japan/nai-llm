@@ -505,16 +505,18 @@ In this section we will use internal Harbor container registry to upload NKP con
      
     NKP ``v2.16`` has an optional inbuilt CNCF OCI Registry for deployment ease.
 
-    While deploying NKP use the following switch to specify where the container image bundles are. 
+    While deploying NKP use the following switch to specify the location of the container image bundles. 
 
     ```bash
     nkp create cluster nutanix -c ${NKP_CLUSTER_NAME} \
-    --bundle=/path_to_extracted_airgap_bundle/nkp-v2.16.0/container-images/*.tar \ # Specify path
+    --bundle=/path_to_extracted_airgap_bundle/nkp-v2.16.0/container-images/*.tar \  # (1)
     # other options
     ```
     
-    Note that the registry deployment will take ``30 minutes``, with the cluster deployed in about ``60 minutes``. This registry is only to be used for NKP cluster deployment. Any on-going use of registry should be considered only after assesing requirements, design and scalability. 
-    
+    1. Specify path of the extracted air-gap bundle
+
+    Note that the registry deployment will take ``30 minutes``, with the cluster deployed in about ``60 minutes``. This registry is only to be used for NKP clusters (management and workload) deployment. Any on-going use of inbuilt registry should be considered only after assesing requirements, design, capacity, availability and scalability. 
+
 
 1. Open ``$HOME/airgap-nkp/.env`` file in VSC and add (append) the following environment variables to your ``.env`` file and save it
    

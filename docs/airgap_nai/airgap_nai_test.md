@@ -199,9 +199,13 @@ We have a sample chat application that uses NAI to provide chatbot capabilities.
     EOF
     ```
 
-5. We should be able to see the chat application running on the NAI cluster.
+5. We should be able to see the chat application running on the NAI cluster at the following url
+    
+    ```bash
+    chat.nai.10.x.x.216.nip.io
+    ```
 
-6. Input the following:
+6. In the chat app GUI, input the following:
    
     - Endpoint URL - e.g. ``https://nai.10.x.x.216.nip.io/api/v1/chat/completions`` (can be found in the Endpoints on NAI GUI)
     - Endpoint Name - e.g. ``llama-8b``

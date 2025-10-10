@@ -18,7 +18,7 @@ NDB provides Database-as-a-Service for Microsoft SQL Server, Oracle, PostgreSQL,
     The NDB Operator was developed by Nutanix Japan's Solution Engineers (SE) team during a 2022 Hackathon, addressing customer needs for Kubernetes integration. The team won the Hackathon, and the NDB Operator is now available for customers, showcasing Nutanix's commitment to customer value.
 
 
-## Prerequisites
+## Pre-requisites
 - NDB ``v2.5`` or later deployed on a Nutanix cluster 
 - Nutanix Kubernetes Platform NKP cluster ``v1.15`` or later deployed, accessible via `kubectl`. See [NKP Deployment](../infra/infra_nkp.md) for NKP install instructions.
 - Nutanix CSI driver installed for storage integration.

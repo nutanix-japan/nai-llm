@@ -40,8 +40,9 @@ nav:
 - NKP Workload Tutorials:
   - NKP and NDB: 
     - Getting Started: nkp_tutorials/index.md
-    - Install NDB Operator on NKP: nkp_tutorials/nkp_ndb_lab.md
-    - Install Workload: nkp_tutorials/nkp_ndb_install_app.md
+    - NDB Operator on NKP: nkp_tutorials/nkp_ndb_lab/nkp_ndb_lab.md
+    - NDB Workload: nkp_tutorials/nkp_ndb_lab/nkp_ndb_install_app.md
+  - Nutanix MCP Server: nkp_tutorials/nkp_nai_mcp.md
 - NKP Data Protection Tutorials:
   - NKP and NDK: 
     - Getting Started: nkp_ndk/index.md
@@ -142,6 +143,7 @@ theme:
   - content.code.copy
   - content.code.annotate
   - content.code.select
+  # - toc.integrate
   #- content.tabs.link
 
 markdown_extensions:
