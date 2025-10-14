@@ -42,7 +42,10 @@ nav:
     - Getting Started: nkp_tutorials/index.md
     - NDB Operator on NKP: nkp_tutorials/nkp_ndb_lab/nkp_ndb_lab.md
     - NDB Workload: nkp_tutorials/nkp_ndb_lab/nkp_ndb_install_app.md
-  - Nutanix MCP Server: nkp_tutorials/nkp_nai_mcp.md
+  - Nutanix MCP Server: 
+    - Getting Started: nkp_tutorials/index.md
+    - MCP Server Setup: nkp_tutorials/nkp_mcp_lab/nkp_nai_mcp.md
+    - MCP N8N Chat Workflow: nkp_tutorials/nkp_mcp_lab/nkp_nai_n8n.md
 - NKP Data Protection Tutorials:
   - NKP and NDK: 
     - Getting Started: nkp_ndk/index.md

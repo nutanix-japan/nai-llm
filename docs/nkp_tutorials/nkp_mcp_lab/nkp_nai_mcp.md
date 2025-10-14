@@ -39,8 +39,9 @@ This lab is aimed to illustrate implementing MCP servers on Nutanix using Nutani
 1. Deploy Toolhive Operator in NKP (kubernetes) cluster
 2. Deploy MCP server for Nutanix in NKP cluster
 3. Configure Ingress for Nutanix MCP Server
-4. Install [n8n](https://n8n.io/) AI workflow automation tool
-5. Configure [n8n](https://n8n.io/) MCP Client to connect to Nutanix MCP Server and chat (ask questions)
+4. Install VSCode Cline Client with MCP Server 
+5. Install [n8n](https://n8n.io/) AI workflow automation tool
+6. Configure [n8n](https://n8n.io/) MCP Client to connect to Nutanix MCP Server and chat (ask questions)
 
 ## Deploy Toolhive Operator in NKP (kubernetes) cluster
 
@@ -422,7 +423,7 @@ We will install THV on the jumpbox to build our MCP server.
         ```json
         {
         "mcpServers": {
-            "nutanix-pc": {
+            "mcp-server-name": {
               "disabled": true,
               "timeout": 60,
               "type": "stdio",
@@ -430,7 +431,7 @@ We will install THV on the jumpbox to build our MCP server.
               "args": [
                 "-y",
                 "mcp-remote",
-                "https://mcp-nutanix.${INGRESS_IP}$.nip.io/sse#mcp-nutanix",
+                "https://mcp-nutanix.${INGRESS_IP}.nip.io/sse#mcp-nutanix",
                 "--allow-http",
                 "--transport sse-only"
               ],
@@ -478,6 +479,3 @@ We will install THV on the jumpbox to build our MCP server.
 9. Go to **Cline** chat and ask questions about the Nutanix PC environment
 
     ![](images/cline.png)
-
-
-### Using N8N
