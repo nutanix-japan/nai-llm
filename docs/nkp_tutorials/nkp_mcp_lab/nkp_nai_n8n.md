@@ -161,9 +161,21 @@ using the ``n8n-nodes-mcp`` community node to interact with the Nutanix MCP serv
     You can list VMs, get VM details, and perform actions like start, stop, and reboot VMs.
     Use the MCP Client node to execute commands on the Nutanix cluster.
     ```
+    
+    ![](images/ai_agent_before_config.png)
 
-3. Search and add ``MCP Client Tool`` node to workflow and name it something meaningful like **Nutanix MCP List**
-4. Create New Credential and Configure MCP Client node to use the Nutanix MCP server SSE endpoint
+4. Add the NAI LLM Model deployed [here](../../iep/iep_deploy.md#create-and-test-inference-endpoint) and set up with credentials
+   
+    - **API Key**: Use the one generated in NAI 
+    - **Base URL**: ``https://nai.10.x.x.216.nip.io/api/v1``
+   
+    ![](images/nai_llm_credentials.png)
+
+5. Choose **Simple Memory** for storing in-flight data
+
+6. Search and add ``MCP Client Tool`` (via npm) tool to workflow and name it **Nutanix MCP List**
+   
+7. For Credentials - create **New Credential** and Configure MCP Client node to use the Nutanix MCP server SSE endpoint
    
     **SSE URL**: 
      
@@ -177,15 +189,32 @@ using the ``n8n-nodes-mcp`` community node to interact with the Nutanix MCP serv
     NUTANIX_ENDPOINT="$NUTANIX_ENDPOINT",NUTANIX_USERNAME="$NUTANIX_USERNAME",NUTANIX_PASSWORD="$NUTANIX_PASSWORD",NUTANIX_INSECURE="true"
     ```
 
-1. Run Execute Step to test connection and view available commands
-2. Add another MCP Client tool node to workflow and name it something meaningful like **Nutanix MCP Execute**
-3. Reuse the previously created Credential and Configure MCP Client node to use the Nutanix MCP server SSE endpoint
-4. For Tool Name, select Expression tab and provide following
+    ![](images/create_sse_account.png)
+
+8. Run **Execute Step** to test connection and view available commands
+   
+    ![](images/mcp_tool_sse.png)
+
+9. Add another **MCP Client** (via npm) tool node to workflow and name it something meaningful like **Nutanix MCP Execute**
+10. For credential use the Nutanix MCP server SSE endpoint (previously configured)
+11. For Tool Name, select Expression tab and provide following
    
     ```json
     {{ $fromAI("tool","the tool selected") }}
     ```
-5.  Run the workflow to verify configuration
-6.  In the AI Chat window, ask questions about the Nutanix cluster
+
+12. Click on **Execute Step**
+
+13. Type ``vm_list``  in the input text box and click on **Execute Step**
+    
+     ![](images/test_mcp_execute.png)
+    
+     ![](images/mcp_execute_step.png)
+    
+14. Run the workflow to verify configuration
+     
+     ![](images/ai_agent_node.png)
+
+15. In the AI Chat window, ask questions about the Nutanix cluster
     
      ![](images/n8n_chat_output.png)
