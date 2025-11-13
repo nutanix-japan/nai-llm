@@ -114,17 +114,17 @@ Below are minimum requirements for deploying NAI on the NKP Demo Cluster.
     === "Command"
 
         ```text title="Paste the download URL within double quotes"
-        curl -o nkp_v2.16.0_linux_amd64.tar.gz "_paste_download_URL_here"
+        curl -o nkp_v2.16.1_linux_amd64.tar.gz "_paste_download_URL_here"
         ```
 
     === "Sample command"
         
         ```bash
-        curl -o nkp_v2.16.0_linux_amd64.tar.gz "https://download.nutanix.com/downloads/nkp/v2.16.0/nkp_v2.16.0_linux_amd64.tar.gz?Expires=1729016864&........"
+        curl -o nkp_v2.16.1_linux_amd64.tar.gz "https://download.nutanix.com/downloads/nkp/v2.16.1/nkp_v2.16.1_linux_amd64.tar.gz?Expires=1729016864&........"
         ```
         
     ```bash
-    tar xvfz nkp_v2.16.0_linux_amd64.tar
+    tar xvfz nkp_v2.16.1_linux_amd64.tar
     ```
 
 11. Move the ``nkp`` binary to a directory that is included in your ``PATH`` environment variable
@@ -138,7 +138,7 @@ Below are minimum requirements for deploying NAI on the NKP Demo Cluster.
     
     !!! note
 
-        At the time of writing this lab nkp version is ``v2.16.0``
+        At the time of writing this lab nkp version is ``v2.16.1``
 
     === "Command"
 
@@ -152,11 +152,12 @@ Below are minimum requirements for deploying NAI on the NKP Demo Cluster.
         $ nkp version
         catalog: v0.7.0
         diagnose: v0.12.0
-        imagebuilder: v2.16.0
-        kommander: v2.16.0
-        konvoy: v2.16.0
+        imagebuilder: v2.16.1
+        kommander: v2.16.1
+        konvoy: v2.16.1
+        konvoybundlepusher: v2.16.1
         mindthegap: v1.22.1
-        nkp: v2.16.0
+        nkp: v2.16.1
         ```
 
 ### Setup Docker on Jumphost

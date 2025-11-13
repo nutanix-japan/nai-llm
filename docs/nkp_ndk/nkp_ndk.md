@@ -1,13 +1,16 @@
-
-
 # Preparing NDK
 
 In this section we will use just one Prism Central (PC)/Prism Element (PE)/K8s cluster to test the data recovery capabilities of NDK.
 
 ## Prerequisites
-- NDK ``v1.2`` or later deployed on a Nutanix cluster
-- Nutanix Kubernetes Platform (NKP) cluster ``v1.15`` or later deployed, accessible via `kubectl`. See [NKP Deployment](../infra/infra_nkp.md) for NKP install instructions.
-- Internal Harbor container registry. See [Harbor Installation](../infra/harbor.md)
+- NDK ``2.0.0`` or later deployed on a Nutanix cluster
+- Nutanix Kubernetes Platform (NKP) cluster ``v2.16.1`` [or later] deployed, accessible via `kubectl`. See [NKP Deployment](../infra/infra_nkp.md) for NKP install instructions.
+  
+- Internal Harbor container registry
+  
+    * See [Harbor Installation](../infra/harbor.md)
+    * Direct download from Docker.io is also possible [See inline notes in the lab]
+
 - Nutanix CSI driver installed for storage integration. [pre-configured with NKP install]
 - Networking configured to allow communication between the Kubernetes cluster, PC and PE.
 - Traefik Ingress controller installed for external access. [pre-configured with NKP install]
@@ -20,17 +23,17 @@ In this section we will use just one Prism Central (PC)/Prism Element (PE)/K8s c
 
 !!! warning
 
-    NKP only supports NDK ``v1.2`` at the time of writing this lab.
+    NKP supports NDK ``v2.0.0`` at the time of writing this lab with CSI version ``3.3.8``.
 
-    We will use NDK ``v1.2`` with NKP ``v2.15`` for this lab.
+    We will use NDK ``v2.0.0`` with NKP ``v2.16.1`` for this lab.
 
-    This lab will be updated as NKP supports NDK ``v1.3`` in the near future.
+    CSI version ``3.3.8`` is necessary for Nutanix Files replication and protection. 
 
-1. Download NDK ``v1.2`` binaries that are available in Nutanix Support [Nutanix Portal](https://portal.nutanix.com/page/downloads?product=nkp)
-2. Upload NDK containers to an internal Harbor registry
-3. Enable NDK to trust internal Harbor registry. See [here](../appendix/nkp_cert_ds.md)
-4. Install NDK ``v1.2``
-   
+1. Download NDK ``v2.0.0`` binaries that are available in Nutanix Support [Nutanix Portal](https://portal.nutanix.com/page/downloads?product=nkp)
+2. Get NDK container download credentials
+3. Install NDK helm charts
+4. Install NDK ``v2.0.0``
+
 ## Setup source NKP in Primary PC/PE/K8s
 
 Make sure to name your NKP cluster appropriately so it is easy to identify
@@ -39,14 +42,12 @@ For the purposes of this lab, we will call the source NKP cluster as ``nkpprimar
 
 > Follow instructions in [NKP Deployment](../infra/infra_nkp.md) to setup source/primary NKP K8s cluster.
 
-## Setup Harbor Internal Registry 
-
-> Follow instructions in [Harbor Installation](../infra/harbor.md) to setup internal Harbor registry for storing NDK ``v1.2`` containers.
-
-1. Login to Harbor
-2. Create a project called ``nkp`` in Harbor
-
 ## Prepare for NDK Installation
+
+??? tip "Are you installing in an air-gap environment?"
+
+    > Follow instructions in [NDK Air-Gap Deployment](airgap_nkp_ndk.md) to setup source/primary NKP K8s cluster.
+
 
 ### Download NDK Binaries
 
@@ -58,17 +59,17 @@ For the purposes of this lab, we will call the source NKP cluster as ``nkpprimar
 
 3.  On `VSCode` Explorer plane, click the ``$HOME/ndk`` folder
 
-4.  On `VSCode` menu, select ``Terminal`` > ``New Terminal``
+7.  Login to [Nutanix Portal](https://portal.nutanix.com/page/downloads?product=ndk) using your credentials
 
-5.  Browse to ``ndk`` directory
-
-    === ":octicons-command-palette-16: Command"
+8.  Go to **Downloads** > **Nutanix Data Services for Kubernetes (NDK)** 
+9.  On top of the download page, get the Docker registry download credentials under **Manage Access Token**
     
-         ```bash
-         cd $HOME/ndk
-         ```
-
-7. In ``VSC``, under the newly created ``ndk`` folder, click on **New File** :material-file-plus-outline: and create file with the following name:
+      * Username 
+      * Access Token (password)
+   
+    We will use these values in the ``.env`` file
+    
+10. In ``VSC``, under the newly created ``ndk`` folder, click on **New File** :material-file-plus-outline: and create file with the following name:
    
     === ":octicons-file-code-16: File"
     
@@ -76,31 +77,28 @@ For the purposes of this lab, we will call the source NKP cluster as ``nkpprimar
          .env
          ```
 
-8. Add (append) the following environment variables and save it
+11. Add (append) the following environment variables and save it
    
     === ":octicons-file-code-16: Template .env"
 
         ```bash
         export NDK_VERSION=_your_ndk_version
-        export JUMPBOX=_your_jumpboxvm_ip
-        export SSH_USER=ubuntu
-        export KUBE_RBAC_PROXY_VERSION=_vX.XX.X
-        export KUBECTL_VERSION=_X.XX.X
-        export IMAGE_REGISTRY=_your_harbor_registy_url/nkp
+        export DOCKER_USERNAME=_NDK_GA_release_docker_username  # (1)!
+        export DOCKER_PASSWORD=_NDK_GA_release_docker_password  # (2)!
         ```
+
+        1.  Username from **Manage Access Token** section.
+        2.  Access Token (password) from **Manage Access Token** section.
     
     === ":octicons-file-code-16: Sample .env"
         
         ```text
-        export NDK_VERSION=1.2.0
-        export JUMPBOX=10.x.x.124
-        export SSH_USER=ubuntu
-        export KUBE_RBAC_PROXY_VERSION=v0.17.0
-        export KUBECTL_VERSION=1.30.3
-        export IMAGE_REGISTRY=harbor.example.com/nkp
+        export NDK_VERSION=2.0.0
+        export DOCKER_USERNAME=nutanixndk
+        export DOCKER_PASSWORD=dckr_pat_xxxxxxxxxxxxxxxxxxxxx
         ```
 
-9. Source the ``.env`` file to import environment variables
+12. Source the ``.env`` file to import environment variables
    
     === ":octicons-command-palette-16: Command"
     
@@ -108,10 +106,7 @@ For the purposes of this lab, we will call the source NKP cluster as ``nkpprimar
          source $HOME/ndk/.env
          ```
 
-10. Login to [Nutanix Portal](https://portal.nutanix.com/page/downloads?product=ndk) using your credentials
-
-11. Go to **Downloads** > **Nutanix Data Services for Kubernetes (NDK)** 
-12. Scroll and choose **Nutanix Data Services for Kubernetes ( Version: 1.2.0 )**
+13. Scroll and choose **Nutanix Data Services for Kubernetes ( Version: 2.0.0 )**
 
 
 13.  Download the NDK binaries bundle from the link you copied earlier
@@ -128,7 +123,7 @@ For the purposes of this lab, we will call the source NKP cluster as ``nkpprimar
         $HOME/ndk $ curl -o ndk-1.2.0.tar "https://download.nutanix.com/downloads/ndk/1.2.0/ndk-1.2.0.tar?Expires=XXXXXXXXX__"
         ```
 
-14. Extract the NDK binaries
+7.  Extract the NDK binaries
     
     === ":octicons-command-palette-16: Command"
 
@@ -164,29 +159,7 @@ For the purposes of this lab, we will call the source NKP cluster as ``nkpprimar
         │   └── ndk-1.2.0.tar                                       # NDK container images
         ```
 
-### Upload NDK Binaries to Internal Registry
-
-1. Load NDK container images and upload to internal Harbor registry
-
-    === ":octicons-command-palette-16: Command"
-
-        ```bash
-        docker load -i ndk-${NDK_VERSION}.tar
-        docker login ${IMAGE_REGISTRY} 
-
-        for img in ndk/manager:${NDK_VERSION} ndk/infra-manager:${NDK_VERSION} ndk/job-scheduler:${NDK_VERSION} ndk/kube-rbac-proxy:${KUBE_RBAC_PROXY_VERSION} ndk/bitnami-kubectl:${KUBECTL_VERSION}; do docker tag $img ${IMAGE_REGISTRY}/${img}; docker push ${IMAGE_REGISTRY}/${img};done
-        ```
-
-    === ":octicons-command-palette-16:  Sample Command"
-        
-        ```{ .text .no-copy }
-        docker load -i ndk-1.2.0.tar
-        docker login harbor.example.com/nkp
-
-        for img in ndk/manager:1.2.0 ndk/infra-manager:1.2.0 ndk/job-scheduler:1.2.0 ndk/kube-rbac-proxy:v0.17.0 ndk/bitnami-kubectl:1.30.3; do docker tag ndk/bitnami-kubectl:1.30.3 harbor.example.com/nkp/ndk/bitnami-kubectl:1.30.3; docker push harbor.example.com/nkp/ndk/bitnami-kubectl:1.30.3;done
-        ```
-
-## Install NDK on Primary NKP Cluster
+### Install NDK on Primary NKP Cluster
     
 
 1. Login to VSCode Terminal
@@ -231,18 +204,14 @@ For the purposes of this lab, we will call the source NKP cluster as ``nkpprimar
 
     === ":octicons-command-palette-16: Command"
 
-         ```text
-         helm upgrade -n ntnx-system --install ndk chart/ \
-         --set manager.repository="$IMAGE_REGISTRY/ndk/manager" \
-         --set manager.tag=${NDK_VERSION} \
-         --set infraManager.repository="$IMAGE_REGISTRY/ndk/infra-manager" \
-         --set infraManager.tag=${NDK_VERSION} \
-         --set kubeRbacProxy.repository="$IMAGE_REGISTRY/ndk/kube-rbac-proxy" \
-         --set kubeRbacProxy.tag=${KUBE_RBAC_PROXY_VERSION} \
-         --set bitnamiKubectl.repository="$IMAGE_REGISTRY/ndk/bitnami-kubectl" \
-         --set bitnamiKubectl.tag=${KUBECTL_VERSION} \
-         --set jobScheduler.repository="$IMAGE_REGISTRY/ndk/job-scheduler" \
-         --set jobScheduler.tag=${NDK_VERSION} \
+         ```bash
+         helm repo add ntnx-charts https://nutanix.github.io/helm-releases/ && helm repo update ntnx-charts
+         ```
+         ```bash
+         helm install ndk -n ntnx-system ntnx-charts/ndk \
+         --version 2.0.0 \
+         --set imageCredentials.credentials.username=$DOCKER_USERNAME \
+         --set imageCredentials.credentials.password=$DOCKER_PASSWORD \
          --set config.secret.name=nutanix-csi-credentials \
          --set tls.server.enable=false
          ```
@@ -250,17 +219,13 @@ For the purposes of this lab, we will call the source NKP cluster as ``nkpprimar
     === ":octicons-command-palette-16:  Sample Command"
         
          ```{ .text .no-copy }
-         helm upgrade -n ntnx-system --install ndk chart/ \
-         --set manager.repository="harbor.example.com/nkp/ndk/manager" \
-         --set manager.tag=1.2.0 \
-         --set infraManager.repository="harbor.example.com/nkp/ndk/infra-manager" \
-         --set infraManager.tag=1.2.0 \
-         --set kubeRbacProxy.repository="harbor.example.com/nkp/ndk/kube-rbac-proxy" \
-         --set kubeRbacProxy.tag=v0.17.0 \
-         --set bitnamiKubectl.repository="harbor.example.com/nkp/ndk/bitnami-kubectl" \
-         --set bitnamiKubectl.tag=1.30.3 \
-         --set jobScheduler.repository="harbor.example.com/nkp/ndk/job-scheduler" \
-         --set jobScheduler.tag=1.2.0 \
+         helm repo add ntnx-charts https://nutanix.github.io/helm-releases/ && helm repo update ntnx-charts
+         ```
+         ```{ .text .no-copy }
+         helm install ndk -n ntnx-system ntnx-charts/ndk \
+         --version 2.0.0 \
+         --set imageCredentials.credentials.username=nutanixndk \
+         --set imageCredentials.credentials.password=dckr_pat_xxxxxxxxxxxxxxxxxxxxxxxxx \
          --set config.secret.name=nutanix-csi-credentials \
          --set tls.server.enable=false
          ```
@@ -286,7 +251,7 @@ For the purposes of this lab, we will call the source NKP cluster as ``nkpprimar
          k get all -l app.kubernetes.io/name=ndk
          ```
 
-    === ":octicons-command-palette-16:  Sample Command"
+    === ":octicons-command-palette-16:  Command output"
         
          ```text hl_lines="6 15 18"
          Active namespace is "ntnx-system".
@@ -294,19 +259,19 @@ For the purposes of this lab, we will call the source NKP cluster as ``nkpprimar
          $ k get all -l app.kubernetes.io/name=ndk
  
          NAME                                          READY   STATUS    RESTARTS   AGE
-         pod/ndk-controller-manager-57fd7fc56b-gg5nl   4/4     Running   0          19m
- 
-         NAME                                             TYPE           CLUSTER-IP       EXTERNAL-IP    PORT(S)          AGE
-         service/ndk-controller-manager-metrics-service   ClusterIP      10.109.134.126   <none>         8443/TCP         19m
-         service/ndk-intercom-service                     LoadBalancer   10.99.216.62     10.122.7.212   2021:30258/TCP   19m
-         service/ndk-scheduler-webhook-service            ClusterIP      10.96.174.148    <none>         9444/TCP         19m
-         service/ndk-webhook-service                      ClusterIP      10.107.189.171   <none>         443/TCP          19m
- 
+         pod/ndk-controller-manager-754bcbf7d4-8wn55   4/4     Running   0          77m
+         
+         NAME                                             TYPE           CLUSTER-IP      EXTERNAL-IP    PORT(S)          AGE
+         service/ndk-controller-manager-metrics-service   ClusterIP      10.96.236.12    <none>         8443/TCP         77m
+         service/ndk-intercom-service                     LoadBalancer   10.102.58.136   10.x.x.216     2021:30215/TCP   77m
+         service/ndk-scheduler-webhook-service            ClusterIP      10.111.99.86    <none>         9444/TCP         77m
+         service/ndk-webhook-service                      ClusterIP      10.106.40.106   <none>         443/TCP          77m
+         
          NAME                                     READY   UP-TO-DATE   AVAILABLE   AGE
-         deployment.apps/ndk-controller-manager   1/1     1            1           19m
- 
+         deployment.apps/ndk-controller-manager   1/1     1            1           77m
+         
          NAME                                                DESIRED   CURRENT   READY   AGE
-         replicaset.apps/ndk-controller-manager-57fd7fc56b   1         1         1       19m
+         replicaset.apps/ndk-controller-manager-754bcbf7d4   1         1         1       77m
          ```
 
 ## NDK Custom Resources for K8s

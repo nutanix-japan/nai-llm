@@ -2,7 +2,7 @@
 
 ## Introduction
 
-Nutanix Data Services for Kubernetes (NDK) simplifies the management of stateful applications on Kubernetes by providing robust data protection, replication, and recovery capabilities. This lab guide is designed to help you explore NDK's features through hands-on exercises, covering setup, snapshot management, cross-namespace operations, and multi-cluster replication. The labs progress from single-cluster to multi-cluster workflows, including new features introduced in NDK ``1.3``, such as support for Read-Write-Many (RWX) file storage.
+Nutanix Data Services for Kubernetes (NDK) simplifies the management of stateful applications on Kubernetes by providing robust data protection, replication, and recovery capabilities. This lab guide is designed to help you explore NDK's features through hands-on exercises, covering setup, snapshot management, cross-namespace operations, and multi-cluster replication. The labs progress from single-cluster to multi-cluster workflows, including new features introduced in NDK ``2.0.0``, such as support for Read-Write-Many (RWX), Nutanix Files Replication and Protection.
 
 ## Lab Content
 
@@ -26,8 +26,8 @@ Nutanix Data Services for Kubernetes (NDK) simplifies the management of stateful
      Perform application restoration across namespaces using ReferenceGrant to manage access between source and target namespaces.  
    - **Workflow 3: Schedule Protection Policy/Plan**  
      Configure and schedule a protection policy to automate application backups.  
-   - **New (NDK 1.3) Workflow 4: Application Snapshot & Restore with RWX/Files**  
-     Explore snapshot and restore functionality for applications using Read-Write-Many (RWX) file storage, a new feature in NDK 1.3.
+   - **New (NDK 2.0.0) - Workflow 4: Application Snapshot & Restore with RWX/Files**  
+     Explore snapshot and restore functionality for applications using Read-Write-Many (RWX) file storage, a new feature in NDK ``2.0.0``.
 
 **Multi PC/PE/K8s Workflows**
 
@@ -35,5 +35,5 @@ Nutanix Data Services for Kubernetes (NDK) simplifies the management of stateful
      Set up and test asynchronous replication of snapshots across multiple clusters and recover applications.  
    - **Workflow 2: Multi-Cluster (3 PE/3 K8s, 2 PC) Asynchronous Replication**  
      Configure asynchronous replication across three Prism Elements and Kubernetes clusters managed by two Prism Central instances.  
-   - **New (NDK 1.3) Workflow 3: Multi-Cluster (3 PE/3 K8s, 2 PC) Asynchronous + Synchronous Replication**  
-     Implement and test both asynchronous and synchronous replication for applications across multiple clusters, leveraging NDK 1.3 enhancements.
+   - **New (NDK 2.0.0) - Workflow 3: Multi-Cluster (3 PE/3 K8s, 2 PC) Asynchronous + Synchronous Replication**  
+     Implement and test both asynchronous and synchronous replication for applications across multiple clusters, leveraging NDK ``2.0.0`` enhancements.

@@ -134,23 +134,23 @@ Below are minimum requirements for deploying NAI on the NKP Demo Cluster.
     === "Command"
 
         ```text title="Paste the download URL within double quotes"
-        curl -o nkp-air-gapped-bundle_v2.16.0_linux_amd64.tar.gz "_paste_download_URL_here"
+        curl -o nkp-air-gapped-bundle_v2.16.1_linux_amd64.tar.gz "_paste_download_URL_here"
         ```
 
     === "Sample command"
         
         ```bash
-        curl -o nkp-air-gapped-bundle_v2.16.0_linux_amd64.tar.gz "https://download.nutanix.com/downloads/nkp/v2.16.0/nkp-air-gapped-bundle_v2.16.0_linux_amd64.tar.gz?........"
+        curl -o nkp-air-gapped-bundle_v2.16.1_linux_amd64.tar.gz "https://download.nutanix.com/downloads/nkp/v2.16.1/nkp-air-gapped-bundle_v2.16.1_linux_amd64.tar.gz?........"
         ```
         
     ```bash
-    tar xvfz nkp-air-gapped-bundle_v2.16.0_linux_amd64.tar.gz
+    tar xvfz nkp-air-gapped-bundle_v2.16.1_linux_amd64.tar.gz
     ```
 
 11. Move the ``nkp`` binary to a directory that is included in your ``PATH`` environment variable
 
     ```bash
-    sudo cp nkp-v2.16.0/cli/nkp /usr/local/bin/
+    sudo cp nkp-v2.16.1/cli/nkp /usr/local/bin/
     ```
 
 
@@ -158,7 +158,7 @@ Below are minimum requirements for deploying NAI on the NKP Demo Cluster.
     
     !!! note
 
-        At the time of writing this lab nkp version is ``v2.16.0``
+        At the time of writing this lab nkp version is ``v2.16.1``
 
     === "Command"
 
@@ -172,11 +172,12 @@ Below are minimum requirements for deploying NAI on the NKP Demo Cluster.
         $ nkp version
         catalog: v0.7.0
         diagnose: v0.12.0
-        imagebuilder: v2.16.0
-        kommander: v2.16.0
-        konvoy: v2.16.0
+        imagebuilder: v2.16.1
+        kommander: v2.16.1
+        konvoy: v2.16.1
+        konvoybundlepusher: v2.16.1
         mindthegap: v1.22.1
-        nkp: v2.16.0
+        nkp: v2.16.1
         ```
 
 ### Setup Docker on Jumphost
@@ -190,15 +191,15 @@ If not already done, follow the steps in [Setup Docker on Jumphost](../infra/inf
     === "Command"
     
         ```bash
-        cd $HOME/airgap-nkp/nkp-v2.16.0/
-        docker load -i nkp-image-builder-image-v2.16.0.tar
-        docker load -i konvoy-bootstrap-image-v2.16.0.tar
+        cd $HOME/airgap-nkp/nkp-v2.16.1/
+        docker load -i nkp-image-builder-image-v2.16.1.tar
+        docker load -i konvoy-bootstrap-image-v2.16.1.tar
         ```
     
     === "Command output"
 
         ```bash
-        $ docker load -i nkp-image-builder-image-v2.16.0.tar 
+        $ docker load -i nkp-image-builder-image-v2.16.1.tar 
         9fe9a137fd00: Loading layer [==================================================>]   7.63MB/7.63MB
         76fcadd9b36b: Loading layer [==================================================>]  33.57MB/33.57MB
         9a230b56c773: Loading layer [==================================================>]  85.18MB/85.18MB
@@ -210,11 +211,11 @@ If not already done, follow the steps in [Setup Docker on Jumphost](../infra/inf
         5210ca26c0aa: Loading layer [==================================================>]  528.4MB/528.4MB
         2ffff926e4e0: Loading layer [==================================================>]  12.69MB/12.69MB
         ea1091ae88c8: Loading layer [==================================================>]  5.632kB/5.632kB
-        Loaded image: mesosphere/nkp-image-builder:v2.16.0
+        Loaded image: mesosphere/nkp-image-builder:v2.16.1
         ```
         ```bash
-        $ docker load -i konvoy-bootstrap-image-v2.16.0.tar 
-        Loaded image: mesosphere/konvoy-bootstrap:v2.16.0
+        $ docker load -i konvoy-bootstrap-image-v2.16.1.tar 
+        Loaded image: mesosphere/konvoy-bootstrap:v2.16.1
         ```
 `
 
@@ -232,8 +233,8 @@ If not already done, follow the steps in [Setup Docker on Jumphost](../infra/inf
         $ docker image ls
 
         REPOSITORY                                            TAG          IMAGE ID       CREATED        SIZE
-        mesosphere/nkp-image-builder                          v2.16.0      4bae9be67aa2   45 years ago   1.3GB
-        mesosphere/konvoy-bootstrap                           v2.16.0      a2aa0268435b   2 weeks ago    2.64GB
+        mesosphere/nkp-image-builder                          v2.16.1      4bae9be67aa2   45 years ago   1.3GB
+        mesosphere/konvoy-bootstrap                           v2.16.1      a2aa0268435b   2 weeks ago    2.64GB
         ```
 
 ## Reserve Control Plane and MetalLB IP
@@ -398,7 +399,7 @@ In this section we will go through creating a base image for all the control pla
     ```bash
     cd $HOME/airgap-nkp
     source .env
-    cd nkp-v2.16.0/
+    cd nkp-v2.16.1/
     ```
 
 7. Create the base image
@@ -414,7 +415,7 @@ In this section we will go through creating a base image for all the control pla
         ```{ .text .no-copy }
         $ nkp create package-bundle --artifacts-directory ${OS_BUNDLE_DIR} ${OS}
 
-        OS bundle configuration files extracted to /home/ubuntu/airgap-nkp/nkp-v2.16.0/kib/artifacts/.dkp-image-builder-2593079857
+        OS bundle configuration files extracted to /home/ubuntu/airgap-nkp/nkp-v2.16.1/kib/artifacts/.dkp-image-builder-2593079857
         Get:1 http://archive.ubuntu.com/ubuntu jammy InRelease [270 kB]
         Get:2 http://security.ubuntu.com/ubuntu jammy-security InRelease [129 kB]
 
@@ -425,7 +426,7 @@ In this section we will go through creating a base image for all the control pla
         Get:243 http://archive.ubuntu.com/ubuntu jammy-updates/universe amd64 python3-wheel all 0.37.1-2ubuntu0.22.04.1 [32.0 kB]               
         Fetched 176 MB in 9s (19.9 MB/s) 
         dpkg-scanpackages: info: Wrote 243 entries to output Packages file.
-        /home/ubuntu/airgap-nkp/nkp-v2.16.0/kib/artifacts/.dkp-image-builder-2593079857/ubuntu-22.04/Packages       
+        /home/ubuntu/airgap-nkp/nkp-v2.16.1/kib/artifacts/.dkp-image-builder-2593079857/ubuntu-22.04/Packages       
         ```
 
 
@@ -509,7 +510,7 @@ In this section we will use internal Harbor container registry to upload NKP con
 
     ```bash
     nkp create cluster nutanix -c ${NKP_CLUSTER_NAME} \
-    --bundle=/path_to_extracted_airgap_bundle/nkp-v2.16.0/container-images/*.tar \  # (1)
+    --bundle=/path_to_extracted_airgap_bundle/nkp-v2.16.1/container-images/*.tar \  # (1)
     # other options
     ```
     
@@ -552,25 +553,25 @@ In this section we will use internal Harbor container registry to upload NKP con
 3. Push the images to air-gapped registry
    
     ```bash
-    cd nkp-v2.16.0/
+    cd nkp-v2.16.1/
     ```
    
     === "Command"
 
         ```bash
-        nkp push bundle --bundle ./container-images/konvoy-image-bundle-v2.16.0.tar \
+        nkp push bundle --bundle ./container-images/konvoy-image-bundle-v2.16.1.tar \
         --to-registry=${REGISTRY_URL} --to-registry-username=${REGISTRY_USERNAME} \
         --to-registry-password=${REGISTRY_PASSWORD} \
         --to-registry-ca-cert-file=${REGISTRY_CACERT}
         ```
         ```bash
-        nkp push bundle --bundle ./container-images/kommander-image-bundle-v2.16.0.tar \
+        nkp push bundle --bundle ./container-images/kommander-image-bundle-v2.16.1.tar \
         --to-registry=${REGISTRY_URL} --to-registry-username=${REGISTRY_USERNAME} \
         --to-registry-password=${REGISTRY_PASSWORD} \
         --to-registry-ca-cert-file=${REGISTRY_CACERT}
         ```
         ```bash
-        nkp push bundle --bundle ./application-repositories/kommander-applications-v2.16.0.tar.gz \
+        nkp push bundle --bundle ./application-repositories/kommander-applications-v2.16.1.tar.gz \
         --to-registry=${REGISTRY_URL} --to-registry-username=${REGISTRY_USERNAME} \
         --to-registry-password=${REGISTRY_PASSWORD} \
         --to-registry-ca-cert-file=${REGISTRY_CACERT}
@@ -579,35 +580,35 @@ In this section we will use internal Harbor container registry to upload NKP con
     === "Command output"
 
         ```{ .text .no-copy }
-        $ nkp push bundle --bundle ./container-images/konvoy-image-bundle-v2.16.0.tar \
+        $ nkp push bundle --bundle ./container-images/konvoy-image-bundle-v2.16.1.tar \
         --to-registry=${REGISTRY_URL} --to-registry-username=${REGISTRY_USERNAME} \
         --to-registry-password=${REGISTRY_PASSWORD} \
         --to-registry-ca-cert-file=${REGISTRY_CACERT}
         ✓ Creating temporary directory
-        ✓ Unarchiving image bundle "./container-images/konvoy-image-bundle-v2.16.0.tar" 
+        ✓ Unarchiving image bundle "./container-images/konvoy-image-bundle-v2.16.1.tar" 
         ✓ Parsing image bundle config
         ✓ Starting temporary Docker registry
         ✓ Pushing bundled images [================================>129/129] (time elapsed 153s) 
         ```
         ```{ .text .no-copy }
-        $ nkp push bundle --bundle ./container-images/kommander-image-bundle-v2.16.0.tar \
+        $ nkp push bundle --bundle ./container-images/kommander-image-bundle-v2.16.1.tar \
         --to-registry=${REGISTRY_URL} --to-registry-username=${REGISTRY_USERNAME} \
         --to-registry-password=${REGISTRY_PASSWORD} \
         --to-registry-ca-cert-file=${REGISTRY_CACERT}
         ✓ Creating temporary directory
-        ✓ Unarchiving image bundle "./container-images/kommander-image-bundle-v2.16.0.tar" 
+        ✓ Unarchiving image bundle "./container-images/kommander-image-bundle-v2.16.1.tar" 
         ✓ Parsing image bundle config
         ✓ Starting temporary Docker registry
         ✓ Pushing bundled images [================================>131/131] (time elapsed 183s) 
         (devbox) 
         ```
         ```{ .text .no-copy }
-        nkp push bundle --bundle ../application-repositories/kommander-applications-v2.16.0.tar.gz \
+        nkp push bundle --bundle ../application-repositories/kommander-applications-v2.16.1.tar.gz \
         --to-registry=${REGISTRY_URL} --to-registry-username=${REGISTRY_USERNAME} \
         --to-registry-password=${REGISTRY_PASSWORD} \
         --to-registry-ca-cert-file=${REGISTRY_CACERT}
          ✓ Creating temporary directory
-         ✓ Unarchiving image bundle "./application-repositories/kommander-applications-v2.16.0.tar.gz"
+         ✓ Unarchiving image bundle "./application-repositories/kommander-applications-v2.16.1.tar.gz"
          ✓ Starting temporary Docker registry
         ```
 
