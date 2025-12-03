@@ -30,7 +30,7 @@ In this section we will use just one Prism Central (PC)/Prism Element (PE)/K8s c
     CSI version ``3.3.8`` is necessary for Nutanix Files replication and protection. 
 
 1. Download NDK ``v2.0.0`` binaries that are available in Nutanix Support [Nutanix Portal](https://portal.nutanix.com/page/downloads?product=nkp)
-2. Get NDK container download credentials
+2. Get NDK container download credentials from Nutanix Docker Hub private repository
 3. Install NDK helm charts
 4. Install NDK ``v2.0.0``
 
@@ -48,7 +48,6 @@ For the purposes of this lab, we will call the source NKP cluster as ``nkpprimar
 
     > Follow instructions in [NDK Air-Gap Deployment](airgap_nkp_ndk.md) to setup source/primary NKP K8s cluster.
 
-
 ### Download NDK Binaries
 
 1. Open new `VSCode` window on your jumphost VM
@@ -62,14 +61,17 @@ For the purposes of this lab, we will call the source NKP cluster as ``nkpprimar
 7.  Login to [Nutanix Portal](https://portal.nutanix.com/page/downloads?product=ndk) using your credentials
 
 8.  Go to **Downloads** > **Nutanix Data Services for Kubernetes (NDK)** 
-9.  On top of the download page, get the Docker registry download credentials under **Manage Access Token**
+   
+9.  On top of the download page, get the Docker registry download credentials under **Manage Access Token** to get  Nutanix Docker Hub private repository credentials
+    
+10. Obtain the values of the following:
     
       * Username 
       * Access Token (password)
    
     We will use these values in the ``.env`` file
     
-10. In ``VSC``, under the newly created ``ndk`` folder, click on **New File** :material-file-plus-outline: and create file with the following name:
+11. In ``VSC``, under the newly created ``ndk`` folder, click on **New File** :material-file-plus-outline: and create file with the following name:
    
     === ":octicons-file-code-16: File"
     
@@ -77,7 +79,7 @@ For the purposes of this lab, we will call the source NKP cluster as ``nkpprimar
          .env
          ```
 
-11. Add (append) the following environment variables and save it
+12. Add (append) the following environment variables and save it
    
     === ":octicons-file-code-16: Template .env"
 
@@ -98,7 +100,7 @@ For the purposes of this lab, we will call the source NKP cluster as ``nkpprimar
         export DOCKER_PASSWORD=dckr_pat_xxxxxxxxxxxxxxxxxxxxx
         ```
 
-12. Source the ``.env`` file to import environment variables
+13. Source the ``.env`` file to import environment variables
    
     === ":octicons-command-palette-16: Command"
     
@@ -106,7 +108,7 @@ For the purposes of this lab, we will call the source NKP cluster as ``nkpprimar
          source $HOME/ndk/.env
          ```
 
-13. Scroll and choose **Nutanix Data Services for Kubernetes ( Version: 2.0.0 )**
+14. Scroll and choose **Nutanix Data Services for Kubernetes ( Version: 2.0.0 )**
 
 
 13.  Download the NDK binaries bundle from the link you copied earlier
@@ -128,7 +130,7 @@ For the purposes of this lab, we will call the source NKP cluster as ``nkpprimar
     === ":octicons-command-palette-16: Command"
 
         ```text 
-        tar -xvf ndk-${NDK_VERSION}.tar
+        tar -xvf ndk-${NDK_VERSION}.tar.gz
         cd ndk-${NDK_VERSION}
         ```
 
@@ -136,7 +138,7 @@ For the purposes of this lab, we will call the source NKP cluster as ``nkpprimar
         
         ```{ .text .no-copy }
     
-        tar -xvf ndk-1.2.0.tar
+        tar -xvf ndk-1.2.0.tar.gz
         cd ndk-1.2.0
         ```
     
@@ -185,7 +187,7 @@ For the purposes of this lab, we will call the source NKP cluster as ``nkpprimar
          kubectl get nodes -owide
          ```
  
-    === ":octicons-command-palette-16: Sample Command"
+    === ":octicons-command-palette-16: Command output"
  
          ```bash
          $ kubectl get nodes

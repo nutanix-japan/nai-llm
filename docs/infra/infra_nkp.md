@@ -124,7 +124,7 @@ Below are minimum requirements for deploying NAI on the NKP Demo Cluster.
         ```
         
     ```bash
-    tar xvfz nkp_v2.16.1_linux_amd64.tar
+    tar xvfz nkp_v2.16.1_linux_amd64.tar.gz
     ```
 
 11. Move the ``nkp`` binary to a directory that is included in your ``PATH`` environment variable

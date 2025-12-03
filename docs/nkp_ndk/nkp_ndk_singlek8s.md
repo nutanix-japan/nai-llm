@@ -6,6 +6,75 @@ In this section we will deploy a sample workload, snapshot the Application compo
 2. Cross namespace recovery
 
 
+## Deploying Volumes Storage Class
+
+We will be using the Nutanix Volumes ``StorageClass`` (SC) to provide storage to our application. 
+
+NKP installs a Nutanix Volumes based storage class by default called ``nutanix-volumes``.
+
+
+=== ":octicons-command-palette-16: Command"
+
+      ```bash
+      kubectl get sc
+      ```
+
+=== ":octicons-command-palette-16: Command output"
+
+      ```bash hl_lines="4"
+      $ kubectl get sc
+
+      NAME                           PROVISIONER       RECLAIMPOLICY   VOLUMEBINDINGMODE      ALLOWVOLUMEEXPANSION   AGE
+      nutanix-volume (default)       csi.nutanix.com   Delete          WaitForFirstConsumer   true                   35d
+      ```
+??? tip "Need to create a separate volumes ``StorageClass``?"
+
+    If a separate Nutanix volumes based StorageClass needs to deployed it can be done as follows:
+    
+    1. Create a secret 
+       
+        ```yaml
+        apiVersion: v1
+        kind: Secret
+        metadata:
+          name: ntnx-pe-secret
+          namespace: openshift-cluster-csi-drivers
+        stringData:
+          key: <Prism Element IP>:9440:<Prism Element UserName>:<Prism Element Password>    # << change this
+          # example: 
+          # key: 10.38.2.37:9440:admin:password
+        ```
+    
+    2. Create a volumes storage class
+       
+        ```yaml
+        kind: StorageClass
+        apiVersion: storage.k8s.io/v1
+        metadata:
+          name: custom-nutanix-volumes
+          annotations:
+            storageclass.kubernetes.io/is-default-class: "true"  
+        provisioner: csi.nutanix.com
+        parameters:
+          csi.storage.k8s.io/provisioner-secret-name: ntnx-pe-secret
+          csi.storage.k8s.io/provisioner-secret-namespace: openshift-cluster-csi-drivers
+          csi.storage.k8s.io/node-publish-secret-name: ntnx-pe-secret
+          csi.storage.k8s.io/node-publish-secret-namespace: openshift-cluster-csi-drivers
+          csi.storage.k8s.io/controller-expand-secret-name: ntnx-pe-secret
+          csi.storage.k8s.io/controller-expand-secret-namespace: openshift-cluster-csi-drivers
+          csi.storage.k8s.io/controller-publish-secret-name: ntnx-pe-secret
+          csi.storage.k8s.io/controller-publish-secret-namespace: openshift-cluster-csi-drivers
+          csi.storage.k8s.io/fstype: ext4
+          storageContainer: default    # <<< Make sure this Storage Container is present in the Nutanix cluster
+          storageType: NutanixVolumes
+          #description: "description added to each storage object created by the driver"
+          #hypervisorAttached: ENABLED
+        allowVolumeExpansion: true
+        reclaimPolicy: Delete
+        ```
+
+    3. Modify environment specific volumes and apply both ``Secret`` and ``StorageClass`` resources. 
+
 ## Deploying a Sample Application
 
 1.  On `VSCode` menu, select ``Terminal`` > ``New Terminal``

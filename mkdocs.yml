@@ -45,12 +45,15 @@ nav:
   - Nutanix MCP Server: 
     - MCP Server Setup: nkp_tutorials/nkp_mcp_lab/nkp_nai_mcp.md
     - MCP N8N Chat Workflow: nkp_tutorials/nkp_mcp_lab/nkp_nai_n8n.md
-- NKP Data Protection Tutorials:
-  - NKP and NDK: 
-    - Getting Started: nkp_ndk/index.md
-    - Preparing NDK: nkp_ndk/nkp_ndk.md
+- NDK Tutorials:
+  - Getting Started: nkp_ndk/index.md
+  - Preparing NDK: nkp_ndk/nkp_ndk.md
+  - Volumes (RWO CSI) Replication:
     - Single PC/PE/K8s Workflow: nkp_ndk/nkp_ndk_singlek8s.md
     - Multiple PC/PE/K8s Workflow: nkp_ndk/nkp_ndk_k8s_replication.md
+  - Files (RWX CSI)Replication:
+    - Single PC/PE/K8s Workflow: nkp_ndk/nkp_ndk_singlek8s_files.md
+    - Multiple PE/K8s/Files Workflow: nkp_ndk/nkp_ndk_k8s_files_replication.md
 - Appendix:
   - Jumphost VM Manual: infra/infra_jumphost.md
   - NKP The Hard Way: appendix/infra_nkp_hard_way.md

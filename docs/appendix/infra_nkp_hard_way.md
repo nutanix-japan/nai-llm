@@ -95,7 +95,7 @@ For ``nkpdev``, we will deploy an NKP Cluster of with the following resources to
         ```
         
     ```bash
-    tar xvfz nkp_v2.16.0_linux_amd64.tar
+    tar xvfz nkp_v2.16.0_linux_amd64.tar.gz
     ```
 
 10. Move the ``nkp`` binary to a directory that is included in your ``PATH`` environment variable
