@@ -57,16 +57,16 @@ For the purposes of this lab, we will call the source NKP cluster as ``nkpsecond
 The lab includes configuring the following NDK custom resources:
 
 
-| Custom Resource                    | Purpose                                           |
-|------------------------------------|---------------------------------------------------|
-| ``StorageCluster``                 | Defines the Nutanix storage fabric and UUIDs for secondary NKP cluster |
-| ``Remote``                         | Defines a target Kubernetes cluster for replication on the target NKP cluster |
-| ``ReplicationTarget``              | Specifies where to replicate an application snapshot. |
+| Custom Resource                     | Purpose                                           |
+|------------------------------------ |---------------------------------------------------|
+| ``StorageCluster``                  | Defines the Nutanix storage fabric and UUIDs for secondary NKP cluster |
+| ``Remote``                          | Defines a target Kubernetes cluster for replication on the target NKP cluster |
+| ``ReplicationTarget``               | Specifies where to replicate an application snapshot. |
 |``FileServerReplicationRelationships``|Specfies where to replicate a Files share|
-| ``ApplicationSnapshot`` | Snapshot of the application and chosen resources |
-| ``ApplicationSnapshotContent``     | Stores content of the application snapshot (location in Nutanix HCI) |
-| ``ApplicationSnapshotReplication`` | Triggers snapshot replication to another cluster. |
-| ``ApplicationSnapshotRestore``     | Restores an application snapshot. |
+| ``ApplicationSnapshot``             | Snapshot of the application and chosen resources |
+| ``ApplicationSnapshotContent``      | Stores content of the application snapshot (location in Nutanix HCI) |
+| ``ApplicationSnapshotReplication``  | Triggers snapshot replication to another cluster. |
+| ``ApplicationSnapshotRestore``      | Restores an application snapshot. |
 
 ## Configure Availability Zones on PCs
 
@@ -113,7 +113,7 @@ To enable replication between two PC and underlying PE, we will need to configur
     === ":octicons-command-palette-16: Command output"
  
          ```bash
-         $ kubectl get nodes
+         ~ ❯ kubectl get nodes
 
          NAME                            STATUS   ROLES           AGE   VERSION
          nkpsec-md-0-fdrzg-clvf9-2gnqc   Ready    <none>          24h   v1.32.3
@@ -173,7 +173,7 @@ To enable replication between two PC and underlying PE, we will need to configur
 
          ```bash
          kubens ntnx-system
-         k get all -l app.kubernetes.io/name=ndk
+         kubectl get all -l app.kubernetes.io/name=ndk
          ```
 
     === ":octicons-command-palette-16:  Command Output"
@@ -181,7 +181,7 @@ To enable replication between two PC and underlying PE, we will need to configur
          ```text hl_lines="6 15 18"
          Active namespace is "ntnx-system".
  
-         $ k get all -l app.kubernetes.io/name=ndk
+         ~ ❯ kubectl get all -l app.kubernetes.io/name=ndk
  
          NAME                                          READY   STATUS    RESTARTS   AGE
          pod/ndk-controller-manager-57fd7fc56b-gg5nl   4/4     Running   0          19m
@@ -215,7 +215,7 @@ To enable replication between two PC and underlying PE, we will need to configur
     === ":octicons-command-palette-16:  Command output"
         
         ```text hl_lines="3 4"
-        $ kubectl get node nkpsecondary-md-0-fdrzg-clvf9-t8t4l -o jsonpath='{.metadata.labels}' | grep -o 'csi\.nutanix\.com/[^,]*' 
+        ~ ❯ kubectl get node nkpsecondary-md-0-fdrzg-clvf9-t8t4l -o jsonpath='{.metadata.labels}' | grep -o 'csi\.nutanix\.com/[^,]*' 
 
         csi.nutanix.com/prism-central-uuid":"cb5ca4e1-29d4-4a6f-91c7-xxxxxxxxxxxx"
         csi.nutanix.com/prism-element-uuid":"000639fd-8cfa-9bf4-3d70-xxxxxxxxxxxx"
@@ -244,7 +244,7 @@ To enable replication between two PC and underlying PE, we will need to configur
 8. Note and export the external  IP assigned to the NDK intercom service on the Primary Cluster
 
     ```bash
-    export SECONDARY_NDK_IP=$(k get svc -n ntnx-system ndk-intercom-service -o jsonpath='{.status.loadBalancer.ingress[0].ip}')
+    export SECONDARY_NDK_IP=$(kubectl get svc -n ntnx-system ndk-intercom-service -o jsonpath='{.status.loadBalancer.ingress[0].ip}')
     echo $SECONDARY_NDK_IP
     ```
 
@@ -254,7 +254,7 @@ To enable replication between two PC and underlying PE, we will need to configur
 
         ```text
         export SECONDARY_NDK_PORT=2021
-        export SECONDARY_NDK_IP=$(k get svc -n ntnx-system ndk-intercom-service -o jsonpath='{.status.loadBalancer.ingress[0].ip}')
+        export SECONDARY_NDK_IP=$(kubectl get svc -n ntnx-system ndk-intercom-service -o jsonpath='{.status.loadBalancer.ingress[0].ip}')
         ```
  
 10. Source the ``.env`` file
@@ -291,107 +291,10 @@ To enable replication between two PC and underlying PE, we will need to configur
     
 Now we are ready to create local cluster snapshots and snapshot restores using the following NDK custom resources:
 
--  ``ApplicationSnapshot`` and
--  ``ApplicationSnapshotRestore``
 
-
-## Deploying a Sample Application
-
-1.  On `VSCode` menu, select ``Terminal`` > ``New Terminal``
-
-2.  Browse to ``ndk`` directory
-
-    === ":octicons-command-palette-16: Command"
-    
-         ```bash
-         cd $HOME/ndk
-         ```
-
-3. Source the .env file
-
-    === ":octicons-command-palette-16: Command"
-    
-         ```bash
-         source .env
-         ```
-
-4. Change to default namespace
-    
-    === ":octicons-command-palette-16: Command"
-    
-         ```bash
-         kubens default
-         ```
-
-5. Create a Wordpress stateful workload with Volumes and Files StorageClass
-   
-    === ":octicons-command-palette-16: Command"
-    
-         ```bash
-         kubectl apply -f - <<EOF
-         apiVersion: v1
-         kind: PersistentVolumeClaim
-         metadata:
-           labels:
-             app: app1
-           name: az-claim-1
-         spec:
-           accessModes:
-             - ReadWriteOnce
-           resources:
-             requests:
-               storage: 1Gi
-         EOF
-         kubectl apply -f - <<EOF
-         apiVersion: v1
-         kind: Pod
-         metadata:
-           name: app-1
-           labels:
-             app: app1
-         spec:
-           containers:
-           - name: app
-             image: docker.io/library/busybox:1.36.1
-             command: ["/bin/sh"]
-             args: ["-c", "while true; do echo $(date -u) ; sleep 5; done"]
-             volumeMounts:
-             - name: persistent-storage
-               mountPath: /data
-           volumes:
-           - name: persistent-storage
-             persistentVolumeClaim:
-               claimName: az-claim-1
-         EOF
-         ```
-
-6. Watch the workload components until they are running
-    
-    === ":octicons-command-palette-16: Command"
-
-        ```bash
-        kubectl get po,pvc -l app=app1
-        ```
-
-    === ":octicons-command-palette-16: Sample command"
-        
-        ```bash hl_lines="2 5"
-        NAME        READY   STATUS    RESTARTS   AGE
-        pod/app-1   1/1     Running   0          2m
-
-        NAME                               STATUS   VOLUME                                     CAPACITY   ACCESS MODES   STORAGECLASS     VOLUMEATTRIBUTESCLASS   AGE
-        persistentvolumeclaim/az-claim-1   Bound    pvc-f2d77c96-d2e4-42b3-b3d6-aa828f9e45e6   1Gi        RWO            nutanix-volume   <unset>                 2m
-        ```
-
-7.  Once the pvc and pod are running, inject some data into the persistent storage
-    
-    === ":octicons-command-palette-16: Command"
-
-        ```bash
-        kubectl exec -it app-1 -- /bin/sh -c 'for i in $(seq 1 10000); do echo "foobar" >> /data/abc.txt;done'
-        ```
-
-Now we have a stateful workload which we can replicate and recover using NDK
+- [x] 1 ``ApplicationSnapshot``  (created in the previous section)
+- [ ] 2 ``ApplicationSnapshotReplication``and
+- [ ] 3 ``ApplicationSnapshotRestore``
 
 ## NDK Recover to the Secondary NKP Cluster
 
@@ -541,23 +444,25 @@ Since we have a sample workload configured on the primary NKP cluster, we will:
    
     === ":octicons-command-palette-16: Command"
 
-         ```bash
-         k apply -f -<<EOF
-         apiVersion: dataservices.nutanix.com/v1alpha1
-         kind: ApplicationSnapshotReplication
-         metadata:
-           name: replication-1
-           namespace: default
-         spec:
-           applicationSnapshotName: app1-snap
-           replicationTargetName: ${NDK_REPLICATION_CLUSTER_NAME}
-         EOF
-         ```
+        ```yaml
+        k apply -f -<<EOF
+        apiVersion: dataservices.nutanix.com/v1alpha1
+        kind: ApplicationSnapshotReplication
+        metadata:
+          name: wordpress-snap-replication
+          namespace: default
+        spec:
+          applicationSnapshotName: wordpress-app-snapshot # (1)!
+          replicationTargetName: ${NDK_REPLICATION_CLUSTER_NAME}
+        EOF
+        ```
+
+        1.  Use the snapshot object's name from the previous section ``wordpress-app-snapshot``
     
     === ":octicons-command-palette-16: Command output"
 
          ```bash
-         applicationsnapshotreplication.dataservices.nutanix.com/replication-1 created
+         applicationsnapshotreplication.dataservices.nutanix.com/wordpress-snap-replication created
          ```
 
 5. Monitor the progress of the replication and make sure to complete it
@@ -565,30 +470,53 @@ Since we have a sample workload configured on the primary NKP cluster, we will:
     === ":octicons-command-palette-16: Command"
 
          ```bash
-         kubectl describe ApplicationSnapshotReplication replication-1
+         kubectl describe ApplicationSnapshotReplication wordpress-snap-replication
          ```
 
     === ":octicons-command-palette-16: Command output"
 
-         ```bash hl_lines="6 7 8"
-         Status:
-           Conditions:
-             Last Transition Time:          2025-07-16T21:51:32Z
-             Message:                       
-             Observed Generation:           1
-             Reason:                        ReplicationComplete
-             Status:                        True
-             Type:                          Available
-             Last Transition Time:          2025-07-16T21:51:32Z
-             Message:                       
-             Observed Generation:           1
-             Reason:                        ReplicationComplete
-             Status:                        False
-             Type:                          Progressing
-           Replication Completion Percent:  100
+         ```bash hl_lines="23 24"  linenums="1"
+         apiVersion: v1
+         items:
+         - apiVersion: dataservices.nutanix.com/v1alpha1
+           kind: ApplicationSnapshotReplication
+           metadata:
+             creationTimestamp: "2025-12-03T07:58:11Z"
+             finalizers:
+             - dataservices.nutanix.com/app-snap-replicate
+             generation: 1
+             name: wordpress-app-snapshot-replication
+             namespace: word
+             resourceVersion: "24998974"
+             uid: 3f755d1a-a777-401e-acfd-9822620d305d
+           spec:
+             applicationSnapshotName: wordpress-app-snapshot
+             replicationTargetName: rt-wordpress-app
+           status:
+             conditions:
+             - lastTransitionTime: "2025-12-03T07:58:43Z"
+               message: ""
+               observedGeneration: 1
+               reason: ReplicationComplete
+               status: "True"
+               type: Available
+             - lastTransitionTime: "2025-12-03T07:58:43Z"
+               message: ""
+               observedGeneration: 1
+               reason: ReplicationComplete
+               status: "False"
+               type: Progressing
          ```
 
 ### Recover Application in Remote NKP Cluster
+
+The following NDK objects will be used in this section
+
+- [x] 1 ``ApplicationSnapshot``  (created in the previous [lab](../nkp_ndk/nkp_ndk_singlek8s_files.md#ndk-snapshot-and-recover-to-the-same-namespace))
+- [x] 2 ``ApplicationSnapshotReplication`` (created in the previous section)
+- [ ] 3 ``ApplicationSnapshotRestore``
+
+#### Recover from Replicated Snapshot
 
 1. Switch context to secondary NKP cluster ``nkpsecondary``
    
@@ -600,25 +528,27 @@ Since we have a sample workload configured on the primary NKP cluster, we will:
  
     === ":octicons-command-palette-16: Sample Command"
  
-         ```bash
-         export KUBECONFIG=$HOME/nkp/nkpsecondary.conf
-         ```
+        ```bash
+        export KUBECONFIG=$HOME/nkp/nkpsecondary.conf
+        ```
 
-2. Confirm if the ``ApplicationSnapshot`` has been replicated
+2. Confirm if the ``ApplicationSnapshot`` has been replicated in the ``default`` namespace
    
     === ":octicons-command-palette-16: Command"
  
          ```bash
-         kubectl get ApplicationSnapshot -n default
+         kubectl get ApplicationSnapshot -n default # (1)!
          ```
-  
+         
+         1. We are specifically using ``default`` namespace as this is where NDK will replicate the snapshot to 
+   
     === ":octicons-command-palette-16: Command output"
  
          ```bash hl_lines="4"
-         k get applicationsnapshot -n default
-
+         ~ ❯ kubectl get applicationsnapshot -n default
+         #
          NAMESPACE   NAME        AGE   READY-TO-USE   BOUND-SNAPSHOTCONTENT                                  SNAPSHOT-AGE
-         default     app1-snap   8m   true           asc-aee3f794-190c-403b-a245-bcac8859bb88-19815381630   8m
+         default     wordpress-app-snapshot   8m   true           asc-aee3f794-190c-403b-a245-bcac8859bb88-19815381630   8m
          ```
 
 3. Restore the replicated ``ApplicationSnapshot``
@@ -631,16 +561,16 @@ Since we have a sample workload configured on the primary NKP cluster, we will:
          apiVersion: dataservices.nutanix.com/v1alpha1
          kind: ApplicationSnapshotRestore
          metadata:
-           name: app1-restore
+           name: wordpress-app-restore
          spec:
-           applicationSnapshotName: app1-snap
+           applicationSnapshotName: wordpress-app-snapshot
          EOF
          ```
   
     === ":octicons-command-palette-16: Command output"
  
          ```bash
-         applicationsnapshotrestore.dataservices.nutanix.com/app1-restore created
+         applicationsnapshotrestore.dataservices.nutanix.com/wordpress-app-restore created
          ```
 
 4. Monitor the restore 
@@ -648,16 +578,16 @@ Since we have a sample workload configured on the primary NKP cluster, we will:
     === ":octicons-command-palette-16: Command"
  
          ```bash
-         k get applicationsnapshotrestore.dataservices.nutanix.com/app1-restore -w
+         kubectl get applicationsnapshotrestore.dataservices.nutanix.com/wordpress-app-restore -w
          ```
   
     === ":octicons-command-palette-16: Command output"
  
          ```bash hl_lines="4"
-         NAME           SNAPSHOT-NAME   COMPLETED
-         app1-restore   app1-snap       false
-         app1-restore   app1-snap       false
-         app1-restore   app1-snap       true
+         NAME                    SNAPSHOT-NAME                COMPLETED
+         wordpress-app-restore   wordpress-app-snapshot       false
+         wordpress-app-restore   wordpress-app-snapshot       false
+         wordpress-app-restore   wordpress-app-snapshot       true
          ```
 
 5. Monitor the restore steps to understand the flow
@@ -665,7 +595,7 @@ Since we have a sample workload configured on the primary NKP cluster, we will:
     === ":octicons-command-palette-16: Command"
  
          ```bash
-         k describe applicationsnapshotrestore.dataservices.nutanix.com/app1-restore
+         k describe applicationsnapshotrestore.dataservices.nutanix.com/wordpress-app-restore
          ```
   
     === ":octicons-command-palette-16: Command output"
@@ -703,39 +633,278 @@ Since we have a sample workload configured on the primary NKP cluster, we will:
          startTime: "2025-07-16 21:57:52"
          ```
 
-6. Verify if app1 pvc and pod are restored
+6. Verify if Wordpress app resources (pod,pvc, etc) are restored to the ``default`` namespace
     
     === ":octicons-command-palette-16: Command"
     
          ```bash
-         kubectl get po,pvc -l app=app1
+         kubectl get all
          ```
          
     === ":octicons-command-palette-16: Command Output"
     
          ```text hl_lines="4 7"
-         $  kubectl get po,pvc -l app=app1
+         ~ ❯ kubectl get all
 
-         NAME        READY   STATUS    RESTARTS   AGE
-         pod/app-1   1/1     Running   0          4m53s
+         NAME                                   READY   STATUS    RESTARTS   AGE
+         pod/wordpress-6bc48cbf79-862wm         1/1     Running   0          6m
+         pod/wordpress-mysql-7bd9d456c5-hxjr7   1/1     Running   0          6m
          
-         NAME                               STATUS   VOLUME                                     CAPACITY   ACCESS MODES   STORAGECLASS     VOLUMEATTRIBUTESCLASS   AGE
-         persistentvolumeclaim/az-claim-1   Bound    pvc-55a6b812-35de-4db2-b0e1-8a55e1b4e41f   4Gi        RWO            nutanix-volume   <unset>                 5m54s
+         NAME                      TYPE        CLUSTER-IP      EXTERNAL-IP   PORT(S)    AGE
+         service/wordpress         ClusterIP   10.109.161.32   <none>        80/TCP     6m
+         service/wordpress-mysql   ClusterIP   None            <none>        3306/TCP   6m
+         
+         NAME                              READY   UP-TO-DATE   AVAILABLE   AGE
+         deployment.apps/wordpress         1/1     1            1           6m
+         deployment.apps/wordpress-mysql   1/1     1            1           6m
+         
+         NAME                                         DESIRED   CURRENT   READY   AGE
+         replicaset.apps/wordpress-6bc48cbf79         1         1         1       6m
+         replicaset.apps/wordpress-mysql-7bd9d456c5   1         1         1       6m
          ```
 
-7. Check if data is present within the data mount ``/data`` inside the pod
+7.  Login to Wordpress GUI to check if the deleted user is now present
 
+    ![](images/wordpress_restored_user_state.png)
+
+We have successfully replicated application data to a secondary NKP cluster and recovered it using NDK. 
+
+We have used the following NDK objects to achieve our cross-namespace application recovery.
+
+- [x] 1 ``ApplicationSnapshot``  (created in the previous [lab](../nkp_ndk/nkp_ndk_singlek8s_files.md#ndk-snapshot-and-recover-to-the-same-namespace))
+- [x] 2 ``ApplicationSnapshotReplication`` (created in the previous section)
+- [x] 4 ``ApplicationSnapshotRestore``
+
+## Cross Namespace Recovery
+
+Since the ``applicationSnapshot`` got replicated to ``default`` namespace, we might ideally want to restore it to the same ``wordpress`` namespace.
+
+The following NDK objects will be used in this section
+
+- [x] 1 ``ApplicationSnapshot``  (created in the previous [lab](../nkp_ndk/nkp_ndk_singlek8s_files.md#ndk-snapshot-and-recover-to-the-same-namespace))
+- [x] 2 ``ApplicationSnapshotReplication`` (created in the previous section)
+- [ ] 3 ``ReferenceGrant``
+- [ ] 4 ``ApplicationSnapshotRestore``
+
+!!! info
+    
+    NDK offers cross-namespace recovery capabilites. With this NKP or any supported kubernetes platform administrator can recover ``applicationSnapshot`` custom resource to a different namespace.
+
+We will go through the process of cross-namespace restore in this section.
+
+1. Create a referenceGrant resouce to grant permission to restore specific application snapshots from one namespace to another.
+   
+    === ":octicons-command-palette-16: Template Command"
+    
+         ```bash
+         kubectl apply -f - <<EOF
+         apiVersion: gateway.networking.k8s.io/v1beta1
+         kind: ReferenceGrant
+         metadata:
+           name: _reference_grant_name
+           namespace: _source_namespace
+         spec:
+           from:
+           - group: dataservices.nutanix.com
+             kind: ApplicationSnapshotRestore
+             namespace: _target_namespace
+           to:
+           - group: dataservices.nutanix.com
+             kind: ApplicationSnapshot
+             name: _appplication_snapshot_name
+         EOF
+         ```
+    === ":octicons-command-palette-16: Sample Command"
+    
+         ```bash
+         kubectl apply -f - <<EOF
+         apiVersion: gateway.networking.k8s.io/v1beta1
+         kind: ReferenceGrant
+         metadata:
+           name: wordpress-cross-ns-rg
+           namespace: default
+         spec:
+           from:
+           - group: dataservices.nutanix.com
+             kind: ApplicationSnapshotRestore
+             namespace: wordpress
+           to:
+           - group: dataservices.nutanix.com
+             kind: ApplicationSnapshot
+             name: wordpress-app-snapshot
+         EOF
+         ```
+    === ":octicons-command-palette-16: Command output"
+    
+         ```bash
+         referencegrant.gateway.networking.k8s.io/wordpress-cross-ns-rg created
+         ```
+
+2. Create a target namespace
+   
+    === ":octicons-command-palette-16: Template Command"
+    
+         ```bash
+         kubectl create namespace wordpress
+         kubens wordpress
+         ```
+    === ":octicons-command-palette-16: Sample Command"
+    
+         ```{ .text .no-copy }
+         namespace/wordpress created
+
+         Context "nkplb-admin@nkplb" modified.
+         Active namespace is "wordpress".
+         ```
+
+3. Create and ``applicationSnapshotRestore`` custom resource to restore to target ``wordpress`` namespace
+
+    === ":octicons-command-palette-16: Template Command"
+    
+         ```bash
+         kubectl apply -f - <<EOF
+         apiVersion: dataservices.nutanix.com/v1alpha1
+         kind: ApplicationSnapshotRestore
+         metadata:
+          name: _restore-snapshot-name
+          namespace: _target_namespace
+         spec:
+          applicationSnapshotName: _snapshot_name
+          applicationSnapshotNamespace: _snapshot_source_namespace
+         EOF
+         ```
+
+    === ":octicons-command-palette-16: Sample Command"
+    
+         ```bash
+         kubectl apply -f - <<EOF
+         apiVersion: dataservices.nutanix.com/v1alpha1
+         kind: ApplicationSnapshotRestore
+         metadata:
+          name: wordpress-wordpress-cross-ns-asr
+          namespace: restore
+         spec:
+          applicationSnapshotName: wordpress-app-snapshot
+          applicationSnapshotNamespace: default
+         EOF
+         ```
+
+
+5. Monitor the progress of ``ApplicationSnapshotRestore`` custom resource
+   
     === ":octicons-command-palette-16: Command"
     
          ```bash
-         kubectl exec -it app-1 -- /bin/sh -c "wc -l /data/abc.txt"
+         kubectl describe applicationsnapshotrestore.dataservices.nutanix.com/wordpress-cross-ns-asr
+         ```
+         ```bash
+         kubectl get applicationsnapshotrestore.dataservices.nutanix.com/wordpress-wordpress-cross-ns-asr -w
+         ```
+
+    === ":octicons-command-palette-16: Command Output"
+    
+         ```text title="Wait until the status of ApplicationSnapshotRestore custom resource is true"
+         Name:         wordpress-cross-ns-asr
+         Namespace:    restore
+
+         API Version:  dataservices.nutanix.com/v1alpha1
+         Kind:         ApplicationSnapshotRestore
+         Metadata:
+         Creation Timestamp:  2025-07-08T05:40:31Z
+         Finalizers:
+             dataservices.nutanix.com/application-restore
+         Generation:        1
+         Resource Version:  7484636
+
+         Spec:
+         Application Snapshot Name:       app1-snap
+         Application Snapshot Namespace:  default
+         Status:
+         Completed:  true
+
+         Conditions:
+             Last Transition Time:  2025-07-08T05:40:31Z
+             Message:               
+             Observed Generation:   1
+             Reason:                RequestCompleted
+             Status:                False
+             Type:                  Progressing
+             Last Transition Time:  2025-07-08T05:40:31Z
+             Message:               All prechecks passed and finalizers on dependent resources set
+             Observed Generation:   1
+             Reason:                PrechecksPassed
+             Status:                True
+             Type:                  PrechecksPassed
+             Last Transition Time:  2025-07-08T05:40:31Z
+             Message:               Restore requests for all eligible volumes submitted
+             Observed Generation:   1
+             Reason:                VolumeRestoreRequestsSubmitted
+             Status:                True
+             Type:                  VolumeRestoreRequestsSubmitted
+             Last Transition Time:  2025-07-08T05:41:32Z
+             Message:               All eligible application configs restored
+             Observed Generation:   1
+             Reason:                ApplicationConfigRestored
+             Status:                True
+             Type:                  ApplicationConfigRestored
+             Last Transition Time:  2025-07-08T05:41:47Z
+             Message:               All eligible volumes restored
+             Observed Generation:   1
+             Reason:                VolumesRestored
+             Status:                True
+             Type:                  VolumesRestored
+             Last Transition Time:  2025-07-08T05:41:47Z
+             Message:               Application restore successfully finalised
+             Observed Generation:   1
+             Reason:                ApplicationRestoreFinalised
+             Status:                True
+             Type:                  ApplicationRestoreFinalised
+         Finish Time:             2025-07-08 05:41:47
+         Start Time:              2025-07-08 05:40:31
+         ```
+         ```text
+         kubectl get applicationsnapshotrestore/wordpress-cross-ns-asr -w
+         NAME           SNAPSHOT-NAME   COMPLETED
+         wordpress-cross-ns-asr   app1-snap       true
+         ```
+
+6. Verify if Wordpress app resources (pod,pvc, etc) are restored to the ``default`` namespace
+    
+    === ":octicons-command-palette-16: Command"
+    
+         ```bash
+         kubectl get all
          ```
          
     === ":octicons-command-palette-16: Command Output"
     
-         ```text hl_lines="2"
-         kubectl exec -it app-1 -- /bin/sh -c "wc -l /data/abc.txt"
-         10000 /data/abc.txt
+         ```text hl_lines="4 7"
+         ~ ❯ kubectl get all
+
+         NAME                                   READY   STATUS    RESTARTS   AGE
+         pod/wordpress-6bc48cbf79-862wm         1/1     Running   0          6m
+         pod/wordpress-mysql-7bd9d456c5-hxjr7   1/1     Running   0          6m
+         
+         NAME                      TYPE        CLUSTER-IP      EXTERNAL-IP   PORT(S)    AGE
+         service/wordpress         ClusterIP   10.109.161.32   <none>        80/TCP     6m
+         service/wordpress-mysql   ClusterIP   None            <none>        3306/TCP   6m
+         
+         NAME                              READY   UP-TO-DATE   AVAILABLE   AGE
+         deployment.apps/wordpress         1/1     1            1           6m
+         deployment.apps/wordpress-mysql   1/1     1            1           6m
+         
+         NAME                                         DESIRED   CURRENT   READY   AGE
+         replicaset.apps/wordpress-6bc48cbf79         1         1         1       6m
+         replicaset.apps/wordpress-mysql-7bd9d456c5   1         1         1       6m
          ```
 
-We have successfully replicated application data to a secondary NKP cluster and recovered it using NDK. 
+7.  Login to Wordpress GUI to check if the deleted user is now present
+
+    ![](images/wordpress_restored_user_state.png)
+
+We have used the following NDK objects to achieve our cross-namespace application recovery.
+
+- [x] 1 ``ApplicationSnapshot``  (created in the previous [lab](../nkp_ndk/nkp_ndk_singlek8s_files.md#ndk-snapshot-and-recover-to-the-same-namespace))
+- [x] 2 ``ApplicationSnapshotReplication`` (created in the previous section)
+- [x] 3 ``ReferenceGrant``
+- [x] 4 ``ApplicationSnapshotRestore``

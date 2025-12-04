@@ -9,7 +9,7 @@ In this section we will deploy a sample workload, snapshot the Application compo
 
 ## Design
 
-We will be replicating an application (workload) from one NKP cluster in one PC to another NKP cluster in the same Nutanix PC/PE environment. 
+In this lab, we will be replicating an application (workload) from one NKP cluster to another NKP cluster in the same Nutanix PC/PE environment. 
 
 There is one NKP cluster hosting the workload.
 
@@ -17,10 +17,10 @@ We will simulate a restore process.
 
 The workload stores data in both ``Volumes`` and Dynamic ``Files`` CSI. 
 
-| #           | PC   | PE   | NKP Cluster     | Files Server      | K8S Namespace     |
-|-------------|------|------|-----------------|-------------------|-------------------|
-| Source      | PC-1 | PE-1 | ``nkpprimary``  | ``filesprimary``  |    ``wordpress``  |
-| Destination |   PC-1   | PE-1 | ``nkpprimary``  | ``filesprimary`` | ``wordpress``  | 
+| #           | PC   | PE   | NKP Cluster          | Files Server      | K8S Namespace     |
+|-------------|------|------|-----------------     |-------------------|-------------------|
+| Source      | PC-1 | PE-1 | ``nkpprimary``       | ``filesprimary``  |  ``wordpress``    |
+| Destination | PC-1 | PE-1 | ``nkpprimary``       | ``filesprimary``  |  ``wordpress``    | 
 
 
 ```mermaid
@@ -34,11 +34,11 @@ stateDiagram-v2
              state Wordpress_App {
                  [*] --> Wordpress
                  Wordpress --> Volumes(RWO) : MYSQL Storage
-                 Wordpress --> Files(RWX) : Front-end Storage
+                 Wordpress --> Files(RWX)  : Front-end Storage
              }
      
-             state NDK_Backup {
-                 Backup_Running --> Backup_Complete : Saving snapshot of Wordpress_App PVCs
+             state NDK_Snapshot {
+                 Snapshot_Running --> Snapshot_Complete : Saving snapshot of Wordpress_App PVCs
              }
      
              state Disaster_Event {
@@ -46,20 +46,20 @@ stateDiagram-v2
              }
      
              state NDK_Restore {
-                 Restore_Process : Using latest backup
-                 Restore_Process --> Wordpress_App_Online : Restore
+                 Restore_Process : Using latest snapshot
+                 Restore_Process --> Wordpress_Resources   : Restore
              }
      
              %% Define the flow inside the System_Lifecycle
-             Wordpress_App --> NDK_Backup : Backup Initiated
-             NDK_Backup --> Wordpress_App : Backup Successful
+             Wordpress_App --> NDK_Snapshot : Snapshot initiated
+             NDK_Snapshot --> Wordpress_App : Snapshot successful
      
-             Wordpress_App --> Disaster_Event : Simulate System Failure
-             Disaster_Event --> NDK_Restore : Initiate Restore
-             NDK_Restore --> Wordpress_App : Restore Complete
+             Wordpress_App --> Disaster_Event : Simulate system failure
+             Disaster_Event --> NDK_Restore : Initiate restore
+             NDK_Restore --> Wordpress_App : Restore complete
      
              %% End point for the entire lifecycle
-             Wordpress_App --> [*] : App_Available
+             Wordpress_App --> [*] : App available
           }
     }
 ```
@@ -83,7 +83,7 @@ NKP installs a Nutanix Volumes based storage class by default called ``nutanix-v
 === ":octicons-command-palette-16: Command output"
 
       ```bash hl_lines="4"
-      $ kubectl get sc
+      ~ ❯ kubectl get sc
 
       NAME                           PROVISIONER       RECLAIMPOLICY   VOLUMEBINDINGMODE      ALLOWVOLUMEEXPANSION   AGE
       nutanix-volume (default)       csi.nutanix.com   Delete          WaitForFirstConsumer   true                   35d
@@ -170,7 +170,7 @@ We need to create a Dynamic Files based storage class for use with our applicati
         ```text
         export NFS_SC_NAME=_files_storage_class_name
         export NFS_SERVER_NAME=_files_server_display_name
-        epxort NFS_SERVER_FQDN=_files_server_fqdn
+        export NFS_SERVER_FQDN=_files_server_fqdn
         ```
     
     === ":octicons-file-code-16: Sample .env"
@@ -242,7 +242,7 @@ We need to create a Dynamic Files based storage class for use with our applicati
     === ":octicons-command-palette-16: Command output"
     
         ```bash hl_lines="4 5"
-        $ kubectl get sc
+        ~ ❯ kubectl get sc
   
         NAME                           PROVISIONER       RECLAIMPOLICY   VOLUMEBINDINGMODE      ALLOWVOLUMEEXPANSION   AGE
         nutanix-volume (default)       csi.nutanix.com   Delete          WaitForFirstConsumer   true                   1d
@@ -311,7 +311,7 @@ We need to create a Dynamic Files based storage class for use with our applicati
     === "Command output"
     
         ```{ .text .no-copy } 
-        kubectl apply -k ./
+        ~ ❯ kubectl apply -k ./
         #
         secret/mysql-pass-29km6tg2b5 created
         service/wordpress created
@@ -333,6 +333,8 @@ We need to create a Dynamic Files based storage class for use with our applicati
     === ":octicons-command-palette-16: Command output"
         
         ```{ .text .no-copy }
+        ~ ❯ kubectl get all
+        #
         NAME                                   READY   STATUS    RESTARTS   AGE
         pod/wordpress-6bc48cbf79-862wm         1/1     Running   0          6m
         pod/wordpress-mysql-7bd9d456c5-hxjr7   1/1     Running   0          6m
@@ -359,7 +361,7 @@ We will use the Traefik Ingress Controller that comes with NKP to expose Wordpre
     === ":octicons-command-palette-16: Command"
  
           ```bash
-          kubectl get ingresses --A
+          kubectl get ingresses -A
           ```
  
     === ":octicons-command-palette-16:  Sample Command"
@@ -477,16 +479,53 @@ We will use the Traefik Ingress Controller that comes with NKP to expose Wordpre
 
     ![](images/ocp_wp_user_list.png)
 
-You have successfully set up Wordpress application with mysql backend. In the next section we will backup and restore a deleted Wordpress user using Nutanix NDK.
+You have successfully set up Wordpress application with mysql backend. In the next section we will take a snapshot and restore a deleted Wordpress user using Nutanix NDK.
 
-## NDK Backup Recover to the Same Namespace
+## NDK Snapshot and Recover to the Same Namespace
 
-!!! tip
+We will need to establish a relationship between Nutanix Files servers that we will be replicating to and from as we now have a RWX based Files share mounted as a ``pvc`` in the Wordpress app. 
 
-    NDK Backup uses labels to select kubernetes resources to act upon. 
+This ``FileServerReplicationRelationships`` resource will be used for snapshot replication for the shares that we will be replicating. 
 
+1. Add (append) the following environment variables and save it
+   
+    === ":octicons-file-code-16: Template .env"
 
-1. Define a NDK_Backup ``Application`` custom resource to replicate our deployed application with label ``app1``
+        ```bash
+        export PRIMARY_FS_FQDN=_primary_files_server_fqdn
+        export SECONDARY_FS_FQDN_secondary_files_server_fqdn
+        ```
+    
+    === ":octicons-file-code-16: Sample .env"
+        
+        ```{ .text .no-copy }
+        export PRIMARY_FS_NAME=filesprimary.example.com
+        export SECONDARY_FS_NAME=filessecondary.example.com
+        ```
+
+2. Source the ``.env`` file to load new environment variables
+    
+    ```bash
+    source .env
+    ```
+
+3. Create a ``FileServerReplicationRelationships`` object on the primary NKP ``nkpprimary`` cluster
+   
+    ```bash
+    kubectl apply -f -<<EOF
+    apiVersion: dataservices.nutanix.com/v1alpha1
+    kind: FileServerReplicationRelationships
+    metadata:
+      name: files-servers-fssr
+    spec:
+      remoteName: ndk-nutanix-secondary
+      relationships:
+        - primaryFileserverFQDN: $PRIMARY_FS_FQDN
+          recoveryFileserverFQDN: $SECONDARY_FS_FQDN
+    EOF
+    ```
+   
+4. Define a NDK  ``Application`` custom resource to take a snapshot of all the objects in wordpress namespace 
 
     === ":octicons-command-palette-16: Command"
     
@@ -508,7 +547,7 @@ You have successfully set up Wordpress application with mysql backend. In the ne
          application.dataservices.nutanix.com/wordpress-app created
          ```
 
-2. Take a local cluster snapshot of the ``app1`` application
+5. Take a local cluster snapshot of the ``wordpress`` application
    
     === ":octicons-command-palette-16: Command"
     
@@ -518,7 +557,7 @@ You have successfully set up Wordpress application with mysql backend. In the ne
          kind: ApplicationSnapshot
          metadata:
            name: wordpress-app-snapshot
-           # namespace: wordpress
+           namespace: wordpress
          spec:
            expiresAfter: "1h"
            source:
@@ -533,7 +572,7 @@ You have successfully set up Wordpress application with mysql backend. In the ne
          applicationsnapshot.dataservices.nutanix.com/wordpress-app-snapshot created
          ```
 
-3. View the progress
+6. View the progress
    
     === ":octicons-command-palette-16: Command"
  
@@ -544,7 +583,7 @@ You have successfully set up Wordpress application with mysql backend. In the ne
     === ":octicons-command-palette-16: Command output"
      
           ```text hl_lines="5" title="Wait until the status of snapshot becomes true"
-          $ k get applicationsnapshot -w
+          ~ ❯ kubectl get applicationsnapshot -w
 
           Name:         asc-0fecc22d-8b03-44ba-a2da-98d917eca3c3
           Namespace:    
@@ -608,7 +647,7 @@ You have successfully set up Wordpress application with mysql backend. In the ne
             Ready To Use:            false
           ```
 
-4. Inspect the applicationSnapshotContent information to see if both Volumes and Files pvc are captured in the snapshot
+7. Inspect the applicationSnapshotContent information to see if both Volumes and Files pvc are captured in the snapshot
    
     === ":octicons-command-palette-16: Command"
   
@@ -619,7 +658,7 @@ You have successfully set up Wordpress application with mysql backend. In the ne
     === ":octicons-command-palette-16: Command output"
     
         ```bash hl_lines="4"
-        kubectl get applicationsnapshot wordpress-app-snapshot 
+        ~ ❯ kubectl get applicationsnapshot wordpress-app-snapshot 
         #
         NAME                     AGE     READY-TO-USE   BOUND-SNAPSHOTCONTENT                      SNAPSHOT-AGE   CONSISTENCY-TYPE
         wordpress-app-snapshot   22m     false          asc-0fecc22d-8b03-44ba-a2da-98d917eca3c3   22m            NoConsistencyGuarantee
@@ -627,7 +666,7 @@ You have successfully set up Wordpress application with mysql backend. In the ne
 
     !!! info "Relationship between NDK custom resources"
  
-        We can observe that the ``ApplicationSnapshot`` and ``ApplicationSnapshotContent`` NDK_Backup custom resources are related.
+        We can observe that the ``ApplicationSnapshot`` and ``ApplicationSnapshotContent`` NDK_Snapshot custom resources are related.
 
         ``ApplicationSnapshotContent`` also shows the Nutanix infrastructure components of the ``ApplicationSnapshot`` such as Nutanix Volumes and Files.
         
@@ -638,7 +677,7 @@ You have successfully set up Wordpress application with mysql backend. In the ne
         ```
 
         ```text hl_lines="31 32"
-        kubectl describe applicationsnapshotcontent asc-0fecc22d-8b03-44ba-a2da-98d917eca3c3
+        ~ ❯ kubectl describe applicationsnapshotcontent asc-0fecc22d-8b03-44ba-a2da-98d917eca3c3
         #
         Name:         asc-0fecc22d-8b03-44ba-a2da-98d917eca3c3
         Namespace:    
@@ -703,7 +742,7 @@ You have successfully set up Wordpress application with mysql backend. In the ne
         ```
 
 
-5. The NDK_Backup controller manager will also have logs of the snapshot operation. This will be useful for troubleshooting purposes
+5. The NDK_Snapshot controller manager will also have logs of the snapshot operation. This will be useful for troubleshooting purposes
    
     === ":octicons-command-palette-16: Command"
  
@@ -714,7 +753,7 @@ You have successfully set up Wordpress application with mysql backend. In the ne
     === ":octicons-command-palette-16: Command output"
      
           ```{ .text .no-copy }
-          $ kubectl logs -f -n ntnx-system deploy/ndk-controller-manager
+          ~ ❯ kubectlubectl logs -f -n ntnx-system deploy/ndk-controller-manager
 
           {"level":"info","timestamp":"2025-07-08T01:35:12.909Z","caller":"applicationsnapshotcontent/asc_finalize.go:38","msg":"resource regulated: ApplicationSnapshotContent's finalize phase is waiting to be processed","controller":"applicationsnapshotcontent","controllerGroup":"dataservices.nutanix.com","controllerKind":"ApplicationSnapshotContent","ApplicationSnapshotContent":{"name":"asc-3c1e253a-266d-46fd-8559-d8aa189fea78"},"namespace":"","name":"asc-3c1e253a-266d-46fd-8559-d8aa189fea78","reconcileID":"a0cf1641-40d7-4d51-b948-10cf9bae84e0","requestId":"7566b4fa-0eda-4ffd-b34e-76daf2311148"}
 
@@ -765,9 +804,9 @@ You have successfully set up Wordpress application with mysql backend. In the ne
     === ":octicons-command-palette-16: Command Output"
     
          ```text title="Wait until the status of restore becomes true"
-         kubectl get applicationsnapshotrestore.dataservices.nutanix.com/wordpress-restore -w
+         ~ ❯ kubectl get applicationsnapshotrestore.dataservices.nutanix.com/wordpress-restore -w
 
-         NAME           SNAPSHOT-NAME   COMPLETED
+         NAME                SNAPSHOT-NAME                COMPLETED
          wordpress-restore   wordpress-app-snapshot       false
          wordpress-restore   wordpress-app-snapshot       false
          wordpress-restore   wordpress-app-snapshot       false
@@ -785,7 +824,7 @@ You have successfully set up Wordpress application with mysql backend. In the ne
     === ":octicons-command-palette-16: Command Output"
     
          ```text hl_lines="4 7"
-         $  kubectl get all
+         ~ ❯ kubectl get all
 
          NAME                                   READY   STATUS    RESTARTS   AGE
          pod/wordpress-6bc48cbf79-862wm         1/1     Running   0          6m
@@ -808,4 +847,4 @@ You have successfully set up Wordpress application with mysql backend. In the ne
 
     ![](images/wordpress_restored_user_state.png)
 
-You have succesfully restored the Wordpress application.
+You have succesfully restored the Wordpress application with Files and Volumes ``pvc`` among other resources.
