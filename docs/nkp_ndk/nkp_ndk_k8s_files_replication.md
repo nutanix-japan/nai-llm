@@ -1,6 +1,7 @@
 # Replicating and Recovering Application to a Different K8S Cluster
 
-In this section we wil snapshot the Application components, replicate it to a second K8S cluster and recover.
+
+In this lab we will deploy a sample workload (with Volumes and Files ``pvc``), snapshot the Application components and recover on a secondary NKP cluster in a difference PC/PE environment. This would simulate AZ/Regional recovery scenarios.
 
 
 ## Design
@@ -289,20 +290,16 @@ To enable replication between two PC and underlying PE, we will need to configur
 
 12. Find and configure secondary NDK IP and port number 
     
-Now we are ready to create local cluster snapshots and snapshot restores using the following NDK custom resources:
-
-
-- [x] 1 ``ApplicationSnapshot``  (created in the previous section)
-- [ ] 2 ``ApplicationSnapshotReplication``and
-- [ ] 3 ``ApplicationSnapshotRestore``
+Now we are ready to create local cluster snapshots and snapshot restores using the following NDK custom resources.
 
 ## NDK Recover to the Secondary NKP Cluster
 
 Since we have a sample workload configured on the primary NKP cluster, we will:
 
-1. Configure remote NKP cluster on the primary NKP cluster (using ``Remote`` ``ReplicationTarget`` custom resources)
-2. Replicate the snapshot of the sample workload from the primary NKP to secondary NKP  (using ``ApplicationSnapshotReplication`` custom resource)
-3. Restore the replicated snapshot on the secondary NKP to get the workloads (using ``ApplicationSnapshotRestore`` custom resource)
+!!! summary "Objects to be created"
+
+    - [ ] 1 Configure remote NKP cluster on the primary NKP cluster (using ``Remote`` ``ReplicationTarget`` custom resources)
+    - [ ] 2 Replicate the snapshot of the sample workload from the primary NKP to secondary NKP  (using ``ApplicationSnapshotReplication`` custom resource)
 
 ### Create Remote Cluster on Primary NKP Cluster
 
@@ -508,14 +505,23 @@ Since we have a sample workload configured on the primary NKP cluster, we will:
                type: Progressing
          ```
 
+We have successfully created the following NDK resources in this section:
+
+!!! summary "Objects created"
+    
+    - [x] 1 Configure remote NKP cluster on the primary NKP cluster (using ``Remote`` ``ReplicationTarget`` custom resources)
+    - [x] 2 Replicate the snapshot of the sample workload from the primary NKP to secondary NKP  (using ``ApplicationSnapshotReplication`` custom resource)
+    
 ### Recover Application in Remote NKP Cluster
 
 The following NDK objects will be used in this section
 
-- [x] 1 ``ApplicationSnapshot``  (created in the previous [lab](../nkp_ndk/nkp_ndk_singlek8s_files.md#ndk-snapshot-and-recover-to-the-same-namespace))
-- [x] 2 ``ApplicationSnapshotReplication`` (created in the previous section)
-- [ ] 3 ``ApplicationSnapshotRestore``
+!!! summary "Objects to be created"
 
+    - [x] 1 ``ApplicationSnapshot``  (created in the previous [lab](../nkp_ndk/nkp_ndk_singlek8s_files.md#ndk-snapshot-and-recover-to-the-same-namespace))
+    - [x] 2 ``ApplicationSnapshotReplication`` (created in the previous section)
+    - [ ] 3 ``ApplicationSnapshotRestore``
+    
 #### Recover from Replicated Snapshot
 
 1. Switch context to secondary NKP cluster ``nkpsecondary``
@@ -671,20 +677,24 @@ We have successfully replicated application data to a secondary NKP cluster and 
 
 We have used the following NDK objects to achieve our cross-namespace application recovery.
 
-- [x] 1 ``ApplicationSnapshot``  (created in the previous [lab](../nkp_ndk/nkp_ndk_singlek8s_files.md#ndk-snapshot-and-recover-to-the-same-namespace))
-- [x] 2 ``ApplicationSnapshotReplication`` (created in the previous section)
-- [x] 4 ``ApplicationSnapshotRestore``
+!!! summary "Objects created"
 
+    - [x] 1 ``ApplicationSnapshot``  (created in the previous [lab](../nkp_ndk/nkp_ndk_singlek8s_files.md#ndk-snapshot-and-recover-to-the-same-namespace))
+    - [x] 2 ``ApplicationSnapshotReplication`` (created in the previous section)
+    - [x] 4 ``ApplicationSnapshotRestore``
+    
 ## Cross Namespace Recovery
 
 Since the ``applicationSnapshot`` got replicated to ``default`` namespace, we might ideally want to restore it to the same ``wordpress`` namespace.
 
 The following NDK objects will be used in this section
 
-- [x] 1 ``ApplicationSnapshot``  (created in the previous [lab](../nkp_ndk/nkp_ndk_singlek8s_files.md#ndk-snapshot-and-recover-to-the-same-namespace))
-- [x] 2 ``ApplicationSnapshotReplication`` (created in the previous section)
-- [ ] 3 ``ReferenceGrant``
-- [ ] 4 ``ApplicationSnapshotRestore``
+!!! summary "Objects to be created"
+
+    - [x] 1 ``ApplicationSnapshot``  (created in the previous [lab](../nkp_ndk/nkp_ndk_singlek8s_files.md#ndk-snapshot-and-recover-to-the-same-namespace))
+    - [x] 2 ``ApplicationSnapshotReplication`` (created in the previous section)
+    - [ ] 3 ``ReferenceGrant``
+    - [ ] 4 ``ApplicationSnapshotRestore``
 
 !!! info
     
@@ -904,7 +914,9 @@ We will go through the process of cross-namespace restore in this section.
 
 We have used the following NDK objects to achieve our cross-namespace application recovery.
 
-- [x] 1 ``ApplicationSnapshot``  (created in the previous [lab](../nkp_ndk/nkp_ndk_singlek8s_files.md#ndk-snapshot-and-recover-to-the-same-namespace))
-- [x] 2 ``ApplicationSnapshotReplication`` (created in the previous section)
-- [x] 3 ``ReferenceGrant``
-- [x] 4 ``ApplicationSnapshotRestore``
+!!! summary "Objects created"
+
+    - [x] 1 ``ApplicationSnapshot``  (created in the previous [lab](../nkp_ndk/nkp_ndk_singlek8s_files.md#ndk-snapshot-and-recover-to-the-same-namespace))
+    - [x] 2 ``ApplicationSnapshotReplication`` (created in the previous section)
+    - [x] 3 ``ReferenceGrant``
+    - [x] 4 ``ApplicationSnapshotRestore``
