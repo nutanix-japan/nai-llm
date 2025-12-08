@@ -1,0 +1,357 @@
+<!DOCTYPE html><html><head><meta http-equiv="Content-Security-Policy" content="default-src 'self' 'unsafe-inline' 'unsafe-eval' data: blob: https://cdnjs.cloudflare.com https://cdn.jsdelivr.net https://code.jquery.com https://unpkg.com https://d3js.org https://threejs.org https://cdn.plot.ly https://stackpath.bootstrapcdn.com https://maps.googleapis.com https://cdn.tailwindcss.com https://ajax.googleapis.com https://kit.fontawesome.com https://cdn.datatables.net https://maxcdn.bootstrapcdn.com https://code.highcharts.com https://tako-static-assets-production.s3.amazonaws.com https://www.youtube.com https://fonts.googleapis.com https://fonts.gstatic.com https://pfst.cf2.poecdn.net https://puc.poecdn.net https://i.imgur.com https://wikimedia.org https://*.icons8.com https://*.giphy.com https://picsum.photos https://images.unsplash.com; frame-src 'self' https://www.youtube.com https://trytako.com; child-src 'self'; manifest-src 'self'; worker-src 'self'; upgrade-insecure-requests; block-all-mixed-content;"><script src="https://puc.poecdn.net/standard.c8d3df4d67dddca2ccac.js"></script>
+    <meta charset="utf-8">
+    <title>Workload Types with PVC and Volume Mounts</title>
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+  <script src="https://puc.poecdn.net/tw.b9024aecac666455e183.js"></script><script src="https://puc.poecdn.net/deps.ac7e4de820f1e47e84a2.js"></script><script src="https://puc.poecdn.net/exports.b0f0f482cdeb5302b0b9.js"></script><script src="https://puc.poecdn.net/renderer.6065bf6c6271ccf44fe1.js"></script><script>Object.defineProperty(exports, "__esModule", {value: true}); function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; } function _optionalChain(ops) { let lastAccessLHS = undefined; let value = ops[0]; let i = 1; while (i < ops.length) { const op = ops[i]; const fn = ops[i + 1]; i += 2; if ((op === 'optionalAccess' || op === 'optionalCall') && value == null) { return undefined; } if (op === 'access' || op === 'optionalAccess') { lastAccessLHS = value; value = fn(value); } else if (op === 'call' || op === 'optionalCall') { value = fn((...args) => value.call(lastAccessLHS, ...args)); lastAccessLHS = undefined; } } return value; }var _react = require('react'); var _react2 = _interopRequireDefault(_react);
+
+
+
+
+
+
+
+
+
+
+
+
+var _lucidereact = require('lucide-react');
+
+const StorageClaim = ({ claim }) => (
+  _react2.default.createElement('div', { className: "flex items-center justify-between bg-gray-50 rounded-md p-3 border border-gray-200"       ,}
+    , _react2.default.createElement('div', { className: "flex items-center min-w-0"  ,}
+      , claim.type === 'Block' ? (
+        _react2.default.createElement(_lucidereact.Database, { className: "h-4 w-4 text-purple-600 mr-3 flex-shrink-0"    ,} )
+      ) : (
+        _react2.default.createElement(_lucidereact.HardDrive, { className: "h-4 w-4 text-blue-600 mr-3 flex-shrink-0"    ,} )
+      )
+      , _react2.default.createElement('div', { className: "min-w-0 flex-1" ,}
+        , _react2.default.createElement('p', { className: "text-sm font-medium text-gray-900 truncate"   ,}
+          , claim.name
+        )
+        , _react2.default.createElement('p', { className: "text-xs text-gray-500" ,}
+          , claim.size, "Gi · "  , claim.type, " Storage"
+          , claim.storageClass && ` · ${claim.storageClass}`
+        )
+      )
+    )
+    , _react2.default.createElement('span', { className: `ml-3 text-xs px-2 py-1 rounded-full ${
+      claim.status === 'Bound' ? 'bg-green-100 text-green-700' : 'bg-yellow-100 text-yellow-700'
+    }`,}
+      , claim.status
+    )
+  )
+);
+
+const PodWithStorage = ({ pod }) => (
+  _react2.default.createElement('div', { className: "space-y-2",}
+    , _react2.default.createElement('div', { className: "flex items-center justify-between bg-gray-50 rounded-md p-3"     ,}
+      , _react2.default.createElement('div', { className: "flex items-center gap-2"  ,}
+        , _react2.default.createElement(_lucidereact.Box, { className: "h-4 w-4 text-indigo-600"  ,} )
+        , _react2.default.createElement('div', null
+          , _react2.default.createElement('span', { className: "text-sm font-medium text-gray-900"  ,}, pod.name)
+          , _react2.default.createElement('div', { className: "text-xs text-gray-500" ,}, "CPU: "
+             , pod.resources.cpu, " · Memory: "   , pod.resources.memory
+          )
+        )
+      )
+      , _react2.default.createElement('span', { className: `px-2 py-0.5 rounded-full text-xs ${
+        pod.status === 'Running' ? 'bg-green-100 text-green-700' : 'bg-yellow-100 text-yellow-700'
+      }`,}
+        , pod.status
+      )
+    )
+
+    , _optionalChain([pod, 'access', _ => _.volumeMounts, 'optionalAccess', _2 => _2.map, 'call', _3 => _3((mount, i) => (
+      _react2.default.createElement('div', { key: i, className: "ml-6 flex items-center text-sm"   ,}
+        , _react2.default.createElement(_lucidereact.Link, { className: "h-4 w-4 text-gray-400 mr-2"   ,} )
+        , _react2.default.createElement('span', { className: "text-gray-600",}, mount.mountPath)
+        , _react2.default.createElement('span', { className: "mx-2 text-gray-400" ,}, "→")
+        , _react2.default.createElement('span', { className: "text-blue-600",}, mount.claimName)
+      )
+    ))])
+  )
+);
+
+const WorkloadSection = ({ type, name, pods }) => (
+  _react2.default.createElement('div', { className: "space-y-3",}
+    , _react2.default.createElement('div', { className: "flex items-center gap-2 bg-gray-50 p-2 rounded-md"     ,}
+      , _react2.default.createElement(_lucidereact.Layers, { className: "h-4 w-4 text-gray-500"  ,} )
+      , _react2.default.createElement('span', { className: "text-sm font-medium text-gray-700"  ,}
+        , type, ": " , name
+      )
+    )
+    , _react2.default.createElement('div', { className: "space-y-3 pl-4" ,}
+      , pods.map((pod, i) => (
+        _react2.default.createElement(PodWithStorage, { key: i, pod: pod,} )
+      ))
+    )
+  )
+);
+
+const NodeCard = ({ name, nodePool, status, workloads, storageInfo, selectedTypes }) => {
+  const filteredWorkloads = selectedTypes.size === 0
+    ? workloads
+    : workloads.filter(w => selectedTypes.has(w.type));
+
+  if (filteredWorkloads.length === 0) {
+    return null;
+  }
+
+  return (
+    _react2.default.createElement('div', { className: "flex flex-col bg-white shadow-sm border border-gray-200 rounded-lg overflow-hidden"       ,}
+      , _react2.default.createElement('div', { className: "flex items-center justify-between p-4 border-b border-gray-200 bg-gray-50"      ,}
+        , _react2.default.createElement('div', { className: "flex items-center" ,}
+          , _react2.default.createElement(_lucidereact.Server, { className: "h-5 w-5 text-gray-500 mr-2"   ,} )
+          , _react2.default.createElement('div', null
+            , _react2.default.createElement('h3', { className: "font-medium text-gray-900" ,}, name)
+            , _react2.default.createElement('span', { className: "text-xs text-gray-500" ,}, "Pool: " , nodePool)
+          )
+        )
+        , _react2.default.createElement('span', { className: `text-sm px-2.5 py-1 rounded-full ${
+          status === 'Ready' ? 'bg-green-100 text-green-700' : 'bg-yellow-100 text-yellow-700'
+        }`,}
+          , status
+        )
+      )
+
+      , _react2.default.createElement('div', { className: "p-4 space-y-6" ,}
+        , _react2.default.createElement('div', null
+          , _react2.default.createElement('h4', { className: "text-sm font-medium text-gray-900 mb-2"   ,}, "Storage Claims" )
+          , _react2.default.createElement('div', { className: "space-y-2",}
+            , storageInfo.claims.map((claim, i) => (
+              _react2.default.createElement(StorageClaim, { key: i, claim: claim,} )
+            ))
+          )
+        )
+
+        , _react2.default.createElement('div', null
+          , _react2.default.createElement('h4', { className: "text-sm font-medium text-gray-900 mb-2"   ,}, "Workloads")
+          , _react2.default.createElement('div', { className: "space-y-4",}
+            , filteredWorkloads.map((workload, i) => (
+              _react2.default.createElement(WorkloadSection, { key: i, ...workload,} )
+            ))
+          )
+        )
+      )
+    )
+  );
+};
+
+const NodePool = ({ name, machineType, nodes, isExpanded, onToggle, selectedTypes }) => (
+  _react2.default.createElement('div', { className: "border border-gray-200 rounded-lg bg-white overflow-hidden"    ,}
+    , _react2.default.createElement('button', { 
+      className: "w-full flex items-center justify-between p-4 hover:bg-gray-50"     ,
+      onClick: onToggle,}
+
+      , _react2.default.createElement('div', { className: "flex items-center" ,}
+        , _react2.default.createElement(_lucidereact.Grid, { className: "w-5 h-5 text-blue-600 mr-2"   ,} )
+        , _react2.default.createElement('div', { className: "text-left",}
+          , _react2.default.createElement('h3', { className: "font-medium text-gray-900" ,}, name)
+          , _react2.default.createElement('span', { className: "text-sm text-gray-500" ,}, machineType)
+        )
+      )
+      , _react2.default.createElement('div', { className: "flex items-center gap-4"  ,}
+        , _react2.default.createElement('span', { className: "text-sm text-gray-500" ,}, nodes.length, " nodes" )
+        , isExpanded ? 
+          _react2.default.createElement(_lucidereact.ChevronDown, { className: "w-5 h-5 text-gray-400"  ,} ) : 
+          _react2.default.createElement(_lucidereact.ChevronRight, { className: "w-5 h-5 text-gray-400"  ,} )
+        
+      )
+    )
+
+    , isExpanded && (
+      _react2.default.createElement('div', { className: "border-t border-gray-200 p-4"  ,}
+        , _react2.default.createElement('div', { className: "grid gap-4 sm:grid-cols-1 lg:grid-cols-2 xl:grid-cols-3"    ,}
+          , nodes.map((node, i) => (
+            _react2.default.createElement(NodeCard, { 
+              key: i, 
+              ...node, 
+              selectedTypes: selectedTypes,}
+            )
+          ))
+        )
+      )
+    )
+  )
+);
+
+const TypeFilter = ({ selectedTypes, onToggle }) => {
+  const types = ['StatefulSet', 'Deployment', 'DaemonSet'];
+  
+  return (
+    _react2.default.createElement('div', { className: "mb-4 flex flex-wrap items-center gap-2"    ,}
+      , _react2.default.createElement('span', { className: "text-sm text-gray-500" ,}, "Filter workloads:" )
+      , types.map(type => (
+        _react2.default.createElement('button', {
+          key: type,
+          onClick: () => onToggle(type),
+          className: `inline-flex items-center px-3 py-1 rounded-full text-sm
+            ${selectedTypes.has(type) 
+              ? 'bg-blue-100 text-blue-700'
+              : 'bg-gray-100 text-gray-500 hover:bg-gray-200'
+            }`,}
+
+          , type
+        )
+      ))
+      , selectedTypes.size > 0 && (
+        _react2.default.createElement('button', {
+          onClick: () => onToggle('clear'),
+          className: "inline-flex items-center gap-1 px-2 py-1 text-sm text-gray-500 hover:text-gray-700"       ,}
+
+          , _react2.default.createElement(_lucidereact.X, { className: "h-4 w-4" ,} ), "Clear filters"
+
+        )
+      )
+    )
+  );
+};
+
+const ClusterTopology = () => {
+  const [expandedPools, setExpandedPools] = _react.useState.call(void 0, new Set(['app-pool']));
+  const [selectedTypes, setSelectedTypes] = _react.useState.call(void 0, new Set());
+
+  const togglePool = (poolName) => {
+    const newExpanded = new Set(expandedPools);
+    if (newExpanded.has(poolName)) {
+      newExpanded.delete(poolName);
+    } else {
+      newExpanded.add(poolName);
+    }
+    setExpandedPools(newExpanded);
+  };
+
+  const toggleType = (type) => {
+    const newSelected = new Set(selectedTypes);
+    if (type === 'clear') {
+      newSelected.clear();
+    } else if (newSelected.has(type)) {
+      newSelected.delete(type);
+    } else {
+      newSelected.add(type);
+    }
+    setSelectedTypes(newSelected);
+  };
+
+  const nodePool = {
+    name: 'app-pool',
+    machineType: 'n2-standard-8',
+    nodes: [
+      { 
+        name: 'node-1', 
+        nodePool: 'app-pool',
+        status: 'Ready',
+        storageInfo: {
+          claims: [
+            { 
+              name: 'data-mongodb-0',
+              size: 100,
+              type: 'Block',
+              status: 'Bound',
+              storageClass: 'premium-ssd'
+            }
+          ]
+        },
+        workloads: [
+          {
+            type: 'StatefulSet',
+            name: 'mongodb',
+            pods: [
+              { 
+                name: 'mongodb-0',
+                status: 'Running',
+                resources: {
+                  cpu: '2 cores',
+                  memory: '4Gi'
+                },
+                volumeMounts: [
+                  { mountPath: '/data/db', claimName: 'data-mongodb-0' }
+                ]
+              }
+            ]
+          },
+          {
+            type: 'Deployment',
+            name: 'frontend',
+            pods: [
+              { 
+                name: 'frontend-779f4bf89-1',
+                status: 'Running',
+                resources: {
+                  cpu: '500m',
+                  memory: '1Gi'
+                }
+              }
+            ]
+          }
+        ]
+      },
+      { 
+        name: 'node-2', 
+        nodePool: 'app-pool',
+        status: 'Ready',
+        storageInfo: {
+          claims: [
+            { 
+              name: 'media-storage',
+              size: 500,
+              type: 'NFS',
+              status: 'Bound',
+              storageClass: 'standard-nfs'
+            }
+          ]
+        },
+        workloads: [
+          {
+            type: 'DaemonSet',
+            name: 'fluentd',
+            pods: [
+              { 
+                name: 'fluentd-ds-2',
+                status: 'Running',
+                resources: {
+                  cpu: '200m',
+                  memory: '512Mi'
+                }
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  };
+
+  return (
+    _react2.default.createElement('div', { className: "min-h-screen bg-gray-100 p-6"  ,}
+      , _react2.default.createElement('div', { className: "max-w-7xl mx-auto" ,}
+        , _react2.default.createElement('div', { className: "flex items-center gap-3 mb-6"   ,}
+          , _react2.default.createElement(_lucidereact.Cloud, { className: "w-8 h-8 text-blue-600"  ,} )
+          , _react2.default.createElement('div', null
+            , _react2.default.createElement('h1', { className: "text-2xl font-bold text-gray-900"  ,}, "Production Cluster" )
+            , _react2.default.createElement('p', { className: "text-sm text-gray-500" ,}, "Application Pool Overview"  )
+          )
+        )
+
+        , _react2.default.createElement(TypeFilter, { 
+          selectedTypes: selectedTypes,
+          onToggle: toggleType,}
+        )
+
+        , _react2.default.createElement(NodePool, { 
+          ...nodePool,
+          isExpanded: expandedPools.has(nodePool.name),
+          onToggle: () => togglePool(nodePool.name),
+          selectedTypes: selectedTypes,}
+        )
+      )
+    )
+  );
+};
+
+exports. default = ClusterTopology;
+</script></head>
+  <body>
+  
+
+<div id="preview-app"></div></body></html>
