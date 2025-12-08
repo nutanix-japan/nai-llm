@@ -10,7 +10,7 @@ Nutanix Data Services for Kubernetes (NDK) simplifies the management of stateful
 
 <div class="grid cards" markdown>
 
--   :material-robot:{ .lg .middle } __Set up source NKP in Primary and Secondary Sites__
+-   :material-kubernetes:{ .lg .middle } __Set up source NKP in Primary and Secondary Sites__
 
     ---
 
@@ -24,7 +24,7 @@ Nutanix Data Services for Kubernetes (NDK) simplifies the management of stateful
 
 <div class="grid cards" markdown>
 
--   :material-robot:{ .lg .middle } __Set up source NDK in Primary and Secondary Sites__
+-   :material-kubernetes:{ .lg .middle } __Set up source NDK in Primary and Secondary Sites__
 
     ---
 
@@ -42,7 +42,7 @@ Nutanix Data Services for Kubernetes (NDK) simplifies the management of stateful
 
 <div class="grid cards" markdown>
 
--   :material-kubernetes:{ .lg .middle } __Application Snapshot & Restore__
+-   :material-content-duplicate:{ .lg .middle } __Application Snapshot & Restore__
 
     ---
 
@@ -51,7 +51,7 @@ Nutanix Data Services for Kubernetes (NDK) simplifies the management of stateful
     [:octicons-arrow-right-24: Workflow](../nkp_ndk/nkp_ndk_singlek8s.md) 
 
 
--   :material-kubernetes:{ .lg .middle } __Application Cross-Namespace Restore using ReferenceGrant__
+-   :material-content-duplicate:{ .lg .middle } __Application Cross-Namespace Restore using ReferenceGrant__
 
     ---
 
@@ -59,7 +59,7 @@ Nutanix Data Services for Kubernetes (NDK) simplifies the management of stateful
 
     [:octicons-arrow-right-24: Workflow](../nkp_ndk/nkp_ndk_singlek8s/#cross-namespace-recovery)
 
--   :material-kubernetes:{ .lg .middle } __Schedule Protection Policy/Plan__
+-   :material-content-duplicate:{ .lg .middle } __Schedule Protection Policy/Plan__
 
     ---
 
@@ -69,7 +69,7 @@ Nutanix Data Services for Kubernetes (NDK) simplifies the management of stateful
 
     
 
--   :material-kubernetes:{ .lg .middle } __New (NDK ``2.0.0``) Application Snapshot & Restore with RWX/Files__
+-   :material-content-duplicate:{ .lg .middle } __New (NDK ``2.0.0``) Application Snapshot & Restore with RWX/Files__
 
     ---
 
@@ -85,7 +85,7 @@ Nutanix Data Services for Kubernetes (NDK) simplifies the management of stateful
 
 <div class="grid cards" markdown>
 
--   :material-kubernetes:{ .lg .middle } __Snapshot Asynchronous Replication & Recovery__
+-   :material-content-duplicate:{ .lg .middle } __Snapshot Asynchronous Replication & Recovery__
 
     ---
 
@@ -94,7 +94,7 @@ Nutanix Data Services for Kubernetes (NDK) simplifies the management of stateful
     [:octicons-arrow-right-24: Workflow](../nkp_ndk/nkp_ndk_k8s_replication.md) 
 
 
--   :material-kubernetes:{ .lg .middle } __Multi-site (3 PE/3 K8s, 2 PC) Asynchronous Replication__
+-   :material-content-duplicate:{ .lg .middle } __Multi-site (3 PE/3 K8s, 2 PC) Asynchronous Replication__
 
     ---
 
@@ -102,7 +102,7 @@ Nutanix Data Services for Kubernetes (NDK) simplifies the management of stateful
 
     **Under construction** :construction_site: :construction:
 
--   :material-kubernetes:{ .lg .middle } __New (NDK ``2.0.0``) Multi-site Application Snapshot & Restore with RWX/Files Asynchronous__
+-   :material-content-duplicate:{ .lg .middle } __New (NDK ``2.0.0``) Multi-site Application Snapshot & Restore with RWX/Files Asynchronous__
 
     ---
 

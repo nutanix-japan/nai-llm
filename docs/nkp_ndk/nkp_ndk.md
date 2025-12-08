@@ -2,22 +2,23 @@
 
 In this section we will use just one Prism Central (PC)/Prism Element (PE)/K8s cluster to test the data recovery capabilities of NDK.
 
-## Prerequisites
-- NDK ``2.0.0`` or later deployed on a Nutanix cluster
-- Nutanix Kubernetes Platform (NKP) cluster ``v2.16.1`` [or later] deployed, accessible via `kubectl`. See [NKP Deployment](../infra/infra_nkp.md) for NKP install instructions.
-  
-- Internal Harbor container registry
-  
-    * See [Harbor Installation](../infra/harbor.md)
-    * Direct download from Docker.io is also possible [See inline notes in the lab]
+!!! example "Pre-requisites"
 
-- Nutanix CSI driver installed for storage integration. [pre-configured with NKP install]
-- Networking configured to allow communication between the Kubernetes cluster, PC and PE.
-- Traefik Ingress controller installed for external access. [pre-configured with NKP install]
-- K8s Load Balancer installed to facilitate replication workflows. [ Metallb pre-configured with NKP install]
-- Linux Tools VM or equivalent environment with `kubectl`, `helm`, `curl`, `docker` and `jq` installed. See [Jumphost VM](../infra/workstation.md) for details.
-- PC, PE and NKP access credentials
-
+    - NDK ``2.0.0`` or later deployed on a Nutanix cluster
+    - Nutanix Kubernetes Platform (NKP) cluster ``v2.16.1`` [or later] deployed, accessible via `kubectl`. See [NKP Deployment](../infra/infra_nkp.md) for NKP install instructions.
+      
+    - Internal Harbor container registry
+      
+        * See [Harbor Installation](../infra/harbor.md)
+        * Direct download from Docker.io is also possible [See inline notes in the lab]
+    
+    - Nutanix CSI driver installed for storage integration. [pre-configured with NKP install]
+    - Networking configured to allow communication between the Kubernetes cluster, PC and PE.
+    - Traefik Ingress controller installed for external access. [pre-configured with NKP install]
+    - K8s Load Balancer installed to facilitate replication workflows. [ Metallb pre-configured with NKP install]
+    - Linux Tools VM or equivalent environment with `kubectl`, `helm`, `curl`, `docker` and `jq` installed. See [Jumphost VM](../infra/workstation.md) for details.
+    - PC, PE and NKP access credentials
+    
 
 ## High-Level Process
 

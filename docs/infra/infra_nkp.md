@@ -77,16 +77,16 @@ Below are minimum requirements for deploying NAI on the NKP Demo Cluster.
 | **Totals**    |                   |               |                 |                  | **60**     | **216 GB**   |
 
 
-## Pre-requisites for NKP Deployment
+!!! example "Pre-requisites"
 
-1. Existing Ubuntu Linux jumphost VM. See here for jumphost installation [steps](../infra/infra_jumphost_tofu.md).
-2. [Docker](#setup-docker-on-jumphost) or Podman installed on the jumphost VM
-3. Nutanix PC is at least ``2024.3``
-4. Nutanix AOS is at least ``6.8+``, ``6.10``
-5. Download and install ``nkp`` binary from Nutanix Portal
-6. Find and reserve 3 IPs for control plane and MetalLB access from AHV network
-7. Find GPU details from Nutanix cluster
-8. Create a base image to use with NKP nodes using ``nkp`` command
+    1. Existing Ubuntu Linux jumphost VM. See here for jumphost installation [steps](../infra/infra_jumphost_tofu.md).
+    2. [Docker](#setup-docker-on-jumphost) or Podman installed on the jumphost VM
+    3. Nutanix PC is at least ``2024.3``
+    4. Nutanix AOS is at least ``6.8+``, ``6.10``
+    5. Download and install ``nkp`` binary from Nutanix Portal
+    6. Find and reserve 3 IPs for control plane and MetalLB access from AHV network
+    7. Find GPU details from Nutanix cluster
+    8. Create a base image to use with NKP nodes using ``nkp`` command
 
 ### Install NKP Binaries
 
