@@ -24,7 +24,7 @@ metadata:
 spec:
   accessModes:
   - ReadWriteOnce
-  storageClassName: nutanix-volume
+  storageClassName: $VOL_SC_NAME
   resources:
     requests:
       storage: 2Gi

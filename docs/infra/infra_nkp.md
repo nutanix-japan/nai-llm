@@ -72,18 +72,18 @@ Below are minimum requirements for deploying NAI on the NKP Demo Cluster.
 | Role          | No. of Nodes (VM) | vCPU per Node | Memory per Node | Storage per Node | Total vCPU | Total Memory |
 |---------------|-------------------|---------------|-----------------|------------------|------------|--------------|
 | Control plane | 3                 | 4             | 16 GB           | 150 GB           | 12         | 48 GB        |
-| Worker        | 4                 | 8             | 32 GB           | 150 GB           | 32         | 128 GB       |
-| GPU           | 1                 | 16            | 40 GB           | 300 GB           | 16         | 40 GB        |
-| **Totals**    |                   |               |                 |                  | **60**     | **216 GB**   |
+| Worker        | 4                 | 12            | 32 GB           | 150 GB           | 36         | 128 GB       |
+| GPU           | 1                 | 20            | 40 GB           | 300 GB           | 20         | 40 GB        |
+| **Totals**    |                   |               |                 |                  | **8**     | **216 GB**   |
 
 
 !!! example "Pre-requisites"
 
     1. Existing Ubuntu Linux jumphost VM. See here for jumphost installation [steps](../infra/infra_jumphost_tofu.md).
     2. [Docker](#setup-docker-on-jumphost) or Podman installed on the jumphost VM
-    3. Nutanix PC is at least ``2024.3``
-    4. Nutanix AOS is at least ``6.8+``, ``6.10``
-    5. Download and install ``nkp`` binary from Nutanix Portal
+    3. Nutanix PC is at least ``pc.7.5.0.1``
+    4. Nutanix AOS is at least ``7.3.0.5``
+    5. Download and install NKP ``v2.17`` binary from Nutanix Portal
     6. Find and reserve 3 IPs for control plane and MetalLB access from AHV network
     7. Find GPU details from Nutanix cluster
     8. Create a base image to use with NKP nodes using ``nkp`` command
@@ -114,17 +114,17 @@ Below are minimum requirements for deploying NAI on the NKP Demo Cluster.
     === "Command"
 
         ```text title="Paste the download URL within double quotes"
-        curl -o nkp_v2.16.1_linux_amd64.tar.gz "_paste_download_URL_here"
+        curl -o nkp_v2.17.0_linux_amd64.tar.gz "_paste_download_URL_here"
         ```
 
     === "Sample command"
         
         ```bash
-        curl -o nkp_v2.16.1_linux_amd64.tar.gz "https://download.nutanix.com/downloads/nkp/v2.16.1/nkp_v2.16.1_linux_amd64.tar.gz?Expires=1729016864&........"
+        curl -o nkp_v2.17.0_linux_amd64.tar.gz "https://download.nutanix.com/downloads/nkp/v2.17.0/nkp_v2.17.0_linux_amd64.tar.gz?Expires=1729016864&........"
         ```
         
     ```bash
-    tar xvfz nkp_v2.16.1_linux_amd64.tar.gz
+    tar xvfz nkp_v2.17.0_linux_amd64.tar.gz
     ```
 
 11. Move the ``nkp`` binary to a directory that is included in your ``PATH`` environment variable
@@ -138,7 +138,7 @@ Below are minimum requirements for deploying NAI on the NKP Demo Cluster.
     
     !!! note
 
-        At the time of writing this lab nkp version is ``v2.16.1``
+        At the time of writing this lab nkp version is ``v2.17.0``
 
     === "Command"
 
@@ -150,14 +150,14 @@ Below are minimum requirements for deploying NAI on the NKP Demo Cluster.
 
         ```{ .bash .no-copy }
         $ nkp version
-        catalog: v0.7.0
+        catalog: v0.8.1
         diagnose: v0.12.0
-        imagebuilder: v2.16.1
-        kommander: v2.16.1
-        konvoy: v2.16.1
-        konvoybundlepusher: v2.16.1
-        mindthegap: v1.22.1
-        nkp: v2.16.1
+        imagebuilder: v2.17.0
+        kommander: v2.17.0
+        konvoy: v2.17.0
+        konvoybundlepusher: v2.17.0
+        mindthegap: v1.24.0
+        nkp: v2.17.0
         ```
 
 ### Setup Docker on Jumphost
@@ -389,7 +389,7 @@ In this section we will go through creating a base image for all the control pla
         nutanix.kib_image: output will be in this color.
 
         ==> nutanix.kib_image: Creating Packer Builder virtual machine...
-            nutanix.kib_image: Virtual machine nkp-ubuntu-22.04-1.29.6-20240717082720 created
+            nutanix.kib_image: Virtual machine export NKP_IMAGE=nkp-ubuntu-24.04-release-cis-1.34.1-20251206061851-2.17.0 created
             nutanix.kib_image: Found IP for virtual machine: 10.x.x.234
         ==> nutanix.kib_image: Running post-processor: packer-manifest (type manifest)
         
@@ -398,8 +398,8 @@ In this section we will go through creating a base image for all the control pla
         ==> Wait completed after 4 minutes 55 seconds
 
         ==> Builds finished. The artifacts of successful builds are:
-        --> nutanix.kib_image: nkp-ubuntu-22.04-1.29.6-20240717082720
-        --> nutanix.kib_image: nkp-ubuntu-22.04-1.29.6-20240717082720
+        --> nutanix.kib_image: export NKP_IMAGE=nkp-ubuntu-24.04-release-cis-1.34.1-20251206061851-2.17.0
+        --> nutanix.kib_image: export NKP_IMAGE=nkp-ubuntu-24.04-release-cis-1.34.1-20251206061851-2.17.0
         ```
 
     !!! info "Image name - This will be different in your environment"
@@ -408,7 +408,7 @@ In this section we will go through creating a base image for all the control pla
 
         ```text hl_lines="2"
         ==> Builds finished. The artifacts of successful builds are:
-        --> nutanix.kib_image: nkp-ubuntu-22.04-1.29.6-20240717082720
+        --> nutanix.kib_image: export NKP_IMAGE=nkp-ubuntu-24.04-release-cis-1.34.1-20251206061851-2.17.0
         ```
 
     !!! warning
@@ -426,7 +426,7 @@ In this section we will go through creating a base image for all the control pla
     === "Sample .env"
 
         ```text
-        export NKP_IMAGE=nkp-ubuntu-22.04-1.29.6-20240717082720
+        export NKP_IMAGE=nkp-ubuntu-24.04-release-cis-1.34.1-20251206061851-2.17.0
         ```
 
 We are now ready to install the workload ``nkpdev`` cluster
@@ -476,7 +476,7 @@ We are now ready to install the workload ``nkpdev`` cluster
         export CONTROL_PLANE_CORES_PER_VCPU=1
         export CONTROL_PLANE_MEMORY_GIB=16
         export WORKER_REPLICAS=4
-        export WORKER_VCPUS=8 
+        export WORKER_VCPUS=12
         export WORKER_CORES_PER_VCPU=1
         export WORKER_MEMORY_GIB=32
         export CSI_FILESYSTEM=ext4
@@ -664,15 +664,15 @@ We are now ready to install the workload ``nkpdev`` cluster
     
         ```bash
         $ kubectl get nodes
-
-        NAME                                  STATUS   ROLES           AGE     VERSION
-        nkpdev-md-0-x948v-hvxtj-9r698           Ready    <none>          4h49m   v1.29.6
-        nkpdev-md-0-x948v-hvxtj-fb75c           Ready    <none>          4h50m   v1.29.6
-        nkpdev-md-0-x948v-hvxtj-mdckn           Ready    <none>          4h49m   v1.29.6
-        nkpdev-md-0-x948v-hvxtj-shxc8           Ready    <none>          4h49m   v1.29.6
-        nkpdev-r4fwl-8q4ch                      Ready    control-plane   4h50m   v1.29.6
-        nkpdev-r4fwl-jf2s8                      Ready    control-plane   4h51m   v1.29.6
-        nkpdev-r4fwl-q888c                      Ready    control-plane   4h49m   v1.29.6
+        #
+        NAME                                    STATUS   ROLES           AGE   VERSION
+        nkpdev-khgxl-gs8dz                      Ready    control-plane   24h   v1.34.1
+        nkpdev-khgxl-nrkn6                      Ready    control-plane   24h   v1.34.1
+        nkpdev-khgxl-qmnq8                      Ready    control-plane   24h   v1.34.1
+        nkpdev-md-0-tnx7k-wcbsf-5m9td           Ready    <none>          24h   v1.34.1
+        nkpdev-md-0-tnx7k-wcbsf-ghrtp           Ready    <none>          24h   v1.34.1
+        nkpdev-md-0-tnx7k-wcbsf-hl2cw           Ready    <none>          24h   v1.34.1
+        nkpdev-md-0-tnx7k-wcbsf-xrz9v           Ready    <none>          24h   v1.34.1
         ```
 
 ## Licensing
@@ -792,7 +792,7 @@ In this section we will create a nodepool to host the AI apps with a GPU.
         export GPU_NAME="Lovelace 40S"
         export GPU_REPLICA_COUNT=1
         export GPU_POOL=gpu-nodepool
-        export GPU_NODE_VCPUS=16
+        export GPU_NODE_VCPUS=20
         export GPU_NODE_CORES_PER_VCPU=1
         export GPU_NODE_MEMORY_GIB=40
         export GPU_NODE_DISK_SIZE_GIB=200
@@ -891,23 +891,24 @@ In this section we will create a nodepool to host the AI apps with a GPU.
 
     === "Command Output"
 
-        ```bash hl_lines="4"
+        ```bash hl_lines="5"
         $ kubectl get nodes
 
-        NAME                                   STATUS   ROLES           AGE     VERSION
-        nkpdev-gpu-nodepool-7g4jt-2p7l7-49wvd   Ready    <none>          5m57s   v1.29.6
-        nkpdev-md-0-q679c-khl2n-9k7jk           Ready    <none>          74m     v1.29.6
-        nkpdev-md-0-q679c-khl2n-9nk6h           Ready    <none>          74m     v1.29.6
-        nkpdev-md-0-q679c-khl2n-nf9p6           Ready    <none>          73m     v1.29.6
-        nkpdev-md-0-q679c-khl2n-qgxp9           Ready    <none>          74m     v1.29.6
-        nkpdev-ncnww-2dg7h                      Ready    control-plane   73m     v1.29.6
-        nkpdev-ncnww-bbm4s                      Ready    control-plane   72m     v1.29.6
-        nkpdev-ncnww-hldm9                      Ready    control-plane   75m     v1.29.6
+        #
+        NAME                                    STATUS   ROLES           AGE   VERSION
+        nkpdev-gpu-nodepool-66f5p-jvzct-5nd6c    Ready    <none>          24h   v1.34.1
+        nkpdev-khgxl-gs8dz                      Ready    control-plane   24h   v1.34.1
+        nkpdev-khgxl-nrkn6                      Ready    control-plane   24h   v1.34.1
+        nkpdev-khgxl-qmnq8                      Ready    control-plane   24h   v1.34.1
+        nkpdev-md-0-tnx7k-wcbsf-5m9td           Ready    <none>          24h   v1.34.1
+        nkpdev-md-0-tnx7k-wcbsf-ghrtp           Ready    <none>          24h   v1.34.1
+        nkpdev-md-0-tnx7k-wcbsf-hl2cw           Ready    <none>          24h   v1.34.1
+        nkpdev-md-0-tnx7k-wcbsf-xrz9v           Ready    <none>          24h   v1.34.1
         ```
 
 ### Enable GPU Operator
 
-We will need to enable GPU operator for deploying NKP application. 
+We will need to enable GPU operator ``v25.3.1`` for deploying NKP application. 
 
 1. In the NKP GUI, Go to **Clusters**
 2. Click on **Kommander Host**

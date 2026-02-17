@@ -24,11 +24,11 @@ stateDiagram-v2
 
 ## Prepare for NAI Deployment
 
-Changes in NAI ``v2.5.0``
+Changes in NAI ``v2.4.0``
 
   - Istio Ingress gateway is replaced with Envoy Gateway
-  - Kserve has been upgraded to ``0.15.0``
-  - Cert-manager is of at least ``v1.17.2``
+  - Knative is removed from NAI 
+  - Kserve has been upgraded to 0.15.0
 
 ### Enable NKP Applications through NKP GUI
 
@@ -45,19 +45,19 @@ Enable these NKP Operators from NKP GUI.
 3. Go to **Applications** 
 4. Search and enable the following applications: follow this order to install dependencies for NAI application
    
-    - Kube-prometheus-stack: version ``71.0.0`` or later (pre-installed on NKP cluster)
+    - Kube-prometheus-stack: version ``70.4.2`` or later (pre-installed on NKP cluster)
 
 ### Enable Pre-requisite Applications  
 
 We will enable the following pre-requisite applications through command line:
 
-   - Envoy Gateway ``v1.5.0``
+   - Envoy Gateway ``v1.3.2``
    - Kserve: ``v0.15.0`` in raw deployment mode
    
 !!! note
     The following application are pre-installed on NKP cluster with Pro license
 
-    - Cert Manager ``v1.17.2``
+    - Cert Manager
     
     Check if Cert Manager is installed (pre-installed on NKP cluster)
    
@@ -81,7 +81,7 @@ We will enable the following pre-requisite applications through command line:
     If not installed, use the following command to install it
 
     ```bash
-    kubectl apply -f https://github.com/cert-manager/cert-manager/releases/download/v1.17.2/cert-manager.yaml
+    kubectl apply -f https://github.com/cert-manager/cert-manager/releases/download/v1.16.4/cert-manager.yaml
     ```
    
 1. Open Terminal  in ``VSCode``
@@ -92,19 +92,19 @@ We will enable the following pre-requisite applications through command line:
     source $HOME/.env
     ```
 
-3. Install Envoy Gateway ``v1.5.0``
+3. Install Envoy Gateway ``v1.3.2``
    
     === "Command"
     
         ```bash
-        helm install eg oci://docker.io/envoyproxy/gateway-helm --version v1.5.0 -n envoy-gateway-system --create-namespace
+        helm install eg oci://docker.io/envoyproxy/gateway-helm --version v1.3.2 -n envoy-gateway-system --create-namespace
         ```
 
     === "Output"
         
         ```{ .text .no-copy }
-        helm install eg oci://docker.io/envoyproxy/gateway-helm --version v1.5.0 -n envoy-gateway-system --create-namespace
-        Pulled: docker.io/envoyproxy/gateway-helm:v1.5.0
+        helm install eg oci://docker.io/envoyproxy/gateway-helm --version v1.3.2 -n envoy-gateway-system --create-namespace
+        Pulled: docker.io/envoyproxy/gateway-helm:v1.3.2
         Digest: sha256:0070bdddc186e6bd48007a84c6d264b796d14017436f38ccfe5ca621aefc1ca5
         NAME: eg
         LAST DEPLOYED: Mon Aug 25 04:31:06 2025
@@ -191,37 +191,9 @@ We will enable the following pre-requisite applications through command line:
     
         ```{ .text .no-copy }
         NAME                                         READY   STATUS    RESTARTS   AGE
-        kserve-controller-manager-69b6dbf9cf-mbnzg   2/2     Running   0          18m
+        kserve-controller-manager-58946fd54d-vsxvn   2/2     Running   0          18m
         ```
 
-10. Install OpenTelemetry Operator:
-
-    === "Command"
-
-        ```bash
-        helm upgrade --install opentelemetry-operator opentelemetry-operator \
-        --repo https://open-telemetry.github.io/opentelemetry-helm-charts \
-        --version=0.93.0 -n opentelemetry \
-        --create-namespace --wait
-        ```
-
-    === "Output"
-    
-        ```{ .text .no-copy }
-        NAME: opentelemetry-operator
-        LAST DEPLOYED: Tue Feb 17 11:43:17 2026
-        NAMESPACE: opentelemetry
-        STATUS: deployed
-        REVISION: 2
-        NOTES:
-        [WARNING] No resource limits or requests were set. Consider setter resource requests and limits via the `resources` field.
-        
-        opentelemetry-operator has been installed. Check its status by running:
-        kubectl --namespace opentelemetry get pods -l "app.kubernetes.io/instance=opentelemetry-operator"
-        
-        Visit https://github.com/open-telemetry/opentelemetry-operator for instructions on how to create & configure OpenTelemetryCollector and Instrumentation custom resources by using the Operator.
-        ```
-     
 !!! note
     It may take a few minutes for each application to be up and running. Monitor the deployment to make sure that these applications are running before moving on to the next section.
 
@@ -255,7 +227,7 @@ We will use the Docker login credentials we created in the previous section to d
         ```text
         export DOCKER_USERNAME=ntnxsvcgpt
         export DOCKER_PASSWORD=dckr_pat_xxxxxxxxxxxxxxxxxxxxxxxx
-        export NAI_CORE_VERSIONv2.5.0
+        export NAI_CORE_VERSION=2.4.0
         export NAI_DEFAULT_RWO_STORAGECLASS=nutanix-volume
         export NAI_API_RWX_STORAGECLASS=nai-nfs-storage
         ```
@@ -266,129 +238,126 @@ We will use the Docker login credentials we created in the previous section to d
     source $HOME/.env
     ```
 
-4. Add NAI helm charts
+4. In `VSCode` Explorer pane, browse to ``$HOME/nai`` folder
+   
+5. Click on **New File** :material-file-plus-outline: and create file with the following name:
 
     ```bash
-    helm repo add ntnx-charts https://nutanix.github.io/helm-releases
-    helm repo update ntnx-charts
+    nkp-values.yaml
     ```
 
-5. Install NAI operator
-   
-    === "Command"
+    with the following content:
 
-        ```text
-        helm upgrade --install nai-operators ntnx-charts/nai-operators --version=2.5.0  -n nai-system --create-namespace --wait \
-        --set imagePullSecret.credentials.username=$DOCKER_USERNAME \
-        --set imagePullSecret.credentials.email=$DOCKER_USERNAME \
-        --set imagePullSecret.credentials.password=$DOCKER_PASSWORD \
-        --insecure-skip-tls-verify
-        ```
+    ```yaml
+    # nai-monitoring stack values for nai-monitoring stack deployment in NKE environment
+    naiMonitoring:
+          
+      ## Component scraping node exporter
+      ##
+      nodeExporter:
+        serviceMonitor:
+          enabled: true
+          endpoint:
+            port: http-metrics
+            scheme: http
+            targetPort: 9100
+          namespaceSelector:
+            matchNames:
+            - kommander
+          serviceSelector:
+            matchLabels:
+              app.kubernetes.io/name: prometheus-node-exporter
+              app.kubernetes.io/component: metrics
     
-    === "Sample command"
+      ## Component scraping dcgm exporter
+      ##
+      dcgmExporter:
+        podLevelMetrics: true
+        serviceMonitor:
+          enabled: true
+          endpoint:
+            targetPort: 9400
+          namespaceSelector:
+            matchNames:
+            - kommander
+          serviceSelector:
+            matchLabels:
+              app: nvidia-dcgm-exporter
+    ```
 
-        ```text
-        helm upgrade --install nai-operators ntnx-charts/nai-operators --version=2.5.0  -n nai-system --create-namespace --wait \
-        --set imagePullSecret.credentials.username=ntnxsvcgpt \
-        --set imagePullSecret.credentials.email=ntnxsvcgpt \
-        --set imagePullSecret.credentials.password=dckr_pat_xxxxxxxxxxxxxxxxxxxxxxxx \
-        --insecure-skip-tls-verify
-        ```
+    ???tip "How to get nkp-values.yaml file?"
 
-    === "Command output"
+           It is possible to get the values file using the following command
+      
+           ```bash
+           helm repo add ntnx-charts https://nutanix.github.io/helm-releases
+           helm repo update ntnx-charts
+           helm pull ntnx-charts/nai-core --version=nai-core-version --untar=true
+           ```
 
-        ```{ .text, .no-copy}
-        Release "nai-operators" has been upgraded. Happy Helming!
-        NAME: nai-operators
-        LAST DEPLOYED: Tue Feb 17 11:56:41 2026
-        NAMESPACE: nai-system
-        STATUS: deployed
-        REVISION: 2
-        TEST SUITE: None
-        ```
+           All the files will be untar'ed to a folder nai-core in the present working directory
 
-6. Check if all NAI operator pods are running 
+           Use the ``nkp-values.yaml`` file in the installation command
+
+6. In ``VSCode``, Under ``$HOME/nai`` folder, click on **New File** :material-file-plus-outline: and create a file with the following name:
+
+    ```bash
+    nai-deploy.sh
+    ```
+
+    with the following content:
+
+    ```bash hl_lines="16"
+    #!/usr/bin/env bash
+
+    set -ex
+    set -o pipefail
+
+    helm repo add ntnx-charts https://nutanix.github.io/helm-releases
+    helm repo update ntnx-charts
+
+    #NAI-core
+    helm upgrade --install nai-core ntnx-charts/nai-core --version=$NAI_CORE_VERSION -n nai-system --create-namespace --wait \
+    --set imagePullSecret.credentials.username=$DOCKER_USERNAME \
+    --set imagePullSecret.credentials.password=$DOCKER_PASSWORD \
+    --insecure-skip-tls-verify \
+    --set naiApi.storageClassName=$NAI_API_RWX_STORAGECLASS \
+    --set defaultStorageClassName=$NAI_DEFAULT_RWO_STORAGECLASS \
+    -f nkp-values.yaml
+    ```
+   
+7.  Run the following command to deploy NAI
    
     === "Command"
 
         ```bash
-        kubens nai-system
-        kubectl get pods
+        $HOME/nai/nai-deploy.sh
         ```
-    
+
     === "Command output"
+      
+        ```{ .text .no-copy }
+        $HOME/nai/nai-deploy.sh 
 
-        ```{ .text, .no-copy}
-        nai-api-db-migrate-gd6o2-9td9l                           0/1     Completed   0             58m
-        nai-clickhouse-schema-job-1771325816-d2mgd               0/1     Completed   0             58m
-        nai-db-0                                                 1/1     Running     0             58m
-        nai-iep-model-controller-58b74dbb6f-gkpjp                1/1     Running     0             58m
-        nai-labs-8457bfc596-pvccd                                1/1     Running     0             58m
-        nai-oauth2-proxy-64dd4495cf-7f999                        1/1     Running     0             58m
-        nai-oidc-client-registration-fyowa-2scb6                 0/1     Completed   0             58m
-        nai-operators-nai-clickhouse-operator-794866b476-qjdbg   2/2     Running     0             3h14m
-        nai-otel-collector-collector-2rwcz                       1/1     Running     0             58m
-        nai-otel-collector-collector-2tgb4                       1/1     Running     0             58m
-        nai-otel-collector-collector-8tssm                       1/1     Running     0             58m
-        nai-otel-collector-collector-dp645                       1/1     Running     0             58m
-        nai-otel-collector-collector-fcb5k                       1/1     Running     0             58m
-        nai-otel-collector-collector-g6h48                       1/1     Running     0             58m
-        nai-otel-collector-collector-rlc8v                       1/1     Running     0             58m
-        nai-otel-collector-collector-trbfp                       1/1     Running     0             58m
-        nai-otel-collector-targetallocator-85fc56c7f9-8tm8t      1/1     Running     0             58m
-        nai-ui-554bbbcfcc-tvnjw                                  1/1     Running     0             58m
-        redis-standalone-684f6dd8f7-2b2r7                        2/2     Running     0             3h14m
-        ```
-
-7. Install NAI core
-    
-    === "Command"
-    
-        ```text
-        helm upgrade --install nai-core ntnx-charts/nai-core --version=2.5.0 -n nai-system --wait \
+        + set -o pipefail
+        + helm repo update ntnx-charts
+        Hang tight while we grab the latest from your chart repositories...
+        ...Successfully got an update from the "ntnx-charts" chart repository
+        Update Complete. ⎈Happy Helming!⎈
+        helm upgrade --install nai-core ntnx-charts/nai-core --version=$NAI_CORE_VERSION -n nai-system --create-namespace --wait \
         --set imagePullSecret.credentials.username=$DOCKER_USERNAME \
-        --set imagePullSecret.credentials.email=$DOCKER_USERNAME \
         --set imagePullSecret.credentials.password=$DOCKER_PASSWORD \
         --insecure-skip-tls-verify \
-        --set naiApi.storageClassName=$NAI_API_RWX_STORAGECLASS \
-        --set defaultStorageClassName=$NAI_DEFAULT_RWO_STORAGECLASS \
-        --set naiMonitoring.nodeExporter.serviceMonitor.namespaceSelector.matchNames[0]=kommander \
-        --set naiMonitoring.dcgmExporter.serviceMonitor.namespaceSelector.matchNames[0]=kommander \
-        --set naiMonitoring.opentelemetry.common.resources.requests.cpu=0.1 \
-        --set "nai-clickhouse-keeper.clickhouseKeeper.resources.limits.memory=1Gi" \
-        --set "nai-clickhouse-keeper.clickhouseKeeper.resources.requests.memory=1Gi" 
-        ```
-
-    === "Sample command"
-    
-        ```text
-        helm upgrade --install nai-core ntnx-charts/nai-core --version=2.5.0 -n nai-system --wait \
-        --set imagePullSecret.credentials.username=ntnxsvcgpt \
-        --set imagePullSecret.credentials.email=ntnxsvcgpt \
-        --set imagePullSecret.credentials.password=dckr_pat_xxxxxxxxxxxxxxxxxxxxxxxx \
-        --insecure-skip-tls-verify \
-        --set naiApi.storageClassName=nai-nfs-storage \
-        --set defaultStorageClassName=nutanix-volume \
-        --set naiMonitoring.nodeExporter.serviceMonitor.namespaceSelector.matchNames[0]=kommander \
-        --set naiMonitoring.dcgmExporter.serviceMonitor.namespaceSelector.matchNames[0]=kommander \
-        --set naiMonitoring.opentelemetry.common.resources.requests.cpu=0.1 \
-        --set "nai-clickhouse-keeper.clickhouseKeeper.resources.limits.memory=1Gi" \
-        --set "nai-clickhouse-keeper.clickhouseKeeper.resources.requests.memory=1Gi" 
-        ```
-
-    === "Command output"
-
-        ```{ .text, .no-copy}
-        Release "nai-core" has been upgraded. Happy Helming!
+        -f nkp-values.yaml
+        Release "nai-core" does not exist. Installing it now.
         NAME: nai-core
-        LAST DEPLOYED: Tue Feb 17 12:00:35 2026
+        LAST DEPLOYED: Mon Aug 25 04:59:28 2025
         NAMESPACE: nai-system
         STATUS: deployed
-        REVISION: 2
-        TEST SUITE: None
+        REVISION: 1
         ```
 
-8.  Verify that the NAI Core Pods are running and healthy - there should be more jobs completing and pods coming up to establish NAI functionality
+8.  Verify that the NAI Core Pods are running and healthy
     
     === "Command"
 
@@ -400,39 +369,45 @@ We will use the Docker login credentials we created in the previous section to d
 
         ```{ .text .no-copy }
         $ kubectl get po,deploy
+        Context "nkplb-admin@nkplb" modified.
         Active namespace is "nai-system".
-        #
-        NAME                                                     READY   STATUS      RESTARTS      AGE
-        chi-nai-clickhouse-server-chcluster1-0-0-0               1/1     Running     0             65m
-        chk-nai-clickhouse-keeper-chkeeper-0-0-0                 1/1     Running     0             65m
-        iam-database-bootstrap-tpbio-rj4jp                       0/1     Completed   0             2m10s
-        iam-proxy-8494d6f649-qfmtr                               1/1     Running     0             65m
-        iam-proxy-control-plane-6799bb985c-zvczt                 1/1     Running     1 (64m ago)   65m
-        iam-themis-64d9dd9764-5cvvp                              1/1     Running     0             65m
-        iam-themis-bootstrap-swyyo-cdgml                         0/1     Completed   0             2m10s
-        iam-ui-5dcf9cc4f4-fnt46                                  1/1     Running     0             65m
-        iam-user-authn-7888dfb7dc-g2tfg                          1/1     Running     0             65m
-        nai-api-7d9d9956c4-zdm2q                                 1/1     Running     0             65m
-        nai-api-db-migrate-dmrjw-pxfgn                           0/1     Completed   0             2m10s
-        nai-clickhouse-schema-job-1771329635-vcs4d               0/1     Completed   0             2m10s
-        nai-db-0                                                 1/1     Running     0             65m
-        nai-iep-model-controller-58b74dbb6f-gkpjp                1/1     Running     0             65m
-        nai-labs-8457bfc596-pvccd                                1/1     Running     0             65m
-        nai-oauth2-proxy-64dd4495cf-7f999                        1/1     Running     0             65m
-        nai-oidc-client-registration-vmdnb-996gk                 0/1     Completed   0             2m10s
-        nai-operators-nai-clickhouse-operator-794866b476-qjdbg   2/2     Running     0             3h22m
-        nai-otel-collector-collector-2rwcz                       1/1     Running     0             65m
-        nai-otel-collector-collector-2tgb4                       1/1     Running     0             65m
-        nai-otel-collector-collector-8tssm                       1/1     Running     0             65m
-        nai-otel-collector-collector-dp645                       1/1     Running     0             65m
-        nai-otel-collector-collector-fcb5k                       1/1     Running     0             65m
-        nai-otel-collector-collector-g6h48                       1/1     Running     0             65m
-        nai-otel-collector-collector-rlc8v                       1/1     Running     0             65m
-        nai-otel-collector-collector-trbfp                       1/1     Running     0             65m
-        nai-otel-collector-targetallocator-85fc56c7f9-8tm8t      1/1     Running     0             65m
-        nai-ui-554bbbcfcc-tvnjw                                  1/1     Running     0             65m
-        redis-standalone-684f6dd8f7-2b2r7                        2/2     Running     0             3h22m
+        NAME                                            READY   STATUS      RESTARTS   AGE
+        pod/nai-api-58cbd47f86-dqt5z                    1/1     Running     0          4m1s
+        pod/nai-api-db-migrate-q2urg-nb8zc              0/1     Completed   0          4m1s
+        pod/nai-db-0                                    1/1     Running     0          4m1s
+        pod/nai-iep-model-controller-64d88cd94f-q85hf   1/1     Running     0          4m1s
+        pod/nai-ui-dd8fb65c-zthbf                       1/1     Running     0          4m1s
+        pod/prometheus-nai-0                            2/2     Running     0          4m1s
+
+        NAME                                       READY   UP-TO-DATE   AVAILABLE   AGE
+        deployment.apps/nai-api                    1/1     1            1           4m1s
+        deployment.apps/nai-iep-model-controller   1/1     1            1           4m1s
+        deployment.apps/nai-ui                     1/1     1            1           4m1s
         ```
+
+??? "Uninstall NAI ``v2.3.0`` Dependencies"
+
+    If you are upgrading NAI from ``v2.3.0`` to ``v2.4.0``, uninstall the following:
+
+    If Helm was used:
+
+    ```bash title="Uninstall Istio"
+    helm uninstall istio-ingressgateway -n istio-system --wait --ignore-not-found
+    helm uninstall istiod -n istio-system --wait --ignore-not-found
+    helm uninstall istio-base -n istio-system --wait --ignore-not-found
+    ```
+    ```bash title="Uninstall Knative"
+    kubectl delete --ignore-not-found=true KnativeServing knative-serving -n knative-serving
+    helm uninstall knative-operator -n knative-serving --wait --ignore-not-found
+    kubectl wait --for=delete pod --all -n knative-serving --timeout=300s
+    ```
+
+    If NKP Application were used for installation:
+
+    Go to NKP Cluster Dashboard > Application > Search and Uninstall the following:
+
+    1. Istio
+    2. Knative 
 
 ## Install SSL Certificate and Gateway Elements
 
@@ -673,7 +648,7 @@ In this section we will create an inference endpoint using the downloaded model.
     
     !!! tip
        
-        NAI from ``v2.3`` can host a model up to 7 billion parameters on CPU only Nutanix nodes
+        NAI ``v2.3`` can host a model up to 7 billion parameters on CPU only nodes
    
     === "GPU Access"
 

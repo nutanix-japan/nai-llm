@@ -2,21 +2,9 @@ site_name: NAI LLM
 site_url: https://naillm.howntnx.win
 theme:
   name: material
-  icon:
-    admonition:
-      note: fontawesome/solid/note-sticky
-      abstract: fontawesome/solid/book
-      info: fontawesome/solid/circle-info
-      tip: fontawesome/solid/bullhorn
-      success: fontawesome/solid/check
-      question: fontawesome/solid/circle-question
-      warning: fontawesome/solid/triangle-exclamation
-      failure: fontawesome/solid/bomb
-      danger: fontawesome/solid/skull
-      bug: fontawesome/solid/robot
-      example: fontawesome/solid/flask
-      quote: fontawesome/solid/quote-left
+
   
+
 # Site navigation
 
 nav:
@@ -30,12 +18,18 @@ nav:
   - Workstation Setup: infra/workstation.md
   - Jumphost VM Tofu: infra/infra_jumphost_tofu.md
 - NAI on NKP Tutorials:
-  - Nutanix Enterprise AI v2.4.0 (NAI):
+  - Nutanix Enterprise AI v2.5.0 (NAI):
     - Getting Started: iep/index.md
     - Setup NKP Cluster: infra/infra_nkp.md
     - Pre-requisites NAI: iep/iep_pre_reqs.md
     - Deploy NAI: iep/iep_deploy.md
     - Test NAI: iep/iep_test.md
+  - Nutanix Enterprise AI v2.4.0 (NAI):
+    - Getting Started: iep_240/index.md
+    - Setup NKP Cluster: infra/infra_nkp.md
+    - Pre-requisites NAI: iep_240/iep_pre_reqs.md
+    - Deploy NAI: iep_240/iep_deploy.md
+    - Test NAI: iep_240/iep_test.md
   - Air-gapped Nutanix Enterprise AI v2.4.0 (NAI):
     - Getting Started: airgap_nai/index.md
     - Harbor Container Registry: airgap_nai/harbor.md

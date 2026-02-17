@@ -122,7 +122,7 @@ For the purposes of this lab, we will call the source NKP cluster as ``nkpprimar
 
     === ":octicons-command-palette-16:  Sample Command"
         
-        ```{ .text .no-copy }
+        ```jyiuyt 74
         $HOME/ndk $ curl -o ndk-1.2.0.tar "https://download.nutanix.com/downloads/ndk/1.2.0/ndk-1.2.0.tar?Expires=XXXXXXXXX__"
         ```
 

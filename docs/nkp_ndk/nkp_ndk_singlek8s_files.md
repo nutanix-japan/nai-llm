@@ -169,6 +169,7 @@ We need to create a Dynamic Files based storage class for use with our applicati
 
         ```text
         export NFS_SC_NAME=_files_storage_class_name
+        export VOL_SC_NAME=_files_storage_class_name
         export NFS_SERVER_NAME=_files_server_display_name
         export NFS_SERVER_FQDN=_files_server_fqdn
         ```
@@ -177,6 +178,7 @@ We need to create a Dynamic Files based storage class for use with our applicati
         
         ```text
         export NFS_SC_NAME=nutanix-files-dynamic
+        export VOL_SC_NAME=nutanix-volumes
         export NFS_SERVER_NAME=filesprimary
         export NFS_SERVER_FQDN=filesprimary.example.com
         ```
@@ -196,7 +198,7 @@ We need to create a Dynamic Files based storage class for use with our applicati
          parameters:
            dynamicProv: ENABLED
           nfsServerName: $NFS_SERVER_NAME
-           nfsServer: $NFS_SERVER_FQDn
+           nfsServer: $NFS_SERVER_FQDN
            storageType: NutanixFiles
            squashType: none
          reclaimPolicy: Delete
