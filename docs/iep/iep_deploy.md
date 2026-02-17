@@ -1,8 +1,8 @@
 # Deploying Nutanix Enterprise AI (NAI) NVD Reference Application
 
-!!! info "Version 2.3.0"
+!!! info "Version 2.5.0"
 
-    This version of the NAI deployment is based on the Nutanix Enterprise AI (NAI) ``v2.3.0`` release.
+    This version of the NAI deployment is based on the Nutanix Enterprise AI (NAI) ``v2.5.0`` release.
 
 ```mermaid
 stateDiagram-v2
@@ -27,8 +27,8 @@ stateDiagram-v2
 Changes in NAI ``v2.5.0``
 
   - Istio Ingress gateway is replaced with Envoy Gateway
-  - Kserve has been upgraded to ``0.15.0``
-  - Cert-manager is of at least ``v1.17.2``
+  - Kserve is of at least of ``v0.15.0``
+  - Cert-manager is at least of ``v1.17.2``
 
 ### Enable NKP Applications through NKP GUI
 
@@ -119,7 +119,7 @@ We will enable the following pre-requisite applications through command line:
     === "Command"
     
         ```bash
-        kubectl wait --timeout=5m -n envoy-gateway-system deployment/envoy-gateway --for=condition=Available
+        kubectl wait --timeout=5m -n envoy-gateway-system deployment/envoy-gateway  --for=condition=Available
         ```
 
     === "Output"
