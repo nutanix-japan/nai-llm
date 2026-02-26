@@ -26,7 +26,6 @@ stateDiagram-v2
 
 Changes in NAI ``v2.5.0``
 
-  - Istio Ingress gateway is replaced with Envoy Gateway
   - Kserve is of at least of ``v0.15.0``
   - Cert-manager is at least of ``v1.17.2``
 
@@ -57,7 +56,7 @@ We will enable the following pre-requisite applications through command line:
 !!! note
     The following application are pre-installed on NKP cluster with Pro license
 
-    - Cert Manager ``v1.17.2``
+    - Cert Manager ``v1.17.2`` or higher
     
     Check if Cert Manager is installed (pre-installed on NKP cluster)
    
@@ -97,7 +96,9 @@ We will enable the following pre-requisite applications through command line:
     === "Command"
     
         ```bash
-        helm install eg oci://docker.io/envoyproxy/gateway-helm --version v1.5.0 -n envoy-gateway-system --create-namespace
+        helm install eg oci://docker.io/envoyproxy/gateway-helm \
+        --version v1.5.0 \
+        -n envoy-gateway-system --create-namespace
         ```
 
     === "Output"
@@ -119,7 +120,9 @@ We will enable the following pre-requisite applications through command line:
     === "Command"
     
         ```bash
-        kubectl wait --timeout=5m -n envoy-gateway-system deployment/envoy-gateway  --for=condition=Available
+        kubectl wait --timeout=5m \
+        -n envoy-gateway-system deployment/envoy-gateway \ 
+        --for=condition=Available
         ```
 
     === "Output"
@@ -142,10 +145,13 @@ We will enable the following pre-requisite applications through command line:
     === "Command"
     
         ```bash
-        helm upgrade --install kserve-crd oci://ghcr.io/kserve/charts/kserve-crd --version ${KSERVE_VERSION} -n kserve --create-namespace 
+        helm upgrade --install kserve-crd oci://ghcr.io/kserve/charts/kserve-crd \
+        --version ${KSERVE_VERSION} -n kserve --create-namespace 
+
         ```
         ```bash
-        helm upgrade --install kserve oci://ghcr.io/kserve/charts/kserve --version ${KSERVE_VERSION} --namespace kserve --create-namespace \
+        helm upgrade --install kserve oci://ghcr.io/kserve/charts/kserve \
+        --version ${KSERVE_VERSION} --namespace kserve --create-namespace \
         --set kserve.controller.deploymentMode=RawDeployment \
       	--set kserve.controller.gateway.disableIngressCreation=true
         ```
@@ -275,7 +281,7 @@ We will use the Docker login credentials we created in the previous section to d
 
 5. Install NAI operator
    
-    === "Command"
+    === ":octicons-command-palette-16: Command"
 
         ```text
         helm upgrade --install nai-operators ntnx-charts/nai-operators --version=2.5.0  -n nai-system --create-namespace --wait \
@@ -285,7 +291,7 @@ We will use the Docker login credentials we created in the previous section to d
         --insecure-skip-tls-verify
         ```
     
-    === "Sample command"
+    === ":octicons-command-palette-16: Sample command"
 
         ```text
         helm upgrade --install nai-operators ntnx-charts/nai-operators --version=2.5.0  -n nai-system --create-namespace --wait \
@@ -295,7 +301,7 @@ We will use the Docker login credentials we created in the previous section to d
         --insecure-skip-tls-verify
         ```
 
-    === "Command output"
+    === ":octicons-command-palette-16: Command output"
 
         ```{ .text, .no-copy}
         Release "nai-operators" has been upgraded. Happy Helming!
@@ -309,40 +315,23 @@ We will use the Docker login credentials we created in the previous section to d
 
 6. Check if all NAI operator pods are running 
    
-    === "Command"
+    === ":octicons-command-palette-16: Command"
 
         ```bash
         kubens nai-system
         kubectl get pods
         ```
     
-    === "Command output"
+    === ":octicons-command-palette-16: Command output"
 
         ```{ .text, .no-copy}
-        nai-api-db-migrate-gd6o2-9td9l                           0/1     Completed   0             58m
-        nai-clickhouse-schema-job-1771325816-d2mgd               0/1     Completed   0             58m
-        nai-db-0                                                 1/1     Running     0             58m
-        nai-iep-model-controller-58b74dbb6f-gkpjp                1/1     Running     0             58m
-        nai-labs-8457bfc596-pvccd                                1/1     Running     0             58m
-        nai-oauth2-proxy-64dd4495cf-7f999                        1/1     Running     0             58m
-        nai-oidc-client-registration-fyowa-2scb6                 0/1     Completed   0             58m
-        nai-operators-nai-clickhouse-operator-794866b476-qjdbg   2/2     Running     0             3h14m
-        nai-otel-collector-collector-2rwcz                       1/1     Running     0             58m
-        nai-otel-collector-collector-2tgb4                       1/1     Running     0             58m
-        nai-otel-collector-collector-8tssm                       1/1     Running     0             58m
-        nai-otel-collector-collector-dp645                       1/1     Running     0             58m
-        nai-otel-collector-collector-fcb5k                       1/1     Running     0             58m
-        nai-otel-collector-collector-g6h48                       1/1     Running     0             58m
-        nai-otel-collector-collector-rlc8v                       1/1     Running     0             58m
-        nai-otel-collector-collector-trbfp                       1/1     Running     0             58m
-        nai-otel-collector-targetallocator-85fc56c7f9-8tm8t      1/1     Running     0             58m
-        nai-ui-554bbbcfcc-tvnjw                                  1/1     Running     0             58m
-        redis-standalone-684f6dd8f7-2b2r7                        2/2     Running     0             3h14m
+        nai-operators-nai-clickhouse-operator-67bb54cf48-47xdf   2/2     Running   0          10m
+        redis-standalone-8568f5c645-t2sqm                        2/2     Running   0          10m
         ```
 
 7. Install NAI core
     
-    === "Command"
+    === ":octicons-command-palette-16: Command"
     
         ```text
         helm upgrade --install nai-core ntnx-charts/nai-core --version=2.5.0 -n nai-system --wait \
@@ -359,7 +348,7 @@ We will use the Docker login credentials we created in the previous section to d
         --set "nai-clickhouse-keeper.clickhouseKeeper.resources.requests.memory=1Gi" 
         ```
 
-    === "Sample command"
+    === ":octicons-command-palette-16: Sample command"
     
         ```text
         helm upgrade --install nai-core ntnx-charts/nai-core --version=2.5.0 -n nai-system --wait \
@@ -376,7 +365,7 @@ We will use the Docker login credentials we created in the previous section to d
         --set "nai-clickhouse-keeper.clickhouseKeeper.resources.requests.memory=1Gi" 
         ```
 
-    === "Command output"
+    === ":octicons-command-palette-16: Command output"
 
         ```{ .text, .no-copy}
         Release "nai-core" has been upgraded. Happy Helming!
@@ -390,13 +379,13 @@ We will use the Docker login credentials we created in the previous section to d
 
 8.  Verify that the NAI Core Pods are running and healthy - there should be more jobs completing and pods coming up to establish NAI functionality
     
-    === "Command"
+    === ":octicons-command-palette-16: Command"
 
         ```bash
         kubens nai-system
         kubectl get po,deploy
         ```
-    === "Command output"
+    === ":octicons-command-palette-16: Command output"
 
         ```{ .text .no-copy }
         $ kubectl get po,deploy

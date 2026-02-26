@@ -215,7 +215,7 @@ In this section we will prepare the helm charts necessary for NAI and pre-requis
  - NAI
  - Envoy Gateway
  - Kserve
-
+ - Open Telemetry Operator
 
 The procedure will be done on the jumphost VM.
 
@@ -228,13 +228,13 @@ The procedure will be done on the jumphost VM.
     === "Command"
 
         ```text title="Paste the download URL within double quotes"
-        curl -o nai-core-2.4.0.tgz "_paste_download_URL_here"
+        curl -o nai-helm-charts-2.5.0.tar "_paste_download_URL_here"
         ```
 
     === "Sample command"
         
         ```{ .text .no-copy }
-        curl -o nai-core-2.4.0.tgz "https://download.nutanix.com/downloads/nai/2.4.0/nai-core-2.4.0.tgz?........"
+        curl -o nai-helm-charts-2.5.0.tar "https://download.nutanix.com/downloads/nai/2.5.0/nai-core-2.5.0.tar?........"
         ```
 4. Open new `VSCode` window on your jumphost VM
 
@@ -260,30 +260,9 @@ The procedure will be done on the jumphost VM.
 
 11. Add (append) the following environment variables and save it
 
-    ??? tip "Where to get associated container versions for NAI ``v2.4.0``?"
-    
-        Extract the  downloaded``nai-core-2.4.0.tgz`` file.
-    
-        ```bash
-        tar -xvfz nai-core-2.4.0.tgz
-        ```
-    
-        Under the extracted folder path ``$PWD/nai-core/values.yaml`` file, we will be able to see all the associated container images and their tags for NAI ``v2.4.0``
-    
-        ```bash
-        cat nai-core/values.yaml
-        ```
-
-    === "Template .env"
+    === ":octicons-file-code-16: Template ``.env``"
 
         ```bash
-        export KSERVE_VERSION=_your_kserve_version
-        export ENVOY_GATEWAY_VERSION=_your_envoy_gateway_version
-        export NAI_CORE_VERSION=_your_nai_core_version
-        export NAI_API_VERSION=_your_nai_api_version
-        export NAI_TGI_RUNTIME_VERSION=_your_tgi_version
-        export NAI_PROMETHEUS_VERSION=_your_prometheus_version
-        export NAI_POSTGRESQL_VERSION=_your_postgres_version
         export REGISTRY_HOST=harbor.10.x.x.111.nip.io/nkp
         export REGISTRY_USERNAME=admin
         export REGISTRY_CACERT=_path_to_ca_cert_of_registry  # (1)!
@@ -291,22 +270,15 @@ The procedure will be done on the jumphost VM.
 
         1. File must contain CA server and Harbor server's public certificate in one file
 
-    === ".env for NAI v2.4.0"
+    === ":octicons-file-code-16: samp ``.env``"
         
         ```{ .bash .no-copy }
-        export KSERVE_VERSION=v0.15.0
-        export ENVOY_GATEWAY_VERSION=v1.5.0
-        export NAI_CORE_VERSION=2.4.0
-        export NAI_API_VERSION=v2.4.0
-        export NAI_TGI_RUNTIME_VERSION="3.3.4-b2485c9"
-        export NAI_PROMETHEUS_VERSION=v2.54.0
-        export NAI_POSTGRESQL_VERSION=16.1-alpine
         export REGISTRY_USERNAME=admin
         export REGISTRY_PASSWORD=xxxxxxx
         export REGISTRY_CACERT=$HOME/harbor/certs/full_chain.pem  # (1)!
         ```
 
-        1. File must contain CA server and Harbor server's public certificate in one file
+        2. File must contain CA server and Harbor server's public certificate in one file
 
 12. Source the ``.env`` file to import environment variables
    
@@ -314,29 +286,18 @@ The procedure will be done on the jumphost VM.
     source $HOME/airgap-nai/.env
     ```
 
-13.  Pull the Kserve and Envoy Gateway helm charts using the following commands
+13.  Download the NAI ``2.5.0`` helm chart bundle from Nutanix Portal
    
     === "Command"
 
         ```bash
-        helm pull oci://docker.io/envoyproxy/gateway-helm --version ${ENVOY_GATEWAY_VERSION}
-
-        helm pull oci://ghcr.io/kserve/charts/kserve-crd --version ${KSERVE_VERSION}
-
-        helm pull oci://ghcr.io/kserve/charts/kserve --version ${KSERVE_VERSION}
+        curl -o "nai-helm-charts-2.5.0.tar" "_paste_download_URL_here"
         ```
     
-    === "Command output"
+    === "Sample command"
     
         ```{ .text .no-copy }
-        Pulled: docker.io/envoyproxy/gateway-helm:v1.5.0
-        Digest: sha256:a3dddd41ec3c58eae1b77dabe1f298bf92123fda6cac6f4940c23a11fc43c583
-        
-        Pulled: ghcr.io/kserve/charts/kserve-crd:v0.14.0
-        Digest: sha256:6ae5af970d9a9400e8456ad1dbc86360d03f4b6bb00be4f16c48bc0542283d42
-
-        Pulled: ghcr.io/kserve/charts/kserve:v0.14.0
-        Digest: sha256:25129d39a4aa85f96159db6933729ea9f35e9d0f7f7cac7918c0a8013672eccb
+        curl -o "nai-helm-charts-2.5.0.tar" "https://download.nutanix.com/downloads/nai/2.5.0/nai-helm-charts-2.5.0.tar?Expires=xxxxx"
         ```
 
 14. Login to Harbor registry on the command line (if not done so)
@@ -347,26 +308,39 @@ The procedure will be done on the jumphost VM.
    
 15.  Upload the downloaded and prepared helm charts to Harbor
     
-    ```bash
-    # Push charts
-    helm push gateway-helm-v1.5.0.tgz oci://${REGISTRY_HOST}
-    helm push kserve-crd-v0.15.0.tgz oci://${REGISTRY_HOST}
-    helm push kserve-v0.15.0.tgz oci://${REGISTRY_HOST}
-    helm push nai-core-2.4.0.tgz oci://${REGISTRY_HOST}
-    ```
-
-16.  Download the NAI air-gap binaries (NAI container images) from the link you copied earlier
-    
     === "Command"
-
-        ```text title="Paste the download URL within double quotes"
-        curl -o nai-2.4.0.tar "_paste_download_URL_here"
+    
+        ```bash
+        # Push charts
+        for chart in $(ls *.tgz); do echo $chart;helm push $chart oci://$REGISTRY_HOST;done
         ```
 
-    === "Sample command"
-        
-        ```bash title="This download is about 44 GBs"
-        curl -o nai-2.4.0.tar "https://download.nutanix.com/downloads/nai/2.4.0/nai-2.4.0.tar?..."
+    === "Command output"
+
+        ```{ .text, .no-copy}
+        for chart in $(ls *.tgz); do echo $chart;helm push $chart oci://$REGISTRY_HOST;done
+        gateway-crds-helm-v1.5.0.tgz
+        Pushed: harbor.10.x.x.134.nip.io/nkp/gateway-crds-helm:v1.5.0
+        Digest: sha256:d8f06d0d28bbcb40188f211be0fc3f0dee20376c5ad59935bf68bc5cc67149fc
+        gateway-helm-v1.5.0.tgz
+        Pushed: harbor.10.x.x.134.nip.io/nkp/gateway-helm:v1.5.0
+        Digest: sha256:4e49511296e23e3d1400c92cfb38a5c26030501ec7353883e4ccad9fd7cc4c2c
+        kserve-crd-v0.15.0.tgz
+        Pushed: harbor.10.x.x.134.nip.io/nkp/kserve-crd:v0.15.0
+        Digest: sha256:d540337971ae91fbd7593764eb90d8689012bc835f5d2f8ee42af47543a18403
+        kserve-v0.15.0.tgz
+        Pushed: harbor.10.x.x.134.nip.io/nkp/kserve:v0.15.0
+        Digest: sha256:cafd90ab1d91a54a28c1ff2761d976bdda0bb173675ef392a16ac250b044d15f
+        nai-core-2.5.0.tgz
+        Pushed: harbor.10.x.x.134.nip.io/nkp/nai-core:2.5.0
+        Digest: sha256:6326c6348f31c2ee0de93d03b164863addb82f8054283a4d418c8d2910b7935d
+        nai-operators-2.5.0.tgz
+        Pushed: harbor.10.x.x.134.nip.io/nkp/nai-operators:2.5.0
+        Digest: sha256:09775842c1bae10a094f54a54bc3f82177f0a9b92f0e52a20219d1cc7bf41d96
+        opentelemetry-operator-0.93.0.tgz
+        Pushed: harbor.10.x.x.134.nip.io/nkp/opentelemetry-operator:0.93.0
+        Digest: sha256:01e050311f4f335fb2b4ae9c3dabe6efc7017cfba37cc3dc8c9acce756e52732
+        Now the charts are available in the OCI compatible container/chart registry.
         ```
 
 ## Prepare Container Images
@@ -404,7 +378,23 @@ stateDiagram-v2
     1. Upload the container images from the downloaded ``nai-2.x.x.tar`` to the jumphost VM local docker images store
     2. Upload it to the internal Harbor container registry 
 
-1. Since we will be using the same internal Harbor container registry to upload container images, make sure the following environment variables are set (these were already set during air-gap NKP preparation)
+1.  Download the NAI air-gap bundles (NAI container images) from the **Nutanix Portal** > **Downloads** > **Nutanix Enterprise AI**
+    
+    === "Command"
+
+        ```text title="Paste the download URL within double quotes"
+        curl -o nai-2.5.0-1.tar "_paste_download_URL_here"
+        curl -o nai-2.5.0-1.tar "_paste_download_URL_here"
+        ```
+
+    === "Sample command"
+        
+        ```bash title="This download is about 44 GBs"
+        curl -o nai-2.5.0-1.tar "https://download.nutanix.com/downloads/nai/2.5.0/nai-2.5.0-1.tar?..."
+        curl -o nai-2.5.0-2.tar "https://download.nutanix.com/downloads/nai/2.5.0/nai-2.5.0-2.tar?..."
+        ```
+
+2. Since we will be using the same internal Harbor container registry to upload container images, make sure the following environment variables are set (these were already set during air-gap NKP preparation)
    
     ```bash
     export REGISTRY_HOST=harbor.10.x.x.111.nip.io/nkp
@@ -423,10 +413,10 @@ stateDiagram-v2
     === "Output"
     
          ```bash
-         nutanix/nai-api:v2.4.0
-         nutanix/nai-inference-ui:v2.4.0
-         nutanix/nai-model-processor:v2.4.0
-         nutanix/nai-iep-operator:v2.4.0
+         nutanix/nai-api:v2.5.0
+         nutanix/nai-inference-ui:v2.5.0
+         nutanix/nai-model-processor:v2.5.0
+         nutanix/nai-iep-operator:v2.5.0
          nutanix/nai-tgi:3.3.4-b2485c9
          nutanix/nai-kserve-huggingfaceserver:v0.15.2
          nutanix/nai-kserve-huggingfaceserver:v0.15.2
@@ -438,32 +428,16 @@ stateDiagram-v2
 3. Push the images to the jumphost VM local docker images store
    
     ```bash
-    docker image load -i nai-2.4.0.tar
+    docker image load -i nai-2.5.0-1.tar
+    docker image load -i nai-2.5.0-2.tar
     ```
 
-4. Login to the internal Harbor registy if the harbor project needs authentication
-   
-    ```bash
-    docker login harbor.10.x.x.111.nip.io
-    ```
-
-5. Tag and push all the NAI images to refer to the internal harbor registry
+4. Tag and push all the NAI images to refer to the internal harbor registry
 
     ```bash
-    for image in $(docker images --format '{{.Repository}}:{{.Tag}}' | grep 'nai' | grep -v $${REGISTRY_HOST}); do
-      docker tag $image $${REGISTRY_HOST}/$(echo $image);
-      docker push $${REGISTRY_HOST}/$(echo $image);
-    done
-    ```
-
-6. Download and push the Envoy Gateway, Kserve and Prometheus container images from the jumphost VM to harbor container registry.
-   
-    ```bash
-    for image in docker.io/envoyproxy/gateway-controller:${ENVOY_GATEWAY_VERSION} \
-    kserve/kserve-controller:${KSERVE_VERSION} \
-    quay.io/prometheus/prometheus:${NAI_PROMETHEUS_VERSION}; do
-      docker tag $image $${REGISTRY_HOST}/$(echo $image | sed 's|.*/||')
-      docker push $${REGISTRY_HOST}/$(echo $image | sed 's|.*/||')
+    for image in $(docker images --format '{{.Repository}}:{{.Tag}}' | grep 'nai' | grep -v ${REGISTRY_HOST}); do
+      docker tag $image ${REGISTRY_HOST}/$(echo $image);
+      docker push ${REGISTRY_HOST}/$(echo $image);
     done
     ```
 

@@ -292,6 +292,8 @@ We need to create a Dynamic Files based storage class for use with our applicati
    
     ```bash hl_lines="5"
     cat << EOF > kustomization.yaml
+    apiVersion: kustomize.config.k8s.io/v1beta1
+    kind: Kustomization
     secretGenerator:
     - name: mysql-pass
       literals:
