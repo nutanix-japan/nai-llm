@@ -1,5 +1,7 @@
 site_name: NAI LLM
 site_url: https://nai.howntnx.win/
+site_description: >-
+  The one-stop shop for Nutanix Cloud Native solutions. 
 theme:
   name: material
 
