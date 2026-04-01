@@ -245,3 +245,6 @@ ndk_nkp.md
 #Local backup copies
 copy*
 copy_airgap_nai
+
+#Gtag
+gtag
