@@ -215,7 +215,7 @@ In this section we will prepare the helm charts necessary for NAI and pre-requis
  - NAI
  - Envoy Gateway
  - Kserve
- - Open Telemetry Operator
+ - OpenTelemetry Operator
 
 The procedure will be done on the jumphost VM.
 

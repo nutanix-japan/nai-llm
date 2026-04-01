@@ -3,8 +3,6 @@ site_url: https://naillm.howntnx.win
 theme:
   name: material
 
-  
-
 # Site navigation
 
 nav:
@@ -191,7 +189,8 @@ plugins:
     - ">"
     - ">>>"
 - search
-#- git-authors
+- social
+- git-authors
 - git-revision-date-localized:
     enable_creation_date: true
     enabled: !ENV [CI, false]
