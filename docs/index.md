@@ -1,7 +1,7 @@
 ---
 
-title: "Nutanix Cloud Native Solutions"
-description: "This project will take your through design and hosting AI applications on Nutanix. Intended to be used by any Nutanix user to setup and run LLMs, LLM with RAG, Support GPT and other AI applications."
+title: "Nutanix Cloud Native and AI Solutions"
+description: "This project will take your through design, sizing and hosting of Nutanix Cloud Native AI applications. Intended to be used by any Nutanix user to setup and run LLMs, Unified Endpoints, RAG, MCP other AI applications. The project also takes the curious user through setting up Nutanix Kubernetes Platform for various requirements"
 
 ---
 

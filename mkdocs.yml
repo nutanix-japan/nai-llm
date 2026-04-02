@@ -1,7 +1,7 @@
-site_name: Nutanix Cloud Native Solutions
+site_name: Nutanix Cloud Native and AI Solutions
 site_url: https://nai.howntnx.win/
 site_description: >-
-  The one-stop shop for Nutanix Cloud Native solutions. 
+  The one-stop shop for Nutanix Cloud Native and AI solutions. 
 
 repo_url: https://github.com/nutanix-japan/nai-llm
 theme:
