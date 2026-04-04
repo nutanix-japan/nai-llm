@@ -566,12 +566,11 @@ We will use the Docker login credentials we created in the previous section to d
     === ":octicons-command-palette-16: Command output"
 
         ```{ .text, .no-copy}
-        Release "nai-core" has been upgraded. Happy Helming!
         NAME: nai-core
-        LAST DEPLOYED: Sat Apr  4 09:08:31 2026
+        LAST DEPLOYED: Sat Apr  4 11:03:09 2026
         NAMESPACE: nai-system
         STATUS: deployed
-        REVISION: 2
+        REVISION: 1
         TEST SUITE: None
         ```
 
@@ -586,40 +585,74 @@ We will use the Docker login credentials we created in the previous section to d
     === ":octicons-command-palette-16: Command output"
 
         ```{ .text .no-copy }
-        $ kubectl get po,deploy
         Active namespace is "nai-system".
-        #
-        NAME                                                     READY   STATUS      RESTARTS      AGE
-        chi-nai-clickhouse-server-chcluster1-0-0-0               1/1     Running     0             65m
-        chk-nai-clickhouse-keeper-chkeeper-0-0-0                 1/1     Running     0             65m
-        iam-database-bootstrap-tpbio-rj4jp                       0/1     Completed   0             2m10s
-        iam-proxy-8494d6f649-qfmtr                               1/1     Running     0             65m
-        iam-proxy-control-plane-6799bb985c-zvczt                 1/1     Running     1 (64m ago)   65m
-        iam-themis-64d9dd9764-5cvvp                              1/1     Running     0             65m
-        iam-themis-bootstrap-swyyo-cdgml                         0/1     Completed   0             2m10s
-        iam-ui-5dcf9cc4f4-fnt46                                  1/1     Running     0             65m
-        iam-user-authn-7888dfb7dc-g2tfg                          1/1     Running     0             65m
-        nai-api-7d9d9956c4-zdm2q                                 1/1     Running     0             65m
-        nai-api-db-migrate-dmrjw-pxfgn                           0/1     Completed   0             2m10s
-        nai-clickhouse-schema-job-1771329635-vcs4d               0/1     Completed   0             2m10s
-        nai-db-0                                                 1/1     Running     0             65m
-        nai-iep-model-controller-58b74dbb6f-gkpjp                1/1     Running     0             65m
-        nai-labs-8457bfc596-pvccd                                1/1     Running     0             65m
-        nai-oauth2-proxy-64dd4495cf-7f999                        1/1     Running     0             65m
-        nai-oidc-client-registration-vmdnb-996gk                 0/1     Completed   0             2m10s
-        nai-operators-nai-clickhouse-operator-794866b476-qjdbg   2/2     Running     0             3h22m
-        nai-otel-collector-collector-2rwcz                       1/1     Running     0             65m
-        nai-otel-collector-collector-2tgb4                       1/1     Running     0             65m
-        nai-otel-collector-collector-8tssm                       1/1     Running     0             65m
-        nai-otel-collector-collector-dp645                       1/1     Running     0             65m
-        nai-otel-collector-collector-fcb5k                       1/1     Running     0             65m
-        nai-otel-collector-collector-g6h48                       1/1     Running     0             65m
-        nai-otel-collector-collector-rlc8v                       1/1     Running     0             65m
-        nai-otel-collector-collector-trbfp                       1/1     Running     0             65m
-        nai-otel-collector-targetallocator-85fc56c7f9-8tm8t      1/1     Running     0             65m
-        nai-ui-554bbbcfcc-tvnjw                                  1/1     Running     0             65m
-        redis-standalone-684f6dd8f7-2b2r7                        2/2     Running     0             3h22m
+
+        NAME                                                    READY   STATUS      RESTARTS   AGE
+        ai-gateway-controller-6b786974b5-6gqt6                  1/1     Running     0          13m
+        chi-nai-clickhouse-server-chcluster1-0-0-0              1/1     Running     0          2m1s
+        chk-nai-clickhouse-keeper-chkeeper-0-0-0                1/1     Running     0          105s
+        iam-database-bootstrap-vaszw-s7mpb                      0/1     Completed   0          2m16s
+        iam-proxy-686fff8f6d-cbgjs                              1/1     Running     0          2m16s
+        iam-proxy-control-plane-854c76b8cc-tblt8                1/1     Running     0          2m16s
+        iam-themis-757776777b-mq9pz                             1/1     Running     0          2m15s
+        iam-themis-bootstrap-oeiws-7vmcr                        0/1     Completed   0          2m16s
+        iam-ui-7f6bb5b477-cb9tz                                 1/1     Running     0          2m16s
+        iam-user-authn-78d6b7d8df-tsgs4                         1/1     Running     0          2m16s
+        nai-api-557d94c66f-hxx57                                1/1     Running     0          2m16s
+        nai-api-db-migrate-g2bni-mbdt4                          0/1     Completed   0          2m16s
+        nai-clickhouse-schema-job-1775300590-4gfnh              0/1     Completed   0          2m16s
+        nai-db-0                                                1/1     Running     0          2m16s
+        nai-iep-model-controller-77f44f88c-ndpp2                1/1     Running     0          2m16s
+        nai-labs-86cb964886-xhdxk                               1/1     Running     0          2m16s
+        nai-oauth2-proxy-bdf7f85cf-2nxp5                        1/1     Running     0          2m15s
+        nai-oidc-client-registration-fbb1j-jdwt5                0/1     Completed   0          2m16s
+        nai-operators-nai-clickhouse-operator-f8f666db9-z8vfc   2/2     Running     0          13m
+        nai-otel-collector-collector-94mm9                      1/1     Running     0          2m14s
+        nai-otel-collector-collector-cpdx6                      1/1     Running     0          2m14s
+        nai-otel-collector-collector-pqk5q                      1/1     Running     0          2m14s
+        nai-otel-collector-collector-qxg5r                      1/1     Running     0          2m14s
+        nai-otel-collector-collector-rpl4f                      1/1     Running     0          2m14s
+        nai-otel-collector-collector-wf2fl                      1/1     Running     0          2m14s
+        nai-otel-collector-collector-wz5qz                      1/1     Running     0          2m14s
+        nai-otel-collector-targetallocator-fbc8688d7-c9vm5      1/1     Running     0          2m14s
+        nai-ui-8648bd7dbc-mgf5z                                 1/1     Running     0          2m16s
+        redis-standalone-684f6dd8f7-7rz2v                       2/2     Running     0          13m
         ```
+
+13. The Prometheus monitoring from the NKP catalog has specific RBAC rules applied. Create the required ``clusterRole`` to enable Nutanix Enterprise AI to fetch metrics
+    
+    === ":octicons-command-palette-16: Command"
+    
+        ```bash
+        kubectl patch clusterrole nai-otel-role --type='json' -p='[
+          {
+            "op": "add",
+            "path": "/rules/-",
+            "value": {
+              "apiGroups": [""],
+              "resources": ["services/kube-prometheus-stack-prometheus-node-exporter"],
+              "verbs": ["get"]
+            }
+          }
+        ]'
+        ```
+        ```bash
+        kubectl patch servicemonitor nai-node-exporter-monitor -n nai-system --type='json' -p='[
+          {"op": "add", "path": "/spec/endpoints/0/bearerTokenFile", "value": "/var/run/secrets/kubernetes.io/serviceaccount/token"},
+          {"op": "replace", "path": "/spec/endpoints/0/scheme", "value": "https"},
+          {"op": "add", "path": "/spec/endpoints/0/tlsConfig", "value": {"insecureSkipVerify": true}}
+        ]'
+        ```
+        
+    === ":octicons-command-palette-16: Command output"
+    
+        ```{ .text .no-copy }
+        clusterrole.rbac.authorization.k8s.io/nai-otel-role patched
+        ```
+        ```{ .text .no-copy }
+        servicemonitor.monitoring.coreos.com/nai-node-exporter-monitor patched
+        ```
+    
 
 ## Install SSL Certificate and Gateway Elements
 
@@ -641,19 +674,21 @@ The following steps show how cert-manager can be used to generate a self signed 
 
 1. Get the NAI UI ingress gateway host using the following command:
    
-    ```bash
-    NAI_UI_ENDPOINT=$(kubectl get svc -n envoy-gateway-system -l "gateway.envoyproxy.io/owning-gateway-name=nai-ingress-gateway,gateway.envoyproxy.io/owning-gateway-namespace=nai-system" -o jsonpath='{.items[0].status.loadBalancer.ingress[0].ip}' | grep -v '^$' || kubectl get svc -n envoy-gateway-system -l "gateway.envoyproxy.io/owning-gateway-name=nai-ingress-gateway,gateway.envoyproxy.io/owning-gateway-namespace=nai-system" -o jsonpath='{.items[0].status.loadBalancer.ingress[0].hostname}')
-    ```
+    === ":octicons-command-palette-16: Command"
+    
+        ```bash
+        NAI_UI_ENDPOINT=$(kubectl get svc -n envoy-gateway-system -l "gateway.envoyproxy.io/owning-gateway-name=nai-ingress-gateway,gateway.envoyproxy.io/owning-gateway-namespace=nai-system" -o jsonpath='{.items[0].status.loadBalancer.ingress[0].ip}' | grep -v '^$' || kubectl get svc -n envoy-gateway-system -l "gateway.envoyproxy.io/owning-gateway-name=nai-ingress-gateway,gateway.envoyproxy.io/owning-gateway-namespace=nai-system" -o jsonpath='{.items[0].status.loadBalancer.ingress[0].hostname}')
+        ```
 
 2. Get the value of ``NAI_UI_ENDPOINT`` environment variable
    
-    === "Command"
+     === ":octicons-command-palette-16: Command"
 
         ```bash
         echo $NAI_UI_ENDPOINT
         ```
 
-    === "Command output"
+    === ":octicons-command-palette-16: Command output"
 
         ``` { .text .no-copy }
         10.x.x.216
@@ -677,66 +712,95 @@ The following steps show how cert-manager can be used to generate a self signed 
 
 5. Create the ingress resource certificate using the following command:
    
-    ```bash hl_lines="12 14 16"
-    cat << EOF | k apply -f -
-    apiVersion: cert-manager.io/v1
-    kind: Certificate
-    metadata:
-      name: nai-cert
-      namespace: nai-system
-    spec:
-      issuerRef:
-        name: selfsigned-issuer
-        kind: ClusterIssuer
-      secretName: nai-cert
-      commonName: nai.${NAI_UI_ENDPOINT}.nip.io
-      dnsNames:
-      - nai.${NAI_UI_ENDPOINT}.nip.io
-      ipAddresses:
-      - ${NAI_UI_ENDPOINT}
-    EOF
-    ```
+    === ":octicons-command-palette-16: Command"
+    
+        ```bash hl_lines="12 14 16"
+        cat << EOF | k apply -f -
+        apiVersion: cert-manager.io/v1
+        kind: Certificate
+        metadata:
+          name: nai-cert
+          namespace: nai-system
+        spec:
+          issuerRef:
+            name: selfsigned-issuer
+            kind: ClusterIssuer
+          secretName: nai-cert
+          commonName: nai.${NAI_UI_ENDPOINT}.nip.io
+          dnsNames:
+          - nai.${NAI_UI_ENDPOINT}.nip.io
+          ipAddresses:
+          - ${NAI_UI_ENDPOINT}
+        EOF
+        ```
+
+    === ":octicons-command-palette-16: Command output"
+    
+        ```bash hl_lines="12 14 16"
+        certificate.cert-manager.io/nai-cert created
+        ```
 
 6. Patch the Envoy gateway with the ``nai-cert`` certificate details
    
-    ```bash
-    kubectl patch gateway nai-ingress-gateway -n nai-system --type='json' -p='[{"op": "replace", "path": "/spec/listeners/1/tls/certificateRefs/0/name", "value": "nai-cert"}]'
-    ```
+    === ":octicons-command-palette-16: Command"
+    
+        ```bash
+        kubectl patch gateway nai-ingress-gateway -n nai-system --type='json' -p='[{"op": "replace", "path": "/spec/listeners/1/tls/certificateRefs/0/name", "value": "nai-cert"}]'
+        ```
+    === ":octicons-command-palette-16: Command output"
+    
+        ```bash hl_lines="12 14 16"
+        gateway.gateway.networking.k8s.io/nai-ingress-gateway patched
+        ```
 
 7. Create EnvoyProxy
    
-    ```bash
-    k apply -f -<<EOF
-    apiVersion: gateway.envoyproxy.io/v1alpha1
-    kind: EnvoyProxy
-    metadata:
-      name: envoy-service-config
-      namespace: nai-system
-    spec:
-      provider:
-        type: Kubernetes
-        kubernetes:
-          envoyService:
-            type: LoadBalancer
-    EOF
-    ```
+    === ":octicons-command-palette-16: Command"
+    
+        ```bash
+        k apply -f -<<EOF
+        apiVersion: gateway.envoyproxy.io/v1alpha1
+        kind: EnvoyProxy
+        metadata:
+          name: envoy-service-config
+          namespace: nai-system
+        spec:
+          provider:
+            type: Kubernetes
+            kubernetes:
+              envoyService:
+                type: LoadBalancer
+        EOF
+        ```
+    === ":octicons-command-palette-16: Command output"
+    
+        ```bash hl_lines="12 14 16"
+        envoyproxy.gateway.envoyproxy.io/envoy-service-config created
+        ```
 
 8. Patch the ``nai-ingress-gateway`` resource with the new ``EnvoyProxy`` details
 
-    ```bash
-    kubectl patch gateway nai-ingress-gateway -n nai-system --type=merge \
-    -p '{
-        "spec": {
-            "infrastructure": {
-                "parametersRef": {
-                    "group": "gateway.envoyproxy.io",
-                    "kind": "EnvoyProxy",
-                    "name": "envoy-service-config"
+    === ":octicons-command-palette-16: Command"
+    
+        ```bash
+        kubectl patch gateway nai-ingress-gateway -n nai-system --type=merge \
+        -p '{
+            "spec": {
+                "infrastructure": {
+                    "parametersRef": {
+                        "group": "gateway.envoyproxy.io",
+                        "kind": "EnvoyProxy",
+                        "name": "envoy-service-config"
+                    }
                 }
             }
-        }
-    }'
-    ```
+        }'
+        ```
+    === ":octicons-command-palette-16: Command output"
+    
+        ```bash hl_lines="12 14 16"
+        gateway.gateway.networking.k8s.io/nai-ingress-gateway patched
+        ```
 
 ## Accessing the UI
 
@@ -763,7 +827,7 @@ We will download and user llama3 8B model which we sized for in the previous sec
 5. Provide the Model Instance Name as ``Meta-Llama-3.1-8B-Instruct`` and click **Import**
 5. Go to VSC Terminal to monitor the download
     
-    === "Command"
+    === ":octicons-command-palette-16: Command"
 
         ```bash title="Get jobs in nai-admin namespace"
         kubens nai-admin
@@ -777,7 +841,7 @@ We will download and user llama3 8B model which we sized for in the previous sec
         kubectl logs -f _pod_associated_with_job
         ```
 
-    === "Command output"
+    === ":octicons-command-palette-16: Command output"
 
         ```text title="Get jobs in nai-admin namespace"
         kubens nai-admin
@@ -817,13 +881,13 @@ We will download and user llama3 8B model which we sized for in the previous sec
 
 6. Optional - verify the events in the namespace for the pvc creation 
     
-    === "Command"
+    === ":octicons-command-palette-16: Command"
 
         ```bash
         k get events | awk '{print $1, $3}'
         ```
 
-    === "Command output"
+    === ":octicons-command-palette-16: Command output"
 
         ```{ .text, .no-copy}
         $ k get events | awk '{print $1, $3}'
@@ -884,14 +948,14 @@ In this section we will create an inference endpoint using the downloaded model.
 3. Click on **Create**
 4. Monitor the ``nai-admin`` namespace to check if the services are coming up
    
-    === "Command"
+    === ":octicons-command-palette-16: Command"
 
         ```bash
         kubens nai-admin
         kubectl get po,deploy
         ```
 
-    === "Command output"
+    === ":octicons-command-palette-16: Command output"
         
         ```{ .text .no-copy }
         kubens nai-admin
@@ -905,13 +969,13 @@ In this section we will create an inference endpoint using the downloaded model.
 
 5. Check the events in the ``nai-admin`` namespace for resource usage to make sure there are no errors
    
-    === "Command"
+    === ":octicons-command-palette-16: Command"
        
         ```bash
         kubectl get events -n nai-admin --sort-by='.lastTimestamp' | awk '{print $1, $3, $5}'
         ```
 
-    === "Command output"
+    === ":octicons-command-palette-16: Command output"
        
         ```bash
         $ kubectl get events -n nai-admin --sort-by='.lastTimestamp' | awk '{print $1, $3, $5}'
@@ -930,13 +994,13 @@ In this section we will create an inference endpoint using the downloaded model.
 
 6. Once the services are running, check the status of the inference service
    
-    === "Command"
+    === ":octicons-command-palette-16: Command"
 
         ```bash
         kubectl get isvc
         ```
 
-    === "Command output"
+    === ":octicons-command-palette-16: Command output"
         
         ```{ .text .no-copy }
         kubectl get isvc
