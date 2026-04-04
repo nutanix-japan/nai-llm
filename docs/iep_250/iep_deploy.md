@@ -1,8 +1,8 @@
 # Deploying Nutanix Enterprise AI (NAI) NVD Reference Application
 
-!!! info "Version 2.6.0"
+!!! info "Version 2.5.0"
 
-    This version of the NAI deployment is based on the Nutanix Enterprise AI (NAI) ``v2.6.0`` release.
+    This version of the NAI deployment is based on the Nutanix Enterprise AI (NAI) ``v2.5.0`` release.
 
 ```mermaid
 stateDiagram-v2
@@ -24,11 +24,10 @@ stateDiagram-v2
 
 ## Prepare for NAI Deployment
 
-Changes in NAI ``v2.6.0``
+Changes in NAI ``v2.5.0``
 
   - Kserve is of at least of ``v0.15.0``
   - Cert-manager is at least of ``v1.17.2``
-  - OpenTelemetry operator is at least of ``v0.102.0``
 
 ### Enable NKP Applications through NKP GUI
 
@@ -49,19 +48,9 @@ Enable these NKP Operators from NKP GUI.
 
 ### Enable Pre-requisite Applications  
 
-!!! example "Early Access(EA)/Technical Preview(TP) Software with NAI v2.6.0"
-    
-    In this lab, we will deploy EA and TP version of the following software to test the following:
-
-    -  Envoy Gateway in a AI Gateway mode
-    -  Nutanix Enterprise AI 
-  
-        * Unified Endpoints - multiple endpoints for HA and token-based rate limiting
-        * Providers - Add remote endpoints from providers to utilize their models in Nutanix Enterprise AI workloads.
-
 We will enable the following pre-requisite applications through command line:
 
-   - Envoy Gateway ``v1.6.3``
+   - Envoy Gateway ``v1.5.0``
    - Kserve: ``v0.15.0`` in raw deployment mode
    
 !!! note
@@ -98,237 +87,104 @@ We will enable the following pre-requisite applications through command line:
 
 2. Run the command to load the environment variables
    
-    === ":octicons-command-palette-16: Command"
+    ```bash
+    source $HOME/.env
+    ```
 
-        ```bash
-        source $HOME/.env
-        ```
-
-3. Install Envoy Gateway CRDs ``v1.6.3``
+3. Install Envoy Gateway ``v1.5.0``
    
-    === ":octicons-command-palette-16: Command"
+    === "Command"
     
         ```bash
-        helm template eg oci://docker.io/envoyproxy/gateway-crds-helm \
-        --version v1.6.3 \
-        --set crds.gatewayAPI.enabled=true \
-        --set crds.envoyGateway.enabled=true \
-        | kubectl apply --server-side --force-conflicts -f -
-        ```
-    
-    === ":octicons-command-palette-16: Command output"
-    
-        ```bash
-        Pulled: docker.io/envoyproxy/gateway-crds-helm:v1.6.3
-        Digest: sha256:e94d3fdf5d4cb08e2c8efa8c1da133b9804c2e88a3acb4d0e20adb8755a60174
-        customresourcedefinition.apiextensions.k8s.io/backendtlspolicies.gateway.networking.k8s.io serverside-applied
-        customresourcedefinition.apiextensions.k8s.io/gatewayclasses.gateway.networking.k8s.io serverside-applied
-        customresourcedefinition.apiextensions.k8s.io/gateways.gateway.networking.k8s.io serverside-applied
-        customresourcedefinition.apiextensions.k8s.io/grpcroutes.gateway.networking.k8s.io serverside-applied
-        customresourcedefinition.apiextensions.k8s.io/httproutes.gateway.networking.k8s.io serverside-applied
-        customresourcedefinition.apiextensions.k8s.io/referencegrants.gateway.networking.k8s.io serverside-applied
-        customresourcedefinition.apiextensions.k8s.io/tcproutes.gateway.networking.k8s.io serverside-applied
-        customresourcedefinition.apiextensions.k8s.io/tlsroutes.gateway.networking.k8s.io serverside-applied
-        customresourcedefinition.apiextensions.k8s.io/udproutes.gateway.networking.k8s.io serverside-applied
-        customresourcedefinition.apiextensions.k8s.io/xbackendtrafficpolicies.gateway.networking.x-k8s.io serverside-applied
-        customresourcedefinition.apiextensions.k8s.io/xlistenersets.gateway.networking.x-k8s.io serverside-applied
-        customresourcedefinition.apiextensions.k8s.io/xmeshes.gateway.networking.x-k8s.io serverside-applied
-        customresourcedefinition.apiextensions.k8s.io/backends.gateway.envoyproxy.io serverside-applied
-        customresourcedefinition.apiextensions.k8s.io/backendtrafficpolicies.gateway.envoyproxy.io serverside-applied
-        customresourcedefinition.apiextensions.k8s.io/clienttrafficpolicies.gateway.envoyproxy.io serverside-applied
-        customresourcedefinition.apiextensions.k8s.io/envoyextensionpolicies.gateway.envoyproxy.io serverside-applied
-        customresourcedefinition.apiextensions.k8s.io/envoypatchpolicies.gateway.envoyproxy.io serverside-applied
-        customresourcedefinition.apiextensions.k8s.io/envoyproxies.gateway.envoyproxy.io serverside-applied
-        customresourcedefinition.apiextensions.k8s.io/httproutefilters.gateway.envoyproxy.io serverside-applied
-        customresourcedefinition.apiextensions.k8s.io/securitypolicies.gateway.envoyproxy.io serverside-applied
+        helm install eg oci://docker.io/envoyproxy/gateway-helm \
+        --version v1.5.0 \
+        -n envoy-gateway-system --create-namespace
         ```
 
-4. Create the AI Gateway mode configuration template file ``eg-config-for-gateway-mode.yaml`` to enable advanced features
-
-    === ":octicons-file-code-16: ``eg-config-for-gateway-mode.yaml``"
-    
-        ```bash
-        config:
-        envoyGateway:
-          gateway:
-            controllerName: "gateway.envoyproxy.io/gatewayclass-controller"
-          logging:
-            level:
-              default: "info"
-          provider:
-            kubernetes:
-              rateLimitDeployment:
-                container:
-                  image: "docker.io/envoyproxy/ratelimit:99d85510"
-                patch:
-                  type: "StrategicMerge"
-                  value:
-                    spec:
-                      template:
-                        spec:
-                          containers:
-                            - imagePullPolicy: "IfNotPresent"
-                              name: "envoy-ratelimit"
-                              image: "docker.io/envoyproxy/ratelimit:99d85510"
-            type: "Kubernetes"
-          extensionApis:
-            enableEnvoyPatchPolicy: true
-            enableBackend: true
-          extensionManager:
-            maxMessageSize: 11Mi
-            backendResources:
-              - group: inference.networking.k8s.io
-                kind: InferencePool
-                version: v1
-            hooks:
-              xdsTranslator:
-                translation:
-                  listener:
-                    includeAll: true
-                  route:
-                    includeAll: true
-                  cluster:
-                    includeAll: true
-                  secret:
-                    includeAll: true
-                post:
-                  - "Translation"
-                  - "Cluster"
-                  - "Route"
-            service:
-              fqdn:
-                hostname: "ai-gateway-controller.nai-system.svc.cluster.local"
-                port: 1063
-          rateLimit:
-            backend:
-              type: "Redis"
-              redis:
-                url: "redis-sentinel.nai-system.svc.cluster.local:6379"
-        ```
-    
-5. Install Envoy Gateway ``v1.6.3``
-   
-    === ":octicons-command-palette-16: Command"
-    
-        ```bash
-        helm upgrade --install eg oci://docker.io/envoyproxy/gateway-helm --version v1.6.3 \
-        -n envoy-gateway-system --create-namespace --skip-crds \
-        -f ./eg-config-for-gateway-mode.yaml
-        ```
-
-    === ":octicons-command-palette-16: Output"
+    === "Output"
         
         ```{ .text .no-copy }
-        Pulled: docker.io/envoyproxy/gateway-helm:v1.6.3
-        Digest: sha256:6dca101fdc0d41c702c1070eb42db119a2768a33388ba28041ae615cbe262aaf
-        Release "eg" has been upgraded. Happy Helming!
+        helm install eg oci://docker.io/envoyproxy/gateway-helm --version v1.5.0 -n envoy-gateway-system --create-namespace
+        Pulled: docker.io/envoyproxy/gateway-helm:v1.5.0
+        Digest: sha256:0070bdddc186e6bd48007a84c6d264b796d14017436f38ccfe5ca621aefc1ca5
         NAME: eg
-        LAST DEPLOYED: Sat Apr  4 08:34:21 2026
+        LAST DEPLOYED: Mon Aug 25 04:31:06 2025
         NAMESPACE: envoy-gateway-system
         STATUS: deployed
-        REVISION: 2
+        REVISION: 1
         TEST SUITE: None
-        NOTES:
-        **************************************************************************
-        *** PLEASE BE PATIENT: Envoy Gateway may take a few minutes to install ***
-        **************************************************************************
-        
-        Envoy Gateway is an open source project for managing Envoy Proxy as a standalone or Kubernetes-based application gateway.
-        
-        Thank you for installing Envoy Gateway! 🎉
-        
-        Your release is named: eg. 🎉
-        
-        Your release is in namespace: envoy-gateway-system. 🎉
-        
-        To learn more about the release, try:
-        
-          $ helm status eg -n envoy-gateway-system
-          $ helm get all eg -n envoy-gateway-system
-        
-        To have a quickstart of Envoy Gateway, please refer to https://gateway.envoyproxy.io/latest/tasks/quickstart.
-        
-        To get more details, please visit https://gateway.envoyproxy.io and https://github.com/envoyproxy/gateway.
         ``` 
 
-6. Check if Envoy Gateway resources are ready
+4. Check if Envoy Gateway resources are ready
    
-    === ":octicons-command-palette-16: Command"
+    === "Command"
     
         ```bash
-        kubectl wait --timeout=5m -n envoy-gateway-system deployment/envoy-gateway \
+        kubectl wait --timeout=5m \
+        -n envoy-gateway-system deployment/envoy-gateway \ 
         --for=condition=Available
         ```
 
-    === ":octicons-command-palette-16: Output"
+    === "Output"
 
         ```{ .text .no-copy }
-        kubectl wait --timeout=5m -n envoy-gateway-system deployment/envoy-gateway --for=condition=Available
-        #
         deployment.apps/envoy-gateway condition met
         ```
 
-7. Open ``$HOME/.env`` file in ``VSCode``
+5. Open ``$HOME/.env`` file in ``VSCode``
 
-8. Add (append) the following line and save it
+6. Add (append) the following line and save it
 
 
     ```text
     export KSERVE_VERSION=v0.15.0
     ```
 
-8. Load the ``.env`` variables
-   
-    === ":octicons-command-palette-16: Command"
+8. Install ``kserve`` using the following commands
 
-        ```bash
-        source $HOME/.env
-        ```
-
-9.  Install ``kserve`` using the following commands
-
-    === ":octicons-command-palette-16: Command"
+    === "Command"
     
         ```bash
         helm upgrade --install kserve-crd oci://ghcr.io/kserve/charts/kserve-crd \
-        --version ${KSERVE_VERSION} -n kserve --create-namespace --wait
+        --version ${KSERVE_VERSION} -n kserve --create-namespace 
 
         ```
         ```bash
         helm upgrade --install kserve oci://ghcr.io/kserve/charts/kserve \
-        --version ${KSERVE_VERSION} --namespace kserve --create-namespace --wait \
+        --version ${KSERVE_VERSION} --namespace kserve --create-namespace \
         --set kserve.controller.deploymentMode=RawDeployment \
       	--set kserve.controller.gateway.disableIngressCreation=true
         ```
 
-    === ":octicons-command-palette-16: Output"
+    === "Output"
     
         ```{ .text .no-copy }
         Pulled: ghcr.io/kserve/charts/kserve-crd:v0.15.0
         Digest: sha256:57ad1a5475fd625cb558214ba711752aa77b7d91686a391a5f5320cfa72f3fa8
         Release "kserve-crd" has been upgraded. Happy Helming!
         NAME: kserve-crd
-        LAST DEPLOYED: Sat Apr  4 08:40:05 2026
+        LAST DEPLOYED: Mon May 19 06:11:30 2025
         NAMESPACE: kserve
         STATUS: deployed
         REVISION: 2
-        TEST SUITE: None    
+        TEST SUITE: None
+        (devbox) 
         ```
         ```{ .text .no-copy }
         Pulled: ghcr.io/kserve/charts/kserve:v0.15.0
         Digest: sha256:905abce80e975c53b40fba7a12b0b9a1e24bdf65cceebb88fba4ef62bba01406
         Release "kserve" has been upgraded. Happy Helming!
         NAME: kserve
-        LAST DEPLOYED: Sat Apr  4 08:41:02 2026
+        LAST DEPLOYED: Mon May 19 05:48:45 2025
         NAMESPACE: kserve
         STATUS: deployed
         REVISION: 2
         TEST SUITE: None
         ```
 
-10. Check if ``kserve`` pods are running
+9. Check if ``kserve`` pods are running
    
-    === ":octicons-command-palette-16: Command"
+    === "Command"
     
         ```bash
         kubens kserve
@@ -337,39 +193,37 @@ We will enable the following pre-requisite applications through command line:
 
         1. Make sure both the containers are running for ``kserve-controller-manager`` pod
 
-    === ":octicons-command-palette-16: Output"
+    === "Output"
     
         ```{ .text .no-copy }
         NAME                                         READY   STATUS    RESTARTS   AGE
-        kserve-controller-manager-69b6dbf9cf-ft55b   2/2     Running   0          4d23h
+        kserve-controller-manager-69b6dbf9cf-mbnzg   2/2     Running   0          18m
         ```
 
-11. Install OpenTelemetry Operator:
+10. Install OpenTelemetry Operator:
 
-    === ":octicons-command-palette-16: Command"
+    === "Command"
 
         ```bash
         helm upgrade --install opentelemetry-operator opentelemetry-operator \
         --repo https://open-telemetry.github.io/opentelemetry-helm-charts \
-        --version=0.102.0 -n opentelemetry \
+        --version=0.93.0 -n opentelemetry \
         --create-namespace --wait
         ```
 
-    === ":octicons-command-palette-16: Output"
+    === "Output"
     
         ```{ .text .no-copy }
-        Release "opentelemetry-operator" has been upgraded. Happy Helming!
         NAME: opentelemetry-operator
-        LAST DEPLOYED: Sat Apr  4 08:42:43 2026
+        LAST DEPLOYED: Tue Feb 17 11:43:17 2026
         NAMESPACE: opentelemetry
         STATUS: deployed
         REVISION: 2
         NOTES:
         [WARNING] No resource limits or requests were set. Consider setter resource requests and limits via the `resources` field.
         
-        
         opentelemetry-operator has been installed. Check its status by running:
-          kubectl --namespace opentelemetry get pods -l "app.kubernetes.io/instance=opentelemetry-operator"
+        kubectl --namespace opentelemetry get pods -l "app.kubernetes.io/instance=opentelemetry-operator"
         
         Visit https://github.com/open-telemetry/opentelemetry-operator for instructions on how to create & configure OpenTelemetryCollector and Instrumentation custom resources by using the Operator.
         ```
@@ -385,114 +239,65 @@ We will use the Docker login credentials we created in the previous section to d
 
     The following Docker based environment variable values need to be changed from your own Docker environment variables to the credentials downloaded from Nutanix Portal.
 
-    - ``$DOCKER_NAI_USERNAME``
-    - ``$DOCKER_NAI_ASSWORD``
-    - ``$DOCKER_NAI_EMAIL``
+    - ``$DOCKER_USERNAME``
+    - ``$DOCKER_PASSWORD``
 
 1. Open ``$HOME/.env`` file in ``VSCode``
 
 2. Add (append) the following environment variables and save it
 
-    === ":octicons-file-code-16: Template ``.env``"
+    === "Template .env"
 
         ```text
-        export REGISTRY_SECRET_NAME=_k8s_secret_for_nai
-        export DOCKER_SERVER=https://index.docker.io/v1/
-        export DOCKER_NAI_USERNAME=_GA_release_docker_username
-        export DOCKER_NAI_PASSWORD=_GA_release_docker_password
-        export DOCKER_NAI_EMAIL=_GA_release_docker_email
+        export DOCKER_USERNAME=_GA_release_docker_username
+        export DOCKER_PASSWORD=_GA_release_docker_password
         export NAI_CORE_VERSION=_GA_release_nai_core_version
-        export NAI_API_RWX_STORAGECLASS=_nkp_rwx_storage_class
-        export NAI_DEFAULT_RWO_STORAGECLASS=_nkp_rwo_storage_class
-        export NKP_WORKSPACE_NAMESPACE=_nkp_workspace name
+        export NAI_DEFAULT_RWO_STORAGECLASS=_RWO_storage_class_name
+        export NAI_API_RWX_STORAGECLASS=_RWX_storage_class_name
         ```
 
-    === ":octicons-file-code-16: Sample ``.env``"
+    === "Sample .env"
 
         ```text
-        export REGISTRY_SECRET_NAME=nai-regcred
-        export DOCKER_SERVER=https://index.docker.io/v1/
-        export DOCKER_NAI_USERNAME=ntnxsvcgpt
-        export DOCKER_NAI_PASSWORD=dckr_pat_XXXXXXXXXXXXXXXXXXXXXXXXX
-        export DOCKER_NAI_EMAIL=ntnxsvcgpt
-        export NAI_CORE_VERSION=2.6.0
-        export NAI_API_RWX_STORAGECLASS=nai-nfs-storage
+        export DOCKER_USERNAME=ntnxsvcgpt
+        export DOCKER_PASSWORD=dckr_pat_xxxxxxxxxxxxxxxxxxxxxxxx
+        export NAI_CORE_VERSIONv2.5.0
         export NAI_DEFAULT_RWO_STORAGECLASS=nutanix-volume
-        export NKP_WORKSPACE_NAMESPACE=kommander-workspace
+        export NAI_API_RWX_STORAGECLASS=nai-nfs-storage
         ```
 
-3. Source the environment variables
+3. Source the environment variables (if not done so already)
 
-    === ":octicons-command-palette-16: Command"
+    ```bash
+    source $HOME/.env
+    ```
 
-        ```bash
-        source $HOME/.env
-        ```
+4. Add NAI helm charts
 
-4. Create the nai-system namespace to install Nutanix Enterprise AI
-   
-    === ":octicons-command-palette-16: Command"
-    
-        ```bash
-        kubectl create namespace nai-system --dry-run=client -o yaml | kubectl apply -f -
-        ```
-    
-    === ":octicons-command-palette-16: Command output"
-    
-        ```bash
-        kubectl create namespace nai-system --dry-run=client -o yaml | kubectl apply -f -
-        #
-        namespace/nai-system created     
-        ```
-   
-5. Create docker registry Secrets in both ``nai-system ``and ``envoy-gateway-system`` namespaces.
-   
-    === ":octicons-command-palette-16: Command"
-    
-        ```text
-        kubectl -n nai-system create secret docker-registry ${REGISTRY_SECRET_NAME} \
-        --docker-server=${DOCKER_SERVER} \
-        --docker-username=${DOCKER_NAI_USERNAME} \
-        --docker-password=${DOCKER_NAI_PASSWORD} \
-        --docker-email=${DOCKER_NAI_EMAIL} \
-        --dry-run=client -o yaml | kubectl apply -f -
-        ```
-        ```text
-        kubectl -n envoy-gateway-system create secret docker-registry ${REGISTRY_SECRET_NAME} \
-         --docker-server=${DOCKER_SERVER} \
-         --docker-username=${DOCKER_NAI_USERNAME} \
-         --docker-password=${DOCKER_NAI_PASSWORD} \
-         --docker-email=${DOCKER_NAI_EMAIL} \
-         --dry-run=client -o yaml | kubectl apply -f -
-        ```
+    ```bash
+    helm repo add ntnx-charts https://nutanix.github.io/helm-releases
+    helm repo update ntnx-charts
+    ```
 
-    === ":octicons-command-palette-16: Command output"
-    
-        ```{ .text, .no-copy}
-        secret/nai-regcred configured
-        ```
-        ```{ .text, .no-copy}
-        secret/nai-regcred configured
-        ```
-   
-
-8. Add NAI helm charts
-    
-    === ":octicons-command-palette-16: Command"
-
-        ```bash
-        helm repo add ntnx-charts https://nutanix.github.io/helm-releases
-        helm repo update ntnx-charts
-        ```
-
-9. Install NAI operator
+5. Install NAI operator
    
     === ":octicons-command-palette-16: Command"
 
         ```text
-        helm upgrade --install nai-operators ntnx-charts/nai-operators --version=$NAI_CORE_VERSION  -n nai-system --create-namespace --wait \
-        --set "naiAIGateway.enabled=true" \
-        --set "global.imagePullSecrets[0].name=${REGISTRY_SECRET_NAME}" \
+        helm upgrade --install nai-operators ntnx-charts/nai-operators --version=2.5.0  -n nai-system --create-namespace --wait \
+        --set imagePullSecret.credentials.username=$DOCKER_USERNAME \
+        --set imagePullSecret.credentials.email=$DOCKER_USERNAME \
+        --set imagePullSecret.credentials.password=$DOCKER_PASSWORD \
+        --insecure-skip-tls-verify
+        ```
+    
+    === ":octicons-command-palette-16: Sample command"
+
+        ```text
+        helm upgrade --install nai-operators ntnx-charts/nai-operators --version=2.5.0  -n nai-system --create-namespace --wait \
+        --set imagePullSecret.credentials.username=ntnxsvcgpt \
+        --set imagePullSecret.credentials.email=ntnxsvcgpt \
+        --set imagePullSecret.credentials.password=dckr_pat_xxxxxxxxxxxxxxxxxxxxxxxx \
         --insecure-skip-tls-verify
         ```
 
@@ -501,14 +306,14 @@ We will use the Docker login credentials we created in the previous section to d
         ```{ .text, .no-copy}
         Release "nai-operators" has been upgraded. Happy Helming!
         NAME: nai-operators
-        LAST DEPLOYED: Sat Apr  4 08:58:31 2026
+        LAST DEPLOYED: Tue Feb 17 11:56:41 2026
         NAMESPACE: nai-system
         STATUS: deployed
-        REVISION: 3
+        REVISION: 2
         TEST SUITE: None
         ```
 
-10. Check if all NAI operator pods are running
+6. Check if all NAI operator pods are running 
    
     === ":octicons-command-palette-16: Command"
 
@@ -520,47 +325,44 @@ We will use the Docker login credentials we created in the previous section to d
     === ":octicons-command-palette-16: Command output"
 
         ```{ .text, .no-copy}
-        ai-gateway-controller-6b786974b5-sqvft                  1/1     Running       0          3m5s
-        nai-operators-nai-clickhouse-operator-f8f666db9-xzjj8   2/2     Running       0          3m5s
-        redis-standalone-684f6dd8f7-hlwpl                       2/2     Running       0          3m5s
+        nai-operators-nai-clickhouse-operator-67bb54cf48-47xdf   2/2     Running   0          10m
+        redis-standalone-8568f5c645-t2sqm                        2/2     Running   0          10m
         ```
 
-11. Install NAI core in AI gateway mode
-    
-    !!! info
-
-        This installation takes about 5-10 minutes depending on the available resources
+7. Install NAI core
     
     === ":octicons-command-palette-16: Command"
     
-        ```text hl_lines="3"
-        helm upgrade --install nai-core ntnx-charts/nai-core --version=$NAI_CORE_VERSION  -n nai-system --create-namespace --wait \
-        --set "global.imagePullSecrets[0].name=${REGISTRY_SECRET_NAME}" \
-        --set "naiAIGateway.enabled=true" \
-        --set "naiApi.storageClassName=${NAI_API_RWX_STORAGECLASS}" \
-        --set "defaultStorageClassName=${NAI_DEFAULT_RWO_STORAGECLASS}" \
-        --set "naiMonitoring.opentelemetry.storageClassName=${NAI_API_RWX_STORAGECLASS}" \
-        --set "nai-clickhouse-keeper.clickhouseKeeper.storage.storageClass=${NAI_DEFAULT_RWO_STORAGECLASS}" \
-        --set "nai-clickhouse-server.clickhouse.storage.storageClass=${NAI_DEFAULT_RWO_STORAGECLASS}" \
-        --set "naiMonitoring.nodeExporter.serviceMonitor.namespaceSelector.matchNames[0]=${NKP_WORKSPACE_NAMESPACE}" \
-        --set "naiMonitoring.dcgmExporter.serviceMonitor.namespaceSelector.matchNames[0]=${NKP_WORKSPACE_NAMESPACE}" \
-        --insecure-skip-tls-verify
+        ```text
+        helm upgrade --install nai-core ntnx-charts/nai-core --version=2.5.0 -n nai-system --wait \
+        --set imagePullSecret.credentials.username=$DOCKER_USERNAME \
+        --set imagePullSecret.credentials.email=$DOCKER_USERNAME \
+        --set imagePullSecret.credentials.password=$DOCKER_PASSWORD \
+        --insecure-skip-tls-verify \
+        --set naiApi.storageClassName=$NAI_API_RWX_STORAGECLASS \
+        --set defaultStorageClassName=$NAI_DEFAULT_RWO_STORAGECLASS \
+        --set naiMonitoring.nodeExporter.serviceMonitor.namespaceSelector.matchNames[0]=kommander \
+        --set naiMonitoring.dcgmExporter.serviceMonitor.namespaceSelector.matchNames[0]=kommander \
+        --set naiMonitoring.opentelemetry.common.resources.requests.cpu=0.1 \
+        --set "nai-clickhouse-keeper.clickhouseKeeper.resources.limits.memory=1Gi" \
+        --set "nai-clickhouse-keeper.clickhouseKeeper.resources.requests.memory=1Gi" 
         ```
 
     === ":octicons-command-palette-16: Sample command"
     
-        ```text hl_lines="3"
-        helm upgrade --install nai-core ntnx-charts/nai-core --version=2.6.0  -n nai-system --create-namespace --wait \
-        --set "global.imagePullSecrets[0].name=nai-regcred" \
-        --set "naiAIGateway.enabled=true" \
-        --set "naiApi.storageClassName=nai-nfs-storage" \
-        --set "defaultStorageClassName=nutanix-volume" \
-        --set "naiMonitoring.opentelemetry.storageClassName=nai-nfs-storage" \
-        --set "nai-clickhouse-keeper.clickhouseKeeper.storage.storageClass=nutanix-volume" \
-        --set "nai-clickhouse-server.clickhouse.storage.storageClass=nutanix-volume" \
-        --set "naiMonitoring.nodeExporter.serviceMonitor.namespaceSelector.matchNames[0]=kommander" \
-        --set "naiMonitoring.dcgmExporter.serviceMonitor.namespaceSelector.matchNames[0]=kommander" \
-        --insecure-skip-tls-verify
+        ```text
+        helm upgrade --install nai-core ntnx-charts/nai-core --version=2.5.0 -n nai-system --wait \
+        --set imagePullSecret.credentials.username=ntnxsvcgpt \
+        --set imagePullSecret.credentials.email=ntnxsvcgpt \
+        --set imagePullSecret.credentials.password=dckr_pat_xxxxxxxxxxxxxxxxxxxxxxxx \
+        --insecure-skip-tls-verify \
+        --set naiApi.storageClassName=nai-nfs-storage \
+        --set defaultStorageClassName=nutanix-volume \
+        --set naiMonitoring.nodeExporter.serviceMonitor.namespaceSelector.matchNames[0]=kommander \
+        --set naiMonitoring.dcgmExporter.serviceMonitor.namespaceSelector.matchNames[0]=kommander \
+        --set naiMonitoring.opentelemetry.common.resources.requests.cpu=0.1 \
+        --set "nai-clickhouse-keeper.clickhouseKeeper.resources.limits.memory=1Gi" \
+        --set "nai-clickhouse-keeper.clickhouseKeeper.resources.requests.memory=1Gi" 
         ```
 
     === ":octicons-command-palette-16: Command output"
@@ -568,14 +370,14 @@ We will use the Docker login credentials we created in the previous section to d
         ```{ .text, .no-copy}
         Release "nai-core" has been upgraded. Happy Helming!
         NAME: nai-core
-        LAST DEPLOYED: Sat Apr  4 09:08:31 2026
+        LAST DEPLOYED: Tue Feb 17 12:00:35 2026
         NAMESPACE: nai-system
         STATUS: deployed
         REVISION: 2
         TEST SUITE: None
         ```
 
-12. Verify that the NAI Core Pods are running and healthy - there should be more jobs completing and pods coming up to establish NAI functionality
+8.  Verify that the NAI Core Pods are running and healthy - there should be more jobs completing and pods coming up to establish NAI functionality
     
     === ":octicons-command-palette-16: Command"
 
