@@ -248,5 +248,7 @@ copy_airgap_nai
 
 #Gtag
 gtag
+
+# Previous versions - soon to migrate to mike versioning
 iep_240/*
 iep_250/*
