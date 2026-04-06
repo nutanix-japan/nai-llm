@@ -1,10 +1,5 @@
 [
   {
-    "version": "dev",
-    "title": "Development",
-    "aliases": []
-  },
-  {
     "version": "2.6.0",
     "title": "NAI 2.6.0",
     "aliases": [
