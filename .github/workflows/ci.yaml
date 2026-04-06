@@ -2,34 +2,41 @@ name: ci
 on:
   push:
     branches:
-    - master
-    - main
+      - master
+      - main
+    tags:
+      - '*' # Trigger on version tags (e.g. v1.0)
+
 permissions:
   contents: write
+
 jobs:
   deploy:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v4
-    - name: Configure Git Credentials
-      run: |
-        git config user.name github-actions[bot]
-        git config user.email 41898282+github-actions[bot]@users.noreply.github.com
-    - uses: actions/setup-python@v5
-      with:
-        python-version: 3.x
-    - run: echo "cache_id=$(date --utc '+%V')" >> $GITHUB_ENV
-    - uses: actions/cache@v4
-      with:
-        key: mkdocs-material-${{ env.cache_id }}
-        path: .cache
-        restore-keys: |
-          mkdocs-material-
-    - run: pip install mkdocs-material
-    - run: pip install termynal
-    - run: pip install mkdocs-git-authors-plugin
-    - run: pip install mkdocs-git-revision-date-localized-plugin
-    - run: pip install mkdocs-git-committers-plugin-2
-    - run: pip install markdown-grid-tables
-    - run: pip install "mkdocs-material[imaging]"
-    - run: mkdocs gh-deploy --force
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0 # REQUIRED: Mike needs full history to manage versions
+
+      - name: Configure Git Credentials
+        run: |
+          git config user.name github-actions[bot]
+          git config user.email 41898282+github-actions[bot]@users.noreply.github.com
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: 3.x
+          cache: 'pip' # Built-in pip caching is faster than manual actions/cache
+      
+      - run: pip install -r requirements.txt
+
+      - name: Deploy with mike
+        run: |
+          if [[ $GITHUB_REF == refs/tags/* ]]; then
+            # Tagged Release: Folder=0.4, Title="NAI 0.4", Alias=latest
+            mike deploy --push --update-aliases ${GITHUB_REF_NAME} latest -t "NAI ${GITHUB_REF_NAME}"
+            mike set-default --push latest
+          else
+            # Push to main: Folder=dev, Title="Development"
+            mike deploy --push dev -t "Development"
+          fi
