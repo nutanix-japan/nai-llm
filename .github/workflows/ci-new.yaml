@@ -1,0 +1,44 @@
+name: ci
+on:
+  push:
+    branches:
+      - master
+      - main
+    tags:
+      - '*' # Trigger on version tags (e.g. v1.0)
+
+permissions:
+  contents: write
+  pages: write
+  id-token: write
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0 # REQUIRED: Mike needs full history to manage versions
+
+      - name: Configure Git Credentials
+        run: |
+          git config user.name github-actions[bot]
+          git config user.email 41898282+github-actions[bot]@users.noreply.github.com
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: 3.x
+          cache: 'pip' # Built-in pip caching is faster than manual actions/cache
+      
+      - run: pip install -r requirements.txt
+
+      - name: Deploy with mike
+        run: |
+          if [[ $GITHUB_REF == refs/tags/* ]]; then
+            # Tagged Release: Folder=0.4, Title="NAI 0.4", Alias=latest
+            mike deploy --push --update-aliases ${GITHUB_REF_NAME} latest -t "NAI ${GITHUB_REF_NAME}"
+            mike set-default --push latest
+          else
+            # Push to main: Folder=dev, Title="Development"
+            mike deploy --push dev -t "Development"
+          fi
