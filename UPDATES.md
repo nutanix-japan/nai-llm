@@ -2,6 +2,12 @@
 
 Make a change to `docs/index.md`, and publish the first version:
 
+Deploy locally
+
+```bash
+mike deploy 2.5.0 latest
+```
+
 ```
 mike deploy --push --update-aliases 0.1 latest
 ```
@@ -10,12 +16,6 @@ Set the default version to `latest`
 
 ```
 mike set-default --push latest
-```
-
-Deploy locally
-
-```bash
-mike deploy 2.5.0 latest
 ```
 
 Now, make another change and publish a new version:
@@ -48,6 +48,7 @@ mike deploy --push --update-aliases 0.2 latest
    # THEN ADD THE TAG:
    git tag 0.1
    git push origin 0.1
+   git push origin -f 0.1 # if the tag already exists on git_pages branch
    ```
 
 
