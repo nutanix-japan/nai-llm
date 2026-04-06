@@ -3,5 +3,12 @@
     "version": "dev",
     "title": "Development",
     "aliases": []
+  },
+  {
+    "version": "2.5.0",
+    "title": "NAI 2.5.0",
+    "aliases": [
+      "latest"
+    ]
   }
 ]
