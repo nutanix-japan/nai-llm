@@ -1,8 +1,8 @@
 # Deploying Nutanix Enterprise AI (NAI) NVD Reference Application
 
-!!! info "Version 2.5.0"
+!!! info "Version 2.6.0"
 
-    This version of the NAI deployment is based on the Nutanix Enterprise AI (NAI) ``v2.5.0`` release.
+    This version of the NAI deployment is based on the Nutanix Enterprise AI (NAI) ``v2.6.0`` release.
 
 ```mermaid
 stateDiagram-v2
@@ -24,11 +24,59 @@ stateDiagram-v2
 
 ## Prepare for NAI Deployment
 
-Changes in NAI ``v2.5.0``
+Changes in NAI ``v2.6.0``
 
-  - Istio Ingress gateway is replaced with Envoy Gateway
-  - Knative is removed from NAI 
-  - Kserve has been upgraded to 0.15.0
+  - Kserve is of at least of ``v0.15.0``
+  - Cert-manager is at least of ``v1.17.2``
+  - OpenTelemetry operator is at least of ``v0.102.0``
+
+### Enable Pre-requisite Applications  
+
+!!! example "Early Access(EA)/Technical Preview(TP) Software with NAI v2.6.0"
+    
+    In this lab, we will deploy EA and TP version of the following software to test the following:
+
+    -  Nutanix Enterprise AI 
+  
+        * Unified Endpoints - multiple endpoints for HA and token-based rate limiting
+        * Providers - Add remote endpoints from providers to utilize their models in Nutanix Enterprise AI workloads.
+
+We will enable the following pre-requisite applications through command line:
+
+   - Envoy Gateway ``v1.6.3`` in AI Gateway mode
+   - Kserve: ``v0.15.0`` in raw deployment mode
+   
+!!! note
+    The following application are pre-installed on NKP cluster with Pro license
+
+    - Cert Manager ``v1.17.2`` or higher
+    
+    Check if Cert Manager is installed (pre-installed on NKP cluster)
+
+    If not, install using the following command:
+   
+    === ":octicons-command-palette-16: Command"
+    
+        ```bash
+        kubectl get deploy -n cert-manager
+        ```
+
+    === ":octicons-command-palette-16: Output"
+
+        ```{ .text .no-copy }
+        $ kubectl get deploy -n cert-manager
+
+        NAME                      READY   UP-TO-DATE   AVAILABLE   AGE
+        cert-manager              1/1     1            1           145m
+        cert-manager-cainjector   1/1     1            1           145m
+        cert-manager-webhook      1/1     1            1           145m
+        ```
+
+    If not installed, use the following command to install it
+
+    ```bash
+    kubectl apply -f https://github.com/cert-manager/cert-manager/releases/download/v1.17.2/cert-manager.yaml
+    ```
 
 ## Enable NKP Applications
 
@@ -58,15 +106,15 @@ Enable these NKP Applications from NKP GUI.
     
         - Cert Manager ``v1.17.2`` or higher
         
-        Check if Cert Manager is installed (pre-installed on NKP cluster)
+        Check if Cert Manager is installed (pre-installed on NKP cluster if license is installed)
        
-        === "Command"
+        === ":octicons-command-palette-16: Command"
         
             ```bash
             kubectl get deploy -n cert-manager
             ```
     
-        === "Output"
+        === ":octicons-command-palette-16: Output"
     
             ```{ .text .no-copy }
             $ kubectl get deploy -n cert-manager
@@ -79,36 +127,45 @@ Enable these NKP Applications from NKP GUI.
     
         If not installed, use the following command to install it
     
-        ```bash
-        kubectl apply -f https://github.com/cert-manager/cert-manager/releases/download/v1.17.2/cert-manager.yaml
-        ```
-    
+        === ":octicons-command-palette-16: Command"
+        
+            ```bash
+            kubectl apply -f https://github.com/cert-manager/cert-manager/releases/download/v1.17.2/cert-manager.yaml
+            ```
   
 5. Login to VSC on the jumphost VM, append the following environment variables to the ``$HOME\airgap-nai\.env`` file and save it
    
-    === "Template .env"
+    === ":octicons-file-code-16: Template ``$HOME\airgap-nai\.env``"
 
         ```bash
-        export ENVIRONMENT=nkp
-        export NAI_USER=_your_desired_nai_username
-        export NAI_TEMP_PASS=_your_desired_nai_password # At least 8 characters
+        export NAI_USER=_your_desired_nai_ui_username
+        export NAI_TEMP_PASS=_your_desired_nai_ui_password # At least 8 characters
+        export REGISTRY=_your_private_registry
+        export REGISTRY_USERNAME=admin
+        export REGISTRY_PASSWORD=_your_password
+        export REGISTRY_EMAIL=admin
+        export IMAGE_PULL_SECRET=_your_desired_pull_secret_name
         ```
 
-    === "Sample .env"
+    === ":octicons-file-code-16: Sample ``$HOME\airgap-nai\.env``"
 
         ```{ .text .no-copy }
-        export ENVIRONMENT=nkp
         export NAI_USER=admin
         export NAI_TEMP_PASS=_XXXXXXXXX # At least 8 characters
+        export REGISTRY=harbor.10.x.x.x.nip.io/
+        export REGISTRY_USERNAME=admin
+        export REGISTRY_PASSWORD=XXXXXXXXXXX
+        export REGISTRY_EMAIL=admin
+        export IMAGE_PULL_SECRET=private-regcred
         ```
-
+  
 6. IN VSC,go to **Terminal** :octicons-terminal-24: and run the following commands to source the environment variables
 
     ```bash
     source $HOME/airgap-nai/.env
     ```
 
-7. Enable Envoy Gateway ``v1.5.0`` using the following command
+7. Enable Envoy Gateway CRDs ``v1.6.3`` in **AI gateway mode**
    
     === "Command"
     
@@ -122,7 +179,7 @@ Enable these NKP Applications from NKP GUI.
           --set global.images.ratelimit.image=${REGISTRY_HOST}/nutanix/nai-ratelimit:3e085e5b
         ```
 
-    === "Output"
+    === "Command Output"
 
         ```{ .text .no-copy }
         Pulled: harbor.10.x.x.134.nip.io/nkp/gateway-helm:v1.5.0
@@ -355,7 +412,7 @@ Enable these NKP Applications from NKP GUI.
     === ":octicons-command-palette-16: Command"
 
         ```bash
-        helm upgrade --install nai-operators oci://${REGISTRY_HOST}/nai-operators --version=2.5.0  \
+        helm upgrade --install nai-operators oci://${REGISTRY_HOST}/nai-operators --version=2.6.0  \
         -n nai-system --create-namespace --wait \
         --set imagePullSecret.credentials.username=${REGISTRY_USERNAME} \
         --set imagePullSecret.credentials.email=${REGISTRY_USERNAME} \
@@ -366,7 +423,7 @@ Enable these NKP Applications from NKP GUI.
     === ":octicons-command-palette-16: Sample Command"
       
         ```{ .text .no-copy }
-        helm upgrade --install nai-operators oci://harbor.10.x.x.134.nip.io/nkp/nai-operators --version=2.5.0 \
+        helm upgrade --install nai-operators oci://harbor.10.x.x.134.nip.io/nkp/nai-operators --version=2.6.0 \
         -n nai-system --create-namespace --wait \
         --set imagePullSecret.credentials.username=admin \
         --set imagePullSecret.credentials.email=admin  \
@@ -599,7 +656,7 @@ Enable these NKP Applications from NKP GUI.
     === ":octicons-command-palette-16: Command"
 
         ```bash
-        helm upgrade --install nai-core oci://${REGISTRY_HOST}/nai-core --version=2.5.0 \
+        helm upgrade --install nai-core oci://${REGISTRY_HOST}/nai-core --version=2.6.0 \
           -n nai-system --create-namespace --wait \
           --set imagePullSecret.credentials.username=${REGISTRY_USERNAME} \
           --set imagePullSecret.credentials.email=${REGISTRY_USERNAME} \
@@ -618,7 +675,7 @@ Enable these NKP Applications from NKP GUI.
     === ":octicons-command-palette-16: Sample Command"
       
         ```{ .text .no-copy }
-        helm upgrade --install nai-core oci://harbor.apj-cxrules.win/nkp/nai-core --version=2.5.0 \
+        helm upgrade --install nai-core oci://harbor.apj-cxrules.win/nkp/nai-core --version=2.6.0 \
           -n nai-system --create-namespace --wait  \ 
           --set imagePullSecret.credentials.username=admin \
           --set imagePullSecret.credentials.email=admin \  

@@ -53,7 +53,6 @@ Enable these NKP Operators from NKP GUI.
     
     In this lab, we will deploy EA and TP version of the following software to test the following:
 
-    -  Envoy Gateway in a AI Gateway mode
     -  Nutanix Enterprise AI 
   
         * Unified Endpoints - multiple endpoints for HA and token-based rate limiting
@@ -61,7 +60,7 @@ Enable these NKP Operators from NKP GUI.
 
 We will enable the following pre-requisite applications through command line:
 
-   - Envoy Gateway ``v1.6.3``
+   - Envoy Gateway ``v1.6.3`` in AI Gateway mode
    - Kserve: ``v0.15.0`` in raw deployment mode
    
 !!! note
@@ -70,14 +69,16 @@ We will enable the following pre-requisite applications through command line:
     - Cert Manager ``v1.17.2`` or higher
     
     Check if Cert Manager is installed (pre-installed on NKP cluster)
+
+    If not, install using the following command:
    
-    === "Command"
-    
+    === ":octicons-command-palette-16: Command"
+        
         ```bash
         kubectl get deploy -n cert-manager
         ```
-
-    === "Output"
+    
+    === ":octicons-command-palette-16: Output"
 
         ```{ .text .no-copy }
         $ kubectl get deploy -n cert-manager
@@ -90,9 +91,11 @@ We will enable the following pre-requisite applications through command line:
 
     If not installed, use the following command to install it
 
-    ```bash
-    kubectl apply -f https://github.com/cert-manager/cert-manager/releases/download/v1.17.2/cert-manager.yaml
-    ```
+    === ":octicons-command-palette-16: Command"
+    
+        ```bash
+        kubectl apply -f https://github.com/cert-manager/cert-manager/releases/download/v1.17.2/cert-manager.yaml
+        ```
    
 1. Open Terminal  in ``VSCode``
 
@@ -101,10 +104,10 @@ We will enable the following pre-requisite applications through command line:
     === ":octicons-command-palette-16: Command"
 
         ```bash
-        source $HOME/.env
+        source $HOME/nai-airgap/.env
         ```
 
-3. Install Envoy Gateway CRDs ``v1.6.3``
+3. Install Envoy Gateway CRDs ``v1.6.3`` in **AI gateway mode**
    
     === ":octicons-command-palette-16: Command"
     
@@ -682,7 +685,7 @@ The following steps show how cert-manager can be used to generate a self signed 
 
 2. Get the value of ``NAI_UI_ENDPOINT`` environment variable
    
-     === ":octicons-command-palette-16: Command"
+    === ":octicons-command-palette-16: Command"
 
         ```bash
         echo $NAI_UI_ENDPOINT

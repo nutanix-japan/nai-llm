@@ -42,3 +42,52 @@ jobs:
             # Push to main: Folder=dev, Title="Development"
             mike deploy --push dev -t "Development"
           fi
+
+# consider this update
+
+      # - name: Get latest tag
+      #   id: latest-tag
+      #   uses: actions-ecosystem/action-get-latest-tag@v2
+
+      # - name: Deploy with mike
+      #   run: |
+      #     if [[ $GITHUB_REF == refs/tags/* ]]; then
+      #       # Major Update (Tagged Release)
+      #       mike deploy --push --update-aliases ${GITHUB_REF_NAME} latest -t "NAI ${GITHUB_REF_NAME}"
+      #       mike set-default --push latest
+      #     else
+      #       # Minor Update (Push to main)
+      #       # Deploy the current 'main' content to the LATEST existing tag and update the 'latest' alias
+      #       LATEST_VER=${{ steps.latest-tag.outputs.tag }}
+      #       mike deploy --push --update-aliases $LATEST_VER latest -t "NAI $LATEST_VER"
+            
+      #       # (Optional) Still update 'dev' if you want a separate development preview
+      #       mike deploy --push dev -t "Development"
+      #     fi
+  
+# Consider further update to stable version
+
+# - name: Deploy with mike
+#         run: |
+#           if [[ $GITHUB_REF == refs/tags/* ]]; then
+#             # PATH A: Major Update (New Git Tag)
+#             # Create a new version folder and move the 'latest' alias to it
+#             VERSION_NAME=${GITHUB_REF_NAME}
+#             mike deploy --push --update-aliases $VERSION_NAME latest -t "NAI $VERSION_NAME"
+#             mike set-default --push latest
+#           else
+#             # PATH B: Minor Update (Push to main)
+#             # Find the most recent stable tag and overwrite its content
+#             STABLE_VER=${{ steps.latest-tag.outputs.tag }}
+            
+#             if [ -z "$STABLE_VER" ]; then
+#               echo "No tags found. Initializing with 'dev'."
+#               mike deploy --push dev -t "Development"
+#             else
+#               # Overwrite the existing version folder and the 'latest' alias
+#               mike deploy --push --update-aliases $STABLE_VER latest -t "NAI $STABLE_VER"
+#             fi
+            
+#             # (Optional) Also update a separate 'dev' preview if desired
+#             mike deploy --push dev -t "Development"
+#           fi
