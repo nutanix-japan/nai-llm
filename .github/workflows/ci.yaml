@@ -34,7 +34,7 @@ jobs:
 
       - name: Get latest tag
         id: latest-tag
-        uses: actions-ecosystem/action-get-latest-tag@v2
+        uses: actions-ecosystem/action-get-latest-tag@v1
       
       - name: Deploy with mike
         run: |
