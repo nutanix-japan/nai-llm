@@ -24,30 +24,6 @@ stateDiagram-v2
 
 ## Prepare for NAI Deployment
 
-Changes in NAI ``v2.6.0``
-
-  - Kserve is of at least of ``v0.15.0``
-  - Cert-manager is at least of ``v1.17.2``
-  - OpenTelemetry operator is at least of ``v0.102.0``
-
-### Enable NKP Applications through NKP GUI
-
-Enable these NKP Operators from NKP GUI.
-
-!!! note
-
-    In this lab, we will be using the **Management Cluster Workspace** to deploy our Nutanix Enterprise AI (NAI)
-
-    However, in a customer environment, it is recommended to use a separate workload NKP cluster.
-
-1. In the NKP GUI, Go to **Clusters**
-2. Click on **Management Cluster Workspace**
-3. Go to **Applications** 
-4. Search and enable the following applications: follow this order to install dependencies for NAI application
-   
-    - Kube-prometheus-stack: version ``71.0.0`` or later (pre-installed on NKP cluster)
-
-### Enable Pre-requisite Applications  
 
 !!! example "Early Access(EA)/Technical Preview(TP) Software with NAI v2.6.0"
     
@@ -58,44 +34,75 @@ Enable these NKP Operators from NKP GUI.
         * Unified Endpoints - multiple endpoints for HA and token-based rate limiting
         * Providers - Add remote endpoints from providers to utilize their models in Nutanix Enterprise AI workloads.
 
-We will enable the following pre-requisite applications through command line:
+!!! info
 
-   - Envoy Gateway ``v1.6.3`` in AI Gateway mode
-   - Kserve: ``v0.15.0`` in raw deployment mode
-   
+    Changes in NAI ``v2.6.0``
+
+    - Kserve is of at least of ``v0.15.0``
+    - Cert-manager is at least of ``v1.17.2``
+    - OpenTelemetry operator is at least of ``v0.102.0``
+    - Envoy Gateway is at least of ``v1.6.3``
+  
+## Enable Pre-requisite Applications  
+
+### Prometheus and Cert Manager
+
+The following pre-requisite applications will be enabled on NKP GUI:
+
 !!! note
-    The following application are pre-installed on NKP cluster with Pro license
 
-    - Cert Manager ``v1.17.2`` or higher
-    
-    Check if Cert Manager is installed (pre-installed on NKP cluster)
+    In this lab, we will be using the **Management Cluster Workspace** to deploy our Nutanix Enterprise AI (NAI)
 
-    If not, install using the following command:
+    However, in a customer environment, it is recommended to use a separate workload NKP cluster.
+
+!!! info
+
+    The helm charts and the container images for these applications are stored in internal Harbor registry. These images got uploaded to Harbor at the time of install NKE in this [section](../airgap_nai/infra_nkp_airgap.md#push-container-images-to-localprivate-registry-to-be-used-by-nkp).
+
+1. In the NKP GUI, Go to **Clusters**
+2. Click on **Management Cluster Workspace**
+3. Go to **Applications** 
+4. Search and enable the following applications: follow this order to install dependencies for NAI application
    
-    === ":octicons-command-palette-16: Command"
+    - Kube-prometheus-stack: version ``71.0.0`` or later (pre-installed on NKP cluster)
+    - Cert-manager - v1.17.2
+    
+    !!! tip "Cert-manager - v1.17.2"
+
+        The following application are pre-installed on NKP cluster with Pro license
+    
+        - Cert Manager ``v1.17.2`` or higher
         
-        ```bash
-        kubectl get deploy -n cert-manager
-        ```
+        Check if Cert Manager is installed (pre-installed on NKP cluster if license is installed)
+       
+        === ":octicons-command-palette-16: Command"
+        
+            ```bash
+            kubectl get deploy -n cert-manager
+            ```
     
-    === ":octicons-command-palette-16: Output"
-
-        ```{ .text .no-copy }
-        $ kubectl get deploy -n cert-manager
-
-        NAME                      READY   UP-TO-DATE   AVAILABLE   AGE
-        cert-manager              1/1     1            1           145m
-        cert-manager-cainjector   1/1     1            1           145m
-        cert-manager-webhook      1/1     1            1           145m
-        ```
-
-    If not installed, use the following command to install it
-
-    === ":octicons-command-palette-16: Command"
+        === ":octicons-command-palette-16: Output"
     
-        ```bash
-        kubectl apply -f https://github.com/cert-manager/cert-manager/releases/download/v1.17.2/cert-manager.yaml
-        ```
+            ```{ .text .no-copy }
+            $ kubectl get deploy -n cert-manager
+    
+            NAME                      READY   UP-TO-DATE   AVAILABLE   AGE
+            cert-manager              1/1     1            1           145m
+            cert-manager-cainjector   1/1     1            1           145m
+            cert-manager-webhook      1/1     1            1           145m
+            ```
+    
+        If not installed, use the following command or **NKP Applications GUI** to install it
+    
+        === ":octicons-command-palette-16: Command"
+        
+            ```bash
+            kubectl apply -f https://github.com/cert-manager/cert-manager/releases/download/v1.17.2/cert-manager.yaml
+            ```
+
+The following pre-requisite applications will be enabled from the command line on the jumphost VM.
+
+### Envoy Gateway
    
 1. Open Terminal  in ``VSCode``
 
@@ -271,6 +278,8 @@ We will enable the following pre-requisite applications through command line:
         deployment.apps/envoy-gateway condition met
         ```
 
+### Kserve
+
 7. Open ``$HOME/.env`` file in ``VSCode``
 
 8. Add (append) the following line and save it
@@ -346,6 +355,8 @@ We will enable the following pre-requisite applications through command line:
         NAME                                         READY   STATUS    RESTARTS   AGE
         kserve-controller-manager-69b6dbf9cf-ft55b   2/2     Running   0          4d23h
         ```
+
+### OpenTelemetry
 
 11. Install OpenTelemetry Operator:
 
@@ -661,37 +672,52 @@ We will use the Docker login credentials we created in the previous section to d
 
 In this section we will install SSL Certificate to access the NAI UI. This is required as the endpoint will only work with a ssl endpoint with a valid certificate.
 
-NAI UI is accessible using the Ingress Gateway.
+NAI UI is accessible using the Envoy Ingress Gateway.
 
 The following steps show how cert-manager can be used to generate a self signed certificate using the default selfsigned-issuer present in the cluster. 
 
-!!! info "If you are using Public Certificate Authority (CA) for NAI SSL Certificate"
+??? tip "Manual - using Public Certificate Authority (CA) for NAI SSL Certificate"
     
     If an organization generates certificates using a different mechanism then obtain the certificate **+ key** and create a kubernetes secret manually using the following command:
 
     ```bash
-    kubectl -n istio-system create secret tls nai-cert --cert=path/to/nai.crt --key=path/to/nai.key
+    kubectl -n nai-system create secret tls nai-cert --cert=path/to/nai.crt --key=path/to/nai.key
     ```
 
-    Skip the steps in this section to create a self-signed certificate resource.
+    Use patch commmand (Step 6) onwards in this section to use this certificate.
+
+    Skip the steps in this self-signed certificate section to use the organisation generated certificates.
+
+    
+??? tip "Automate - using Cert Manager and Public Certificate Authority (CA) for NAI SSL Certificate"  
+
+    Using **Cert Manager** to manage the Public Certificate Authority (CA) for NAI SSL Certificate is also a possiblity.
+
+    At a high level (Cloudflare Example):
+
+    1. Get a API key from DNS provider woth Edit Zone rights
+    2. Create a Kubernetes ``Secret`` from the API key
+    3. Create a ``ClusterIssuer`` with Cert Mangager/Let's Encrypt - Configure cert-manager to use DNS-01 challenge with Cloudflare for automatic certificate issuance.
+    4. Create the certificate and store it as a ``Secret``
+    5. Patch the NAI Envoy Ingress Gateway ``gateway`` listener with the secret (SSL certificate)
+
+To create and use a self-signed certificate, follow these steps:
 
 1. Get the NAI UI ingress gateway host using the following command:
    
-    === ":octicons-command-palette-16: Command"
-    
-        ```bash
-        NAI_UI_ENDPOINT=$(kubectl get svc -n envoy-gateway-system -l "gateway.envoyproxy.io/owning-gateway-name=nai-ingress-gateway,gateway.envoyproxy.io/owning-gateway-namespace=nai-system" -o jsonpath='{.items[0].status.loadBalancer.ingress[0].ip}' | grep -v '^$' || kubectl get svc -n envoy-gateway-system -l "gateway.envoyproxy.io/owning-gateway-name=nai-ingress-gateway,gateway.envoyproxy.io/owning-gateway-namespace=nai-system" -o jsonpath='{.items[0].status.loadBalancer.ingress[0].hostname}')
-        ```
+    ```bash
+    NAI_UI_ENDPOINT=$(kubectl get svc -n envoy-gateway-system -l "gateway.envoyproxy.io/owning-gateway-name=nai-ingress-gateway,gateway.envoyproxy.io/owning-gateway-namespace=nai-system" -o jsonpath='{.items[0].status.loadBalancer.ingress[0].ip}' | grep -v '^$' || kubectl get svc -n envoy-gateway-system -l "gateway.envoyproxy.io/owning-gateway-name=nai-ingress-gateway,gateway.envoyproxy.io/owning-gateway-namespace=nai-system" -o jsonpath='{.items[0].status.loadBalancer.ingress[0].hostname}')
+    ```
 
 2. Get the value of ``NAI_UI_ENDPOINT`` environment variable
    
-    === ":octicons-command-palette-16: Command"
+    === "Command"
 
         ```bash
         echo $NAI_UI_ENDPOINT
         ```
 
-    === ":octicons-command-palette-16: Command output"
+    === "Command output"
 
         ``` { .text .no-copy }
         10.x.x.216
@@ -715,95 +741,66 @@ The following steps show how cert-manager can be used to generate a self signed 
 
 5. Create the ingress resource certificate using the following command:
    
-    === ":octicons-command-palette-16: Command"
-    
-        ```bash hl_lines="12 14 16"
-        cat << EOF | k apply -f -
-        apiVersion: cert-manager.io/v1
-        kind: Certificate
-        metadata:
-          name: nai-cert
-          namespace: nai-system
-        spec:
-          issuerRef:
-            name: selfsigned-issuer
-            kind: ClusterIssuer
-          secretName: nai-cert
-          commonName: nai.${NAI_UI_ENDPOINT}.nip.io
-          dnsNames:
-          - nai.${NAI_UI_ENDPOINT}.nip.io
-          ipAddresses:
-          - ${NAI_UI_ENDPOINT}
-        EOF
-        ```
-
-    === ":octicons-command-palette-16: Command output"
-    
-        ```bash hl_lines="12 14 16"
-        certificate.cert-manager.io/nai-cert created
-        ```
+    ```bash hl_lines="12 14 16"
+    cat << EOF | k apply -f -
+    apiVersion: cert-manager.io/v1
+    kind: Certificate
+    metadata:
+      name: nai-cert
+      namespace: nai-system
+    spec:
+      issuerRef:
+        name: selfsigned-issuer
+        kind: ClusterIssuer
+      secretName: nai-cert
+      commonName: nai.${NAI_UI_ENDPOINT}.nip.io
+      dnsNames:
+      - nai.${NAI_UI_ENDPOINT}.nip.io
+      ipAddresses:
+      - ${NAI_UI_ENDPOINT}
+    EOF
+    ```
 
 6. Patch the Envoy gateway with the ``nai-cert`` certificate details
    
-    === ":octicons-command-palette-16: Command"
-    
-        ```bash
-        kubectl patch gateway nai-ingress-gateway -n nai-system --type='json' -p='[{"op": "replace", "path": "/spec/listeners/1/tls/certificateRefs/0/name", "value": "nai-cert"}]'
-        ```
-    === ":octicons-command-palette-16: Command output"
-    
-        ```bash hl_lines="12 14 16"
-        gateway.gateway.networking.k8s.io/nai-ingress-gateway patched
-        ```
+    ```bash
+    kubectl patch gateway nai-ingress-gateway -n nai-system --type='json' -p='[{"op": "replace", "path": "/spec/listeners/1/tls/certificateRefs/0/name", "value": "nai-cert"}]'
+    ```
 
 7. Create EnvoyProxy
    
-    === ":octicons-command-palette-16: Command"
-    
-        ```bash
-        k apply -f -<<EOF
-        apiVersion: gateway.envoyproxy.io/v1alpha1
-        kind: EnvoyProxy
-        metadata:
-          name: envoy-service-config
-          namespace: nai-system
-        spec:
-          provider:
-            type: Kubernetes
-            kubernetes:
-              envoyService:
-                type: LoadBalancer
-        EOF
-        ```
-    === ":octicons-command-palette-16: Command output"
-    
-        ```bash hl_lines="12 14 16"
-        envoyproxy.gateway.envoyproxy.io/envoy-service-config created
-        ```
+    ```bash
+    k apply -f -<<EOF
+    apiVersion: gateway.envoyproxy.io/v1alpha1
+    kind: EnvoyProxy
+    metadata:
+      name: envoy-service-config
+      namespace: nai-system
+    spec:
+      provider:
+        type: Kubernetes
+        kubernetes:
+          envoyService:
+            type: LoadBalancer
+    EOF
+    ```
 
 8. Patch the ``nai-ingress-gateway`` resource with the new ``EnvoyProxy`` details
 
-    === ":octicons-command-palette-16: Command"
-    
-        ```bash
-        kubectl patch gateway nai-ingress-gateway -n nai-system --type=merge \
-        -p '{
-            "spec": {
-                "infrastructure": {
-                    "parametersRef": {
-                        "group": "gateway.envoyproxy.io",
-                        "kind": "EnvoyProxy",
-                        "name": "envoy-service-config"
-                    }
+    ```bash
+    kubectl patch gateway nai-ingress-gateway -n nai-system --type=merge \
+    -p '{
+        "spec": {
+            "infrastructure": {
+                "parametersRef": {
+                    "group": "gateway.envoyproxy.io",
+                    "kind": "EnvoyProxy",
+                    "name": "envoy-service-config"
                 }
             }
-        }'
-        ```
-    === ":octicons-command-palette-16: Command output"
-    
-        ```bash hl_lines="12 14 16"
-        gateway.gateway.networking.k8s.io/nai-ingress-gateway patched
-        ```
+        }
+    }'
+    ```
 
 ## Accessing the UI
 

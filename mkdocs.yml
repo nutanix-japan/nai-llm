@@ -181,17 +181,15 @@ markdown_extensions:
 - markdown_grid_tables
 
 plugins:
-- termynal:
-    prompt_literal_start:
-    - "$"
-    - ">"
-    - ">>>"
 - search
 - social
-#- git-authors
 - git-revision-date-localized:
     enable_creation_date: true
     enabled: !ENV [CI, false]
+#- include-markdown
+# - macros:
+#     include_dir: docs
+#- git-authors
 # - git-committers:
 #     repository: nutanix-japan/nai-llm
 #     branch: main

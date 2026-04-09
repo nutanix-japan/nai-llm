@@ -1,4 +1,4 @@
-#!/Users/lakshmi.balaramane/Documents/GitHub/nai-llm/nai-llm/bin/python
+#!/Users/lakshmi.balaramane/Documents/GitHub/nai-llm/nai-llm/bin/python3.12
 # -*- coding: utf-8 -*-
 import re
 import sys

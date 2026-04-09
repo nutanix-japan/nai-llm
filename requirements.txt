@@ -5,3 +5,4 @@ mkdocs-git-authors-plugin
 mkdocs-git-revision-date-localized-plugin
 mkdocs-git-committers-plugin-2
 markdown-grid-tables
+# mkdocs-include-markdown-plugin  

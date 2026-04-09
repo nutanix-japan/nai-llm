@@ -252,7 +252,7 @@ The procedure will be done on the jumphost VM.
     === ":octicons-file-code-16: Template ``$HOME/airgap-nai/.env``"
 
         ```bash
-        export REGISTRY=harbor.10.x.x.111.nip.io
+        export REGISTRY=harbor.10.x.x.134.nip.io
         export REGISTRY_USERNAME=admin
         export REGISTRY_CACERT=_path_to_ca_cert_of_registry  # (1)!
         ```
@@ -262,7 +262,7 @@ The procedure will be done on the jumphost VM.
     === ":octicons-file-code-16: Sample ``$HOME/airgap-nai/.env``"
         
         ```{ .bash .no-copy }
-        export REGISTRY=harbor.10.x.x.111.nip.io
+        export REGISTRY=harbor.10.x.x.134.nip.io
         export REGISTRY_USERNAME=admin
         export REGISTRY_PASSWORD=xxxxxxx
         export REGISTRY_CACERT=$HOME/harbor/certs/full_chain.pem  # (1)!
@@ -317,7 +317,7 @@ The procedure will be done on the jumphost VM.
     === ":octicons-command-palette-16: Command"
     
         ```bash
-        docker login harbor.10.x.x.111.nip.io --username ${REGISTRY_USERNAME} --password ${REGISTRY_PASSWORD}
+        docker login harbor.10.x.x.134.nip.io --username ${REGISTRY_USERNAME} --password ${REGISTRY_PASSWORD}
         ```
 
     === ":octicons-command-palette-16: Command output"
@@ -342,27 +342,27 @@ The procedure will be done on the jumphost VM.
     === ":octicons-command-palette-16: Command output"
 
         ```{ .text, .no-copy}
-        for chart in $(ls *.tgz); do echo $chart;helm push $chart oci://harbor.10.x.x.111.nip.io/nutanix;done
+        for chart in $(ls *.tgz); do echo $chart;helm push $chart oci://harbor.10.x.x.134.nip.io/nutanix;done
         gateway-crds-helm-v1.6.3.tgz
-        Pushed: harbor.10.x.x.111.nip.io/nutanix/gateway-crds-helm:v1.6.3
+        Pushed: harbor.10.x.x.134.nip.io/nutanix/gateway-crds-helm:v1.6.3
         Digest: sha256:55a2c0a4974cc2a83b9e144ec5b9ac687f0ae1b9d26ec178762184d0185db096
         gateway-helm-v1.6.3.tgz
-        Pushed: harbor.10.x.x.111.nip.io/nutanix/gateway-helm:v1.6.3
+        Pushed: harbor.10.x.x.134.nip.io/nutanix/gateway-helm:v1.6.3
         Digest: sha256:924799edea136fe405ea37480f5d5e65a81c6b01e3cbe53bf2ab5cde935ef0d6
         kserve-crd-v0.15.0.tgz
-        Pushed: harbor.10.x.x.111.nip.io/nutanix/kserve-crd:v0.15.0
+        Pushed: harbor.10.x.x.134.nip.io/nutanix/kserve-crd:v0.15.0
         Digest: sha256:01533cdda82c767fdd39172846f04c5185011eab2769b2c3d727bdd0f244a8f5
         kserve-v0.15.0.tgz
-        Pushed: harbor.10.x.x.111.nip.io/nutanix/kserve:v0.15.0
+        Pushed: harbor.10.x.x.134.nip.io/nutanix/kserve:v0.15.0
         Digest: sha256:ee7fb3824268edc253f2b7d4ccae4a326e35cda38c89d3635b12a4a58cf45339
         nai-core-2.6.0.tgz
-        Pushed: harbor.10.x.x.111.nip.io/nutanix/nai-core:2.6.0
+        Pushed: harbor.10.x.x.134.nip.io/nutanix/nai-core:2.6.0
         Digest: sha256:5859e99b2c4eff85bd6f78fd4170b7c580fc03131978dcf1f707811d908fe859
         nai-operators-2.6.0.tgz
-        Pushed: harbor.10.x.x.111.nip.io/nutanix/nai-operators:2.6.0
+        Pushed: harbor.10.x.x.134.nip.io/nutanix/nai-operators:2.6.0
         Digest: sha256:06d4b66a5d64add26bc6cc0f0864482ddabcdf735e05ab2a5ba347fcf4deae9b
         opentelemetry-operator-0.102.0.tgz
-        Pushed: harbor.10.x.x.111.nip.io/nutanix/opentelemetry-operator:0.102.0
+        Pushed: harbor.10.x.x.134.nip.io/nutanix/opentelemetry-operator:0.102.0
         Digest: sha256:1616912e98fbce5236707de9f7c8b91a98c9ecef6c207f625d9d5fa7683a31c8
         Now the charts are available in the OCI compatible container/chart registry.
         ```
@@ -422,7 +422,7 @@ stateDiagram-v2
     === ":octicons-file-code-16: Template ``$HOME/airgap-nai/.env``"
     
         ```bash
-        export REGISTRY=harbor.10.x.x.111.nip.io
+        export REGISTRY=harbor.10.x.x.134.nip.io
         export REGISTRY_USERNAME=admin
         export REGISTRY_PASSWORD=xxxxxxx
         export REGISTRY_CACERT=$HOME/harbor/certs/ca.crt

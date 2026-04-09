@@ -150,3 +150,15 @@ Use this when you are ready to "lock" the old version and start a new one (e.g.,
 Because you previously had the "gh-pages is unrelated" error, make sure your first push includes the fetch-depth: 0 change in your ci.yaml. If the CI fails on the first try, you may need to manually delete the remote gh-pages branch once to "reset" the history, but the updated YAML usually fixes this automatically.
 Would you like me to show you how to test this locally one last time before pushing the YAML changes to your repo?
 
+
+## Regular Flow
+
+```bash
+ 1356  git add .
+ 1357  git commit -am "Update: start 2.6.0 air-gap"
+ 1359  mike deploy 2.5.0 latest
+ 1360  mike set-default --push latest
+ 1361  mike deploy --push --update-aliases 2.6.0 latest
+ 1362  mike serve
+ 1363  mkdocs serve --livereload
+ ```
