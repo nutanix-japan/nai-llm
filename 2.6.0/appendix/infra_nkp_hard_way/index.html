@@ -2314,6 +2314,17 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#optional-cleanup" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -2999,6 +3010,17 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#optional-cleanup" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -3128,16 +3150,16 @@
 <tr>
 <td>Master</td>
 <td>1</td>
-<td>4</td>
-<td>6 GB</td>
-<td>150 GB</td>
+<td>6</td>
+<td>12 GB</td>
+<td>200 GB</td>
 </tr>
 <tr>
 <td>Worker</td>
 <td>2</td>
 <td>4</td>
-<td>6 GB</td>
-<td>150 GB</td>
+<td>8 GB</td>
+<td>200 GB</td>
 </tr>
 </tbody>
 </table>
@@ -3159,19 +3181,19 @@
 <td>3</td>
 <td>4</td>
 <td>16 GB</td>
-<td>150 GB</td>
+<td>200 GB</td>
 </tr>
 <tr>
 <td>Worker</td>
 <td>4</td>
 <td>8</td>
 <td>32 GB</td>
-<td>150 GB</td>
+<td>200 GB</td>
 </tr>
 <tr>
 <td>GPU</td>
 <td>1</td>
-<td>16</td>
+<td>20</td>
 <td>64 GB</td>
 <td>200 GB</td>
 </tr>
@@ -3212,19 +3234,19 @@
 </li>
 <li>
 <p>Download and extract the NKP binary from the link you copied earlier</p>
-<div class="tabbed-set tabbed-alternate" data-tabs="1:2"><input checked="checked" id="__tabbed_1_1" name="__tabbed_1" type="radio" /><input id="__tabbed_1_2" name="__tabbed_1" type="radio" /><div class="tabbed-labels"><label for="__tabbed_1_1">Command</label><label for="__tabbed_1_2">Sample command</label></div>
+<div class="tabbed-set tabbed-alternate" data-tabs="1:2"><input checked="checked" id="__tabbed_1_1" name="__tabbed_1" type="radio" /><input id="__tabbed_1_2" name="__tabbed_1" type="radio" /><div class="tabbed-labels"><label for="__tabbed_1_1"><span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16"><path d="m6.354 8.04-4.773 4.773a.75.75 0 1 0 1.061 1.06L7.945 8.57a.75.75 0 0 0 0-1.06L2.642 2.206a.75.75 0 0 0-1.06 1.061L6.353 8.04ZM8.75 11.5a.75.75 0 0 0 0 1.5h5.5a.75.75 0 0 0 0-1.5z"/></svg></span> Command</label><label for="__tabbed_1_2">Sample command</label></div>
 <div class="tabbed-content">
 <div class="tabbed-block">
-<div class="language-text highlight"><span class="filename">Paste the download URL within double quotes</span><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>curl -o nkp_v2.16.0_linux_amd64.tar.gz &quot;_paste_download_URL_here&quot;
+<div class="language-text highlight"><span class="filename">Paste the download URL within double quotes</span><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>curl -o nkp_v2.17.1_linux_amd64.tar.gz &quot;_paste_download_URL_here&quot;
 </span></code></pre></div>
 </div>
 <div class="tabbed-block">
-<div class="language-bash highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a>curl<span class="w"> </span>-o<span class="w"> </span>nkp_v2.16.0_linux_amd64.tar.gz<span class="w"> </span><span class="s2">&quot;https://download.nutanix.com/downloads/nkp/v2.16.0/nkp_v2.16.0_linux_amd64.tar.gz?Expires=1729016864&amp;........&quot;</span>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a>curl<span class="w"> </span>-o<span class="w"> </span>nkp_v2.17.1_linux_amd64.tar.gz<span class="w"> </span><span class="s2">&quot;https://download.nutanix.com/downloads/nkp/v2.17.1/nkp_v2.17.1_linux_amd64.tar.gz?Expires=1729016864&amp;........&quot;</span>
 </span></code></pre></div>
 </div>
 </div>
 </div>
-<div class="language-bash highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a>tar<span class="w"> </span>xvfz<span class="w"> </span>nkp_v2.16.0_linux_amd64.tar.gz
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a>tar<span class="w"> </span>xvfz<span class="w"> </span>nkp_v2.17.1_linux_amd64.tar.gz
 </span></code></pre></div>
 </li>
 <li>
@@ -3236,9 +3258,9 @@
 <p>Verify the <code>nkp</code> binary is installed correctly. Ensure the version is latest</p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
-<p>At the time of writing this lab nkp version is <code>v2.16.0</code></p>
+<p>At the time of writing this lab nkp version is <code>v2.17.1</code></p>
 </div>
-<div class="tabbed-set tabbed-alternate" data-tabs="2:2"><input checked="checked" id="__tabbed_2_1" name="__tabbed_2" type="radio" /><input id="__tabbed_2_2" name="__tabbed_2" type="radio" /><div class="tabbed-labels"><label for="__tabbed_2_1">Command</label><label for="__tabbed_2_2">Command Output</label></div>
+<div class="tabbed-set tabbed-alternate" data-tabs="2:2"><input checked="checked" id="__tabbed_2_1" name="__tabbed_2" type="radio" /><input id="__tabbed_2_2" name="__tabbed_2" type="radio" /><div class="tabbed-labels"><label for="__tabbed_2_1"><span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16"><path d="m6.354 8.04-4.773 4.773a.75.75 0 1 0 1.061 1.06L7.945 8.57a.75.75 0 0 0 0-1.06L2.642 2.206a.75.75 0 0 0-1.06 1.061L6.353 8.04ZM8.75 11.5a.75.75 0 0 0 0 1.5h5.5a.75.75 0 0 0 0-1.5z"/></svg></span> Command</label><label for="__tabbed_2_2">Command Output</label></div>
 <div class="tabbed-content">
 <div class="tabbed-block">
 <div class="language-bash highlight"><pre><span></span><code><span id="__span-5-1"><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a>nkp<span class="w"> </span>version
@@ -3246,13 +3268,14 @@
 </div>
 <div class="tabbed-block">
 <div class="language-bash no-copy highlight"><pre><span></span><code><span id="__span-6-1"><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a>$<span class="w"> </span>nkp<span class="w"> </span>version
-</span><span id="__span-6-2"><a id="__codelineno-6-2" name="__codelineno-6-2" href="#__codelineno-6-2"></a>catalog:<span class="w"> </span>v0.7.0
+</span><span id="__span-6-2"><a id="__codelineno-6-2" name="__codelineno-6-2" href="#__codelineno-6-2"></a>catalog:<span class="w"> </span>v0.8.1
 </span><span id="__span-6-3"><a id="__codelineno-6-3" name="__codelineno-6-3" href="#__codelineno-6-3"></a>diagnose:<span class="w"> </span>v0.12.0
-</span><span id="__span-6-4"><a id="__codelineno-6-4" name="__codelineno-6-4" href="#__codelineno-6-4"></a>imagebuilder:<span class="w"> </span>v2.16.0
-</span><span id="__span-6-5"><a id="__codelineno-6-5" name="__codelineno-6-5" href="#__codelineno-6-5"></a>kommander:<span class="w"> </span>v2.16.0
-</span><span id="__span-6-6"><a id="__codelineno-6-6" name="__codelineno-6-6" href="#__codelineno-6-6"></a>konvoy:<span class="w"> </span>v2.16.0
-</span><span id="__span-6-7"><a id="__codelineno-6-7" name="__codelineno-6-7" href="#__codelineno-6-7"></a>mindthegap:<span class="w"> </span>v1.22.1
-</span><span id="__span-6-8"><a id="__codelineno-6-8" name="__codelineno-6-8" href="#__codelineno-6-8"></a>nkp:<span class="w"> </span>v2.16.0
+</span><span id="__span-6-4"><a id="__codelineno-6-4" name="__codelineno-6-4" href="#__codelineno-6-4"></a>imagebuilder:<span class="w"> </span>v2.17.1
+</span><span id="__span-6-5"><a id="__codelineno-6-5" name="__codelineno-6-5" href="#__codelineno-6-5"></a>kommander:<span class="w"> </span>v2.17.1
+</span><span id="__span-6-6"><a id="__codelineno-6-6" name="__codelineno-6-6" href="#__codelineno-6-6"></a>konvoy:<span class="w"> </span>v2.17.1
+</span><span id="__span-6-7"><a id="__codelineno-6-7" name="__codelineno-6-7" href="#__codelineno-6-7"></a>konvoybundlepusher:<span class="w"> </span>v2.17.1
+</span><span id="__span-6-8"><a id="__codelineno-6-8" name="__codelineno-6-8" href="#__codelineno-6-8"></a>mindthegap:<span class="w"> </span>v1.24.0
+</span><span id="__span-6-9"><a id="__codelineno-6-9" name="__codelineno-6-9" href="#__codelineno-6-9"></a>nkp:<span class="w"> </span>v2.17.1
 </span></code></pre></div>
 </div>
 </div>
@@ -3265,7 +3288,7 @@
 <li>Open VSC Terminal</li>
 <li>
 <p>Run the following commands to install <code>docker</code> binaries</p>
-<div class="language-bash highlight"><pre><span></span><code><span id="__span-7-1"><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a><span class="nb">cd</span><span class="w"> </span><span class="nv">$HOMEsol</span>-cnai-infra/<span class="p">;</span><span class="w"> </span>devbox<span class="w"> </span>init<span class="p">;</span><span class="w"> </span>devbox<span class="w"> </span>shell
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-7-1"><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a><span class="nb">cd</span><span class="w"> </span><span class="nv">$HOME</span>/sol-cnai-infra/<span class="p">;</span><span class="w"> </span>devbox<span class="w"> </span>init<span class="p">;</span><span class="w"> </span>devbox<span class="w"> </span>shell
 </span><span id="__span-7-2"><a id="__codelineno-7-2" name="__codelineno-7-2" href="#__codelineno-7-2"></a>task<span class="w"> </span>workstation:install-docker
 </span></code></pre></div>
 <div class="admonition tip">
@@ -3318,7 +3341,7 @@
 </li>
 <li>
 <p>Find six unused static IP addresses in the subnet</p>
-<div class="tabbed-set tabbed-alternate" data-tabs="3:2"><input checked="checked" id="__tabbed_3_1" name="__tabbed_3" type="radio" /><input id="__tabbed_3_2" name="__tabbed_3" type="radio" /><div class="tabbed-labels"><label for="__tabbed_3_1">Command</label><label for="__tabbed_3_2">Sample command</label></div>
+<div class="tabbed-set tabbed-alternate" data-tabs="3:2"><input checked="checked" id="__tabbed_3_1" name="__tabbed_3" type="radio" /><input id="__tabbed_3_2" name="__tabbed_3" type="radio" /><div class="tabbed-labels"><label for="__tabbed_3_1"><span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16"><path d="m6.354 8.04-4.773 4.773a.75.75 0 1 0 1.061 1.06L7.945 8.57a.75.75 0 0 0 0-1.06L2.642 2.206a.75.75 0 0 0-1.06 1.061L6.353 8.04ZM8.75 11.5a.75.75 0 0 0 0 1.5h5.5a.75.75 0 0 0 0-1.5z"/></svg></span> Command</label><label for="__tabbed_3_2">Sample command</label></div>
 <div class="tabbed-content">
 <div class="tabbed-block">
 <div class="language-bash highlight"><pre><span></span><code><span id="__span-10-1"><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a>nmap<span class="w"> </span>-v<span class="w"> </span>-sn<span class="w">  </span>&lt;your<span class="w"> </span>CIDR&gt;
@@ -3348,7 +3371,7 @@
 <li><strong>Username:</strong> nutanix</li>
 <li><strong>Password:</strong> your Prism Element password </li>
 </ul>
-<div class="tabbed-set tabbed-alternate" data-tabs="4:2"><input checked="checked" id="__tabbed_4_1" name="__tabbed_4" type="radio" /><input id="__tabbed_4_2" name="__tabbed_4" type="radio" /><div class="tabbed-labels"><label for="__tabbed_4_1">Command</label><label for="__tabbed_4_2">Sample command</label></div>
+<div class="tabbed-set tabbed-alternate" data-tabs="4:2"><input checked="checked" id="__tabbed_4_1" name="__tabbed_4" type="radio" /><input id="__tabbed_4_2" name="__tabbed_4" type="radio" /><div class="tabbed-labels"><label for="__tabbed_4_1"><span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16"><path d="m6.354 8.04-4.773 4.773a.75.75 0 1 0 1.061 1.06L7.945 8.57a.75.75 0 0 0 0-1.06L2.642 2.206a.75.75 0 0 0-1.06 1.061L6.353 8.04ZM8.75 11.5a.75.75 0 0 0 0 1.5h5.5a.75.75 0 0 0 0-1.5z"/></svg></span> Command</label><label for="__tabbed_4_2">Sample command</label></div>
 <div class="tabbed-content">
 <div class="tabbed-block">
 <div class="language-text highlight"><pre><span></span><code><span id="__span-13-1"><a id="__codelineno-13-1" name="__codelineno-13-1" href="#__codelineno-13-1"></a>acli net.add_to_ip_blacklist &lt;your-ipam-ahv-network&gt; \
@@ -3365,7 +3388,7 @@
 </li>
 </ol>
 <h3 id="optional-find-gpu-details">Optional - Find GPU Details</h3>
-<p>If there is a requirement to deploy workloads that rquire GPU, find the GPU details in your Nutanix cluster.</p>
+<p>If there is a requirement to deploy workloads that require GPU, find the GPU details in your Nutanix cluster.</p>
 <p>Find the details of GPU on the Nutanix cluster while still connected to Prism Central (PC).</p>
 <ol>
 <li>Logon to Prism Central GUI</li>
@@ -3395,7 +3418,7 @@
 </li>
 <li>
 <p>Fill the following values inside the <code>.env</code> file</p>
-<div class="tabbed-set tabbed-alternate" data-tabs="5:2"><input checked="checked" id="__tabbed_5_1" name="__tabbed_5" type="radio" /><input id="__tabbed_5_2" name="__tabbed_5" type="radio" /><div class="tabbed-labels"><label for="__tabbed_5_1">Template .env</label><label for="__tabbed_5_2">Sample .env</label></div>
+<div class="tabbed-set tabbed-alternate" data-tabs="5:2"><input checked="checked" id="__tabbed_5_1" name="__tabbed_5" type="radio" /><input id="__tabbed_5_2" name="__tabbed_5" type="radio" /><div class="tabbed-labels"><label for="__tabbed_5_1"><span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16"><path d="M4 1.75C4 .784 4.784 0 5.75 0h5.586c.464 0 .909.184 1.237.513l2.914 2.914c.329.328.513.773.513 1.237v8.586A1.75 1.75 0 0 1 14.25 15h-9a.75.75 0 0 1 0-1.5h9a.25.25 0 0 0 .25-.25V6h-2.75A1.75 1.75 0 0 1 10 4.25V1.5H5.75a.25.25 0 0 0-.25.25v2.5a.75.75 0 0 1-1.5 0Zm1.72 4.97a.75.75 0 0 1 1.06 0l2 2a.75.75 0 0 1 0 1.06l-2 2a.749.749 0 0 1-1.275-.326.75.75 0 0 1 .215-.734l1.47-1.47-1.47-1.47a.75.75 0 0 1 0-1.06M3.28 7.78 1.81 9.25l1.47 1.47a.75.75 0 0 1-.018 1.042.75.75 0 0 1-1.042.018l-2-2a.75.75 0 0 1 0-1.06l2-2a.75.75 0 0 1 1.042.018.75.75 0 0 1 .018 1.042m8.22-6.218V4.25c0 .138.112.25.25.25h2.688l-.011-.013-2.914-2.914z"/></svg></span> Template <code>.env</code></label><label for="__tabbed_5_2"><span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16"><path d="M4 1.75C4 .784 4.784 0 5.75 0h5.586c.464 0 .909.184 1.237.513l2.914 2.914c.329.328.513.773.513 1.237v8.586A1.75 1.75 0 0 1 14.25 15h-9a.75.75 0 0 1 0-1.5h9a.25.25 0 0 0 .25-.25V6h-2.75A1.75 1.75 0 0 1 10 4.25V1.5H5.75a.25.25 0 0 0-.25.25v2.5a.75.75 0 0 1-1.5 0Zm1.72 4.97a.75.75 0 0 1 1.06 0l2 2a.75.75 0 0 1 0 1.06l-2 2a.749.749 0 0 1-1.275-.326.75.75 0 0 1 .215-.734l1.47-1.47-1.47-1.47a.75.75 0 0 1 0-1.06M3.28 7.78 1.81 9.25l1.47 1.47a.75.75 0 0 1-.018 1.042.75.75 0 0 1-1.042.018l-2-2a.75.75 0 0 1 0-1.06l2-2a.75.75 0 0 1 1.042.018.75.75 0 0 1 .018 1.042m8.22-6.218V4.25c0 .138.112.25.25.25h2.688l-.011-.013-2.914-2.914z"/></svg></span> Sample <code>.env</code></label></div>
 <div class="tabbed-content">
 <div class="tabbed-block">
 <div class="language-text highlight"><pre><span></span><code><span id="__span-16-1"><a id="__codelineno-16-1" name="__codelineno-16-1" href="#__codelineno-16-1"></a>export NUTANIX_USER=_your_nutanix_username
@@ -3436,22 +3459,22 @@
 <p class="admonition-title">Note</p>
 <p>Image creation will take up to 5 minutes.</p>
 </div>
-<div class="tabbed-set tabbed-alternate" data-tabs="6:3"><input checked="checked" id="__tabbed_6_1" name="__tabbed_6" type="radio" /><input id="__tabbed_6_2" name="__tabbed_6" type="radio" /><input id="__tabbed_6_3" name="__tabbed_6" type="radio" /><div class="tabbed-labels"><label for="__tabbed_6_1">Command</label><label for="__tabbed_6_2">Example Command</label><label for="__tabbed_6_3">Command output</label></div>
+<div class="tabbed-set tabbed-alternate" data-tabs="6:3"><input checked="checked" id="__tabbed_6_1" name="__tabbed_6" type="radio" /><input id="__tabbed_6_2" name="__tabbed_6" type="radio" /><input id="__tabbed_6_3" name="__tabbed_6" type="radio" /><div class="tabbed-labels"><label for="__tabbed_6_1"><span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16"><path d="m6.354 8.04-4.773 4.773a.75.75 0 1 0 1.061 1.06L7.945 8.57a.75.75 0 0 0 0-1.06L2.642 2.206a.75.75 0 0 0-1.06 1.061L6.353 8.04ZM8.75 11.5a.75.75 0 0 0 0 1.5h5.5a.75.75 0 0 0 0-1.5z"/></svg></span> Command</label><label for="__tabbed_6_2"><span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16"><path d="m6.354 8.04-4.773 4.773a.75.75 0 1 0 1.061 1.06L7.945 8.57a.75.75 0 0 0 0-1.06L2.642 2.206a.75.75 0 0 0-1.06 1.061L6.353 8.04ZM8.75 11.5a.75.75 0 0 0 0 1.5h5.5a.75.75 0 0 0 0-1.5z"/></svg></span> Example Command</label><label for="__tabbed_6_3"><span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16"><path d="m6.354 8.04-4.773 4.773a.75.75 0 1 0 1.061 1.06L7.945 8.57a.75.75 0 0 0 0-1.06L2.642 2.206a.75.75 0 0 0-1.06 1.061L6.353 8.04ZM8.75 11.5a.75.75 0 0 0 0 1.5h5.5a.75.75 0 0 0 0-1.5z"/></svg></span> Command output</label></div>
 <div class="tabbed-content">
 <div class="tabbed-block">
-<div class="language-bash highlight"><pre><span></span><code><span id="__span-19-1"><a id="__codelineno-19-1" name="__codelineno-19-1" href="#__codelineno-19-1"></a>nkp<span class="w"> </span>create<span class="w"> </span>image<span class="w"> </span>nutanix<span class="w"> </span>ubuntu-22.04<span class="w"> </span><span class="se">\</span>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-19-1"><a id="__codelineno-19-1" name="__codelineno-19-1" href="#__codelineno-19-1"></a>nkp<span class="w"> </span>create<span class="w"> </span>image<span class="w"> </span>nutanix<span class="w"> </span>ubuntu-24.04<span class="w"> </span><span class="se">\</span>
 </span><span id="__span-19-2"><a id="__codelineno-19-2" name="__codelineno-19-2" href="#__codelineno-19-2"></a><span class="w">  </span>--endpoint<span class="w"> </span><span class="si">${</span><span class="nv">NUTANIX_ENDPOINT</span><span class="si">}</span><span class="w"> </span>--cluster<span class="w"> </span><span class="si">${</span><span class="nv">NUTANIX_CLUSTER</span><span class="si">}</span><span class="w"> </span><span class="se">\</span>
 </span><span id="__span-19-3"><a id="__codelineno-19-3" name="__codelineno-19-3" href="#__codelineno-19-3"></a><span class="w">  </span>--subnet<span class="w"> </span><span class="si">${</span><span class="nv">NUTANIX_SUBNET_NAME</span><span class="si">}</span><span class="w"> </span>--insecure
 </span></code></pre></div>
 </div>
 <div class="tabbed-block">
-<div class="language-bash highlight"><pre><span></span><code><span id="__span-20-1"><a id="__codelineno-20-1" name="__codelineno-20-1" href="#__codelineno-20-1"></a>nkp<span class="w"> </span>create<span class="w"> </span>image<span class="w"> </span>nutanix<span class="w"> </span>ubuntu-22.04<span class="w"> </span><span class="se">\</span>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-20-1"><a id="__codelineno-20-1" name="__codelineno-20-1" href="#__codelineno-20-1"></a>nkp<span class="w"> </span>create<span class="w"> </span>image<span class="w"> </span>nutanix<span class="w"> </span>ubuntu-24.04<span class="w"> </span><span class="se">\</span>
 </span><span id="__span-20-2"><a id="__codelineno-20-2" name="__codelineno-20-2" href="#__codelineno-20-2"></a><span class="w">  </span>--endpoint<span class="w"> </span>pc.example.com<span class="w"> </span>--cluster<span class="w"> </span>pe<span class="w"> </span><span class="se">\</span>
 </span><span id="__span-20-3"><a id="__codelineno-20-3" name="__codelineno-20-3" href="#__codelineno-20-3"></a><span class="w">  </span>--subnet<span class="w"> </span>User1<span class="w"> </span>--insecure
 </span></code></pre></div>
 </div>
 <div class="tabbed-block">
-<div class="language-text no-copy highlight"><pre><span></span><code><span id="__span-21-1"><a id="__codelineno-21-1" name="__codelineno-21-1" href="#__codelineno-21-1"></a>nkp create image nutanix ubuntu-22.04 \
+<div class="language-text no-copy highlight"><pre><span></span><code><span id="__span-21-1"><a id="__codelineno-21-1" name="__codelineno-21-1" href="#__codelineno-21-1"></a>nkp create image nutanix ubuntu-24.04 \
 </span><span id="__span-21-2"><a id="__codelineno-21-2" name="__codelineno-21-2" href="#__codelineno-21-2"></a>  --endpoint pc.example.com --cluster pe \
 </span><span id="__span-21-3"><a id="__codelineno-21-3" name="__codelineno-21-3" href="#__codelineno-21-3"></a>  --subnet User1 --insecure
 </span><span id="__span-21-4"><a id="__codelineno-21-4" name="__codelineno-21-4" href="#__codelineno-21-4"></a>
@@ -3485,7 +3508,7 @@
 </li>
 <li>
 <p>Populate the <code>.env</code> file with the NKP image name by adding (appending) the following environment variables and save it</p>
-<div class="tabbed-set tabbed-alternate" data-tabs="7:2"><input checked="checked" id="__tabbed_7_1" name="__tabbed_7" type="radio" /><input id="__tabbed_7_2" name="__tabbed_7" type="radio" /><div class="tabbed-labels"><label for="__tabbed_7_1">Template .env</label><label for="__tabbed_7_2">Sample .env</label></div>
+<div class="tabbed-set tabbed-alternate" data-tabs="7:2"><input checked="checked" id="__tabbed_7_1" name="__tabbed_7" type="radio" /><input id="__tabbed_7_2" name="__tabbed_7" type="radio" /><div class="tabbed-labels"><label for="__tabbed_7_1"><span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16"><path d="M4 1.75C4 .784 4.784 0 5.75 0h5.586c.464 0 .909.184 1.237.513l2.914 2.914c.329.328.513.773.513 1.237v8.586A1.75 1.75 0 0 1 14.25 15h-9a.75.75 0 0 1 0-1.5h9a.25.25 0 0 0 .25-.25V6h-2.75A1.75 1.75 0 0 1 10 4.25V1.5H5.75a.25.25 0 0 0-.25.25v2.5a.75.75 0 0 1-1.5 0Zm1.72 4.97a.75.75 0 0 1 1.06 0l2 2a.75.75 0 0 1 0 1.06l-2 2a.749.749 0 0 1-1.275-.326.75.75 0 0 1 .215-.734l1.47-1.47-1.47-1.47a.75.75 0 0 1 0-1.06M3.28 7.78 1.81 9.25l1.47 1.47a.75.75 0 0 1-.018 1.042.75.75 0 0 1-1.042.018l-2-2a.75.75 0 0 1 0-1.06l2-2a.75.75 0 0 1 1.042.018.75.75 0 0 1 .018 1.042m8.22-6.218V4.25c0 .138.112.25.25.25h2.688l-.011-.013-2.914-2.914z"/></svg></span> Template .env</label><label for="__tabbed_7_2"><span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16"><path d="M4 1.75C4 .784 4.784 0 5.75 0h5.586c.464 0 .909.184 1.237.513l2.914 2.914c.329.328.513.773.513 1.237v8.586A1.75 1.75 0 0 1 14.25 15h-9a.75.75 0 0 1 0-1.5h9a.25.25 0 0 0 .25-.25V6h-2.75A1.75 1.75 0 0 1 10 4.25V1.5H5.75a.25.25 0 0 0-.25.25v2.5a.75.75 0 0 1-1.5 0Zm1.72 4.97a.75.75 0 0 1 1.06 0l2 2a.75.75 0 0 1 0 1.06l-2 2a.749.749 0 0 1-1.275-.326.75.75 0 0 1 .215-.734l1.47-1.47-1.47-1.47a.75.75 0 0 1 0-1.06M3.28 7.78 1.81 9.25l1.47 1.47a.75.75 0 0 1-.018 1.042.75.75 0 0 1-1.042.018l-2-2a.75.75 0 0 1 0-1.06l2-2a.75.75 0 0 1 1.042.018.75.75 0 0 1 .018 1.042m8.22-6.218V4.25c0 .138.112.25.25.25h2.688l-.011-.013-2.914-2.914z"/></svg></span>  Sample <code>.env</code></label></div>
 <div class="tabbed-content">
 <div class="tabbed-block">
 <div class="language-text highlight"><pre><span></span><code><span id="__span-23-1"><a id="__codelineno-23-1" name="__codelineno-23-1" href="#__codelineno-23-1"></a>export NKP_IMAGE=nkp-image-name
@@ -3513,7 +3536,7 @@
 <ol>
 <li>
 <p>Open .env file in VSC and add (append) the following environment variables to your <code>.env</code> file and save it</p>
-<div class="tabbed-set tabbed-alternate" data-tabs="8:2"><input checked="checked" id="__tabbed_8_1" name="__tabbed_8" type="radio" /><input id="__tabbed_8_2" name="__tabbed_8" type="radio" /><div class="tabbed-labels"><label for="__tabbed_8_1">Template .env</label><label for="__tabbed_8_2">Sample .env</label></div>
+<div class="tabbed-set tabbed-alternate" data-tabs="8:2"><input checked="checked" id="__tabbed_8_1" name="__tabbed_8" type="radio" /><input id="__tabbed_8_2" name="__tabbed_8" type="radio" /><div class="tabbed-labels"><label for="__tabbed_8_1"><span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16"><path d="M4 1.75C4 .784 4.784 0 5.75 0h5.586c.464 0 .909.184 1.237.513l2.914 2.914c.329.328.513.773.513 1.237v8.586A1.75 1.75 0 0 1 14.25 15h-9a.75.75 0 0 1 0-1.5h9a.25.25 0 0 0 .25-.25V6h-2.75A1.75 1.75 0 0 1 10 4.25V1.5H5.75a.25.25 0 0 0-.25.25v2.5a.75.75 0 0 1-1.5 0Zm1.72 4.97a.75.75 0 0 1 1.06 0l2 2a.75.75 0 0 1 0 1.06l-2 2a.749.749 0 0 1-1.275-.326.75.75 0 0 1 .215-.734l1.47-1.47-1.47-1.47a.75.75 0 0 1 0-1.06M3.28 7.78 1.81 9.25l1.47 1.47a.75.75 0 0 1-.018 1.042.75.75 0 0 1-1.042.018l-2-2a.75.75 0 0 1 0-1.06l2-2a.75.75 0 0 1 1.042.018.75.75 0 0 1 .018 1.042m8.22-6.218V4.25c0 .138.112.25.25.25h2.688l-.011-.013-2.914-2.914z"/></svg></span> Template .env</label><label for="__tabbed_8_2"><span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16"><path d="M4 1.75C4 .784 4.784 0 5.75 0h5.586c.464 0 .909.184 1.237.513l2.914 2.914c.329.328.513.773.513 1.237v8.586A1.75 1.75 0 0 1 14.25 15h-9a.75.75 0 0 1 0-1.5h9a.25.25 0 0 0 .25-.25V6h-2.75A1.75 1.75 0 0 1 10 4.25V1.5H5.75a.25.25 0 0 0-.25.25v2.5a.75.75 0 0 1-1.5 0Zm1.72 4.97a.75.75 0 0 1 1.06 0l2 2a.75.75 0 0 1 0 1.06l-2 2a.749.749 0 0 1-1.275-.326.75.75 0 0 1 .215-.734l1.47-1.47-1.47-1.47a.75.75 0 0 1 0-1.06M3.28 7.78 1.81 9.25l1.47 1.47a.75.75 0 0 1-.018 1.042.75.75 0 0 1-1.042.018l-2-2a.75.75 0 0 1 0-1.06l2-2a.75.75 0 0 1 1.042.018.75.75 0 0 1 .018 1.042m8.22-6.218V4.25c0 .138.112.25.25.25h2.688l-.011-.013-2.914-2.914z"/></svg></span>  Sample <code>.env</code></label></div>
 <div class="tabbed-content">
 <div class="tabbed-block">
 <div class="language-text highlight"><pre><span></span><code><span id="__span-25-1"><a id="__codelineno-25-1" name="__codelineno-25-1" href="#__codelineno-25-1"></a>export NKP_MGT_CLUSTER_NAME=_name_of_nkp_management_cluster
@@ -3529,7 +3552,6 @@
 </span><span id="__span-25-11"><a id="__codelineno-25-11" name="__codelineno-25-11" href="#__codelineno-25-11"></a>export CSI_HYPERVISOR_ATTACHED=_true/false
 </span><span id="__span-25-12"><a id="__codelineno-25-12" name="__codelineno-25-12" href="#__codelineno-25-12"></a>export DOCKER_USERNAME=_your_docker_username
 </span><span id="__span-25-13"><a id="__codelineno-25-13" name="__codelineno-25-13" href="#__codelineno-25-13"></a>export DOCKER_PASSWORD=_your_docker_password
-</span><span id="__span-25-14"><a id="__codelineno-25-14" name="__codelineno-25-14" href="#__codelineno-25-14"></a>export NUTANIX_PROJECT_NAME=_your_pc_project_name
 </span></code></pre></div>
 </div>
 <div class="tabbed-block">
@@ -3546,7 +3568,6 @@
 </span><span id="__span-26-11"><a id="__codelineno-26-11" name="__codelineno-26-11" href="#__codelineno-26-11"></a>export CSI_HYPERVISOR_ATTACHED=true
 </span><span id="__span-26-12"><a id="__codelineno-26-12" name="__codelineno-26-12" href="#__codelineno-26-12"></a>export DOCKER_USERNAME=_your_docker_username
 </span><span id="__span-26-13"><a id="__codelineno-26-13" name="__codelineno-26-13" href="#__codelineno-26-13"></a>export DOCKER_PASSWORD=_your_docker_password
-</span><span id="__span-26-14"><a id="__codelineno-26-14" name="__codelineno-26-14" href="#__codelineno-26-14"></a>export NUTANIX_PROJECT_NAME=dev-lab
 </span></code></pre></div>
 </div>
 </div>
@@ -3574,23 +3595,21 @@
 </span><span id="__span-28-10"><a id="__codelineno-28-10" name="__codelineno-28-10" href="#__codelineno-28-10"></a><span class="s2">        --worker-vm-image </span><span class="si">${</span><span class="nv">NKP_IMAGE</span><span class="si">}</span><span class="s2"> \</span>
 </span><span id="__span-28-11"><a id="__codelineno-28-11" name="__codelineno-28-11" href="#__codelineno-28-11"></a><span class="s2">        --ssh-public-key-file </span><span class="si">${</span><span class="nv">SSH_PUBLIC_KEY</span><span class="si">}</span><span class="s2"> \</span>
 </span><span id="__span-28-12"><a id="__codelineno-28-12" name="__codelineno-28-12" href="#__codelineno-28-12"></a><span class="s2">        --kubernetes-service-load-balancer-ip-range </span><span class="si">${</span><span class="nv">LB_IP_RANGE</span><span class="si">}</span><span class="s2"> \</span>
-</span><span id="__span-28-13"><a id="__codelineno-28-13" name="__codelineno-28-13" href="#__codelineno-28-13"></a><span class="s2">        --control-plane-disk-size 150 --control-plane-memory </span><span class="si">${</span><span class="nv">CONTROL_PLANE_MEMORY_GIB</span><span class="si">}</span><span class="s2"> --control-plane-vcpus </span><span class="si">${</span><span class="nv">CONTROL_PLANE_VCPUS</span><span class="si">}</span><span class="s2"> --control-plane-cores-per-vcpu </span><span class="si">${</span><span class="nv">CONTROL_PLANE_CORES_PER_VCPU</span><span class="si">}</span><span class="s2"> \</span>
-</span><span id="__span-28-14"><a id="__codelineno-28-14" name="__codelineno-28-14" href="#__codelineno-28-14"></a><span class="s2">        --worker-disk-size 150 --worker-memory </span><span class="si">${</span><span class="nv">WORKER_MEMORY_GIB</span><span class="si">}</span><span class="s2"> --worker-vcpus </span><span class="si">${</span><span class="nv">WORKER_VCPUS</span><span class="si">}</span><span class="s2"> --worker-cores-per-vcpu </span><span class="si">${</span><span class="nv">WORKER_CORES_PER_VCPU</span><span class="si">}</span><span class="s2"> \</span>
+</span><span id="__span-28-13"><a id="__codelineno-28-13" name="__codelineno-28-13" href="#__codelineno-28-13"></a><span class="s2">        --control-plane-disk-size 200 --control-plane-memory </span><span class="si">${</span><span class="nv">CONTROL_PLANE_MEMORY_GIB</span><span class="si">}</span><span class="s2"> --control-plane-vcpus </span><span class="si">${</span><span class="nv">CONTROL_PLANE_VCPUS</span><span class="si">}</span><span class="s2"> --control-plane-cores-per-vcpu </span><span class="si">${</span><span class="nv">CONTROL_PLANE_CORES_PER_VCPU</span><span class="si">}</span><span class="s2"> \</span>
+</span><span id="__span-28-14"><a id="__codelineno-28-14" name="__codelineno-28-14" href="#__codelineno-28-14"></a><span class="s2">        --worker-disk-size 200 --worker-memory </span><span class="si">${</span><span class="nv">WORKER_MEMORY_GIB</span><span class="si">}</span><span class="s2"> --worker-vcpus </span><span class="si">${</span><span class="nv">WORKER_VCPUS</span><span class="si">}</span><span class="s2"> --worker-cores-per-vcpu </span><span class="si">${</span><span class="nv">WORKER_CORES_PER_VCPU</span><span class="si">}</span><span class="s2"> \</span>
 </span><span id="__span-28-15"><a id="__codelineno-28-15" name="__codelineno-28-15" href="#__codelineno-28-15"></a><span class="s2">        --csi-file-system </span><span class="si">${</span><span class="nv">CSI_FILESYSTEM</span><span class="si">}</span><span class="s2"> \</span>
 </span><span id="__span-28-16"><a id="__codelineno-28-16" name="__codelineno-28-16" href="#__codelineno-28-16"></a><span class="s2">        --csi-hypervisor-attached-volumes=</span><span class="si">${</span><span class="nv">CSI_HYPERVISOR_ATTACHED</span><span class="si">}</span><span class="s2"> \</span>
 </span><span id="__span-28-17"><a id="__codelineno-28-17" name="__codelineno-28-17" href="#__codelineno-28-17"></a><span class="s2">        --registry-mirror-url &quot;</span>https://registry-1.docker.io<span class="s2">&quot; \</span>
 </span><span id="__span-28-18"><a id="__codelineno-28-18" name="__codelineno-28-18" href="#__codelineno-28-18"></a><span class="s2">        --registry-mirror-username </span><span class="si">${</span><span class="nv">DOCKER_USERNAME</span><span class="si">}</span><span class="s2"> \</span>
 </span><span id="__span-28-19"><a id="__codelineno-28-19" name="__codelineno-28-19" href="#__codelineno-28-19"></a><span class="s2">        --registry-mirror-password </span><span class="si">${</span><span class="nv">DOCKER_PASSWORD</span><span class="si">}</span><span class="s2"> \</span>
-</span><span id="__span-28-20"><a id="__codelineno-28-20" name="__codelineno-28-20" href="#__codelineno-28-20"></a><span class="s2">        --control-plane-pc-project </span><span class="si">${</span><span class="nv">NUTANIX_PROJECT_NAME</span><span class="si">}</span><span class="s2"> \</span>
-</span><span id="__span-28-21"><a id="__codelineno-28-21" name="__codelineno-28-21" href="#__codelineno-28-21"></a><span class="s2">        --worker-pc-project </span><span class="si">${</span><span class="nv">NUTANIX_PROJECT_NAME</span><span class="si">}</span><span class="s2"> \</span>
-</span><span id="__span-28-22"><a id="__codelineno-28-22" name="__codelineno-28-22" href="#__codelineno-28-22"></a><span class="s2">        --insecure&quot;</span>
+</span><span id="__span-28-20"><a id="__codelineno-28-20" name="__codelineno-28-20" href="#__codelineno-28-20"></a><span class="s2">        --insecure&quot;</span>
 </span></code></pre></div>
 <p>If the values are incorrect, source the <code>.env</code> file again by running the following command</p>
 <div class="language-bash highlight"><pre><span></span><code><span id="__span-29-1"><a id="__codelineno-29-1" name="__codelineno-29-1" href="#__codelineno-29-1"></a><span class="nb">source</span><span class="w"> </span>.env
 </span></code></pre></div>
 <p>Then rerun the <code>echo nkp</code> command to verify the values again before running the <code>nkp create cluster nutanix</code> command.</p>
 </details>
-<div class="tabbed-set tabbed-alternate" data-tabs="9:2"><input checked="checked" id="__tabbed_9_1" name="__tabbed_9" type="radio" /><input id="__tabbed_9_2" name="__tabbed_9" type="radio" /><div class="tabbed-labels"><label for="__tabbed_9_1">Command</label><label for="__tabbed_9_2">Command output</label></div>
+<div class="tabbed-set tabbed-alternate" data-tabs="9:2"><input checked="checked" id="__tabbed_9_1" name="__tabbed_9" type="radio" /><input id="__tabbed_9_2" name="__tabbed_9" type="radio" /><div class="tabbed-labels"><label for="__tabbed_9_1"><span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16"><path d="m6.354 8.04-4.773 4.773a.75.75 0 1 0 1.061 1.06L7.945 8.57a.75.75 0 0 0 0-1.06L2.642 2.206a.75.75 0 0 0-1.06 1.061L6.353 8.04ZM8.75 11.5a.75.75 0 0 0 0 1.5h5.5a.75.75 0 0 0 0-1.5z"/></svg></span> Command</label><label for="__tabbed_9_2"><span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16"><path d="m6.354 8.04-4.773 4.773a.75.75 0 1 0 1.061 1.06L7.945 8.57a.75.75 0 0 0 0-1.06L2.642 2.206a.75.75 0 0 0-1.06 1.061L6.353 8.04ZM8.75 11.5a.75.75 0 0 0 0 1.5h5.5a.75.75 0 0 0 0-1.5z"/></svg></span> Command output</label></div>
 <div class="tabbed-content">
 <div class="tabbed-block">
 <div class="language-bash highlight"><pre><span></span><code><span id="__span-30-1"><a id="__codelineno-30-1" name="__codelineno-30-1" href="#__codelineno-30-1"></a>nkp<span class="w"> </span>create<span class="w"> </span>cluster<span class="w"> </span>nutanix<span class="w"> </span>-c<span class="w"> </span><span class="si">${</span><span class="nv">NKP_MGT_CLUSTER_NAME</span><span class="si">}</span><span class="w"> </span><span class="se">\</span>
@@ -3605,17 +3624,15 @@
 </span><span id="__span-30-10"><a id="__codelineno-30-10" name="__codelineno-30-10" href="#__codelineno-30-10"></a><span class="w">    </span>--worker-vm-image<span class="w"> </span><span class="si">${</span><span class="nv">NKP_IMAGE</span><span class="si">}</span><span class="w"> </span><span class="se">\</span>
 </span><span id="__span-30-11"><a id="__codelineno-30-11" name="__codelineno-30-11" href="#__codelineno-30-11"></a><span class="w">    </span>--ssh-public-key-file<span class="w"> </span><span class="si">${</span><span class="nv">SSH_PUBLIC_KEY</span><span class="si">}</span><span class="w"> </span><span class="se">\</span>
 </span><span id="__span-30-12"><a id="__codelineno-30-12" name="__codelineno-30-12" href="#__codelineno-30-12"></a><span class="w">    </span>--kubernetes-service-load-balancer-ip-range<span class="w"> </span><span class="si">${</span><span class="nv">LB_IP_RANGE</span><span class="si">}</span><span class="w"> </span><span class="se">\</span>
-</span><span id="__span-30-13"><a id="__codelineno-30-13" name="__codelineno-30-13" href="#__codelineno-30-13"></a><span class="w">    </span>--control-plane-disk-size<span class="w"> </span><span class="m">150</span><span class="w"> </span>--control-plane-memory<span class="w"> </span><span class="si">${</span><span class="nv">CONTROL_PLANE_MEMORY_GIB</span><span class="si">}</span><span class="w"> </span>--control-plane-vcpus<span class="w"> </span><span class="si">${</span><span class="nv">CONTROL_PLANE_VCPUS</span><span class="si">}</span><span class="w"> </span>--control-plane-cores-per-vcpu<span class="w"> </span><span class="si">${</span><span class="nv">CONTROL_PLANE_CORES_PER_VCPU</span><span class="si">}</span><span class="w"> </span><span class="se">\</span>
-</span><span id="__span-30-14"><a id="__codelineno-30-14" name="__codelineno-30-14" href="#__codelineno-30-14"></a><span class="w">    </span>--worker-disk-size<span class="w"> </span><span class="m">150</span><span class="w"> </span>--worker-memory<span class="w"> </span><span class="si">${</span><span class="nv">WORKER_MEMORY_GIB</span><span class="si">}</span><span class="w"> </span>--worker-vcpus<span class="w"> </span><span class="si">${</span><span class="nv">WORKER_VCPUS</span><span class="si">}</span><span class="w"> </span>--worker-cores-per-vcpu<span class="w"> </span><span class="si">${</span><span class="nv">WORKER_CORES_PER_VCPU</span><span class="si">}</span><span class="w"> </span><span class="se">\</span>
+</span><span id="__span-30-13"><a id="__codelineno-30-13" name="__codelineno-30-13" href="#__codelineno-30-13"></a><span class="w">    </span>--control-plane-disk-size<span class="w"> </span><span class="m">200</span><span class="w"> </span>--control-plane-memory<span class="w"> </span><span class="si">${</span><span class="nv">CONTROL_PLANE_MEMORY_GIB</span><span class="si">}</span><span class="w"> </span>--control-plane-vcpus<span class="w"> </span><span class="si">${</span><span class="nv">CONTROL_PLANE_VCPUS</span><span class="si">}</span><span class="w"> </span>--control-plane-cores-per-vcpu<span class="w"> </span><span class="si">${</span><span class="nv">CONTROL_PLANE_CORES_PER_VCPU</span><span class="si">}</span><span class="w"> </span><span class="se">\</span>
+</span><span id="__span-30-14"><a id="__codelineno-30-14" name="__codelineno-30-14" href="#__codelineno-30-14"></a><span class="w">    </span>--worker-disk-size<span class="w"> </span><span class="m">200</span><span class="w"> </span>--worker-memory<span class="w"> </span><span class="si">${</span><span class="nv">WORKER_MEMORY_GIB</span><span class="si">}</span><span class="w"> </span>--worker-vcpus<span class="w"> </span><span class="si">${</span><span class="nv">WORKER_VCPUS</span><span class="si">}</span><span class="w"> </span>--worker-cores-per-vcpu<span class="w"> </span><span class="si">${</span><span class="nv">WORKER_CORES_PER_VCPU</span><span class="si">}</span><span class="w"> </span><span class="se">\</span>
 </span><span id="__span-30-15"><a id="__codelineno-30-15" name="__codelineno-30-15" href="#__codelineno-30-15"></a><span class="w">    </span>--csi-file-system<span class="w"> </span><span class="si">${</span><span class="nv">CSI_FILESYSTEM</span><span class="si">}</span><span class="w"> </span><span class="se">\</span>
 </span><span id="__span-30-16"><a id="__codelineno-30-16" name="__codelineno-30-16" href="#__codelineno-30-16"></a><span class="w">    </span>--csi-hypervisor-attached-volumes<span class="o">=</span><span class="si">${</span><span class="nv">CSI_HYPERVISOR_ATTACHED</span><span class="si">}</span><span class="w"> </span><span class="se">\</span>
 </span><span id="__span-30-17"><a id="__codelineno-30-17" name="__codelineno-30-17" href="#__codelineno-30-17"></a><span class="w">    </span>--registry-mirror-url<span class="w"> </span><span class="s2">&quot;https://registry-1.docker.io&quot;</span><span class="w"> </span><span class="se">\</span>
 </span><span id="__span-30-18"><a id="__codelineno-30-18" name="__codelineno-30-18" href="#__codelineno-30-18"></a><span class="w">    </span>--registry-mirror-username<span class="w"> </span><span class="si">${</span><span class="nv">DOCKER_USERNAME</span><span class="si">}</span><span class="w"> </span><span class="se">\</span>
 </span><span id="__span-30-19"><a id="__codelineno-30-19" name="__codelineno-30-19" href="#__codelineno-30-19"></a><span class="w">    </span>--registry-mirror-password<span class="w"> </span><span class="si">${</span><span class="nv">DOCKER_PASSWORD</span><span class="si">}</span><span class="w"> </span><span class="se">\</span>
-</span><span id="__span-30-20"><a id="__codelineno-30-20" name="__codelineno-30-20" href="#__codelineno-30-20"></a><span class="w">    </span>--control-plane-pc-project<span class="w"> </span><span class="si">${</span><span class="nv">NUTANIX_PROJECT_NAME</span><span class="si">}</span><span class="w"> </span><span class="se">\</span>
-</span><span id="__span-30-21"><a id="__codelineno-30-21" name="__codelineno-30-21" href="#__codelineno-30-21"></a><span class="w">    </span>--worker-pc-project<span class="w"> </span><span class="si">${</span><span class="nv">NUTANIX_PROJECT_NAME</span><span class="si">}</span><span class="w"> </span><span class="se">\</span>
-</span><span id="__span-30-22"><a id="__codelineno-30-22" name="__codelineno-30-22" href="#__codelineno-30-22"></a><span class="w">    </span>--insecure<span class="w"> </span><span class="se">\</span>
-</span><span id="__span-30-23"><a id="__codelineno-30-23" name="__codelineno-30-23" href="#__codelineno-30-23"></a><span class="w">    </span>--self-managed
+</span><span id="__span-30-20"><a id="__codelineno-30-20" name="__codelineno-30-20" href="#__codelineno-30-20"></a><span class="w">    </span>--insecure<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-30-21"><a id="__codelineno-30-21" name="__codelineno-30-21" href="#__codelineno-30-21"></a><span class="w">    </span>--self-managed
 </span></code></pre></div>
 </div>
 <div class="tabbed-block">
@@ -3702,7 +3719,7 @@
 </li>
 <li>
 <p>Check connectivity to the NKP Managment cluster</p>
-<div class="tabbed-set tabbed-alternate" data-tabs="10:2"><input checked="checked" id="__tabbed_10_1" name="__tabbed_10" type="radio" /><input id="__tabbed_10_2" name="__tabbed_10" type="radio" /><div class="tabbed-labels"><label for="__tabbed_10_1">Command</label><label for="__tabbed_10_2">Command output</label></div>
+<div class="tabbed-set tabbed-alternate" data-tabs="10:2"><input checked="checked" id="__tabbed_10_1" name="__tabbed_10" type="radio" /><input id="__tabbed_10_2" name="__tabbed_10" type="radio" /><div class="tabbed-labels"><label for="__tabbed_10_1"><span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16"><path d="m6.354 8.04-4.773 4.773a.75.75 0 1 0 1.061 1.06L7.945 8.57a.75.75 0 0 0 0-1.06L2.642 2.206a.75.75 0 0 0-1.06 1.061L6.353 8.04ZM8.75 11.5a.75.75 0 0 0 0 1.5h5.5a.75.75 0 0 0 0-1.5z"/></svg></span> Command</label><label for="__tabbed_10_2"><span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16"><path d="m6.354 8.04-4.773 4.773a.75.75 0 1 0 1.061 1.06L7.945 8.57a.75.75 0 0 0 0-1.06L2.642 2.206a.75.75 0 0 0-1.06 1.061L6.353 8.04ZM8.75 11.5a.75.75 0 0 0 0 1.5h5.5a.75.75 0 0 0 0-1.5z"/></svg></span> Command output</label></div>
 <div class="tabbed-content">
 <div class="tabbed-block">
 <div class="language-bash highlight"><pre><span></span><code><span id="__span-33-1"><a id="__codelineno-33-1" name="__codelineno-33-1" href="#__codelineno-33-1"></a>nkp<span class="w"> </span>get<span class="w"> </span>nodes
@@ -3720,7 +3737,7 @@
 </li>
 <li>
 <p>Get management cluster's dashboard credentials to login to the NKP UI</p>
-<div class="tabbed-set tabbed-alternate" data-tabs="11:2"><input checked="checked" id="__tabbed_11_1" name="__tabbed_11" type="radio" /><input id="__tabbed_11_2" name="__tabbed_11" type="radio" /><div class="tabbed-labels"><label for="__tabbed_11_1">Command</label><label for="__tabbed_11_2">Command output</label></div>
+<div class="tabbed-set tabbed-alternate" data-tabs="11:2"><input checked="checked" id="__tabbed_11_1" name="__tabbed_11" type="radio" /><input id="__tabbed_11_2" name="__tabbed_11" type="radio" /><div class="tabbed-labels"><label for="__tabbed_11_1"><span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16"><path d="m6.354 8.04-4.773 4.773a.75.75 0 1 0 1.061 1.06L7.945 8.57a.75.75 0 0 0 0-1.06L2.642 2.206a.75.75 0 0 0-1.06 1.061L6.353 8.04ZM8.75 11.5a.75.75 0 0 0 0 1.5h5.5a.75.75 0 0 0 0-1.5z"/></svg></span> Command</label><label for="__tabbed_11_2"><span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16"><path d="m6.354 8.04-4.773 4.773a.75.75 0 1 0 1.061 1.06L7.945 8.57a.75.75 0 0 0 0-1.06L2.642 2.206a.75.75 0 0 0-1.06 1.061L6.353 8.04ZM8.75 11.5a.75.75 0 0 0 0 1.5h5.5a.75.75 0 0 0 0-1.5z"/></svg></span> Command output</label></div>
 <div class="tabbed-content">
 <div class="tabbed-block">
 <div class="language-bash highlight"><pre><span></span><code><span id="__span-35-1"><a id="__codelineno-35-1" name="__codelineno-35-1" href="#__codelineno-35-1"></a>nkp<span class="w"> </span>get<span class="w"> </span>dashboard
@@ -3750,7 +3767,7 @@
 <li>In <code>VSCode</code>, create a new file <code>.env_workload</code></li>
 <li>
 <p>Open <code>.env_workload</code> file in VSC and add (append) the following environment variables and save it</p>
-<div class="tabbed-set tabbed-alternate" data-tabs="12:2"><input checked="checked" id="__tabbed_12_1" name="__tabbed_12" type="radio" /><input id="__tabbed_12_2" name="__tabbed_12" type="radio" /><div class="tabbed-labels"><label for="__tabbed_12_1">Template .env</label><label for="__tabbed_12_2">Sample .env</label></div>
+<div class="tabbed-set tabbed-alternate" data-tabs="12:2"><input checked="checked" id="__tabbed_12_1" name="__tabbed_12" type="radio" /><input id="__tabbed_12_2" name="__tabbed_12" type="radio" /><div class="tabbed-labels"><label for="__tabbed_12_1"><span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16"><path d="M4 1.75C4 .784 4.784 0 5.75 0h5.586c.464 0 .909.184 1.237.513l2.914 2.914c.329.328.513.773.513 1.237v8.586A1.75 1.75 0 0 1 14.25 15h-9a.75.75 0 0 1 0-1.5h9a.25.25 0 0 0 .25-.25V6h-2.75A1.75 1.75 0 0 1 10 4.25V1.5H5.75a.25.25 0 0 0-.25.25v2.5a.75.75 0 0 1-1.5 0Zm1.72 4.97a.75.75 0 0 1 1.06 0l2 2a.75.75 0 0 1 0 1.06l-2 2a.749.749 0 0 1-1.275-.326.75.75 0 0 1 .215-.734l1.47-1.47-1.47-1.47a.75.75 0 0 1 0-1.06M3.28 7.78 1.81 9.25l1.47 1.47a.75.75 0 0 1-.018 1.042.75.75 0 0 1-1.042.018l-2-2a.75.75 0 0 1 0-1.06l2-2a.75.75 0 0 1 1.042.018.75.75 0 0 1 .018 1.042m8.22-6.218V4.25c0 .138.112.25.25.25h2.688l-.011-.013-2.914-2.914z"/></svg></span> Template .env</label><label for="__tabbed_12_2"><span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16"><path d="M4 1.75C4 .784 4.784 0 5.75 0h5.586c.464 0 .909.184 1.237.513l2.914 2.914c.329.328.513.773.513 1.237v8.586A1.75 1.75 0 0 1 14.25 15h-9a.75.75 0 0 1 0-1.5h9a.25.25 0 0 0 .25-.25V6h-2.75A1.75 1.75 0 0 1 10 4.25V1.5H5.75a.25.25 0 0 0-.25.25v2.5a.75.75 0 0 1-1.5 0Zm1.72 4.97a.75.75 0 0 1 1.06 0l2 2a.75.75 0 0 1 0 1.06l-2 2a.749.749 0 0 1-1.275-.326.75.75 0 0 1 .215-.734l1.47-1.47-1.47-1.47a.75.75 0 0 1 0-1.06M3.28 7.78 1.81 9.25l1.47 1.47a.75.75 0 0 1-.018 1.042.75.75 0 0 1-1.042.018l-2-2a.75.75 0 0 1 0-1.06l2-2a.75.75 0 0 1 1.042.018.75.75 0 0 1 .018 1.042m8.22-6.218V4.25c0 .138.112.25.25.25h2.688l-.011-.013-2.914-2.914z"/></svg></span>  Sample <code>.env</code></label></div>
 <div class="tabbed-content">
 <div class="tabbed-block">
 <div class="language-text highlight"><pre><span></span><code><span id="__span-37-1"><a id="__codelineno-37-1" name="__codelineno-37-1" href="#__codelineno-37-1"></a>export NKP_WORKLOAD_CLUSTER_NAME=_workload_nkp_clustername
@@ -3764,9 +3781,8 @@
 </span><span id="__span-37-9"><a id="__codelineno-37-9" name="__codelineno-37-9" href="#__codelineno-37-9"></a>export WORKER_MEMORY_GIB=_no_of_worker_memory_gib
 </span><span id="__span-37-10"><a id="__codelineno-37-10" name="__codelineno-37-10" href="#__codelineno-37-10"></a>export CSI_FILESYSTEM=_preferred_filesystem_ext4/xfs
 </span><span id="__span-37-11"><a id="__codelineno-37-11" name="__codelineno-37-11" href="#__codelineno-37-11"></a>export CSI_HYPERVISOR_ATTACHED=_true/false
-</span><span id="__span-37-12"><a id="__codelineno-37-12" name="__codelineno-37-12" href="#__codelineno-37-12"></a>export NUTANIX_PROJECT_NAME=_your_pc_project_name
-</span><span id="__span-37-13"><a id="__codelineno-37-13" name="__codelineno-37-13" href="#__codelineno-37-13"></a>export CONTROLPLANE_VIP=_your_nkp_cluster_controlplane_ip
-</span><span id="__span-37-14"><a id="__codelineno-37-14" name="__codelineno-37-14" href="#__codelineno-37-14"></a>export LB_IP_RANGE=_your_range_of_two_ips
+</span><span id="__span-37-12"><a id="__codelineno-37-12" name="__codelineno-37-12" href="#__codelineno-37-12"></a>export CONTROLPLANE_VIP=_your_nkp_cluster_controlplane_ip
+</span><span id="__span-37-13"><a id="__codelineno-37-13" name="__codelineno-37-13" href="#__codelineno-37-13"></a>export LB_IP_RANGE=_your_range_of_two_ips
 </span></code></pre></div>
 </div>
 <div class="tabbed-block">
@@ -3781,9 +3797,8 @@
 </span><span id="__span-38-9"><a id="__codelineno-38-9" name="__codelineno-38-9" href="#__codelineno-38-9"></a>export WORKER_MEMORY_GIB=32
 </span><span id="__span-38-10"><a id="__codelineno-38-10" name="__codelineno-38-10" href="#__codelineno-38-10"></a>export CSI_FILESYSTEM=ext4
 </span><span id="__span-38-11"><a id="__codelineno-38-11" name="__codelineno-38-11" href="#__codelineno-38-11"></a>export CSI_HYPERVISOR_ATTACHED=true
-</span><span id="__span-38-12"><a id="__codelineno-38-12" name="__codelineno-38-12" href="#__codelineno-38-12"></a>export NUTANIX_PROJECT_NAME=dev-lab
-</span><span id="__span-38-13"><a id="__codelineno-38-13" name="__codelineno-38-13" href="#__codelineno-38-13"></a>export CONTROLPLANE_VIP=10.x.x.214
-</span><span id="__span-38-14"><a id="__codelineno-38-14" name="__codelineno-38-14" href="#__codelineno-38-14"></a>export LB_IP_RANGE=10.x.x.215-10.x.x.216
+</span><span id="__span-38-12"><a id="__codelineno-38-12" name="__codelineno-38-12" href="#__codelineno-38-12"></a>export CONTROLPLANE_VIP=10.x.x.214
+</span><span id="__span-38-13"><a id="__codelineno-38-13" name="__codelineno-38-13" href="#__codelineno-38-13"></a>export LB_IP_RANGE=10.x.x.215-10.x.x.216
 </span></code></pre></div>
 </div>
 </div>
@@ -3816,23 +3831,21 @@
 </span><span id="__span-40-10"><a id="__codelineno-40-10" name="__codelineno-40-10" href="#__codelineno-40-10"></a><span class="s2">        --worker-vm-image </span><span class="si">${</span><span class="nv">NKP_IMAGE</span><span class="si">}</span><span class="s2"> \</span>
 </span><span id="__span-40-11"><a id="__codelineno-40-11" name="__codelineno-40-11" href="#__codelineno-40-11"></a><span class="s2">        --ssh-public-key-file </span><span class="si">${</span><span class="nv">SSH_PUBLIC_KEY</span><span class="si">}</span><span class="s2"> \</span>
 </span><span id="__span-40-12"><a id="__codelineno-40-12" name="__codelineno-40-12" href="#__codelineno-40-12"></a><span class="s2">        --kubernetes-service-load-balancer-ip-range </span><span class="si">${</span><span class="nv">LB_IP_RANGE</span><span class="si">}</span><span class="s2"> \</span>
-</span><span id="__span-40-13"><a id="__codelineno-40-13" name="__codelineno-40-13" href="#__codelineno-40-13"></a><span class="s2">        --control-plane-disk-size 150 --control-plane-memory </span><span class="si">${</span><span class="nv">CONTROL_PLANE_MEMORY_GIB</span><span class="si">}</span><span class="s2"> --control-plane-vcpus </span><span class="si">${</span><span class="nv">CONTROL_PLANE_VCPUS</span><span class="si">}</span><span class="s2"> --control-plane-cores-per-vcpu </span><span class="si">${</span><span class="nv">CONTROL_PLANE_CORES_PER_VCPU</span><span class="si">}</span><span class="s2"> \</span>
-</span><span id="__span-40-14"><a id="__codelineno-40-14" name="__codelineno-40-14" href="#__codelineno-40-14"></a><span class="s2">        --worker-disk-size 150 --worker-memory </span><span class="si">${</span><span class="nv">WORKER_MEMORY_GIB</span><span class="si">}</span><span class="s2"> --worker-vcpus </span><span class="si">${</span><span class="nv">WORKER_VCPUS</span><span class="si">}</span><span class="s2"> --worker-cores-per-vcpu </span><span class="si">${</span><span class="nv">WORKER_CORES_PER_VCPU</span><span class="si">}</span><span class="s2"> \</span>
+</span><span id="__span-40-13"><a id="__codelineno-40-13" name="__codelineno-40-13" href="#__codelineno-40-13"></a><span class="s2">        --control-plane-disk-size 200 --control-plane-memory </span><span class="si">${</span><span class="nv">CONTROL_PLANE_MEMORY_GIB</span><span class="si">}</span><span class="s2"> --control-plane-vcpus </span><span class="si">${</span><span class="nv">CONTROL_PLANE_VCPUS</span><span class="si">}</span><span class="s2"> --control-plane-cores-per-vcpu </span><span class="si">${</span><span class="nv">CONTROL_PLANE_CORES_PER_VCPU</span><span class="si">}</span><span class="s2"> \</span>
+</span><span id="__span-40-14"><a id="__codelineno-40-14" name="__codelineno-40-14" href="#__codelineno-40-14"></a><span class="s2">        --worker-disk-size 200 --worker-memory </span><span class="si">${</span><span class="nv">WORKER_MEMORY_GIB</span><span class="si">}</span><span class="s2"> --worker-vcpus </span><span class="si">${</span><span class="nv">WORKER_VCPUS</span><span class="si">}</span><span class="s2"> --worker-cores-per-vcpu </span><span class="si">${</span><span class="nv">WORKER_CORES_PER_VCPU</span><span class="si">}</span><span class="s2"> \</span>
 </span><span id="__span-40-15"><a id="__codelineno-40-15" name="__codelineno-40-15" href="#__codelineno-40-15"></a><span class="s2">        --csi-file-system </span><span class="si">${</span><span class="nv">CSI_FILESYSTEM</span><span class="si">}</span><span class="s2"> \</span>
 </span><span id="__span-40-16"><a id="__codelineno-40-16" name="__codelineno-40-16" href="#__codelineno-40-16"></a><span class="s2">        --csi-hypervisor-attached-volumes=</span><span class="si">${</span><span class="nv">CSI_HYPERVISOR_ATTACHED</span><span class="si">}</span><span class="s2"> \</span>
 </span><span id="__span-40-17"><a id="__codelineno-40-17" name="__codelineno-40-17" href="#__codelineno-40-17"></a><span class="s2">        --registry-mirror-url &quot;</span>https://registry-1.docker.io<span class="s2">&quot; \</span>
 </span><span id="__span-40-18"><a id="__codelineno-40-18" name="__codelineno-40-18" href="#__codelineno-40-18"></a><span class="s2">        --registry-mirror-username </span><span class="si">${</span><span class="nv">DOCKER_USERNAME</span><span class="si">}</span><span class="s2"> \</span>
 </span><span id="__span-40-19"><a id="__codelineno-40-19" name="__codelineno-40-19" href="#__codelineno-40-19"></a><span class="s2">        --registry-mirror-password </span><span class="si">${</span><span class="nv">DOCKER_PASSWORD</span><span class="si">}</span><span class="s2"> \</span>
-</span><span id="__span-40-20"><a id="__codelineno-40-20" name="__codelineno-40-20" href="#__codelineno-40-20"></a><span class="s2">        --control-plane-pc-project </span><span class="si">${</span><span class="nv">NUTANIX_PROJECT_NAME</span><span class="si">}</span><span class="s2"> \</span>
-</span><span id="__span-40-21"><a id="__codelineno-40-21" name="__codelineno-40-21" href="#__codelineno-40-21"></a><span class="s2">        --worker-pc-project </span><span class="si">${</span><span class="nv">NUTANIX_PROJECT_NAME</span><span class="si">}</span><span class="s2"> \</span>
-</span><span id="__span-40-22"><a id="__codelineno-40-22" name="__codelineno-40-22" href="#__codelineno-40-22"></a><span class="s2">        --insecure&quot;</span>
+</span><span id="__span-40-20"><a id="__codelineno-40-20" name="__codelineno-40-20" href="#__codelineno-40-20"></a><span class="s2">        --insecure&quot;</span>
 </span></code></pre></div>
 <p>If the values are incorrect, source the <code>.env</code> file again by running the following command</p>
 <div class="language-bash highlight"><pre><span></span><code><span id="__span-41-1"><a id="__codelineno-41-1" name="__codelineno-41-1" href="#__codelineno-41-1"></a><span class="nb">source</span><span class="w"> </span>.env
 </span></code></pre></div>
 <p>Then rerun the <code>echo nkp</code> command to verify the values again before running the <code>nkp create cluster nutanix</code> command.</p>
 </details>
-<div class="tabbed-set tabbed-alternate" data-tabs="13:2"><input checked="checked" id="__tabbed_13_1" name="__tabbed_13" type="radio" /><input id="__tabbed_13_2" name="__tabbed_13" type="radio" /><div class="tabbed-labels"><label for="__tabbed_13_1">Command</label><label for="__tabbed_13_2">Command output</label></div>
+<div class="tabbed-set tabbed-alternate" data-tabs="13:2"><input checked="checked" id="__tabbed_13_1" name="__tabbed_13" type="radio" /><input id="__tabbed_13_2" name="__tabbed_13" type="radio" /><div class="tabbed-labels"><label for="__tabbed_13_1"><span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16"><path d="m6.354 8.04-4.773 4.773a.75.75 0 1 0 1.061 1.06L7.945 8.57a.75.75 0 0 0 0-1.06L2.642 2.206a.75.75 0 0 0-1.06 1.061L6.353 8.04ZM8.75 11.5a.75.75 0 0 0 0 1.5h5.5a.75.75 0 0 0 0-1.5z"/></svg></span> Command</label><label for="__tabbed_13_2"><span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16"><path d="m6.354 8.04-4.773 4.773a.75.75 0 1 0 1.061 1.06L7.945 8.57a.75.75 0 0 0 0-1.06L2.642 2.206a.75.75 0 0 0-1.06 1.061L6.353 8.04ZM8.75 11.5a.75.75 0 0 0 0 1.5h5.5a.75.75 0 0 0 0-1.5z"/></svg></span> Command output</label></div>
 <div class="tabbed-content">
 <div class="tabbed-block">
 <div class="language-bash highlight"><pre><span></span><code><span id="__span-42-1"><a id="__codelineno-42-1" name="__codelineno-42-1" href="#__codelineno-42-1"></a>nkp<span class="w"> </span>create<span class="w"> </span>cluster<span class="w"> </span>nutanix<span class="w"> </span>-c<span class="w"> </span><span class="si">${</span><span class="nv">NKP_WORKLOAD_CLUSTER_NAME</span><span class="si">}</span><span class="w"> </span><span class="se">\</span>
@@ -3847,16 +3860,14 @@
 </span><span id="__span-42-10"><a id="__codelineno-42-10" name="__codelineno-42-10" href="#__codelineno-42-10"></a><span class="w">    </span>--worker-vm-image<span class="w"> </span><span class="si">${</span><span class="nv">NKP_IMAGE</span><span class="si">}</span><span class="w"> </span><span class="se">\</span>
 </span><span id="__span-42-11"><a id="__codelineno-42-11" name="__codelineno-42-11" href="#__codelineno-42-11"></a><span class="w">    </span>--ssh-public-key-file<span class="w"> </span><span class="si">${</span><span class="nv">SSH_PUBLIC_KEY</span><span class="si">}</span><span class="w"> </span><span class="se">\</span>
 </span><span id="__span-42-12"><a id="__codelineno-42-12" name="__codelineno-42-12" href="#__codelineno-42-12"></a><span class="w">    </span>--kubernetes-service-load-balancer-ip-range<span class="w"> </span><span class="si">${</span><span class="nv">LB_IP_RANGE</span><span class="si">}</span><span class="w"> </span><span class="se">\</span>
-</span><span id="__span-42-13"><a id="__codelineno-42-13" name="__codelineno-42-13" href="#__codelineno-42-13"></a><span class="w">    </span>--control-plane-disk-size<span class="w"> </span><span class="m">150</span><span class="w"> </span>--control-plane-memory<span class="w"> </span><span class="si">${</span><span class="nv">CONTROL_PLANE_MEMORY_GIB</span><span class="si">}</span><span class="w"> </span>--control-plane-vcpus<span class="w"> </span><span class="si">${</span><span class="nv">CONTROL_PLANE_VCPUS</span><span class="si">}</span><span class="w"> </span>--control-plane-cores-per-vcpu<span class="w"> </span><span class="si">${</span><span class="nv">CONTROL_PLANE_CORES_PER_VCPU</span><span class="si">}</span><span class="w"> </span><span class="se">\</span>
-</span><span id="__span-42-14"><a id="__codelineno-42-14" name="__codelineno-42-14" href="#__codelineno-42-14"></a><span class="w">    </span>--worker-disk-size<span class="w"> </span><span class="m">150</span><span class="w"> </span>--worker-memory<span class="w"> </span><span class="si">${</span><span class="nv">WORKER_MEMORY_GIB</span><span class="si">}</span><span class="w"> </span>--worker-vcpus<span class="w"> </span><span class="si">${</span><span class="nv">WORKER_VCPUS</span><span class="si">}</span><span class="w"> </span>--worker-cores-per-vcpu<span class="w"> </span><span class="si">${</span><span class="nv">WORKER_CORES_PER_VCPU</span><span class="si">}</span><span class="w"> </span><span class="se">\</span>
+</span><span id="__span-42-13"><a id="__codelineno-42-13" name="__codelineno-42-13" href="#__codelineno-42-13"></a><span class="w">    </span>--control-plane-disk-size<span class="w"> </span><span class="m">200</span><span class="w"> </span>--control-plane-memory<span class="w"> </span><span class="si">${</span><span class="nv">CONTROL_PLANE_MEMORY_GIB</span><span class="si">}</span><span class="w"> </span>--control-plane-vcpus<span class="w"> </span><span class="si">${</span><span class="nv">CONTROL_PLANE_VCPUS</span><span class="si">}</span><span class="w"> </span>--control-plane-cores-per-vcpu<span class="w"> </span><span class="si">${</span><span class="nv">CONTROL_PLANE_CORES_PER_VCPU</span><span class="si">}</span><span class="w"> </span><span class="se">\</span>
+</span><span id="__span-42-14"><a id="__codelineno-42-14" name="__codelineno-42-14" href="#__codelineno-42-14"></a><span class="w">    </span>--worker-disk-size<span class="w"> </span><span class="m">200</span><span class="w"> </span>--worker-memory<span class="w"> </span><span class="si">${</span><span class="nv">WORKER_MEMORY_GIB</span><span class="si">}</span><span class="w"> </span>--worker-vcpus<span class="w"> </span><span class="si">${</span><span class="nv">WORKER_VCPUS</span><span class="si">}</span><span class="w"> </span>--worker-cores-per-vcpu<span class="w"> </span><span class="si">${</span><span class="nv">WORKER_CORES_PER_VCPU</span><span class="si">}</span><span class="w"> </span><span class="se">\</span>
 </span><span id="__span-42-15"><a id="__codelineno-42-15" name="__codelineno-42-15" href="#__codelineno-42-15"></a><span class="w">    </span>--csi-file-system<span class="w"> </span><span class="si">${</span><span class="nv">CSI_FILESYSTEM</span><span class="si">}</span><span class="w"> </span><span class="se">\</span>
 </span><span id="__span-42-16"><a id="__codelineno-42-16" name="__codelineno-42-16" href="#__codelineno-42-16"></a><span class="w">    </span>--csi-hypervisor-attached-volumes<span class="o">=</span><span class="si">${</span><span class="nv">CSI_HYPERVISOR_ATTACHED</span><span class="si">}</span><span class="w"> </span><span class="se">\</span>
 </span><span id="__span-42-17"><a id="__codelineno-42-17" name="__codelineno-42-17" href="#__codelineno-42-17"></a><span class="w">    </span>--registry-mirror-url<span class="w"> </span><span class="s2">&quot;https://registry-1.docker.io&quot;</span><span class="w"> </span><span class="se">\</span>
 </span><span id="__span-42-18"><a id="__codelineno-42-18" name="__codelineno-42-18" href="#__codelineno-42-18"></a><span class="w">    </span>--registry-mirror-username<span class="w"> </span><span class="si">${</span><span class="nv">DOCKER_USERNAME</span><span class="si">}</span><span class="w"> </span><span class="se">\</span>
 </span><span id="__span-42-19"><a id="__codelineno-42-19" name="__codelineno-42-19" href="#__codelineno-42-19"></a><span class="w">    </span>--registry-mirror-password<span class="w"> </span><span class="si">${</span><span class="nv">DOCKER_PASSWORD</span><span class="si">}</span><span class="w"> </span><span class="se">\</span>
-</span><span id="__span-42-20"><a id="__codelineno-42-20" name="__codelineno-42-20" href="#__codelineno-42-20"></a><span class="w">    </span>--control-plane-pc-project<span class="w"> </span><span class="si">${</span><span class="nv">NUTANIX_PROJECT_NAME</span><span class="si">}</span><span class="w"> </span><span class="se">\</span>
-</span><span id="__span-42-21"><a id="__codelineno-42-21" name="__codelineno-42-21" href="#__codelineno-42-21"></a><span class="w">    </span>--worker-pc-project<span class="w"> </span><span class="si">${</span><span class="nv">NUTANIX_PROJECT_NAME</span><span class="si">}</span><span class="w"> </span><span class="se">\</span>
-</span><span id="__span-42-22"><a id="__codelineno-42-22" name="__codelineno-42-22" href="#__codelineno-42-22"></a><span class="w">    </span>--insecure
+</span><span id="__span-42-20"><a id="__codelineno-42-20" name="__codelineno-42-20" href="#__codelineno-42-20"></a><span class="w">    </span>--insecure
 </span></code></pre></div>
 </div>
 <div class="tabbed-block">
@@ -3892,11 +3903,6 @@
 </div>
 </div>
 </div>
-<details class="info">
-<summary>Self-Manged Cluster??</summary>
-<p>The <code>--self-managed</code> argument of the <code>nkp create cluster nutanix</code> command will deploy bootstrap, and Kommander management automatically. </p>
-<p>However, we are specifically <strong>not using</strong> it here in this lab, to run through Kommander installation later. </p>
-</details>
 </li>
 <li>
 <p>Observe the events in the shell and in Prism Central events</p>
@@ -3916,7 +3922,7 @@
 </li>
 <li>
 <p>Run the following command to check K8S status of the <code>nkpdev</code> cluster</p>
-<div class="tabbed-set tabbed-alternate" data-tabs="14:2"><input checked="checked" id="__tabbed_14_1" name="__tabbed_14" type="radio" /><input id="__tabbed_14_2" name="__tabbed_14" type="radio" /><div class="tabbed-labels"><label for="__tabbed_14_1">Command</label><label for="__tabbed_14_2">Command output</label></div>
+<div class="tabbed-set tabbed-alternate" data-tabs="14:2"><input checked="checked" id="__tabbed_14_1" name="__tabbed_14" type="radio" /><input id="__tabbed_14_2" name="__tabbed_14" type="radio" /><div class="tabbed-labels"><label for="__tabbed_14_1"><span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16"><path d="m6.354 8.04-4.773 4.773a.75.75 0 1 0 1.061 1.06L7.945 8.57a.75.75 0 0 0 0-1.06L2.642 2.206a.75.75 0 0 0-1.06 1.061L6.353 8.04ZM8.75 11.5a.75.75 0 0 0 0 1.5h5.5a.75.75 0 0 0 0-1.5z"/></svg></span> Command</label><label for="__tabbed_14_2"><span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16"><path d="m6.354 8.04-4.773 4.773a.75.75 0 1 0 1.061 1.06L7.945 8.57a.75.75 0 0 0 0-1.06L2.642 2.206a.75.75 0 0 0-1.06 1.061L6.353 8.04ZM8.75 11.5a.75.75 0 0 0 0 1.5h5.5a.75.75 0 0 0 0-1.5z"/></svg></span> Command output</label></div>
 <div class="tabbed-content">
 <div class="tabbed-block">
 <div class="language-bash highlight"><pre><span></span><code><span id="__span-46-1"><a id="__codelineno-46-1" name="__codelineno-46-1" href="#__codelineno-46-1"></a>kubectx<span class="w"> </span><span class="si">${</span><span class="nv">NKP_WORKLOAD_CLUSTER_NAME</span><span class="si">}</span>-admin@<span class="si">${</span><span class="nv">NKP_WORKLOAD_CLUSTER_NAME</span><span class="si">}</span><span class="w"> </span>
@@ -3941,7 +3947,7 @@
 </li>
 <li>
 <p>Get dashboard URL and login credentials for the workload cluster</p>
-<div class="tabbed-set tabbed-alternate" data-tabs="15:2"><input checked="checked" id="__tabbed_15_1" name="__tabbed_15" type="radio" /><input id="__tabbed_15_2" name="__tabbed_15" type="radio" /><div class="tabbed-labels"><label for="__tabbed_15_1">Command</label><label for="__tabbed_15_2">Command output</label></div>
+<div class="tabbed-set tabbed-alternate" data-tabs="15:2"><input checked="checked" id="__tabbed_15_1" name="__tabbed_15" type="radio" /><input id="__tabbed_15_2" name="__tabbed_15" type="radio" /><div class="tabbed-labels"><label for="__tabbed_15_1"><span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16"><path d="m6.354 8.04-4.773 4.773a.75.75 0 1 0 1.061 1.06L7.945 8.57a.75.75 0 0 0 0-1.06L2.642 2.206a.75.75 0 0 0-1.06 1.061L6.353 8.04ZM8.75 11.5a.75.75 0 0 0 0 1.5h5.5a.75.75 0 0 0 0-1.5z"/></svg></span> Command</label><label for="__tabbed_15_2"><span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16"><path d="m6.354 8.04-4.773 4.773a.75.75 0 1 0 1.061 1.06L7.945 8.57a.75.75 0 0 0 0-1.06L2.642 2.206a.75.75 0 0 0-1.06 1.061L6.353 8.04ZM8.75 11.5a.75.75 0 0 0 0 1.5h5.5a.75.75 0 0 0 0-1.5z"/></svg></span> Command output</label></div>
 <div class="tabbed-content">
 <div class="tabbed-block">
 <div class="language-bash highlight"><pre><span></span><code><span id="__span-48-1"><a id="__codelineno-48-1" name="__codelineno-48-1" href="#__codelineno-48-1"></a>nkp<span class="w"> </span>get<span class="w"> </span>dashboard
@@ -3969,7 +3975,7 @@
 </li>
 <li>
 <p>Open .env file in VSC and add (append) the following environment variables to your <code>.env</code> file and save it</p>
-<div class="tabbed-set tabbed-alternate" data-tabs="16:2"><input checked="checked" id="__tabbed_16_1" name="__tabbed_16" type="radio" /><input id="__tabbed_16_2" name="__tabbed_16" type="radio" /><div class="tabbed-labels"><label for="__tabbed_16_1">Template .env</label><label for="__tabbed_16_2">Sample .env</label></div>
+<div class="tabbed-set tabbed-alternate" data-tabs="16:2"><input checked="checked" id="__tabbed_16_1" name="__tabbed_16" type="radio" /><input id="__tabbed_16_2" name="__tabbed_16" type="radio" /><div class="tabbed-labels"><label for="__tabbed_16_1"><span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16"><path d="M4 1.75C4 .784 4.784 0 5.75 0h5.586c.464 0 .909.184 1.237.513l2.914 2.914c.329.328.513.773.513 1.237v8.586A1.75 1.75 0 0 1 14.25 15h-9a.75.75 0 0 1 0-1.5h9a.25.25 0 0 0 .25-.25V6h-2.75A1.75 1.75 0 0 1 10 4.25V1.5H5.75a.25.25 0 0 0-.25.25v2.5a.75.75 0 0 1-1.5 0Zm1.72 4.97a.75.75 0 0 1 1.06 0l2 2a.75.75 0 0 1 0 1.06l-2 2a.749.749 0 0 1-1.275-.326.75.75 0 0 1 .215-.734l1.47-1.47-1.47-1.47a.75.75 0 0 1 0-1.06M3.28 7.78 1.81 9.25l1.47 1.47a.75.75 0 0 1-.018 1.042.75.75 0 0 1-1.042.018l-2-2a.75.75 0 0 1 0-1.06l2-2a.75.75 0 0 1 1.042.018.75.75 0 0 1 .018 1.042m8.22-6.218V4.25c0 .138.112.25.25.25h2.688l-.011-.013-2.914-2.914z"/></svg></span> Template <code>.env</code></label><label for="__tabbed_16_2"><span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16"><path d="M4 1.75C4 .784 4.784 0 5.75 0h5.586c.464 0 .909.184 1.237.513l2.914 2.914c.329.328.513.773.513 1.237v8.586A1.75 1.75 0 0 1 14.25 15h-9a.75.75 0 0 1 0-1.5h9a.25.25 0 0 0 .25-.25V6h-2.75A1.75 1.75 0 0 1 10 4.25V1.5H5.75a.25.25 0 0 0-.25.25v2.5a.75.75 0 0 1-1.5 0Zm1.72 4.97a.75.75 0 0 1 1.06 0l2 2a.75.75 0 0 1 0 1.06l-2 2a.749.749 0 0 1-1.275-.326.75.75 0 0 1 .215-.734l1.47-1.47-1.47-1.47a.75.75 0 0 1 0-1.06M3.28 7.78 1.81 9.25l1.47 1.47a.75.75 0 0 1-.018 1.042.75.75 0 0 1-1.042.018l-2-2a.75.75 0 0 1 0-1.06l2-2a.75.75 0 0 1 1.042.018.75.75 0 0 1 .018 1.042m8.22-6.218V4.25c0 .138.112.25.25.25h2.688l-.011-.013-2.914-2.914z"/></svg></span>  Sample <code>.env</code></label></div>
 <div class="tabbed-content">
 <div class="tabbed-block">
 <div class="language-text highlight"><pre><span></span><code><span id="__span-51-1"><a id="__codelineno-51-1" name="__codelineno-51-1" href="#__codelineno-51-1"></a>export GPU_NAME=_name_of_gpu_device_
@@ -4062,7 +4068,7 @@
 </li>
 <li>
 <p>Check nodes status in workload <code>nkpdev</code> cluster and note the gpu worker node</p>
-<div class="tabbed-set tabbed-alternate" data-tabs="17:2"><input checked="checked" id="__tabbed_17_1" name="__tabbed_17" type="radio" /><input id="__tabbed_17_2" name="__tabbed_17" type="radio" /><div class="tabbed-labels"><label for="__tabbed_17_1">Command</label><label for="__tabbed_17_2">Command output</label></div>
+<div class="tabbed-set tabbed-alternate" data-tabs="17:2"><input checked="checked" id="__tabbed_17_1" name="__tabbed_17" type="radio" /><input id="__tabbed_17_2" name="__tabbed_17" type="radio" /><div class="tabbed-labels"><label for="__tabbed_17_1"><span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16"><path d="m6.354 8.04-4.773 4.773a.75.75 0 1 0 1.061 1.06L7.945 8.57a.75.75 0 0 0 0-1.06L2.642 2.206a.75.75 0 0 0-1.06 1.061L6.353 8.04ZM8.75 11.5a.75.75 0 0 0 0 1.5h5.5a.75.75 0 0 0 0-1.5z"/></svg></span> Command</label><label for="__tabbed_17_2"><span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16"><path d="m6.354 8.04-4.773 4.773a.75.75 0 1 0 1.061 1.06L7.945 8.57a.75.75 0 0 0 0-1.06L2.642 2.206a.75.75 0 0 0-1.06 1.061L6.353 8.04ZM8.75 11.5a.75.75 0 0 0 0 1.5h5.5a.75.75 0 0 0 0-1.5z"/></svg></span> Command output</label></div>
 <div class="tabbed-content">
 <div class="tabbed-block">
 <div class="language-bash highlight"><pre><span></span><code><span id="__span-59-1"><a id="__codelineno-59-1" name="__codelineno-59-1" href="#__codelineno-59-1"></a>kubectl<span class="w"> </span>get<span class="w"> </span>nodes<span class="w"> </span>-w
@@ -4086,7 +4092,8 @@
 </div>
 </li>
 </ol>
-<p>Now we are ready to deploy our AI workloads.</p>
+<p>The cluster is now ready to deploy AI workloads that require GPU.</p>
+<h2 id="_1"></h2>
 <h2 id="optional-cleanup">Optional - Cleanup</h2>
 <p>Optionally, cleanup the workloads on nkp cluster by deleting it after deploying and testing your AI/ML application. </p>
 <ol>
@@ -4097,7 +4104,7 @@
 </li>
 <li>
 <p>Delete the workload cluster</p>
-<div class="tabbed-set tabbed-alternate" data-tabs="18:2"><input checked="checked" id="__tabbed_18_1" name="__tabbed_18" type="radio" /><input id="__tabbed_18_2" name="__tabbed_18" type="radio" /><div class="tabbed-labels"><label for="__tabbed_18_1">Command</label><label for="__tabbed_18_2">Command output</label></div>
+<div class="tabbed-set tabbed-alternate" data-tabs="18:2"><input checked="checked" id="__tabbed_18_1" name="__tabbed_18" type="radio" /><input id="__tabbed_18_2" name="__tabbed_18" type="radio" /><div class="tabbed-labels"><label for="__tabbed_18_1"><span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16"><path d="m6.354 8.04-4.773 4.773a.75.75 0 1 0 1.061 1.06L7.945 8.57a.75.75 0 0 0 0-1.06L2.642 2.206a.75.75 0 0 0-1.06 1.061L6.353 8.04ZM8.75 11.5a.75.75 0 0 0 0 1.5h5.5a.75.75 0 0 0 0-1.5z"/></svg></span> Command</label><label for="__tabbed_18_2"><span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16"><path d="m6.354 8.04-4.773 4.773a.75.75 0 1 0 1.061 1.06L7.945 8.57a.75.75 0 0 0 0-1.06L2.642 2.206a.75.75 0 0 0-1.06 1.061L6.353 8.04ZM8.75 11.5a.75.75 0 0 0 0 1.5h5.5a.75.75 0 0 0 0-1.5z"/></svg></span> Command output</label></div>
 <div class="tabbed-content">
 <div class="tabbed-block">
 <div class="language-bash highlight"><pre><span></span><code><span id="__span-62-1"><a id="__codelineno-62-1" name="__codelineno-62-1" href="#__codelineno-62-1"></a>nkp<span class="w"> </span>delete<span class="w"> </span>cluster<span class="w"> </span>-c<span class="w"> </span><span class="si">${</span><span class="nv">NKP_WORKLOAD_CLUSTER_NAME</span><span class="si">}</span>
@@ -4124,10 +4131,6 @@
 </div>
 </li>
 </ol>
-<div class="admonition info">
-<p class="admonition-title">Info</p>
-<p>If the workload cluster was created as self-managed, then the following command will delete the cluster by creating a small bootstrap cluster. This bootstrap cluster will also be deleted automatically after the workload cluster is deleted.</p>
-</div>
 
 
 
@@ -4150,7 +4153,7 @@
     <span class="md-icon" title="Last update">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21 13.1c-.1 0-.3.1-.4.2l-1 1 2.1 2.1 1-1c.2-.2.2-.6 0-.8l-1.3-1.3c-.1-.1-.2-.2-.4-.2m-1.9 1.8-6.1 6V23h2.1l6.1-6.1zM12.5 7v5.2l4 2.4-1 1L11 13V7zM11 21.9c-5.1-.5-9-4.8-9-9.9C2 6.5 6.5 2 12 2c5.3 0 9.6 4.1 10 9.3-.3-.1-.6-.2-1-.2s-.7.1-1 .2C19.6 7.2 16.2 4 12 4c-4.4 0-8 3.6-8 8 0 4.1 3.1 7.5 7.1 7.9l-.1.2z"/></svg>
     </span>
-    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="December 3, 2025 06:26:56 UTC">December 3, 2025</span>
+    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="April 15, 2026 05:36:04 UTC">April 15, 2026</span>
   </span>
 
     
