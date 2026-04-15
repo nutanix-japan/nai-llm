@@ -37,8 +37,8 @@ We will use ``Kind`` cluster packaged by Nutanix to deploy the management cluste
 
 | Role   | No. of Nodes (VM) | vCPU | RAM   | Storage |
 | ------ | ----------------- | ---- | ----- | ------- |
-| Master | 1                 | 4    | 6 GB | 150 GB  |
-| Worker | 2               | 4   | 6 GB | 150 GB  |
+| Master | 1                 | 6    | 12 GB | 200 GB  |
+| Worker | 2                 | 4    | 8 GB  | 200 GB  |
 
 ### Dev Workload Cluster
 
@@ -46,9 +46,9 @@ For ``nkpdev``, we will deploy an NKP Cluster of with the following resources to
 
 | Role   | No. of Nodes (VM) | vCPU | RAM   | Storage |
 | ------ | ----------------- | ---- | ----- | ------- |
-| Master | 3                 | 4    | 16 GB | 150 GB  |
-| Worker | 4                | 8   | 32 GB | 150 GB  |
-| GPU    | 1                 | 16   | 64 GB | 200 GB  |
+| Master | 3                 | 4    | 16 GB | 200 GB  |
+| Worker | 4                 | 8    | 32 GB | 200 GB  |
+| GPU    | 1                 | 20   | 64 GB | 200 GB  |
 
 ## Pre-requisites for NKP Deployment
 
@@ -82,20 +82,20 @@ For ``nkpdev``, we will deploy an NKP Cluster of with the following resources to
 
 10. Download and extract the NKP binary from the link you copied earlier
     
-    === "Command"
+    === ":octicons-command-palette-16: Command"
 
         ```text title="Paste the download URL within double quotes"
-        curl -o nkp_v2.16.0_linux_amd64.tar.gz "_paste_download_URL_here"
+        curl -o nkp_v2.17.1_linux_amd64.tar.gz "_paste_download_URL_here"
         ```
 
     === "Sample command"
         
         ```bash
-        curl -o nkp_v2.16.0_linux_amd64.tar.gz "https://download.nutanix.com/downloads/nkp/v2.16.0/nkp_v2.16.0_linux_amd64.tar.gz?Expires=1729016864&........"
+        curl -o nkp_v2.17.1_linux_amd64.tar.gz "https://download.nutanix.com/downloads/nkp/v2.17.1/nkp_v2.17.1_linux_amd64.tar.gz?Expires=1729016864&........"
         ```
         
     ```bash
-    tar xvfz nkp_v2.16.0_linux_amd64.tar.gz
+    tar xvfz nkp_v2.17.1_linux_amd64.tar.gz
     ```
 
 10. Move the ``nkp`` binary to a directory that is included in your ``PATH`` environment variable
@@ -108,9 +108,9 @@ For ``nkpdev``, we will deploy an NKP Cluster of with the following resources to
     
     !!! note
 
-        At the time of writing this lab nkp version is ``v2.16.0``
+        At the time of writing this lab nkp version is ``v2.17.1``
 
-    === "Command"
+    === ":octicons-command-palette-16: Command"
 
         ```bash
         nkp version
@@ -120,13 +120,14 @@ For ``nkpdev``, we will deploy an NKP Cluster of with the following resources to
 
         ```{ .bash .no-copy }
         $ nkp version
-        catalog: v0.7.0
+        catalog: v0.8.1
         diagnose: v0.12.0
-        imagebuilder: v2.16.0
-        kommander: v2.16.0
-        konvoy: v2.16.0
-        mindthegap: v1.22.1
-        nkp: v2.16.0
+        imagebuilder: v2.17.1
+        kommander: v2.17.1
+        konvoy: v2.17.1
+        konvoybundlepusher: v2.17.1
+        mindthegap: v1.24.0
+        nkp: v2.17.1
         ```
 
 ### Setup Docker on Jumphost
@@ -136,7 +137,7 @@ For ``nkpdev``, we will deploy an NKP Cluster of with the following resources to
 3. Run the following commands to install ``docker`` binaries
    
     ```bash
-    cd $HOMEsol-cnai-infra/; devbox init; devbox shell
+    cd $HOME/sol-cnai-infra/; devbox init; devbox shell
     task workstation:install-docker
     ```
 
@@ -149,11 +150,10 @@ For ``nkpdev``, we will deploy an NKP Cluster of with the following resources to
 Nutanix AHV IPAM network allows you to black list IPs that needs to be reserved for specific application endpoints. We will use this feature to find and reserve three IPs. 
 
 We will need a total of three IPs for the following:
-
   
-| Cluster Role   | Cluster Name   | Control Plane IP   |    MetalLB  IP  |
+| Cluster Role   | Cluster Name   | Control Plane IP   |   MetalLB  IP   |
 | -------------  | --------       |  ------------      |  --------       |
-| Manage         |``nkpmanage``      |  1                 |  2              |  
+| Manage         |``nkpmanage``   |  1                 |  2              |  
 | Dev            |``nkpdev``      |  1                 |  2              |  
 
 1. Get the CIDR range for the AHV network(subnet) where the application will be deployed
@@ -173,7 +173,7 @@ We will need a total of three IPs for the following:
 
 4. Find six unused static IP addresses in the subnet
 
-    === "Command"
+    === ":octicons-command-palette-16: Command"
     
         ```bash
         nmap -v -sn  <your CIDR>
@@ -204,7 +204,7 @@ We will need a total of three IPs for the following:
     - **Username:** nutanix
     - **Password:** your Prism Element password 
 
-    === "Command"
+    === ":octicons-command-palette-16: Command"
     
         ```text
         acli net.add_to_ip_blacklist <your-ipam-ahv-network> \
@@ -220,7 +220,7 @@ We will need a total of three IPs for the following:
 
 ### Optional - Find GPU Details
 
-If there is a requirement to deploy workloads that rquire GPU, find the GPU details in your Nutanix cluster.
+If there is a requirement to deploy workloads that require GPU, find the GPU details in your Nutanix cluster.
 
 Find the details of GPU on the Nutanix cluster while still connected to Prism Central (PC).
 
@@ -249,7 +249,7 @@ In this section we will go through creating a base image for all the control pla
 
 7. Fill the following values inside the ``.env`` file
 
-    === "Template .env"
+    === ":octicons-file-code-16: Template ``.env``"
     
         ```text
         export NUTANIX_USER=_your_nutanix_username
@@ -263,7 +263,7 @@ In this section we will go through creating a base image for all the control pla
         export LB_IP_RANGE=_your_range_of_two_ips
         ```
 
-    === "Sample .env"
+    === ":octicons-file-code-16: Sample ``.env``"
     
         ```{ .text .no-copy }
         export NUTANIX_USER=admin
@@ -289,26 +289,26 @@ In this section we will go through creating a base image for all the control pla
     !!!note 
            Image creation will take up to 5 minutes.
 
-    === "Command"
+    === ":octicons-command-palette-16: Command"
 
         ```bash
-        nkp create image nutanix ubuntu-22.04 \
+        nkp create image nutanix ubuntu-24.04 \
           --endpoint ${NUTANIX_ENDPOINT} --cluster ${NUTANIX_CLUSTER} \
           --subnet ${NUTANIX_SUBNET_NAME} --insecure
         ```
 
-    === "Example Command"
+    === ":octicons-command-palette-16: Example Command"
 
         ```bash
-        nkp create image nutanix ubuntu-22.04 \
+        nkp create image nutanix ubuntu-24.04 \
           --endpoint pc.example.com --cluster pe \
           --subnet User1 --insecure
         ```
 
-    === "Command output"
+    === ":octicons-command-palette-16: Command output"
 
         ```{ .text .no-copy }
-        nkp create image nutanix ubuntu-22.04 \
+        nkp create image nutanix ubuntu-24.04 \
           --endpoint pc.example.com --cluster pe \
           --subnet User1 --insecure
           
@@ -341,13 +341,13 @@ In this section we will go through creating a base image for all the control pla
 
 10.  Populate the ``.env`` file with the NKP image name by adding (appending) the following environment variables and save it
 
-    === "Template .env"
+    === ":octicons-file-code-16: Template .env"
 
         ```text
         export NKP_IMAGE=nkp-image-name
         ```
 
-    === "Sample .env"
+    === ":octicons-file-code-16:  Sample ``.env``"
 
         ```text
         export NKP_IMAGE=nkp-ubuntu-22.04-1.31.4-20250320042646
@@ -369,7 +369,7 @@ In this section we will create a NKP Management (bootstrap)  ``nkpmanage`` clust
 
 1. Open .env file in VSC and add (append) the following environment variables to your ``.env`` file and save it
    
-    === "Template .env"
+    === ":octicons-file-code-16: Template .env"
     
         ```text
         export NKP_MGT_CLUSTER_NAME=_name_of_nkp_management_cluster
@@ -385,10 +385,9 @@ In this section we will create a NKP Management (bootstrap)  ``nkpmanage`` clust
         export CSI_HYPERVISOR_ATTACHED=_true/false
         export DOCKER_USERNAME=_your_docker_username
         export DOCKER_PASSWORD=_your_docker_password
-        export NUTANIX_PROJECT_NAME=_your_pc_project_name
         ```
 
-    === "Sample .env"
+    === ":octicons-file-code-16:  Sample ``.env``"
     
         ```{ .text .no-copy }
         export NKP_MGT_CLUSTER_NAME=nkpmanage
@@ -404,7 +403,6 @@ In this section we will create a NKP Management (bootstrap)  ``nkpmanage`` clust
         export CSI_HYPERVISOR_ATTACHED=true
         export DOCKER_USERNAME=_your_docker_username
         export DOCKER_PASSWORD=_your_docker_password
-        export NUTANIX_PROJECT_NAME=dev-lab
         ```
 
 2.  Source the new variables and values to the environment
@@ -432,15 +430,13 @@ In this section we will create a NKP Management (bootstrap)  ``nkpmanage`` clust
                 --worker-vm-image ${NKP_IMAGE} \
                 --ssh-public-key-file ${SSH_PUBLIC_KEY} \
                 --kubernetes-service-load-balancer-ip-range ${LB_IP_RANGE} \
-                --control-plane-disk-size 150 --control-plane-memory ${CONTROL_PLANE_MEMORY_GIB} --control-plane-vcpus ${CONTROL_PLANE_VCPUS} --control-plane-cores-per-vcpu ${CONTROL_PLANE_CORES_PER_VCPU} \
-                --worker-disk-size 150 --worker-memory ${WORKER_MEMORY_GIB} --worker-vcpus ${WORKER_VCPUS} --worker-cores-per-vcpu ${WORKER_CORES_PER_VCPU} \
+                --control-plane-disk-size 200 --control-plane-memory ${CONTROL_PLANE_MEMORY_GIB} --control-plane-vcpus ${CONTROL_PLANE_VCPUS} --control-plane-cores-per-vcpu ${CONTROL_PLANE_CORES_PER_VCPU} \
+                --worker-disk-size 200 --worker-memory ${WORKER_MEMORY_GIB} --worker-vcpus ${WORKER_VCPUS} --worker-cores-per-vcpu ${WORKER_CORES_PER_VCPU} \
                 --csi-file-system ${CSI_FILESYSTEM} \
                 --csi-hypervisor-attached-volumes=${CSI_HYPERVISOR_ATTACHED} \
                 --registry-mirror-url "https://registry-1.docker.io" \
                 --registry-mirror-username ${DOCKER_USERNAME} \
                 --registry-mirror-password ${DOCKER_PASSWORD} \
-                --control-plane-pc-project ${NUTANIX_PROJECT_NAME} \
-                --worker-pc-project ${NUTANIX_PROJECT_NAME} \
                 --insecure"
         ```
 
@@ -452,7 +448,7 @@ In this section we will create a NKP Management (bootstrap)  ``nkpmanage`` clust
 
         Then rerun the ``echo nkp`` command to verify the values again before running the ``nkp create cluster nutanix`` command.
    
-    === "Command"
+    === ":octicons-command-palette-16: Command"
     
         ```bash
         nkp create cluster nutanix -c ${NKP_MGT_CLUSTER_NAME} \
@@ -467,20 +463,18 @@ In this section we will create a NKP Management (bootstrap)  ``nkpmanage`` clust
             --worker-vm-image ${NKP_IMAGE} \
             --ssh-public-key-file ${SSH_PUBLIC_KEY} \
             --kubernetes-service-load-balancer-ip-range ${LB_IP_RANGE} \
-            --control-plane-disk-size 150 --control-plane-memory ${CONTROL_PLANE_MEMORY_GIB} --control-plane-vcpus ${CONTROL_PLANE_VCPUS} --control-plane-cores-per-vcpu ${CONTROL_PLANE_CORES_PER_VCPU} \
-            --worker-disk-size 150 --worker-memory ${WORKER_MEMORY_GIB} --worker-vcpus ${WORKER_VCPUS} --worker-cores-per-vcpu ${WORKER_CORES_PER_VCPU} \
+            --control-plane-disk-size 200 --control-plane-memory ${CONTROL_PLANE_MEMORY_GIB} --control-plane-vcpus ${CONTROL_PLANE_VCPUS} --control-plane-cores-per-vcpu ${CONTROL_PLANE_CORES_PER_VCPU} \
+            --worker-disk-size 200 --worker-memory ${WORKER_MEMORY_GIB} --worker-vcpus ${WORKER_VCPUS} --worker-cores-per-vcpu ${WORKER_CORES_PER_VCPU} \
             --csi-file-system ${CSI_FILESYSTEM} \
             --csi-hypervisor-attached-volumes=${CSI_HYPERVISOR_ATTACHED} \
             --registry-mirror-url "https://registry-1.docker.io" \
             --registry-mirror-username ${DOCKER_USERNAME} \
             --registry-mirror-password ${DOCKER_PASSWORD} \
-            --control-plane-pc-project ${NUTANIX_PROJECT_NAME} \
-            --worker-pc-project ${NUTANIX_PROJECT_NAME} \
             --insecure \
             --self-managed
         ```
 
-    === "Command output"
+    === ":octicons-command-palette-16: Command output"
 
         ```{ .bash .no-copy }
         > ✓ Creating a bootstrap cluster 
@@ -564,13 +558,13 @@ In this section we will create a NKP Management (bootstrap)  ``nkpmanage`` clust
 
 6. Check connectivity to the NKP Managment cluster
    
-    === "Command"
+    === ":octicons-command-palette-16: Command"
 
         ```bash
         nkp get nodes
         ```
 
-    === "Command output"
+    === ":octicons-command-palette-16: Command output"
 
         ```{ .bash .no-copy }
         NAME                               STATUS   ROLES           AGE   VERSION
@@ -583,13 +577,13 @@ In this section we will create a NKP Management (bootstrap)  ``nkpmanage`` clust
 
 7. Get management cluster's dashboard credentials to login to the NKP UI
    
-    === "Command"
+    === ":octicons-command-palette-16: Command"
 
         ```bash
         nkp get dashboard
         ```
 
-    === "Command output"
+    === ":octicons-command-palette-16: Command output"
 
         ```{ .bash .no-copy }
         nkp get dashboard
@@ -614,7 +608,7 @@ Follow the steps in this [document](../infra/infra_nkp.md#licensing) to create a
 1. In ``VSCode``, create a new file ``.env_workload``
 2. Open ``.env_workload`` file in VSC and add (append) the following environment variables and save it
    
-    === "Template .env"
+    === ":octicons-file-code-16: Template .env"
     
         ```text
         export NKP_WORKLOAD_CLUSTER_NAME=_workload_nkp_clustername
@@ -628,12 +622,11 @@ Follow the steps in this [document](../infra/infra_nkp.md#licensing) to create a
         export WORKER_MEMORY_GIB=_no_of_worker_memory_gib
         export CSI_FILESYSTEM=_preferred_filesystem_ext4/xfs
         export CSI_HYPERVISOR_ATTACHED=_true/false
-        export NUTANIX_PROJECT_NAME=_your_pc_project_name
         export CONTROLPLANE_VIP=_your_nkp_cluster_controlplane_ip
         export LB_IP_RANGE=_your_range_of_two_ips
         ```
 
-    === "Sample .env"
+    === ":octicons-file-code-16:  Sample ``.env``"
     
         ```{ .text .no-copy }
         export NKP_WORKLOAD_CLUSTER_NAME=nkpdev
@@ -647,7 +640,6 @@ Follow the steps in this [document](../infra/infra_nkp.md#licensing) to create a
         export WORKER_MEMORY_GIB=32
         export CSI_FILESYSTEM=ext4
         export CSI_HYPERVISOR_ATTACHED=true
-        export NUTANIX_PROJECT_NAME=dev-lab
         export CONTROLPLANE_VIP=10.x.x.214
         export LB_IP_RANGE=10.x.x.215-10.x.x.216
         ```
@@ -683,15 +675,13 @@ Follow the steps in this [document](../infra/infra_nkp.md#licensing) to create a
                 --worker-vm-image ${NKP_IMAGE} \
                 --ssh-public-key-file ${SSH_PUBLIC_KEY} \
                 --kubernetes-service-load-balancer-ip-range ${LB_IP_RANGE} \
-                --control-plane-disk-size 150 --control-plane-memory ${CONTROL_PLANE_MEMORY_GIB} --control-plane-vcpus ${CONTROL_PLANE_VCPUS} --control-plane-cores-per-vcpu ${CONTROL_PLANE_CORES_PER_VCPU} \
-                --worker-disk-size 150 --worker-memory ${WORKER_MEMORY_GIB} --worker-vcpus ${WORKER_VCPUS} --worker-cores-per-vcpu ${WORKER_CORES_PER_VCPU} \
+                --control-plane-disk-size 200 --control-plane-memory ${CONTROL_PLANE_MEMORY_GIB} --control-plane-vcpus ${CONTROL_PLANE_VCPUS} --control-plane-cores-per-vcpu ${CONTROL_PLANE_CORES_PER_VCPU} \
+                --worker-disk-size 200 --worker-memory ${WORKER_MEMORY_GIB} --worker-vcpus ${WORKER_VCPUS} --worker-cores-per-vcpu ${WORKER_CORES_PER_VCPU} \
                 --csi-file-system ${CSI_FILESYSTEM} \
                 --csi-hypervisor-attached-volumes=${CSI_HYPERVISOR_ATTACHED} \
                 --registry-mirror-url "https://registry-1.docker.io" \
                 --registry-mirror-username ${DOCKER_USERNAME} \
                 --registry-mirror-password ${DOCKER_PASSWORD} \
-                --control-plane-pc-project ${NUTANIX_PROJECT_NAME} \
-                --worker-pc-project ${NUTANIX_PROJECT_NAME} \
                 --insecure"
         ```
 
@@ -703,7 +693,7 @@ Follow the steps in this [document](../infra/infra_nkp.md#licensing) to create a
 
         Then rerun the ``echo nkp`` command to verify the values again before running the ``nkp create cluster nutanix`` command.
    
-    === "Command"
+    === ":octicons-command-palette-16: Command"
     
         ```bash
         nkp create cluster nutanix -c ${NKP_WORKLOAD_CLUSTER_NAME} \
@@ -718,19 +708,17 @@ Follow the steps in this [document](../infra/infra_nkp.md#licensing) to create a
             --worker-vm-image ${NKP_IMAGE} \
             --ssh-public-key-file ${SSH_PUBLIC_KEY} \
             --kubernetes-service-load-balancer-ip-range ${LB_IP_RANGE} \
-            --control-plane-disk-size 150 --control-plane-memory ${CONTROL_PLANE_MEMORY_GIB} --control-plane-vcpus ${CONTROL_PLANE_VCPUS} --control-plane-cores-per-vcpu ${CONTROL_PLANE_CORES_PER_VCPU} \
-            --worker-disk-size 150 --worker-memory ${WORKER_MEMORY_GIB} --worker-vcpus ${WORKER_VCPUS} --worker-cores-per-vcpu ${WORKER_CORES_PER_VCPU} \
+            --control-plane-disk-size 200 --control-plane-memory ${CONTROL_PLANE_MEMORY_GIB} --control-plane-vcpus ${CONTROL_PLANE_VCPUS} --control-plane-cores-per-vcpu ${CONTROL_PLANE_CORES_PER_VCPU} \
+            --worker-disk-size 200 --worker-memory ${WORKER_MEMORY_GIB} --worker-vcpus ${WORKER_VCPUS} --worker-cores-per-vcpu ${WORKER_CORES_PER_VCPU} \
             --csi-file-system ${CSI_FILESYSTEM} \
             --csi-hypervisor-attached-volumes=${CSI_HYPERVISOR_ATTACHED} \
             --registry-mirror-url "https://registry-1.docker.io" \
             --registry-mirror-username ${DOCKER_USERNAME} \
             --registry-mirror-password ${DOCKER_PASSWORD} \
-            --control-plane-pc-project ${NUTANIX_PROJECT_NAME} \
-            --worker-pc-project ${NUTANIX_PROJECT_NAME} \
             --insecure
         ```
 
-    === "Command output"
+    === ":octicons-command-palette-16: Command output"
 
         ```{ .bash .no-copy }
         ✓ Upgrading CAPI components 
@@ -763,12 +751,6 @@ Follow the steps in this [document](../infra/infra_nkp.md#licensing) to create a
         > nkp get dashboard --kubeconfig="$HOME/nkp/nkpdev.conf"
         ```
 
-    ??? info "Self-Manged Cluster??"
-
-        The ``--self-managed`` argument of the ``nkp create cluster nutanix`` command will deploy bootstrap, and Kommander management automatically. 
-        
-        However, we are specifically **not using** it here in this lab, to run through Kommander installation later. 
-
 5. Observe the events in the shell and in Prism Central events
 
 6. Store kubeconfig files for the workload cluster
@@ -788,14 +770,14 @@ Follow the steps in this [document](../infra/infra_nkp.md#licensing) to create a
 
 8. Run the following command to check K8S status of the ``nkpdev`` cluster
  
-    === "Command"
+    === ":octicons-command-palette-16: Command"
     
         ```bash
         kubectx ${NKP_WORKLOAD_CLUSTER_NAME}-admin@${NKP_WORKLOAD_CLUSTER_NAME} 
         kubectl get nodes
         ```
 
-    === "Command output"
+    === ":octicons-command-palette-16: Command output"
     
         ```bash
         $ kubectl get nodes
@@ -812,13 +794,13 @@ Follow the steps in this [document](../infra/infra_nkp.md#licensing) to create a
 
 9. Get dashboard URL and login credentials for the workload cluster
    
-    === "Command"
+    === ":octicons-command-palette-16: Command"
 
         ```bash
         nkp get dashboard
         ```
 
-    === "Command output"
+    === ":octicons-command-palette-16: Command output"
 
         ```{ .bash .no-copy }
         nkp get dashboard
@@ -840,7 +822,7 @@ In this section we will create a nodepool to host the AI apps with a GPU.
 
 2. Open .env file in VSC and add (append) the following environment variables to your ``.env`` file and save it
    
-    === "Template .env"
+    === ":octicons-file-code-16: Template ``.env``"
     
         ```text
         export GPU_NAME=_name_of_gpu_device_
@@ -848,7 +830,7 @@ In this section we will create a nodepool to host the AI apps with a GPU.
         export GPU_POOL=_name_of_gpu_pool
         ```
 
-    === "Sample .env"
+    === ":octicons-file-code-16:  Sample ``.env``"
     
         ```{ .text .no-copy }
         export GPU_NAME="Lovelace 40S"
@@ -940,13 +922,13 @@ In this section we will create a nodepool to host the AI apps with a GPU.
 
 9.  Check nodes status in workload ``nkpdev`` cluster and note the gpu worker node
     
-    === "Command"
+    === ":octicons-command-palette-16: Command"
 
         ```bash
         kubectl get nodes -w
         ```
 
-    === "Command output"
+    === ":octicons-command-palette-16: Command output"
 
         ```bash hl_lines="4"
         $ kubectl get nodes
@@ -962,7 +944,10 @@ In this section we will create a nodepool to host the AI apps with a GPU.
         nkpdev-ncnww-hldm9                      Ready    control-plane   75m     v1.29.6
         ```
 
-Now we are ready to deploy our AI workloads.
+The cluster is now ready to deploy AI workloads that require GPU.
+
+
+## 
 
 ## Optional - Cleanup
 
@@ -976,13 +961,13 @@ Optionally, cleanup the workloads on nkp cluster by deleting it after deploying 
 
 2. Delete the workload cluster
 
-    === "Command"
+    === ":octicons-command-palette-16: Command"
 
         ```bash
         nkp delete cluster -c ${NKP_WORKLOAD_CLUSTER_NAME}
         ```
 
-    === "Command output"
+    === ":octicons-command-palette-16: Command output"
 
         ```{ .bash .no-copy }
         nkp delete cluster -c nkpdev
@@ -1000,7 +985,3 @@ Optionally, cleanup the workloads on nkp cluster by deleting it after deploying 
         ✓ Waiting for cluster to be fully deleted 
         Deleted default/nkpdev cluster
         ```
-
-!!! info
-
-    If the workload cluster was created as self-managed, then the following command will delete the cluster by creating a small bootstrap cluster. This bootstrap cluster will also be deleted automatically after the workload cluster is deleted.
