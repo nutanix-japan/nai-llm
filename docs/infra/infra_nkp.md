@@ -114,17 +114,17 @@ Below are minimum requirements for deploying NAI on the NKP Demo Cluster.
     === "Command"
 
         ```text title="Paste the download URL within double quotes"
-        curl -o nkp_v2.17.0_linux_amd64.tar.gz "_paste_download_URL_here"
+        curl -o nkp_v2.17.1_linux_amd64.tar.gz "_paste_download_URL_here"
         ```
 
     === "Sample command"
         
         ```bash
-        curl -o nkp_v2.17.0_linux_amd64.tar.gz "https://download.nutanix.com/downloads/nkp/v2.17.0/nkp_v2.17.0_linux_amd64.tar.gz?Expires=1729016864&........"
+        curl -o nkp_v2.17.1_linux_amd64.tar.gz "https://download.nutanix.com/downloads/nkp/v2.17.1/nkp_v2.17.1_linux_amd64.tar.gz?Expires=1729016864&........"
         ```
         
     ```bash
-    tar xvfz nkp_v2.17.0_linux_amd64.tar.gz
+    tar xvfz nkp_v2.17.1_linux_amd64.tar.gz
     ```
 
 11. Move the ``nkp`` binary to a directory that is included in your ``PATH`` environment variable
@@ -138,7 +138,7 @@ Below are minimum requirements for deploying NAI on the NKP Demo Cluster.
     
     !!! note
 
-        At the time of writing this lab nkp version is ``v2.17.0``
+        At the time of writing this lab nkp version is ``v2.17.1``
 
     === "Command"
 
@@ -152,12 +152,12 @@ Below are minimum requirements for deploying NAI on the NKP Demo Cluster.
         $ nkp version
         catalog: v0.8.1
         diagnose: v0.12.0
-        imagebuilder: v2.17.0
-        kommander: v2.17.0
-        konvoy: v2.17.0
-        konvoybundlepusher: v2.17.0
+        imagebuilder: v2.17.1
+        kommander: v2.17.1
+        konvoy: v2.17.1
+        konvoybundlepusher: v2.17.1
         mindthegap: v1.24.0
-        nkp: v2.17.0
+        nkp: v2.17.1
         ```
 
 ### Setup Docker on Jumphost
@@ -279,9 +279,9 @@ Reserve the third IP for NAI. We will use the NAI IP in the next [NAI](../iep/ie
 
     NKP base image can be ``Rocky Linux 9.4`` image and is part of ``NKP Starter`` license. This image is maintained and supported by Nutanix. The image is updated regularly to include the latest security patches and bug fixes. Customers **should not** modify the base image. 
 
-    Using ```NKP Pro``` license also offers choice of using ``Ubuntu 22.04`` base image for GPU based workload deployments.
+    Using ```NKP Pro``` license also offers choice of using ``Ubuntu 24.04`` base image for GPU based workload deployments.
 
-In this section we will go through creating a base image for all the control plane and worker node VMs on Nutanix. We will use the ``Ubuntu 22.04`` image as the base image as we will need GPU support for AI applications. NVIDIA GPU drivers are not yet available for ``Rocky Linux 9.4`` base image. 
+In this section we will go through creating a base image for all the control plane and worker node VMs on Nutanix. We will use the ``Ubuntu 24.04`` image as the base image as we will need GPU support for AI applications. NVIDIA GPU drivers are not yet available for ``Rocky Linux 9.4`` base image. 
 
 !!! info "NKP Cloud Support"
     
@@ -372,7 +372,7 @@ In this section we will go through creating a base image for all the control pla
     === "Command"
 
         ```bash
-        nkp create image nutanix ubuntu-22.04 \
+        nkp create image nutanix ubuntu-24.04 \
           --endpoint ${NUTANIX_ENDPOINT} --cluster ${NUTANIX_CLUSTER} \
           --subnet ${NUTANIX_SUBNET_NAME} --insecure
         ```
@@ -380,7 +380,7 @@ In this section we will go through creating a base image for all the control pla
     === "Command Output"
 
         ```{ .text .no-copy }
-        nkp create image nutanix ubuntu-22.04 \ 
+        nkp create image nutanix ubuntu-24.04 \ 
         --endpoint ${NUTANIX_ENDPOINT} --cluster ${NUTANIX_CLUSTER} \
         --subnet ${NUTANIX_SUBNET_NAME} --insecure
         
@@ -389,7 +389,7 @@ In this section we will go through creating a base image for all the control pla
         nutanix.kib_image: output will be in this color.
 
         ==> nutanix.kib_image: Creating Packer Builder virtual machine...
-            nutanix.kib_image: Virtual machine export NKP_IMAGE=nkp-ubuntu-24.04-release-cis-1.34.1-20251206061851-2.17.0 created
+            nutanix.kib_image: Virtual machine export NKP_IMAGE=nkp-ubuntu-24.04-1.34.3-20260328040605 created
             nutanix.kib_image: Found IP for virtual machine: 10.x.x.234
         ==> nutanix.kib_image: Running post-processor: packer-manifest (type manifest)
         
@@ -398,8 +398,8 @@ In this section we will go through creating a base image for all the control pla
         ==> Wait completed after 4 minutes 55 seconds
 
         ==> Builds finished. The artifacts of successful builds are:
-        --> nutanix.kib_image: export NKP_IMAGE=nkp-ubuntu-24.04-release-cis-1.34.1-20251206061851-2.17.0
-        --> nutanix.kib_image: export NKP_IMAGE=nkp-ubuntu-24.04-release-cis-1.34.1-20251206061851-2.17.0
+        --> nutanix.kib_image: export NKP_IMAGE=nkp-ubuntu-24.04-1.34.3-20260328040605
+        --> nutanix.kib_image: export NKP_IMAGE=nkp-ubuntu-24.04-1.34.3-20260328040605
         ```
 
     !!! info "Image name - This will be different in your environment"
@@ -408,7 +408,7 @@ In this section we will go through creating a base image for all the control pla
 
         ```text hl_lines="2"
         ==> Builds finished. The artifacts of successful builds are:
-        --> nutanix.kib_image: export NKP_IMAGE=nkp-ubuntu-24.04-release-cis-1.34.1-20251206061851-2.17.0
+        --> nutanix.kib_image: export NKP_IMAGE=nkp-ubuntu-24.04-1.34.3-20260328040605
         ```
 
     !!! warning
@@ -426,7 +426,7 @@ In this section we will go through creating a base image for all the control pla
     === "Sample .env"
 
         ```text
-        export NKP_IMAGE=nkp-ubuntu-24.04-release-cis-1.34.1-20251206061851-2.17.0
+        export NKP_IMAGE=nkp-ubuntu-24.04-1.34.3-20260328040605
         ```
 
 We are now ready to install the workload ``nkpdev`` cluster
@@ -853,7 +853,7 @@ In this section we will create a nodepool to host the AI apps with a GPU.
                         name: romanticism
                         type: name
                       image:
-                        name: nkp-ubuntu-22.04-1.29.6-20240718055804
+                        name: nkp-ubuntu-24.04-1.29.6-20240718055804
                         type: name
                       memorySize: 40Gi
                       subnets:

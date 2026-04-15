@@ -594,7 +594,7 @@ The following pre-requisite applications will be enabled from the command line o
           --version 0.102.0 \
           -n opentelemetry --create-namespace --wait \
           --set manager.image.repository=${REGISTRY}/nutanix/nai-opentelemetry-operator \
-          --set manager.collectorImage.repository=${REGISTRY}/nutanix/nai-opentelemetry-collector-contrib \
+          --set manager.collectorImage.repository=${REGISTRY}/nutanix/nai-opentelemetry-collector-k8s \
           --set kubeRBACProxy.image.repository=${REGISTRY}/nutanix/nai-kube-rbac-proxy
         ```
     
@@ -605,7 +605,7 @@ The following pre-requisite applications will be enabled from the command line o
           --version 0.102.0 \
           -n opentelemetry --create-namespace --wait \
           --set manager.image.repository=harbor.10.x.x.134.nip.io/nutanix/nai-opentelemetry-operator \
-          --set manager.collectorImage.repository=harbor.10.x.x.134.nip.io/nutanix/nai-opentelemetry-collector-contrib \
+          --set manager.collectorImage.repository=harbor.10.x.x.134.nip.io/nutanix/nai-opentelemetry-collector-k8s \
           --set kubeRBACProxy.image.repository=harbor.10.x.x.134.nip.io/nutanix/nai-kube-rbac-proxy 
         ```
     

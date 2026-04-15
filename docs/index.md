@@ -54,15 +54,7 @@ This site follows **Design > Deploy** model.
 
 <div class="grid cards" markdown>
 
--   :material-kubernetes:{ .lg .middle } __Set up Nutanix Karbon Engine [ NKE ] in 10 minutes__
-
-    ---
-
-    Setup a NKE K8S cluster in under an hour using Foundation to prepare your infrastructure.
-
-    [:octicons-arrow-right-24: Setup Nutanix Karbon Engine](infra/infra_nke.md)
-
--   :material-kubernetes:{ .lg .middle } __Set up Nutanix Kubernetes Platform [ NKP ] in 30 minutes__
+-   :material-kubernetes:{ .lg .middle } __Set up Nutanix Kubernetes Platform [ NKP ] in 10 minutes__
 
     ---
 
@@ -100,14 +92,6 @@ This site follows **Design > Deploy** model.
 <div class="grid cards" markdown>
 
 -   :material-clock-fast:{ .lg .middle } __Set up Nutanix Enterprise AI (NAI) in 60 minutes__
-
-    ---
-
-    Install and host an LLM on Nutanix Enterprise AI (NAI) platform.
-
-    [:octicons-arrow-right-24: Start](iep/index.md)
-
--   :material-clock-fast:{ .lg .middle } __Set up Air-gapped Nutanix Enterprise AI (NAI)__
 
     ---
 
