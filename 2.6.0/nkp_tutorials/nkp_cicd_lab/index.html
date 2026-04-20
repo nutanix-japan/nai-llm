@@ -10,31 +10,31 @@
       
       
       
-        <link rel="canonical" href="https://nai.howntnx.win/2.6.0/nkp_tutorials/">
+        <link rel="canonical" href="https://nai.howntnx.win/2.6.0/nkp_tutorials/nkp_cicd_lab/">
       
       
-        <link rel="prev" href="../airgap_nai/airgap_nai_test/">
+        <link rel="prev" href="../nkp_ndb_lab/nkp_ndb_install_app/">
       
       
-        <link rel="next" href="nkp_ndb_lab/nkp_ndb_lab/">
+        <link rel="next" href="nkp_cicd_prereq/">
       
       
         
       
       
-      <link rel="icon" href="../assets/images/favicon.png">
+      <link rel="icon" href="../../assets/images/favicon.png">
       <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.6">
     
     
       
-        <title>Getting Started - Nutanix Cloud Native and AI Solutions</title>
+        <title>CI/CD Demo on NKP - Nutanix Cloud Native and AI Solutions</title>
       
     
     
-      <link rel="stylesheet" href="../assets/stylesheets/main.484c7ddc.min.css">
+      <link rel="stylesheet" href="../../assets/stylesheets/main.484c7ddc.min.css">
       
         
-        <link rel="stylesheet" href="../assets/stylesheets/palette.ab4e12ef.min.css">
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.ab4e12ef.min.css">
       
       
   
@@ -118,7 +118,7 @@
       
     
     
-    <script>__md_scope=new URL("..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
     
       
   
@@ -136,17 +136,17 @@
     
   
 <meta property="og:type" content="website" />
-<meta property="og:title" content="Getting Started - Nutanix Cloud Native and AI Solutions" />
+<meta property="og:title" content="CI/CD Demo on NKP - Nutanix Cloud Native and AI Solutions" />
 <meta property="og:description" content="The one-stop shop for Nutanix Cloud Native and AI solutions. " />
-<meta property="og:image" content="https://nai.howntnx.win/2.6.0/assets/images/social/nkp_tutorials/index.png" />
+<meta property="og:image" content="https://nai.howntnx.win/2.6.0/assets/images/social/nkp_tutorials/nkp_cicd_lab/index.png" />
 <meta property="og:image:type" content="image/png" />
 <meta property="og:image:width" content="1200" />
 <meta property="og:image:height" content="630" />
-<meta property="og:url" content="https://nai.howntnx.win/2.6.0/nkp_tutorials/" />
+<meta property="og:url" content="https://nai.howntnx.win/2.6.0/nkp_tutorials/nkp_cicd_lab/" />
 <meta property="twitter:card" content="summary_large_image" />
-<meta property="twitter:title" content="Getting Started - Nutanix Cloud Native and AI Solutions" />
+<meta property="twitter:title" content="CI/CD Demo on NKP - Nutanix Cloud Native and AI Solutions" />
 <meta property="twitter:description" content="The one-stop shop for Nutanix Cloud Native and AI solutions. " />
-<meta property="twitter:image" content="https://nai.howntnx.win/2.6.0/assets/images/social/nkp_tutorials/index.png" />
+<meta property="twitter:image" content="https://nai.howntnx.win/2.6.0/assets/images/social/nkp_tutorials/nkp_cicd_lab/index.png" />
 </head>
   
   
@@ -166,7 +166,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#getting-started" class="md-skip">
+        <a href="#introduction" class="md-skip">
           Skip to content
         </a>
       
@@ -186,7 +186,7 @@
 
 <header class="md-header md-header--shadow md-header--lifted" data-md-component="header">
   <nav class="md-header__inner md-grid" aria-label="Header">
-    <a href=".." title="Nutanix Cloud Native and AI Solutions" class="md-header__button md-logo" aria-label="Nutanix Cloud Native and AI Solutions" data-md-component="logo">
+    <a href="../.." title="Nutanix Cloud Native and AI Solutions" class="md-header__button md-logo" aria-label="Nutanix Cloud Native and AI Solutions" data-md-component="logo">
       
   
   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
@@ -206,7 +206,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              Getting Started
+              CI/CD Demo on NKP
             
           </span>
         </div>
@@ -328,7 +328,7 @@
   
   
     <li class="md-tabs__item">
-      <a href=".." class="md-tabs__link">
+      <a href="../.." class="md-tabs__link">
         
   
   
@@ -349,7 +349,7 @@
     
     
       <li class="md-tabs__item">
-        <a href="../conceptual/conceptual/" class="md-tabs__link">
+        <a href="../../conceptual/conceptual/" class="md-tabs__link">
           
   
   
@@ -369,7 +369,7 @@
     
     
       <li class="md-tabs__item">
-        <a href="../infra/" class="md-tabs__link">
+        <a href="../../infra/" class="md-tabs__link">
           
   
   
@@ -396,7 +396,7 @@
     
     
       <li class="md-tabs__item">
-        <a href="../iep/" class="md-tabs__link">
+        <a href="../../iep/" class="md-tabs__link">
           
   
   
@@ -430,7 +430,7 @@
     
     
       <li class="md-tabs__item md-tabs__item--active">
-        <a href="./" class="md-tabs__link">
+        <a href="../nkp_ndb_lab/" class="md-tabs__link">
           
   
   
@@ -453,7 +453,7 @@
     
     
       <li class="md-tabs__item">
-        <a href="../nkp_ndk/" class="md-tabs__link">
+        <a href="../../nkp_ndk/" class="md-tabs__link">
           
   
   
@@ -473,7 +473,7 @@
     
     
       <li class="md-tabs__item">
-        <a href="../infra/infra_jumphost/" class="md-tabs__link">
+        <a href="../../infra/infra_jumphost/" class="md-tabs__link">
           
   
   
@@ -493,7 +493,7 @@
     
     
       <li class="md-tabs__item">
-        <a href="../ntxcomponents/ntxcomponents/" class="md-tabs__link">
+        <a href="../../ntxcomponents/ntxcomponents/" class="md-tabs__link">
           
   
   
@@ -513,7 +513,7 @@
     
     
       <li class="md-tabs__item">
-        <a href="../static/" class="md-tabs__link">
+        <a href="../../static/" class="md-tabs__link">
           
   
   
@@ -531,7 +531,7 @@
   
   
     <li class="md-tabs__item">
-      <a href="../takeaways/takeaways/" class="md-tabs__link">
+      <a href="../../takeaways/takeaways/" class="md-tabs__link">
         
   
   
@@ -572,7 +572,7 @@
 
 <nav class="md-nav md-nav--primary md-nav--lifted" aria-label="Navigation" data-md-level="0">
   <label class="md-nav__title" for="__drawer">
-    <a href=".." title="Nutanix Cloud Native and AI Solutions" class="md-nav__button md-logo" aria-label="Nutanix Cloud Native and AI Solutions" data-md-component="logo">
+    <a href="../.." title="Nutanix Cloud Native and AI Solutions" class="md-nav__button md-logo" aria-label="Nutanix Cloud Native and AI Solutions" data-md-component="logo">
       
   
   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
@@ -602,7 +602,7 @@
   
   
     <li class="md-nav__item">
-      <a href=".." class="md-nav__link">
+      <a href="../.." class="md-nav__link">
         
   
   
@@ -679,7 +679,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../conceptual/conceptual/" class="md-nav__link">
+      <a href="../../conceptual/conceptual/" class="md-nav__link">
         
   
   
@@ -707,7 +707,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../sizing/sizing/" class="md-nav__link">
+      <a href="../../sizing/sizing/" class="md-nav__link">
         
   
   
@@ -792,7 +792,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../infra/" class="md-nav__link">
+      <a href="../../infra/" class="md-nav__link">
         
   
   
@@ -820,7 +820,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../infra/workstation/" class="md-nav__link">
+      <a href="../../infra/workstation/" class="md-nav__link">
         
   
   
@@ -848,7 +848,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../infra/infra_jumphost_tofu/" class="md-nav__link">
+      <a href="../../infra/infra_jumphost_tofu/" class="md-nav__link">
         
   
   
@@ -983,7 +983,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../iep/" class="md-nav__link">
+      <a href="../../iep/" class="md-nav__link">
         
   
   
@@ -1011,7 +1011,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../infra/infra_nkp/" class="md-nav__link">
+      <a href="../../infra/infra_nkp/" class="md-nav__link">
         
   
   
@@ -1039,7 +1039,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../iep/iep_pre_reqs/" class="md-nav__link">
+      <a href="../../iep/iep_pre_reqs/" class="md-nav__link">
         
   
   
@@ -1067,7 +1067,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../iep/iep_deploy/" class="md-nav__link">
+      <a href="../../iep/iep_deploy/" class="md-nav__link">
         
   
   
@@ -1095,7 +1095,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../iep/iep_test/" class="md-nav__link">
+      <a href="../../iep/iep_test/" class="md-nav__link">
         
   
   
@@ -1181,7 +1181,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../airgap_nai/" class="md-nav__link">
+      <a href="../../airgap_nai/" class="md-nav__link">
         
   
   
@@ -1209,7 +1209,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../airgap_nai/harbor/" class="md-nav__link">
+      <a href="../../airgap_nai/harbor/" class="md-nav__link">
         
   
   
@@ -1237,7 +1237,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../airgap_nai/infra_nkp_airgap/" class="md-nav__link">
+      <a href="../../airgap_nai/infra_nkp_airgap/" class="md-nav__link">
         
   
   
@@ -1265,7 +1265,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../airgap_nai/airgap_nai_pre_reqs/" class="md-nav__link">
+      <a href="../../airgap_nai/airgap_nai_pre_reqs/" class="md-nav__link">
         
   
   
@@ -1293,7 +1293,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../airgap_nai/airgap_nai_deploy/" class="md-nav__link">
+      <a href="../../airgap_nai/airgap_nai_deploy/" class="md-nav__link">
         
   
   
@@ -1321,7 +1321,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../airgap_nai/airgap_nai_test/" class="md-nav__link">
+      <a href="../../airgap_nai/airgap_nai_test/" class="md-nav__link">
         
   
   
@@ -1416,8 +1416,6 @@
                 
   
   
-    
-  
   
   
     
@@ -1428,11 +1426,11 @@
       
     
     
-    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+    <li class="md-nav__item md-nav__item--nested">
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5_1" checked>
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5_1" >
         
           
           <label class="md-nav__link" for="__nav_5_1" id="__nav_5_1_label" tabindex="0">
@@ -1453,7 +1451,7 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_5_1_label" aria-expanded="true">
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_5_1_label" aria-expanded="false">
           <label class="md-nav__title" for="__nav_5_1">
             <span class="md-nav__icon md-icon"></span>
             
@@ -1468,19 +1466,10 @@
                 
   
   
-    
   
   
-  
-    <li class="md-nav__item md-nav__item--active">
-      
-      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
-      
-      
-        
-      
-      
-      <a href="./" class="md-nav__link md-nav__link--active">
+    <li class="md-nav__item">
+      <a href="../nkp_ndb_lab/" class="md-nav__link">
         
   
   
@@ -1496,7 +1485,6 @@
   
 
       </a>
-      
     </li>
   
 
@@ -1509,7 +1497,7 @@
   
   
     <li class="md-nav__item">
-      <a href="nkp_ndb_lab/nkp_ndb_lab/" class="md-nav__link">
+      <a href="../nkp_ndb_lab/nkp_ndb_lab/" class="md-nav__link">
         
   
   
@@ -1537,7 +1525,7 @@
   
   
     <li class="md-nav__item">
-      <a href="nkp_ndb_lab/nkp_ndb_install_app/" class="md-nav__link">
+      <a href="../nkp_ndb_lab/nkp_ndb_install_app/" class="md-nav__link">
         
   
   
@@ -1545,6 +1533,254 @@
     
   
     NDB Workload
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5_2" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_5_2" id="__nav_5_2_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    NKP CICD
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_5_2_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_5_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    NKP CICD
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Getting started
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Getting started
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#introduction" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Introduction
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Introduction">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#lab-objectives" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Lab Objectives
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#current-status-and-future-cd-integration" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Current Status and Future CD Integration
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#getting-started" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Getting Started
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#lab-flow" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Lab Flow
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="nkp_cicd_prereq/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    CICD Pre-requisites
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="nkp_ci_setup/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    CI Setup
   
 
     
@@ -1584,10 +1820,10 @@
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5_2" >
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5_3" >
         
           
-          <label class="md-nav__link" for="__nav_5_2" id="__nav_5_2_label" tabindex="0">
+          <label class="md-nav__link" for="__nav_5_3" id="__nav_5_3_label" tabindex="0">
             
   
   
@@ -1605,8 +1841,8 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_5_2_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_5_2">
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_5_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_5_3">
             <span class="md-nav__icon md-icon"></span>
             
   
@@ -1623,7 +1859,7 @@
   
   
     <li class="md-nav__item">
-      <a href="nkp_mcp_lab/nkp_nai_mcp/" class="md-nav__link">
+      <a href="../nkp_mcp_lab/nkp_nai_mcp/" class="md-nav__link">
         
   
   
@@ -1651,7 +1887,7 @@
   
   
     <li class="md-nav__item">
-      <a href="nkp_mcp_lab/nkp_nai_n8n/" class="md-nav__link">
+      <a href="../nkp_mcp_lab/nkp_nai_n8n/" class="md-nav__link">
         
   
   
@@ -1744,7 +1980,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../nkp_ndk/" class="md-nav__link">
+      <a href="../../nkp_ndk/" class="md-nav__link">
         
   
   
@@ -1772,7 +2008,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../nkp_ndk/nkp_ndk/" class="md-nav__link">
+      <a href="../../nkp_ndk/nkp_ndk/" class="md-nav__link">
         
   
   
@@ -1850,7 +2086,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../nkp_ndk/nkp_ndk_singlek8s/" class="md-nav__link">
+      <a href="../../nkp_ndk/nkp_ndk_singlek8s/" class="md-nav__link">
         
   
   
@@ -1878,7 +2114,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../nkp_ndk/nkp_ndk_k8s_replication/" class="md-nav__link">
+      <a href="../../nkp_ndk/nkp_ndk_k8s_replication/" class="md-nav__link">
         
   
   
@@ -1964,7 +2200,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../nkp_ndk/nkp_ndk_singlek8s_files/" class="md-nav__link">
+      <a href="../../nkp_ndk/nkp_ndk_singlek8s_files/" class="md-nav__link">
         
   
   
@@ -1992,7 +2228,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../nkp_ndk/nkp_ndk_k8s_files_replication/" class="md-nav__link">
+      <a href="../../nkp_ndk/nkp_ndk_k8s_files_replication/" class="md-nav__link">
         
   
   
@@ -2085,7 +2321,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../infra/infra_jumphost/" class="md-nav__link">
+      <a href="../../infra/infra_jumphost/" class="md-nav__link">
         
   
   
@@ -2113,7 +2349,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../appendix/infra_nkp_hard_way/" class="md-nav__link">
+      <a href="../../appendix/infra_nkp_hard_way/" class="md-nav__link">
         
   
   
@@ -2141,7 +2377,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../infra/harbor/" class="md-nav__link">
+      <a href="../../infra/harbor/" class="md-nav__link">
         
   
   
@@ -2169,7 +2405,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../appendix/nkp_cert_ds/" class="md-nav__link">
+      <a href="../../appendix/nkp_cert_ds/" class="md-nav__link">
         
   
   
@@ -2197,7 +2433,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../appendix/opentofu/" class="md-nav__link">
+      <a href="../../appendix/opentofu/" class="md-nav__link">
         
   
   
@@ -2282,7 +2518,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../ntxcomponents/ntxcomponents/" class="md-nav__link">
+      <a href="../../ntxcomponents/ntxcomponents/" class="md-nav__link">
         
   
   
@@ -2310,7 +2546,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../tools/tools/" class="md-nav__link">
+      <a href="../../tools/tools/" class="md-nav__link">
         
   
   
@@ -2338,7 +2574,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../contributing/" class="md-nav__link">
+      <a href="../../contributing/" class="md-nav__link">
         
   
   
@@ -2366,7 +2602,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../roadmap/" class="md-nav__link">
+      <a href="../../roadmap/" class="md-nav__link">
         
   
   
@@ -2451,7 +2687,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../static/" class="md-nav__link">
+      <a href="../../static/" class="md-nav__link">
         
   
   
@@ -2479,7 +2715,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../static/scheduling-mixed-pods-and-nodepool-v1.html" class="md-nav__link">
+      <a href="../../static/scheduling-mixed-pods-and-nodepool-v1.html" class="md-nav__link">
         
   
   
@@ -2507,7 +2743,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../static/k8s-deployment-strategies-visualizer.html" class="md-nav__link">
+      <a href="../../static/k8s-deployment-strategies-visualizer.html" class="md-nav__link">
         
   
   
@@ -2535,7 +2771,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../static/nai-llm-model-selectr.html" class="md-nav__link">
+      <a href="../../static/nai-llm-model-selectr.html" class="md-nav__link">
         
   
   
@@ -2563,7 +2799,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../static/nai-llm-simulation-v1-nim-rag.html" class="md-nav__link">
+      <a href="../../static/nai-llm-simulation-v1-nim-rag.html" class="md-nav__link">
         
   
   
@@ -2598,7 +2834,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../takeaways/takeaways/" class="md-nav__link">
+      <a href="../../takeaways/takeaways/" class="md-nav__link">
         
   
   
@@ -2635,8 +2871,75 @@
   
   
   
-    
   
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#introduction" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Introduction
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Introduction">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#lab-objectives" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Lab Objectives
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#current-status-and-future-cd-integration" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Current Status and Future CD Integration
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#getting-started" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Getting Started
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#lab-flow" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Lab Flow
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
   
 </nav>
                   </div>
@@ -2661,7 +2964,7 @@
   
   
     <li class="md-path__item">
-      <a href=".." class="md-path__link">
+      <a href="../.." class="md-path__link">
         
   <span class="md-ellipsis">
     Home
@@ -2684,7 +2987,7 @@
     
     
       <li class="md-path__item">
-        <a href="./" class="md-path__link">
+        <a href="../nkp_ndb_lab/" class="md-path__link">
           
   <span class="md-ellipsis">
     NKP Workload Tutorials
@@ -2708,7 +3011,7 @@
         <a href="./" class="md-path__link">
           
   <span class="md-ellipsis">
-    NKP and NDB
+    NKP CICD
   </span>
 
         </a>
@@ -2727,7 +3030,7 @@
 
 
   
-    <a href="https://github.com/nutanix-japan/nai-llm/edit/main/docs/nkp_tutorials/index.md" title="Edit this page" class="md-content__button md-icon" rel="edit">
+    <a href="https://github.com/nutanix-japan/nai-llm/edit/main/docs/nkp_tutorials/nkp_cicd_lab/index.md" title="Edit this page" class="md-content__button md-icon" rel="edit">
       
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M10 20H6V4h7v5h5v3.1l2-2V8l-6-6H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h4zm10.2-7c.1 0 .3.1.4.2l1.3 1.3c.2.2.2.6 0 .8l-1 1-2.1-2.1 1-1c.1-.1.2-.2.4-.2m0 3.9L14.1 23H12v-2.1l6.1-6.1z"/></svg>
     </a>
@@ -2736,84 +3039,95 @@
     
       
     
-    <a href="https://github.com/nutanix-japan/nai-llm/raw/main/docs/nkp_tutorials/index.md" title="View source of this page" class="md-content__button md-icon">
+    <a href="https://github.com/nutanix-japan/nai-llm/raw/main/docs/nkp_tutorials/nkp_cicd_lab/index.md" title="View source of this page" class="md-content__button md-icon">
       
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M17 18c.56 0 1 .44 1 1s-.44 1-1 1-1-.44-1-1 .44-1 1-1m0-3c-2.73 0-5.06 1.66-6 4 .94 2.34 3.27 4 6 4s5.06-1.66 6-4c-.94-2.34-3.27-4-6-4m0 6.5a2.5 2.5 0 0 1-2.5-2.5 2.5 2.5 0 0 1 2.5-2.5 2.5 2.5 0 0 1 2.5 2.5 2.5 2.5 0 0 1-2.5 2.5M9.27 20H6V4h7v5h5v4.07c.7.08 1.36.25 2 .49V8l-6-6H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h4.5a8.2 8.2 0 0 1-1.23-2"/></svg>
     </a>
   
 
 
-<h1 id="getting-started">Getting Started</h1>
-<p>In this part of the lab we will deploy a workload on NKP cluster which stores its database in a NDB deployed Postgres server.</p>
-<p>We will also deploy a Kubernetes cluster so far as per the NVD <a href="../conceptual/conceptual/#management-kubernetes-cluster">design requirements</a>.</p>
-<p>Deploy the NKP kubernetes cluster with the following components:</p>
+  <h1>Getting started</h1>
+
+<h2 id="introduction"><strong>Introduction</strong></h2>
+<p>This lab is designed to guide you through the construction of a complete <strong>GitOps-driven CI/CD pipeline</strong> on the Nutanix Kubernetes Platform (NKP). These documents provide a step-by-step roadmap for setting up a modern software delivery lifecycle, starting from initial environment preparation to automated container builds.</p>
+<h3 id="lab-objectives"><strong>Lab Objectives</strong></h3>
+<p>By following these modules, you will establish a robust <strong>Continuous Integration (CI)</strong> framework. Currently, the labs cover:</p>
 <ul>
-<li>3 x Control plane nodes</li>
-<li>3 x Worker nodes</li>
+<li><strong>Environment Preparation:</strong> Setting up the necessary prerequisites, including an NKP workload cluster and the installation of essential tools like the <strong>Tekton</strong> and <strong>Flux</strong> CLI clients.</li>
+<li><strong>Infrastructure Configuration:</strong> Configuring secrets, ServiceAccounts, and RBAC to allow your CI tools to interact securely with your cluster and image registries.</li>
+<li><strong>Pipeline Development:</strong> Building <strong>Tekton Pipelines</strong> that utilize <strong>Kaniko</strong> to compile "Hello World" containers and push them to a private <strong>Harbor</strong> registry or public <strong>Docker</strong> registry.</li>
+<li><strong>Automation:</strong> Implementing <strong>Tekton Triggers</strong> and the <strong>SMEE client</strong> to allow your cluster to receive GitHub webhooks, ensuring your pipeline fires automatically on every code push.</li>
 </ul>
-<p>The following is the flow of the NAI lab:</p>
+<h3 id="current-status-and-future-cd-integration"><strong>Current Status and Future CD Integration</strong></h3>
+<p>The existing documentation focuses heavily on the <strong>Continuous Integration (CI)</strong> phase using Tekton. You will begin by manually testing your pipelines before moving to full automation. </p>
+<p>As you noted, the <strong>Continuous Deployment (CD)</strong> portion of this lab—which will utilize <strong>Flux v2</strong>—is the final piece of the architecture. Once that section is built and integrated, Flux will be bootstrapped against your GitHub repository to manage the automated deployment of your application manifests, completing the full GitOps loop.</p>
+<h3 id="getting-started"><strong>Getting Started</strong></h3>
+<p>Before proceeding to the CI setup, ensure your jumphost VM and NKP cluster meet the minimum requirements, such as having the appropriate vCPU, memory, and storage allocations defined in the prerequisites. Once your tools are installed and your environment is sourced, you will be ready to build your first Tekton objects.</p>
+<p>By the end you will have:</p>
+<ul>
+<li>Tekton Pipelines + Triggers installed, with the Dashboard exposed over HTTPS via Ingress</li>
+<li>Flux v2 bootstrapped against your personal GitHub fork, managing both Tekton manifests and the application deployment</li>
+<li>A Kaniko build task that compiles a Hello World container and pushes it to your private Harbor project</li>
+<li>A GitHub webhook that fires the pipeline automatically on every push to main using SMEE client</li>
+</ul>
+<h2 id="lab-flow"><strong>Lab Flow</strong></h2>
 <pre class="mermaid"><code>stateDiagram-v2
     direction LR
 
     state PrepEnvironment {
-        [*] --&gt; PrepVM
-        PrepVM --&gt; [*]
+        [*] --&gt; PrepJumphost
+        PrepJumphost --&gt; InstallCLIs
+        InstallCLIs --&gt; [*]
     }
 
-    state InstallNDBOperator {
-        [*] --&gt; InstallNDBOp
-        InstallNDBOp --&gt; [*]
+    state ConfigureInfra {
+        [*] --&gt; SetEnvVars
+        SetEnvVars --&gt; CreateSecrets
+        CreateSecrets --&gt; ApplyRBAC
+        ApplyRBAC --&gt; [*]
     }
 
-    state ConfigureSecrets {
-        [*] --&gt; CreateSecrets
-        CreateSecrets --&gt; [*]
+    state SetupTekton {
+        [*] --&gt; DeployTekton
+        DeployTekton --&gt; ForkRepo
+        ForkRepo --&gt; CreateTasks
+        CreateTasks --&gt; CreatePipeline
+        CreatePipeline --&gt; [*]
     }
 
-    state SetupNDB {
-        [*] --&gt; GetUUID
-        GetUUID --&gt; CreateProfile
-        CreateProfile --&gt; DeployDB
-        DeployDB --&gt; [*]
+    state ManualTest {
+        [*] --&gt; RunPipeline
+        RunPipeline --&gt; VerifyLogs
+        VerifyLogs --&gt; [*]
     }
 
-    state VerifyDB {
-        [*] --&gt; CheckDB
-        CheckDB --&gt; [*]
+    state ConfigureTriggers {
+        [*] --&gt; SetupTemplates
+        SetupTemplates --&gt; CreateEventListener
+        CreateEventListener --&gt; DeploySMEE
+        DeploySMEE --&gt; [*]
     }
 
-    state DeployApplication {
-        [*] --&gt; DeployApp
+    state AutomatedCI {
+        [*] --&gt; PushCode
+        PushCode --&gt; AutoTrigger
+        AutoTrigger --&gt; [*]
+    }
+
+    state CDIntegration {
+        [*] --&gt; BootstrapFlux
+        BootstrapFlux --&gt; DeployApp
         DeployApp --&gt; [*]
     }
 
-    state ConfigureIngress {
-        [*] --&gt; CreateIngress
-        CreateIngress --&gt; [*]
-    }
-
-    state TestApplication {
-        [*] --&gt; TestFrontend
-        TestFrontend --&gt; TestBackend
-        TestBackend --&gt; CheckDBData
-        CheckDBData --&gt; [*]
-    }
-
-    state CleanupResources {
-        [*] --&gt; Cleanup
-        Cleanup --&gt; [*]
-    }
-
     [*] --&gt; PrepEnvironment
-    PrepEnvironment --&gt; InstallNDBOperator
-    InstallNDBOperator --&gt; ConfigureSecrets
-    ConfigureSecrets --&gt; SetupNDB
-    SetupNDB --&gt; VerifyDB
-    VerifyDB --&gt; DeployApplication
-    DeployApplication --&gt; ConfigureIngress
-    ConfigureIngress --&gt; TestApplication
-    TestApplication --&gt; CleanupResources
-    CleanupResources --&gt; [*]</code></pre>
+    PrepEnvironment --&gt; ConfigureInfra
+    ConfigureInfra --&gt; SetupTekton
+    SetupTekton --&gt; ManualTest
+    ManualTest --&gt; ConfigureTriggers
+    ConfigureTriggers --&gt; AutomatedCI
+    AutomatedCI --&gt; CDIntegration
+    CDIntegration --&gt; [*]</code></pre>
 
 
 
@@ -2836,7 +3150,7 @@
     <span class="md-icon" title="Last update">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21 13.1c-.1 0-.3.1-.4.2l-1 1 2.1 2.1 1-1c.2-.2.2-.6 0-.8l-1.3-1.3c-.1-.1-.2-.2-.4-.2m-1.9 1.8-6.1 6V23h2.1l6.1-6.1zM12.5 7v5.2l4 2.4-1 1L11 13V7zM11 21.9c-5.1-.5-9-4.8-9-9.9C2 6.5 6.5 2 12 2c5.3 0 9.6 4.1 10 9.3-.3-.1-.6-.2-1-.2s-.7.1-1 .2C19.6 7.2 16.2 4 12 4c-4.4 0-8 3.6-8 8 0 4.1 3.1 7.5 7.1 7.9l-.1.2z"/></svg>
     </span>
-    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="June 30, 2025 03:23:02 UTC">June 30, 2025</span>
+    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="April 20, 2026 08:56:25 UTC">April 20, 2026</span>
   </span>
 
     
@@ -2846,7 +3160,7 @@
     <span class="md-icon" title="Created">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M14.47 15.08 11 13V7h1.5v5.25l3.08 1.83c-.41.28-.79.62-1.11 1m-1.39 4.84c-.36.05-.71.08-1.08.08-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8c0 .37-.03.72-.08 1.08.69.1 1.33.32 1.92.64.1-.56.16-1.13.16-1.72 0-5.5-4.5-10-10-10S2 6.5 2 12s4.47 10 10 10c.59 0 1.16-.06 1.72-.16-.32-.59-.54-1.23-.64-1.92M18 15v3h-3v2h3v3h2v-3h3v-2h-3v-3z"/></svg>
     </span>
-    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="June 30, 2025 03:23:02 UTC">June 30, 2025</span>
+    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="April 20, 2026 08:56:25 UTC">April 20, 2026</span>
   </span>
 
     
@@ -2933,7 +3247,7 @@
       <nav class="md-footer__inner md-grid" aria-label="Footer" >
         
           
-          <a href="../airgap_nai/airgap_nai_test/" class="md-footer__link md-footer__link--prev" aria-label="Previous: Test NAI">
+          <a href="../nkp_ndb_lab/nkp_ndb_install_app/" class="md-footer__link md-footer__link--prev" aria-label="Previous: NDB Workload">
             <div class="md-footer__button md-icon">
               
               <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
@@ -2943,20 +3257,20 @@
                 Previous
               </span>
               <div class="md-ellipsis">
-                Test NAI
+                NDB Workload
               </div>
             </div>
           </a>
         
         
           
-          <a href="nkp_ndb_lab/nkp_ndb_lab/" class="md-footer__link md-footer__link--next" aria-label="Next: NDB Operator on NKP">
+          <a href="nkp_cicd_prereq/" class="md-footer__link md-footer__link--next" aria-label="Next: CICD Pre-requisites">
             <div class="md-footer__title">
               <span class="md-footer__direction">
                 Next
               </span>
               <div class="md-ellipsis">
-                NDB Operator on NKP
+                CICD Pre-requisites
               </div>
             </div>
             <div class="md-footer__button md-icon">
@@ -3101,10 +3415,10 @@
     
       
       
-      <script id="__config" type="application/json">{"annotate": null, "base": "..", "features": ["navigation.instant", "navigation.instant.progress", "navigation.path", "navigation.footer", "navigation.tracking", "navigation.tabs", "navigation.tabs.sticky", "navigation.top", "navigation.integrate\u00e5\u00df", "search.highlight", "search.suggest", "search.share", "toc.follow", "announce.dismiss", "content.action.edit", "content.action.view", "content.code.annotate", "content.code.copy", "content.code.annotate", "content.code.select"], "search": "../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": {"provider": "mike"}}</script>
+      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.instant", "navigation.instant.progress", "navigation.path", "navigation.footer", "navigation.tracking", "navigation.tabs", "navigation.tabs.sticky", "navigation.top", "navigation.integrate\u00e5\u00df", "search.highlight", "search.suggest", "search.share", "toc.follow", "announce.dismiss", "content.action.edit", "content.action.view", "content.code.annotate", "content.code.copy", "content.code.annotate", "content.code.select"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": {"provider": "mike"}}</script>
     
     
-      <script src="../assets/javascripts/bundle.79ae519e.min.js"></script>
+      <script src="../../assets/javascripts/bundle.79ae519e.min.js"></script>
       
     
   </body>
