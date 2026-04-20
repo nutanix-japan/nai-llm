@@ -40,11 +40,15 @@ nav:
   #   - Deploy Management Cluster: llmmgmt/llm_mgt_deploy.md
   #   - Deploy Dev Cluster: llmmgmt/llm_dev_deploy.md
   #   - Test LLM App: llmmgmt/llm_test.md
-- NKP Workload Tutorials:
+- NKP Workload Tutorials: 
   - NKP and NDB: 
-    - Getting Started: nkp_tutorials/index.md
+    - Getting Started: nkp_tutorials/nkp_ndb_lab/index.md
     - NDB Operator on NKP: nkp_tutorials/nkp_ndb_lab/nkp_ndb_lab.md
     - NDB Workload: nkp_tutorials/nkp_ndb_lab/nkp_ndb_install_app.md
+  - NKP CICD:
+    - Getting started: nkp_tutorials/nkp_cicd_lab/index.md
+    - CICD Pre-requisites: nkp_tutorials/nkp_cicd_lab/nkp_cicd_prereq.md
+    - CI Setup: nkp_tutorials/nkp_cicd_lab/nkp_ci_setup.md
   - Nutanix MCP Server: 
     - MCP Server Setup: nkp_tutorials/nkp_mcp_lab/nkp_nai_mcp.md
     - MCP N8N Chat Workflow: nkp_tutorials/nkp_mcp_lab/nkp_nai_n8n.md

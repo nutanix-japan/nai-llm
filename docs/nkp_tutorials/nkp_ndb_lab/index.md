@@ -9,7 +9,7 @@ Deploy the NKP kubernetes cluster with the following components:
 - 3 x Control plane nodes
 - 3 x Worker nodes
 
-The following is the flow of the NAI lab:
+The following is the flow of the NDB lab:
 
 ```mermaid
 stateDiagram-v2
@@ -75,4 +75,3 @@ stateDiagram-v2
     TestApplication --> CleanupResources
     CleanupResources --> [*]
 ```
-

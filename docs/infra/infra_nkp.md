@@ -74,8 +74,7 @@ Below are minimum requirements for deploying NAI on the NKP Demo Cluster.
 | Control plane | 3                 | 4             | 16 GB           | 150 GB           | 12         | 48 GB        |
 | Worker        | 4                 | 12            | 32 GB           | 150 GB           | 36         | 128 GB       |
 | GPU           | 1                 | 20            | 40 GB           | 300 GB           | 20         | 40 GB        |
-| **Totals**    |                   |               |                 |                  | **8**     | **216 GB**   |
-
+| **Totals**    |                   |               |                 |                  | **68**     | **216 GB**   |
 
 !!! example "Pre-requisites"
 
@@ -148,7 +147,7 @@ Below are minimum requirements for deploying NAI on the NKP Demo Cluster.
 
     === "Command Output"
 
-        ```{ .bash .no-copy }
+        ```{ .text .no-copy }
         $ nkp version
         catalog: v0.8.1
         diagnose: v0.12.0

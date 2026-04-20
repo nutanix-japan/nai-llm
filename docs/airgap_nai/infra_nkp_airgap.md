@@ -78,7 +78,7 @@ Below are minimum requirements for deploying NAI on the NKP Demo Cluster.
 | Control plane | 3                 | 4             | 16 GB           | 150 GB           | 12         | 48 GB        |
 | Worker        | 4                 | 12            | 32 GB           | 150 GB           | 36         | 128 GB       |
 | GPU           | 1                 | 20            | 40 GB           | 300 GB           | 20         | 40 GB        |
-| **Totals**    |                   |               |                 |                  | **8**     | **216 GB**   |
+| **Totals**    |                   |               |                 |                  | **68**     | **216 GB**   |
 
 !!! example "Pre-requisites"
 
@@ -340,7 +340,7 @@ In this section we will go through creating a base image for all the control pla
     
 5. Fill the following values inside the ``.env`` file
    
-    === "Template .env"
+    === ":octicons-file-code-16: Template .env"
 
         ```text
         export NUTANIX_USER=_your_nutanix_username
@@ -358,7 +358,7 @@ In this section we will go through creating a base image for all the control pla
         export BASE_IMAGE=_your_baseimage_name
         ```
 
-    === "Sample .env"
+    === ":octicons-file-code-16: Sample .env"
 
         ```text
         export NUTANIX_USER=admin
