@@ -10,31 +10,31 @@
       
       
       
-        <link rel="canonical" href="https://nai.howntnx.win/2.6.0/nkp_tutorials/nkp_ndb_lab/">
+        <link rel="canonical" href="https://nai.howntnx.win/2.6.0/nkp_tutorials/nkp_cicd_lab/nkp_cd_setup/">
       
       
-        <link rel="prev" href="../../airgap_nai/airgap_nai_test/">
+        <link rel="prev" href="../nkp_ci_setup/">
       
       
-        <link rel="next" href="nkp_ndb_lab/">
+        <link rel="next" href="../../nkp_mcp_lab/nkp_nai_mcp/">
       
       
         
       
       
-      <link rel="icon" href="../../assets/images/favicon.png">
+      <link rel="icon" href="../../../assets/images/favicon.png">
       <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.6">
     
     
       
-        <title>Getting Started - Nutanix Cloud Native and AI Solutions</title>
+        <title>Continuous Deployment NKP - Nutanix Cloud Native and AI Solutions</title>
       
     
     
-      <link rel="stylesheet" href="../../assets/stylesheets/main.484c7ddc.min.css">
+      <link rel="stylesheet" href="../../../assets/stylesheets/main.484c7ddc.min.css">
       
         
-        <link rel="stylesheet" href="../../assets/stylesheets/palette.ab4e12ef.min.css">
+        <link rel="stylesheet" href="../../../assets/stylesheets/palette.ab4e12ef.min.css">
       
       
   
@@ -118,7 +118,7 @@
       
     
     
-    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    <script>__md_scope=new URL("../../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
     
       
   
@@ -136,17 +136,17 @@
     
   
 <meta property="og:type" content="website" />
-<meta property="og:title" content="Getting Started - Nutanix Cloud Native and AI Solutions" />
+<meta property="og:title" content="Continuous Deployment NKP - Nutanix Cloud Native and AI Solutions" />
 <meta property="og:description" content="The one-stop shop for Nutanix Cloud Native and AI solutions. " />
-<meta property="og:image" content="https://nai.howntnx.win/2.6.0/assets/images/social/nkp_tutorials/nkp_ndb_lab/index.png" />
+<meta property="og:image" content="https://nai.howntnx.win/2.6.0/assets/images/social/nkp_tutorials/nkp_cicd_lab/nkp_cd_setup.png" />
 <meta property="og:image:type" content="image/png" />
 <meta property="og:image:width" content="1200" />
 <meta property="og:image:height" content="630" />
-<meta property="og:url" content="https://nai.howntnx.win/2.6.0/nkp_tutorials/nkp_ndb_lab/" />
+<meta property="og:url" content="https://nai.howntnx.win/2.6.0/nkp_tutorials/nkp_cicd_lab/nkp_cd_setup/" />
 <meta property="twitter:card" content="summary_large_image" />
-<meta property="twitter:title" content="Getting Started - Nutanix Cloud Native and AI Solutions" />
+<meta property="twitter:title" content="Continuous Deployment NKP - Nutanix Cloud Native and AI Solutions" />
 <meta property="twitter:description" content="The one-stop shop for Nutanix Cloud Native and AI solutions. " />
-<meta property="twitter:image" content="https://nai.howntnx.win/2.6.0/assets/images/social/nkp_tutorials/nkp_ndb_lab/index.png" />
+<meta property="twitter:image" content="https://nai.howntnx.win/2.6.0/assets/images/social/nkp_tutorials/nkp_cicd_lab/nkp_cd_setup.png" />
 </head>
   
   
@@ -166,7 +166,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#getting-started" class="md-skip">
+        <a href="#introduction-continuous-integration" class="md-skip">
           Skip to content
         </a>
       
@@ -186,7 +186,7 @@
 
 <header class="md-header md-header--shadow md-header--lifted" data-md-component="header">
   <nav class="md-header__inner md-grid" aria-label="Header">
-    <a href="../.." title="Nutanix Cloud Native and AI Solutions" class="md-header__button md-logo" aria-label="Nutanix Cloud Native and AI Solutions" data-md-component="logo">
+    <a href="../../.." title="Nutanix Cloud Native and AI Solutions" class="md-header__button md-logo" aria-label="Nutanix Cloud Native and AI Solutions" data-md-component="logo">
       
   
   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
@@ -206,7 +206,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              Getting Started
+              Continuous Deployment NKP
             
           </span>
         </div>
@@ -328,7 +328,7 @@
   
   
     <li class="md-tabs__item">
-      <a href="../.." class="md-tabs__link">
+      <a href="../../.." class="md-tabs__link">
         
   
   
@@ -349,7 +349,7 @@
     
     
       <li class="md-tabs__item">
-        <a href="../../conceptual/conceptual/" class="md-tabs__link">
+        <a href="../../../conceptual/conceptual/" class="md-tabs__link">
           
   
   
@@ -369,7 +369,7 @@
     
     
       <li class="md-tabs__item">
-        <a href="../../infra/" class="md-tabs__link">
+        <a href="../../../infra/" class="md-tabs__link">
           
   
   
@@ -396,7 +396,7 @@
     
     
       <li class="md-tabs__item">
-        <a href="../../iep/" class="md-tabs__link">
+        <a href="../../../iep/" class="md-tabs__link">
           
   
   
@@ -430,7 +430,7 @@
     
     
       <li class="md-tabs__item md-tabs__item--active">
-        <a href="./" class="md-tabs__link">
+        <a href="../../nkp_ndb_lab/" class="md-tabs__link">
           
   
   
@@ -453,7 +453,7 @@
     
     
       <li class="md-tabs__item">
-        <a href="../../nkp_ndk/" class="md-tabs__link">
+        <a href="../../../nkp_ndk/" class="md-tabs__link">
           
   
   
@@ -473,7 +473,7 @@
     
     
       <li class="md-tabs__item">
-        <a href="../../infra/infra_jumphost/" class="md-tabs__link">
+        <a href="../../../infra/infra_jumphost/" class="md-tabs__link">
           
   
   
@@ -493,7 +493,7 @@
     
     
       <li class="md-tabs__item">
-        <a href="../../ntxcomponents/ntxcomponents/" class="md-tabs__link">
+        <a href="../../../ntxcomponents/ntxcomponents/" class="md-tabs__link">
           
   
   
@@ -513,7 +513,7 @@
     
     
       <li class="md-tabs__item">
-        <a href="../../static/" class="md-tabs__link">
+        <a href="../../../static/" class="md-tabs__link">
           
   
   
@@ -531,7 +531,7 @@
   
   
     <li class="md-tabs__item">
-      <a href="../../takeaways/takeaways/" class="md-tabs__link">
+      <a href="../../../takeaways/takeaways/" class="md-tabs__link">
         
   
   
@@ -572,7 +572,7 @@
 
 <nav class="md-nav md-nav--primary md-nav--lifted" aria-label="Navigation" data-md-level="0">
   <label class="md-nav__title" for="__drawer">
-    <a href="../.." title="Nutanix Cloud Native and AI Solutions" class="md-nav__button md-logo" aria-label="Nutanix Cloud Native and AI Solutions" data-md-component="logo">
+    <a href="../../.." title="Nutanix Cloud Native and AI Solutions" class="md-nav__button md-logo" aria-label="Nutanix Cloud Native and AI Solutions" data-md-component="logo">
       
   
   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
@@ -602,7 +602,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../.." class="md-nav__link">
+      <a href="../../.." class="md-nav__link">
         
   
   
@@ -679,7 +679,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../conceptual/conceptual/" class="md-nav__link">
+      <a href="../../../conceptual/conceptual/" class="md-nav__link">
         
   
   
@@ -707,7 +707,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../sizing/sizing/" class="md-nav__link">
+      <a href="../../../sizing/sizing/" class="md-nav__link">
         
   
   
@@ -792,7 +792,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../infra/" class="md-nav__link">
+      <a href="../../../infra/" class="md-nav__link">
         
   
   
@@ -820,7 +820,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../infra/workstation/" class="md-nav__link">
+      <a href="../../../infra/workstation/" class="md-nav__link">
         
   
   
@@ -848,7 +848,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../infra/infra_jumphost_tofu/" class="md-nav__link">
+      <a href="../../../infra/infra_jumphost_tofu/" class="md-nav__link">
         
   
   
@@ -983,7 +983,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../iep/" class="md-nav__link">
+      <a href="../../../iep/" class="md-nav__link">
         
   
   
@@ -1011,7 +1011,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../infra/infra_nkp/" class="md-nav__link">
+      <a href="../../../infra/infra_nkp/" class="md-nav__link">
         
   
   
@@ -1039,7 +1039,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../iep/iep_pre_reqs/" class="md-nav__link">
+      <a href="../../../iep/iep_pre_reqs/" class="md-nav__link">
         
   
   
@@ -1067,7 +1067,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../iep/iep_deploy/" class="md-nav__link">
+      <a href="../../../iep/iep_deploy/" class="md-nav__link">
         
   
   
@@ -1095,7 +1095,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../iep/iep_test/" class="md-nav__link">
+      <a href="../../../iep/iep_test/" class="md-nav__link">
         
   
   
@@ -1181,7 +1181,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../airgap_nai/" class="md-nav__link">
+      <a href="../../../airgap_nai/" class="md-nav__link">
         
   
   
@@ -1209,7 +1209,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../airgap_nai/harbor/" class="md-nav__link">
+      <a href="../../../airgap_nai/harbor/" class="md-nav__link">
         
   
   
@@ -1237,7 +1237,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../airgap_nai/infra_nkp_airgap/" class="md-nav__link">
+      <a href="../../../airgap_nai/infra_nkp_airgap/" class="md-nav__link">
         
   
   
@@ -1265,7 +1265,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../airgap_nai/airgap_nai_pre_reqs/" class="md-nav__link">
+      <a href="../../../airgap_nai/airgap_nai_pre_reqs/" class="md-nav__link">
         
   
   
@@ -1293,7 +1293,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../airgap_nai/airgap_nai_deploy/" class="md-nav__link">
+      <a href="../../../airgap_nai/airgap_nai_deploy/" class="md-nav__link">
         
   
   
@@ -1321,7 +1321,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../airgap_nai/airgap_nai_test/" class="md-nav__link">
+      <a href="../../../airgap_nai/airgap_nai_test/" class="md-nav__link">
         
   
   
@@ -1416,8 +1416,6 @@
                 
   
   
-    
-  
   
   
     
@@ -1428,11 +1426,11 @@
       
     
     
-    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+    <li class="md-nav__item md-nav__item--nested">
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5_1" checked>
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5_1" >
         
           
           <label class="md-nav__link" for="__nav_5_1" id="__nav_5_1_label" tabindex="0">
@@ -1453,7 +1451,7 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_5_1_label" aria-expanded="true">
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_5_1_label" aria-expanded="false">
           <label class="md-nav__title" for="__nav_5_1">
             <span class="md-nav__icon md-icon"></span>
             
@@ -1468,19 +1466,10 @@
                 
   
   
-    
   
   
-  
-    <li class="md-nav__item md-nav__item--active">
-      
-      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
-      
-      
-        
-      
-      
-      <a href="./" class="md-nav__link md-nav__link--active">
+    <li class="md-nav__item">
+      <a href="../../nkp_ndb_lab/" class="md-nav__link">
         
   
   
@@ -1496,7 +1485,6 @@
   
 
       </a>
-      
     </li>
   
 
@@ -1509,7 +1497,7 @@
   
   
     <li class="md-nav__item">
-      <a href="nkp_ndb_lab/" class="md-nav__link">
+      <a href="../../nkp_ndb_lab/nkp_ndb_lab/" class="md-nav__link">
         
   
   
@@ -1537,7 +1525,7 @@
   
   
     <li class="md-nav__item">
-      <a href="nkp_ndb_install_app/" class="md-nav__link">
+      <a href="../../nkp_ndb_lab/nkp_ndb_install_app/" class="md-nav__link">
         
   
   
@@ -1570,6 +1558,8 @@
                 
   
   
+    
+  
   
   
     
@@ -1580,11 +1570,11 @@
       
     
     
-    <li class="md-nav__item md-nav__item--nested">
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5_2" >
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5_2" checked>
         
           
           <label class="md-nav__link" for="__nav_5_2" id="__nav_5_2_label" tabindex="0">
@@ -1605,7 +1595,7 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_5_2_label" aria-expanded="false">
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_5_2_label" aria-expanded="true">
           <label class="md-nav__title" for="__nav_5_2">
             <span class="md-nav__icon md-icon"></span>
             
@@ -1623,7 +1613,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../nkp_cicd_lab/" class="md-nav__link">
+      <a href="../" class="md-nav__link">
         
   
   
@@ -1651,7 +1641,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../nkp_cicd_lab/nkp_cicd_prereq/" class="md-nav__link">
+      <a href="../nkp_cicd_prereq/" class="md-nav__link">
         
   
   
@@ -1679,7 +1669,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../nkp_cicd_lab/nkp_ci_setup/" class="md-nav__link">
+      <a href="../nkp_ci_setup/" class="md-nav__link">
         
   
   
@@ -1704,10 +1694,35 @@
                 
   
   
+    
   
   
-    <li class="md-nav__item">
-      <a href="../nkp_cicd_lab/nkp_cd_setup/" class="md-nav__link">
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    CD Setup and Test
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
         
   
   
@@ -1723,6 +1738,102 @@
   
 
       </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#introduction-continuous-integration" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Introduction - Continuous Integration
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#cd-setup" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        CD Setup
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="CD Setup">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#github-repository-stucture" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Github Repository Stucture
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#key-workflow-differences" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Key Workflow Differences
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Key Workflow Differences">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#setup-github-repo" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Setup Github Repo
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#bootstrap-flux" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Bootstrap Flux
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
     </li>
   
 
@@ -1793,7 +1904,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../nkp_mcp_lab/nkp_nai_mcp/" class="md-nav__link">
+      <a href="../../nkp_mcp_lab/nkp_nai_mcp/" class="md-nav__link">
         
   
   
@@ -1821,7 +1932,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../nkp_mcp_lab/nkp_nai_n8n/" class="md-nav__link">
+      <a href="../../nkp_mcp_lab/nkp_nai_n8n/" class="md-nav__link">
         
   
   
@@ -1914,7 +2025,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../nkp_ndk/" class="md-nav__link">
+      <a href="../../../nkp_ndk/" class="md-nav__link">
         
   
   
@@ -1942,7 +2053,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../nkp_ndk/nkp_ndk/" class="md-nav__link">
+      <a href="../../../nkp_ndk/nkp_ndk/" class="md-nav__link">
         
   
   
@@ -2020,7 +2131,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../nkp_ndk/nkp_ndk_singlek8s/" class="md-nav__link">
+      <a href="../../../nkp_ndk/nkp_ndk_singlek8s/" class="md-nav__link">
         
   
   
@@ -2048,7 +2159,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../nkp_ndk/nkp_ndk_k8s_replication/" class="md-nav__link">
+      <a href="../../../nkp_ndk/nkp_ndk_k8s_replication/" class="md-nav__link">
         
   
   
@@ -2134,7 +2245,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../nkp_ndk/nkp_ndk_singlek8s_files/" class="md-nav__link">
+      <a href="../../../nkp_ndk/nkp_ndk_singlek8s_files/" class="md-nav__link">
         
   
   
@@ -2162,7 +2273,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../nkp_ndk/nkp_ndk_k8s_files_replication/" class="md-nav__link">
+      <a href="../../../nkp_ndk/nkp_ndk_k8s_files_replication/" class="md-nav__link">
         
   
   
@@ -2255,7 +2366,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../infra/infra_jumphost/" class="md-nav__link">
+      <a href="../../../infra/infra_jumphost/" class="md-nav__link">
         
   
   
@@ -2283,7 +2394,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../appendix/infra_nkp_hard_way/" class="md-nav__link">
+      <a href="../../../appendix/infra_nkp_hard_way/" class="md-nav__link">
         
   
   
@@ -2311,7 +2422,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../infra/harbor/" class="md-nav__link">
+      <a href="../../../infra/harbor/" class="md-nav__link">
         
   
   
@@ -2339,7 +2450,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../appendix/nkp_cert_ds/" class="md-nav__link">
+      <a href="../../../appendix/nkp_cert_ds/" class="md-nav__link">
         
   
   
@@ -2367,7 +2478,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../appendix/opentofu/" class="md-nav__link">
+      <a href="../../../appendix/opentofu/" class="md-nav__link">
         
   
   
@@ -2452,7 +2563,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../ntxcomponents/ntxcomponents/" class="md-nav__link">
+      <a href="../../../ntxcomponents/ntxcomponents/" class="md-nav__link">
         
   
   
@@ -2480,7 +2591,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../tools/tools/" class="md-nav__link">
+      <a href="../../../tools/tools/" class="md-nav__link">
         
   
   
@@ -2508,7 +2619,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../contributing/" class="md-nav__link">
+      <a href="../../../contributing/" class="md-nav__link">
         
   
   
@@ -2536,7 +2647,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../roadmap/" class="md-nav__link">
+      <a href="../../../roadmap/" class="md-nav__link">
         
   
   
@@ -2621,7 +2732,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../static/" class="md-nav__link">
+      <a href="../../../static/" class="md-nav__link">
         
   
   
@@ -2649,7 +2760,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../static/scheduling-mixed-pods-and-nodepool-v1.html" class="md-nav__link">
+      <a href="../../../static/scheduling-mixed-pods-and-nodepool-v1.html" class="md-nav__link">
         
   
   
@@ -2677,7 +2788,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../static/k8s-deployment-strategies-visualizer.html" class="md-nav__link">
+      <a href="../../../static/k8s-deployment-strategies-visualizer.html" class="md-nav__link">
         
   
   
@@ -2705,7 +2816,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../static/nai-llm-model-selectr.html" class="md-nav__link">
+      <a href="../../../static/nai-llm-model-selectr.html" class="md-nav__link">
         
   
   
@@ -2733,7 +2844,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../static/nai-llm-simulation-v1-nim-rag.html" class="md-nav__link">
+      <a href="../../../static/nai-llm-simulation-v1-nim-rag.html" class="md-nav__link">
         
   
   
@@ -2768,7 +2879,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../takeaways/takeaways/" class="md-nav__link">
+      <a href="../../../takeaways/takeaways/" class="md-nav__link">
         
   
   
@@ -2805,8 +2916,92 @@
   
   
   
-    
   
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#introduction-continuous-integration" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Introduction - Continuous Integration
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#cd-setup" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        CD Setup
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="CD Setup">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#github-repository-stucture" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Github Repository Stucture
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#key-workflow-differences" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Key Workflow Differences
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Key Workflow Differences">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#setup-github-repo" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Setup Github Repo
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#bootstrap-flux" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Bootstrap Flux
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
   
 </nav>
                   </div>
@@ -2831,7 +3026,7 @@
   
   
     <li class="md-path__item">
-      <a href="../.." class="md-path__link">
+      <a href="../../.." class="md-path__link">
         
   <span class="md-ellipsis">
     Home
@@ -2854,7 +3049,7 @@
     
     
       <li class="md-path__item">
-        <a href="./" class="md-path__link">
+        <a href="../../nkp_ndb_lab/" class="md-path__link">
           
   <span class="md-ellipsis">
     NKP Workload Tutorials
@@ -2875,10 +3070,10 @@
     
     
       <li class="md-path__item">
-        <a href="./" class="md-path__link">
+        <a href="../" class="md-path__link">
           
   <span class="md-ellipsis">
-    NKP and NDB
+    NKP CICD
   </span>
 
         </a>
@@ -2897,7 +3092,7 @@
 
 
   
-    <a href="https://github.com/nutanix-japan/nai-llm/edit/main/docs/nkp_tutorials/nkp_ndb_lab/index.md" title="Edit this page" class="md-content__button md-icon" rel="edit">
+    <a href="https://github.com/nutanix-japan/nai-llm/edit/main/docs/nkp_tutorials/nkp_cicd_lab/nkp_cd_setup.md" title="Edit this page" class="md-content__button md-icon" rel="edit">
       
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M10 20H6V4h7v5h5v3.1l2-2V8l-6-6H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h4zm10.2-7c.1 0 .3.1.4.2l1.3 1.3c.2.2.2.6 0 .8l-1 1-2.1-2.1 1-1c.1-.1.2-.2.4-.2m0 3.9L14.1 23H12v-2.1l6.1-6.1z"/></svg>
     </a>
@@ -2906,84 +3101,366 @@
     
       
     
-    <a href="https://github.com/nutanix-japan/nai-llm/raw/main/docs/nkp_tutorials/nkp_ndb_lab/index.md" title="View source of this page" class="md-content__button md-icon">
+    <a href="https://github.com/nutanix-japan/nai-llm/raw/main/docs/nkp_tutorials/nkp_cicd_lab/nkp_cd_setup.md" title="View source of this page" class="md-content__button md-icon">
       
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M17 18c.56 0 1 .44 1 1s-.44 1-1 1-1-.44-1-1 .44-1 1-1m0-3c-2.73 0-5.06 1.66-6 4 .94 2.34 3.27 4 6 4s5.06-1.66 6-4c-.94-2.34-3.27-4-6-4m0 6.5a2.5 2.5 0 0 1-2.5-2.5 2.5 2.5 0 0 1 2.5-2.5 2.5 2.5 0 0 1 2.5 2.5 2.5 2.5 0 0 1-2.5 2.5M9.27 20H6V4h7v5h5v4.07c.7.08 1.36.25 2 .49V8l-6-6H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h4.5a8.2 8.2 0 0 1-1.23-2"/></svg>
     </a>
   
 
 
-<h1 id="getting-started">Getting Started</h1>
-<p>In this part of the lab we will deploy a workload on NKP cluster which stores its database in a NDB deployed Postgres server.</p>
-<p>We will also deploy a Kubernetes cluster so far as per the NVD <a href="../conceptual/conceptual.md#management-kubernetes-cluster">design requirements</a>.</p>
-<p>Deploy the NKP kubernetes cluster with the following components:</p>
+  <h1>CD Setup and Test</h1>
+
+<h2 id="introduction-continuous-integration">Introduction - Continuous Integration</h2>
+<p>This section walks you through building the Continuous Integration setup using Tekton pipelines. </p>
+<pre class="mermaid"><code></code></pre>
+<h2 id="cd-setup">CD Setup</h2>
+<h3 id="github-repository-stucture">Github Repository Stucture</h3>
+<p>Flux CD is a declarative GitOps tool for Kubernetes that ensures your cluster state matches the configuration stored in a Git repository. Instead of "pushing" code to your cluster via a CI pipeline, Flux "pulls" the state from Git, making your repository the single source of truth.</p>
+<p><strong>The Core Components</strong></p>
+<p>Flux is comprised of several specialized controllers (the "GitOps Toolkit"). Each handles a specific part of the deployment lifecycle:</p>
 <ul>
-<li>3 x Control plane nodes</li>
-<li>3 x Worker nodes</li>
+<li><strong>Source Controller:</strong> The <strong>Watcher</strong>. It monitors your Git repositories, Helm charts, or OCI artifacts for changes and pulls them into the cluster as "artifacts."</li>
+<li><strong>Kustomize Controller:</strong> The <strong>Applier</strong>. It takes the YAML or Kustomize manifests fetched by the Source Controller and applies them to the Kubernetes API.</li>
+<li><strong>Helm Controller:</strong> The <strong>Operator</strong>. Specifically manages <code>HelmRelease</code> objects, handling upgrades, rollbacks, and dependencies for Helm charts.</li>
+<li><strong>Notification Controller:</strong> The <strong>Messenger</strong>. It handles inbound events (webhooks from GitHub/GitLab) and outbound alerts (Slack, Microsoft Teams, or Discord notifications).</li>
 </ul>
-<p>The following is the flow of the NDB lab:</p>
-<pre class="mermaid"><code>stateDiagram-v2
-    direction LR
-
-    state PrepEnvironment {
-        [*] --&gt; PrepVM
-        PrepVM --&gt; [*]
-    }
-
-    state InstallNDBOperator {
-        [*] --&gt; InstallNDBOp
-        InstallNDBOp --&gt; [*]
-    }
-
-    state ConfigureSecrets {
-        [*] --&gt; CreateSecrets
-        CreateSecrets --&gt; [*]
-    }
-
-    state SetupNDB {
-        [*] --&gt; GetUUID
-        GetUUID --&gt; CreateProfile
-        CreateProfile --&gt; DeployDB
-        DeployDB --&gt; [*]
-    }
-
-    state VerifyDB {
-        [*] --&gt; CheckDB
-        CheckDB --&gt; [*]
-    }
-
-    state DeployApplication {
-        [*] --&gt; DeployApp
-        DeployApp --&gt; [*]
-    }
-
-    state ConfigureIngress {
-        [*] --&gt; CreateIngress
-        CreateIngress --&gt; [*]
-    }
-
-    state TestApplication {
-        [*] --&gt; TestFrontend
-        TestFrontend --&gt; TestBackend
-        TestBackend --&gt; CheckDBData
-        CheckDBData --&gt; [*]
-    }
-
-    state CleanupResources {
-        [*] --&gt; Cleanup
-        Cleanup --&gt; [*]
-    }
-
-    [*] --&gt; PrepEnvironment
-    PrepEnvironment --&gt; InstallNDBOperator
-    InstallNDBOperator --&gt; ConfigureSecrets
-    ConfigureSecrets --&gt; SetupNDB
-    SetupNDB --&gt; VerifyDB
-    VerifyDB --&gt; DeployApplication
-    DeployApplication --&gt; ConfigureIngress
-    ConfigureIngress --&gt; TestApplication
-    TestApplication --&gt; CleanupResources
-    CleanupResources --&gt; [*]</code></pre>
+<hr />
+<p><strong>Repo Structure: Monorepo vs. Split Repo</strong></p>
+<p><strong>It is generally considered a best practice to separate your Application code from your GitOps (infrastructure) definitions.</strong> So we will work with two repositories</p>
+<p><strong>Standard Pattern:</strong></p>
+<ol>
+<li><strong>App Repo:</strong> Contains source code, Dockerfile, and CI workflows (GitHub Actions/Tekton).- (previously setup in <a href="../nkp_ci_setup/#setup-github-repo">CI section</a>)</li>
+<li><strong>GitOps Repo:</strong> Contains Kubernetes manifests, Flux objects (<code>GitRepository</code>, <code>Kustomization</code>), and environment-specific configs (Dev/Staging)</li>
+</ol>
+<p>Here is the comparison of the two repositories organized into a Markdown table for better clarity.</p>
+<p><strong>GitOps Repository Structure</strong></p>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;"><strong>Repository</strong></th>
+<th style="text-align: left;"><strong>Repository Name</strong></th>
+<th style="text-align: left;"><strong>Purpose</strong></th>
+<th style="text-align: left;"><strong>Key Components</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;"><strong>App Repo</strong></td>
+<td style="text-align: left;">(<code>app-source</code>)</td>
+<td style="text-align: left;">Houses the application logic and build instructions.</td>
+<td style="text-align: left;">Source code, Dockerfile, CI workflows (GitHub Actions/Tekton).</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>GitOps Repo</strong></td>
+<td style="text-align: left;">(<code>gitops-config</code>)</td>
+<td style="text-align: left;">Defines the desired state of the infrastructure and environments.</td>
+<td style="text-align: left;">K8s manifests, Flux objects (<code>GitRepository</code>, <code>Kustomization</code>), Env configs (Dev/Prod).</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h3 id="key-workflow-differences">Key Workflow Differences</h3>
+<ul>
+<li><strong>The App Repo</strong> is where developers spend most of their time writing code and triggering automated builds (CI).</li>
+<li><strong>The GitOps Repo</strong> acts as the "Source of Truth" for your cluster, where Flux monitors for changes to deploy the application (CD).</li>
+</ul>
+<hr />
+<p><strong>Why separate them?</strong></p>
+<ul>
+<li><strong>Security:</strong> Your CI system needs write access to the GitOps repo to update image tags, but it only needs read access to the App repo.</li>
+<li><strong>Reduced Noise:</strong> Merging a README change in the App repo won't trigger a Flux reconciliation of your infrastructure.</li>
+<li><strong>Clean Audit Trail:</strong> The GitOps repo becomes a pure "log" of every deployment to production, separate from the messy history of feature development.</li>
+</ul>
+<hr />
+<p><strong>The Basic Workflow</strong></p>
+<ol>
+<li><strong>Developer</strong> pushes code to the <strong>App Repo</strong>.</li>
+<li><strong>CI (e.g., Tekton/GitHub Actions)</strong> builds a Docker image and pushes it to a registry.</li>
+<li><strong>CI</strong> (Flux Image Automation controller) updates the image tag in the <strong>GitOps Repo</strong>.</li>
+<li><strong>Flux Source Controller</strong> detects the commit in the GitOps Repo.</li>
+<li><strong>Flux Kustomize Controller</strong> applies the new manifest to the cluster.</li>
+</ol>
+<hr />
+<h4 id="setup-github-repo">Setup Github Repo</h4>
+<ol>
+<li>We will create Tekton objects in the NKP cluster using manifests files</li>
+<li>Open <a href="https://www.github.com">Github</a> in a browser</li>
+<li>Login with you Github account</li>
+<li>
+<p>Open this repository URL on a different browser tab</p>
+<div class="admonition info">
+<p class="admonition-title">Info</p>
+<p>This repository hosts the manifests of two functions:</p>
+<ul>
+<li>The sample application's source code</li>
+<li>The tekton objects that we will create to enable CI</li>
+</ul>
+</div>
+<div class="tabbed-set tabbed-alternate" data-tabs="1:1"><input checked="checked" id="__tabbed_1_1" name="__tabbed_1" type="radio" /><div class="tabbed-labels"><label for="__tabbed_1_1"><span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3.9 12c0-1.71 1.39-3.1 3.1-3.1h4V7H7a5 5 0 0 0-5 5 5 5 0 0 0 5 5h4v-1.9H7c-1.71 0-3.1-1.39-3.1-3.1M8 13h8v-2H8zm9-6h-4v1.9h4c1.71 0 3.1 1.39 3.1 3.1s-1.39 3.1-3.1 3.1h-4V17h4a5 5 0 0 0 5-5 5 5 0 0 0-5-5"/></svg></span> Git URL</label></div>
+<div class="tabbed-content">
+<div class="tabbed-block">
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>https://github.com/ariesbabu/gitops-config.git
+</span></code></pre></div>
+</div>
+</div>
+</div>
+</li>
+<li>
+<p><strong>Fork</strong> the following repo to your GitHub account</p>
+</li>
+<li>
+<p>After the fork, there will be copy of the source repo in your github handle</p>
+<div class="tabbed-set tabbed-alternate" data-tabs="2:2"><input checked="checked" id="__tabbed_2_1" name="__tabbed_2" type="radio" /><input id="__tabbed_2_2" name="__tabbed_2" type="radio" /><div class="tabbed-labels"><label for="__tabbed_2_1"><span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3.9 12c0-1.71 1.39-3.1 3.1-3.1h4V7H7a5 5 0 0 0-5 5 5 5 0 0 0 5 5h4v-1.9H7c-1.71 0-3.1-1.39-3.1-3.1M8 13h8v-2H8zm9-6h-4v1.9h4c1.71 0 3.1 1.39 3.1 3.1s-1.39 3.1-3.1 3.1h-4V17h4a5 5 0 0 0 5-5 5 5 0 0 0-5-5"/></svg></span> Git URL</label><label for="__tabbed_2_2"><span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3.9 12c0-1.71 1.39-3.1 3.1-3.1h4V7H7a5 5 0 0 0-5 5 5 5 0 0 0 5 5h4v-1.9H7c-1.71 0-3.1-1.39-3.1-3.1M8 13h8v-2H8zm9-6h-4v1.9h4c1.71 0 3.1 1.39 3.1 3.1s-1.39 3.1-3.1 3.1h-4V17h4a5 5 0 0 0 5-5 5 5 0 0 0-5-5"/></svg></span> Example Git URL</label></div>
+<div class="tabbed-content">
+<div class="tabbed-block">
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>https://github.com/_your_git_handle/gitops-config.git
+</span></code></pre></div>
+</div>
+<div class="tabbed-block">
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a>https://github.com/student1/gitops-config.git
+</span></code></pre></div>
+</div>
+</div>
+</div>
+</li>
+<li>
+<p>Go to <strong>Settings</strong> page of your Github handle</p>
+</li>
+<li>Select <strong>Developer Settings</strong></li>
+<li>Click on <strong>Personal Access Tokens</strong> &gt; <strong>Fine-grained tokens</strong></li>
+<li>Click on <strong>Generate New Token</strong></li>
+<li>
+<p>Populate details:</p>
+<ul>
+<li><strong>Token name</strong> - for-cicd-lab</li>
+<li><strong>Expiration</strong> - 30 days</li>
+<li><strong>Repository access</strong> - Only select repositories</li>
+<li><strong>Repositories</strong> - select <code>app-source</code> and <code>gitops-config</code> repositories</li>
+<li><strong>Permissions</strong> - select <strong>Read access to metadata</strong> and <strong>Read and Write access to code and repository hooks</strong></li>
+<li>Copy the token value to use in the next section</li>
+</ul>
+</li>
+</ol>
+<h3 id="bootstrap-flux">Bootstrap Flux</h3>
+<ol>
+<li>
+<p>Open <code>$HOME/cicd/.env</code> file in VSC and add (append) the following environment variables to your <code>.env</code> file and save</p>
+<div class="tabbed-set tabbed-alternate" data-tabs="3:2"><input checked="checked" id="__tabbed_3_1" name="__tabbed_3" type="radio" /><input id="__tabbed_3_2" name="__tabbed_3" type="radio" /><div class="tabbed-labels"><label for="__tabbed_3_1"><span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16"><path d="M4 1.75C4 .784 4.784 0 5.75 0h5.586c.464 0 .909.184 1.237.513l2.914 2.914c.329.328.513.773.513 1.237v8.586A1.75 1.75 0 0 1 14.25 15h-9a.75.75 0 0 1 0-1.5h9a.25.25 0 0 0 .25-.25V6h-2.75A1.75 1.75 0 0 1 10 4.25V1.5H5.75a.25.25 0 0 0-.25.25v2.5a.75.75 0 0 1-1.5 0Zm1.72 4.97a.75.75 0 0 1 1.06 0l2 2a.75.75 0 0 1 0 1.06l-2 2a.749.749 0 0 1-1.275-.326.75.75 0 0 1 .215-.734l1.47-1.47-1.47-1.47a.75.75 0 0 1 0-1.06M3.28 7.78 1.81 9.25l1.47 1.47a.75.75 0 0 1-.018 1.042.75.75 0 0 1-1.042.018l-2-2a.75.75 0 0 1 0-1.06l2-2a.75.75 0 0 1 1.042.018.75.75 0 0 1 .018 1.042m8.22-6.218V4.25c0 .138.112.25.25.25h2.688l-.011-.013-2.914-2.914z"/></svg></span> Template <code>.env</code></label><label for="__tabbed_3_2"><span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16"><path d="M4 1.75C4 .784 4.784 0 5.75 0h5.586c.464 0 .909.184 1.237.513l2.914 2.914c.329.328.513.773.513 1.237v8.586A1.75 1.75 0 0 1 14.25 15h-9a.75.75 0 0 1 0-1.5h9a.25.25 0 0 0 .25-.25V6h-2.75A1.75 1.75 0 0 1 10 4.25V1.5H5.75a.25.25 0 0 0-.25.25v2.5a.75.75 0 0 1-1.5 0Zm1.72 4.97a.75.75 0 0 1 1.06 0l2 2a.75.75 0 0 1 0 1.06l-2 2a.749.749 0 0 1-1.275-.326.75.75 0 0 1 .215-.734l1.47-1.47-1.47-1.47a.75.75 0 0 1 0-1.06M3.28 7.78 1.81 9.25l1.47 1.47a.75.75 0 0 1-.018 1.042.75.75 0 0 1-1.042.018l-2-2a.75.75 0 0 1 0-1.06l2-2a.75.75 0 0 1 1.042.018.75.75 0 0 1 .018 1.042m8.22-6.218V4.25c0 .138.112.25.25.25h2.688l-.011-.013-2.914-2.914z"/></svg></span> Sample <code>.env</code></label></div>
+<div class="tabbed-content">
+<div class="tabbed-block">
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="nb">export</span><span class="w"> </span><span class="nv">REGISTRY_URL</span><span class="o">=</span>_your_registry_url
+</span><span id="__span-3-2"><a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a><span class="nb">export</span><span class="w"> </span><span class="nv">REGISTRY_USERNAME</span><span class="o">=</span>_your_registry_username
+</span><span id="__span-3-3"><a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a><span class="nb">export</span><span class="w"> </span><span class="nv">REGISTRY_PASSWORD</span><span class="o">=</span>_your_registry_password
+</span><span id="__span-3-4"><a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a><span class="nb">export</span><span class="w"> </span><span class="nv">REGISTRY_CACERT</span><span class="o">=</span>_path_to_ca_cert_of_registry<span class="w">  </span><span class="c1"># (1)!</span>
+</span><span id="__span-3-5"><a id="__codelineno-3-5" name="__codelineno-3-5" href="#__codelineno-3-5"></a><span class="c1"># Optional if using Docker - Public Docker Registry Details</span>
+</span><span id="__span-3-6"><a id="__codelineno-3-6" name="__codelineno-3-6" href="#__codelineno-3-6"></a><span class="nb">export</span><span class="w"> </span><span class="nv">DOCKER_REGISTRY_URL</span><span class="o">=</span>_your_registry_url
+</span><span id="__span-3-7"><a id="__codelineno-3-7" name="__codelineno-3-7" href="#__codelineno-3-7"></a><span class="nb">export</span><span class="w"> </span><span class="nv">DOCKER_REGISTRY_USERNAME</span><span class="o">=</span>_your_registry_username
+</span><span id="__span-3-8"><a id="__codelineno-3-8" name="__codelineno-3-8" href="#__codelineno-3-8"></a><span class="nb">export</span><span class="w"> </span><span class="nv">DOCKER_REGISTRY_PASSWORD</span><span class="o">=</span>_your_registry_password
+</span><span id="__span-3-9"><a id="__codelineno-3-9" name="__codelineno-3-9" href="#__codelineno-3-9"></a><span class="hll"><span class="nb">export</span><span class="w"> </span><span class="nv">SMEE_URL</span><span class="o">=</span>_your_smee_url
+</span></span><span id="__span-3-10"><a id="__codelineno-3-10" name="__codelineno-3-10" href="#__codelineno-3-10"></a><span class="nb">export</span><span class="w"> </span><span class="nv">GIT_USER</span><span class="o">=</span>_your_git_handle
+</span><span id="__span-3-11"><a id="__codelineno-3-11" name="__codelineno-3-11" href="#__codelineno-3-11"></a><span class="nb">export</span><span class="w"> </span><span class="nv">GIT_PAT</span><span class="o">=</span>_your_git_repos_personal_token<span class="w">       </span><span class="c1"># (2)!</span>
+</span></code></pre></div>
+<ol>
+<li>File must contain CA server and Harbor server's public certificate in one file</li>
+<li>Github token copied from previous <a href="./#setup-github-repo">section</a></li>
+</ol>
+</div>
+<div class="tabbed-block">
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-4-1"><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="nb">export</span><span class="w"> </span><span class="nv">REGISTRY_URL</span><span class="o">=</span>https://harbor.10.x.x.111.nip.io/nkp
+</span><span id="__span-4-2"><a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a><span class="nb">export</span><span class="w"> </span><span class="nv">REGISTRY_USERNAME</span><span class="o">=</span>admin
+</span><span id="__span-4-3"><a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a><span class="nb">export</span><span class="w"> </span><span class="nv">REGISTRY_PASSWORD</span><span class="o">=</span>xxxxxxxx
+</span><span id="__span-4-4"><a id="__codelineno-4-4" name="__codelineno-4-4" href="#__codelineno-4-4"></a><span class="nb">export</span><span class="w"> </span><span class="nv">REGISTRY_CACERT</span><span class="o">=</span><span class="nv">$HOME</span>/harbor/certs/full_chain.pem<span class="w">  </span><span class="c1"># (1)!</span>
+</span><span id="__span-4-5"><a id="__codelineno-4-5" name="__codelineno-4-5" href="#__codelineno-4-5"></a><span class="c1"># Optional if using Docker - Public Docker Registry Details</span>
+</span><span id="__span-4-6"><a id="__codelineno-4-6" name="__codelineno-4-6" href="#__codelineno-4-6"></a><span class="nb">export</span><span class="w"> </span><span class="nv">DOCKER_REGISTRY_URL</span><span class="o">=</span>https://index.docker.io/v1/
+</span><span id="__span-4-7"><a id="__codelineno-4-7" name="__codelineno-4-7" href="#__codelineno-4-7"></a><span class="nb">export</span><span class="w"> </span><span class="nv">DOCKER_REGISTRY_USERNAME</span><span class="o">=</span>dockeruser
+</span><span id="__span-4-8"><a id="__codelineno-4-8" name="__codelineno-4-8" href="#__codelineno-4-8"></a><span class="nb">export</span><span class="w"> </span><span class="nv">DOCKER_REGISTRY_PASSWORD</span><span class="o">=</span>_XXXXXXXXXX
+</span><span id="__span-4-9"><a id="__codelineno-4-9" name="__codelineno-4-9" href="#__codelineno-4-9"></a><span class="hll"><span class="nb">export</span><span class="w"> </span><span class="nv">SMEE_URL</span><span class="o">=</span>https://smee.io/pPxxxxxxxxxxxxxxxd
+</span></span><span id="__span-4-10"><a id="__codelineno-4-10" name="__codelineno-4-10" href="#__codelineno-4-10"></a><span class="nb">export</span><span class="w"> </span><span class="nv">GIT_USER</span><span class="o">=</span>ariesbabu
+</span><span id="__span-4-11"><a id="__codelineno-4-11" name="__codelineno-4-11" href="#__codelineno-4-11"></a><span class="nb">export</span><span class="w"> </span><span class="nv">GIT_PAT</span><span class="o">=</span>github_pat_xxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+</span></code></pre></div>
+<ol>
+<li>File must contain CA server and Harbor server's public certificate in one file</li>
+</ol>
+</div>
+</div>
+</div>
+</li>
+<li>
+<p>Source the new variables and values to the environment</p>
+<div class="tabbed-set tabbed-alternate" data-tabs="4:1"><input checked="checked" id="__tabbed_4_1" name="__tabbed_4" type="radio" /><div class="tabbed-labels"><label for="__tabbed_4_1"><span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16"><path d="m6.354 8.04-4.773 4.773a.75.75 0 1 0 1.061 1.06L7.945 8.57a.75.75 0 0 0 0-1.06L2.642 2.206a.75.75 0 0 0-1.06 1.061L6.353 8.04ZM8.75 11.5a.75.75 0 0 0 0 1.5h5.5a.75.75 0 0 0 0-1.5z"/></svg></span> Command</label></div>
+<div class="tabbed-content">
+<div class="tabbed-block">
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-5-1"><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a><span class="nb">cd</span><span class="w"> </span><span class="nv">$HOME</span>/cicd/
+</span><span id="__span-5-2"><a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a><span class="nb">source</span><span class="w"> </span>.env
+</span></code></pre></div>
+</div>
+</div>
+</div>
+</li>
+<li>
+<p>Login to the <code>nkpcicd</code> workload kubernetes server and ensure you are using the right context before proceeding</p>
+<div class="tabbed-set tabbed-alternate" data-tabs="5:2"><input checked="checked" id="__tabbed_5_1" name="__tabbed_5" type="radio" /><input id="__tabbed_5_2" name="__tabbed_5" type="radio" /><div class="tabbed-labels"><label for="__tabbed_5_1"><span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16"><path d="m6.354 8.04-4.773 4.773a.75.75 0 1 0 1.061 1.06L7.945 8.57a.75.75 0 0 0 0-1.06L2.642 2.206a.75.75 0 0 0-1.06 1.061L6.353 8.04ZM8.75 11.5a.75.75 0 0 0 0 1.5h5.5a.75.75 0 0 0 0-1.5z"/></svg></span> Command</label><label for="__tabbed_5_2"><span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16"><path d="m6.354 8.04-4.773 4.773a.75.75 0 1 0 1.061 1.06L7.945 8.57a.75.75 0 0 0 0-1.06L2.642 2.206a.75.75 0 0 0-1.06 1.061L6.353 8.04ZM8.75 11.5a.75.75 0 0 0 0 1.5h5.5a.75.75 0 0 0 0-1.5z"/></svg></span> Command output</label></div>
+<div class="tabbed-content">
+<div class="tabbed-block">
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-6-1"><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a><span class="nb">export</span><span class="w"> </span><span class="nv">KUBECONFIG</span><span class="o">=</span>nkpcicd.conf
+</span><span id="__span-6-2"><a id="__codelineno-6-2" name="__codelineno-6-2" href="#__codelineno-6-2"></a>kubectl<span class="w"> </span>get<span class="w"> </span>nodes<span class="w">  </span><span class="c1"># (1)!</span>
+</span></code></pre></div>
+<ol>
+<li>Run any kubectl command to ensure your are in the correct context (workload cluster <code>nkpcicd</code>)</li>
+</ol>
+</div>
+<div class="tabbed-block">
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-7-1"><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a>$<span class="w"> </span>kubectl<span class="w"> </span>get<span class="w"> </span>nodes
+</span><span id="__span-7-2"><a id="__codelineno-7-2" name="__codelineno-7-2" href="#__codelineno-7-2"></a><span class="c1">#</span>
+</span><span id="__span-7-3"><a id="__codelineno-7-3" name="__codelineno-7-3" href="#__codelineno-7-3"></a>NAME<span class="w">                                </span>STATUS<span class="w">   </span>ROLES<span class="w">           </span>AGE<span class="w">    </span>VERSION
+</span><span id="__span-7-4"><a id="__codelineno-7-4" name="__codelineno-7-4" href="#__codelineno-7-4"></a>nkpcicd-lkr26-lc56p<span class="w">                 </span>Ready<span class="w">    </span>control-plane<span class="w">   </span>5d3h<span class="w">   </span>v1.34.3
+</span><span id="__span-7-5"><a id="__codelineno-7-5" name="__codelineno-7-5" href="#__codelineno-7-5"></a>nkpcicd-md-0-4jkvk-mcp9r-bbjvq<span class="w">      </span>Ready<span class="w">    </span>&lt;none&gt;<span class="w">          </span>5d3h<span class="w">   </span>v1.34.3
+</span><span id="__span-7-6"><a id="__codelineno-7-6" name="__codelineno-7-6" href="#__codelineno-7-6"></a>nkpcicd-md-0-4jkvk-mcp9r-phlv7<span class="w">      </span>Ready<span class="w">    </span>&lt;none&gt;<span class="w">          </span>5d3h<span class="w">   </span>v1.34.3
+</span></code></pre></div>
+</div>
+</div>
+</div>
+</li>
+<li>
+<p>Create github-pat secret</p>
+<div class="tabbed-set tabbed-alternate" data-tabs="6:2"><input checked="checked" id="__tabbed_6_1" name="__tabbed_6" type="radio" /><input id="__tabbed_6_2" name="__tabbed_6" type="radio" /><div class="tabbed-labels"><label for="__tabbed_6_1"><span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16"><path d="m6.354 8.04-4.773 4.773a.75.75 0 1 0 1.061 1.06L7.945 8.57a.75.75 0 0 0 0-1.06L2.642 2.206a.75.75 0 0 0-1.06 1.061L6.353 8.04ZM8.75 11.5a.75.75 0 0 0 0 1.5h5.5a.75.75 0 0 0 0-1.5z"/></svg></span> Command</label><label for="__tabbed_6_2"><span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16"><path d="m6.354 8.04-4.773 4.773a.75.75 0 1 0 1.061 1.06L7.945 8.57a.75.75 0 0 0 0-1.06L2.642 2.206a.75.75 0 0 0-1.06 1.061L6.353 8.04ZM8.75 11.5a.75.75 0 0 0 0 1.5h5.5a.75.75 0 0 0 0-1.5z"/></svg></span> Command output</label></div>
+<div class="tabbed-content">
+<div class="tabbed-block">
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-8-1"><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a>kubectl<span class="w"> </span>apply<span class="w"> </span>-f<span class="w"> </span>-<span class="s">&lt;&lt;EOF</span>
+</span><span id="__span-8-2"><a id="__codelineno-8-2" name="__codelineno-8-2" href="#__codelineno-8-2"></a><span class="s">apiVersion: v1</span>
+</span><span id="__span-8-3"><a id="__codelineno-8-3" name="__codelineno-8-3" href="#__codelineno-8-3"></a><span class="s">kind: Secret</span>
+</span><span id="__span-8-4"><a id="__codelineno-8-4" name="__codelineno-8-4" href="#__codelineno-8-4"></a><span class="s">metadata:</span>
+</span><span id="__span-8-5"><a id="__codelineno-8-5" name="__codelineno-8-5" href="#__codelineno-8-5"></a><span class="s">  name: git-pat</span>
+</span><span id="__span-8-6"><a id="__codelineno-8-6" name="__codelineno-8-6" href="#__codelineno-8-6"></a><span class="s">type: Opaque</span>
+</span><span id="__span-8-7"><a id="__codelineno-8-7" name="__codelineno-8-7" href="#__codelineno-8-7"></a><span class="s">stringData:</span>
+</span><span id="__span-8-8"><a id="__codelineno-8-8" name="__codelineno-8-8" href="#__codelineno-8-8"></a><span class="s">  username: $GITHUB_USER</span>
+</span><span id="__span-8-9"><a id="__codelineno-8-9" name="__codelineno-8-9" href="#__codelineno-8-9"></a><span class="s">  token: $GITHUB_TOKEN</span>
+</span><span id="__span-8-10"><a id="__codelineno-8-10" name="__codelineno-8-10" href="#__codelineno-8-10"></a><span class="s">EOF</span>
+</span></code></pre></div>
+</div>
+<div class="tabbed-block">
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-9-1"><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a>secret/git-pat<span class="w"> </span>created
+</span></code></pre></div>
+</div>
+</div>
+</div>
+</li>
+<li>
+<p>Bootstrap flux to see your new <code>gitops-config</code> repository</p>
+<div class="tabbed-set tabbed-alternate" data-tabs="7:3"><input checked="checked" id="__tabbed_7_1" name="__tabbed_7" type="radio" /><input id="__tabbed_7_2" name="__tabbed_7" type="radio" /><input id="__tabbed_7_3" name="__tabbed_7" type="radio" /><div class="tabbed-labels"><label for="__tabbed_7_1"><span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16"><path d="m6.354 8.04-4.773 4.773a.75.75 0 1 0 1.061 1.06L7.945 8.57a.75.75 0 0 0 0-1.06L2.642 2.206a.75.75 0 0 0-1.06 1.061L6.353 8.04ZM8.75 11.5a.75.75 0 0 0 0 1.5h5.5a.75.75 0 0 0 0-1.5z"/></svg></span> Command</label><label for="__tabbed_7_2"><span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16"><path d="m6.354 8.04-4.773 4.773a.75.75 0 1 0 1.061 1.06L7.945 8.57a.75.75 0 0 0 0-1.06L2.642 2.206a.75.75 0 0 0-1.06 1.061L6.353 8.04ZM8.75 11.5a.75.75 0 0 0 0 1.5h5.5a.75.75 0 0 0 0-1.5z"/></svg></span> Sample command</label><label for="__tabbed_7_3"><span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16"><path d="m6.354 8.04-4.773 4.773a.75.75 0 1 0 1.061 1.06L7.945 8.57a.75.75 0 0 0 0-1.06L2.642 2.206a.75.75 0 0 0-1.06 1.061L6.353 8.04ZM8.75 11.5a.75.75 0 0 0 0 1.5h5.5a.75.75 0 0 0 0-1.5z"/></svg></span> Command output</label></div>
+<div class="tabbed-content">
+<div class="tabbed-block">
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-10-1"><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a>flux<span class="w"> </span>bootstrap<span class="w"> </span>github<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-10-2"><a id="__codelineno-10-2" name="__codelineno-10-2" href="#__codelineno-10-2"></a>--owner<span class="o">=</span><span class="nv">$GITHUB_USER</span><span class="w"> </span><span class="se">\</span>
+</span><span id="__span-10-3"><a id="__codelineno-10-3" name="__codelineno-10-3" href="#__codelineno-10-3"></a>--repository<span class="o">=</span>gitops-config<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-10-4"><a id="__codelineno-10-4" name="__codelineno-10-4" href="#__codelineno-10-4"></a>--branch<span class="o">=</span>main<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-10-5"><a id="__codelineno-10-5" name="__codelineno-10-5" href="#__codelineno-10-5"></a>--path<span class="o">=</span>clusters/nkpcicd<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-10-6"><a id="__codelineno-10-6" name="__codelineno-10-6" href="#__codelineno-10-6"></a>--personal<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-10-7"><a id="__codelineno-10-7" name="__codelineno-10-7" href="#__codelineno-10-7"></a>--token-auth
+</span></code></pre></div>
+</div>
+<div class="tabbed-block">
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-11-1"><a id="__codelineno-11-1" name="__codelineno-11-1" href="#__codelineno-11-1"></a>flux<span class="w"> </span>bootstrap<span class="w"> </span>github<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-11-2"><a id="__codelineno-11-2" name="__codelineno-11-2" href="#__codelineno-11-2"></a>--owner<span class="o">=</span>ariesbabu<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-11-3"><a id="__codelineno-11-3" name="__codelineno-11-3" href="#__codelineno-11-3"></a>--repository<span class="o">=</span>gitops-config<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-11-4"><a id="__codelineno-11-4" name="__codelineno-11-4" href="#__codelineno-11-4"></a>--branch<span class="o">=</span>main<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-11-5"><a id="__codelineno-11-5" name="__codelineno-11-5" href="#__codelineno-11-5"></a>--path<span class="o">=</span>clusters/nkpcicd<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-11-6"><a id="__codelineno-11-6" name="__codelineno-11-6" href="#__codelineno-11-6"></a>--personal<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-11-7"><a id="__codelineno-11-7" name="__codelineno-11-7" href="#__codelineno-11-7"></a>--token-auth
+</span></code></pre></div>
+</div>
+<div class="tabbed-block">
+<div class="language-text no-copy highlight"><pre><span></span><code><span id="__span-12-1"><a id="__codelineno-12-1" name="__codelineno-12-1" href="#__codelineno-12-1"></a>► connecting to github.com
+</span><span id="__span-12-2"><a id="__codelineno-12-2" name="__codelineno-12-2" href="#__codelineno-12-2"></a>► cloning branch &quot;main&quot; from Git repository &quot;https://github.com/ariesbabu/gitops-config.git&quot;
+</span><span id="__span-12-3"><a id="__codelineno-12-3" name="__codelineno-12-3" href="#__codelineno-12-3"></a>✔ cloned repository
+</span><span id="__span-12-4"><a id="__codelineno-12-4" name="__codelineno-12-4" href="#__codelineno-12-4"></a>► generating component manifests
+</span><span id="__span-12-5"><a id="__codelineno-12-5" name="__codelineno-12-5" href="#__codelineno-12-5"></a>✔ generated component manifests
+</span><span id="__span-12-6"><a id="__codelineno-12-6" name="__codelineno-12-6" href="#__codelineno-12-6"></a>✔ committed component manifests to &quot;main&quot; (&quot;1faf5ed6dc36f854ae772ef782e02aced7808a1d&quot;)
+</span><span id="__span-12-7"><a id="__codelineno-12-7" name="__codelineno-12-7" href="#__codelineno-12-7"></a>► pushing component manifests to &quot;https://github.com/ariesbabu/gitops-config.git&quot;
+</span><span id="__span-12-8"><a id="__codelineno-12-8" name="__codelineno-12-8" href="#__codelineno-12-8"></a>► installing components in &quot;flux-system&quot; namespace
+</span><span id="__span-12-9"><a id="__codelineno-12-9" name="__codelineno-12-9" href="#__codelineno-12-9"></a>✔ installed components
+</span><span id="__span-12-10"><a id="__codelineno-12-10" name="__codelineno-12-10" href="#__codelineno-12-10"></a>✔ reconciled components
+</span><span id="__span-12-11"><a id="__codelineno-12-11" name="__codelineno-12-11" href="#__codelineno-12-11"></a>► determining if source secret &quot;flux-system/flux-system&quot; exists
+</span><span id="__span-12-12"><a id="__codelineno-12-12" name="__codelineno-12-12" href="#__codelineno-12-12"></a>► generating source secret
+</span><span id="__span-12-13"><a id="__codelineno-12-13" name="__codelineno-12-13" href="#__codelineno-12-13"></a>► applying source secret &quot;flux-system/flux-system&quot;
+</span><span id="__span-12-14"><a id="__codelineno-12-14" name="__codelineno-12-14" href="#__codelineno-12-14"></a>✔ reconciled source secret
+</span><span id="__span-12-15"><a id="__codelineno-12-15" name="__codelineno-12-15" href="#__codelineno-12-15"></a>► generating sync manifests
+</span><span id="__span-12-16"><a id="__codelineno-12-16" name="__codelineno-12-16" href="#__codelineno-12-16"></a>✔ generated sync manifests
+</span><span id="__span-12-17"><a id="__codelineno-12-17" name="__codelineno-12-17" href="#__codelineno-12-17"></a>✔ committed sync manifests to &quot;main&quot; (&quot;f90d8517cb51ad792176e1053f9f337d25d057fd&quot;)
+</span><span id="__span-12-18"><a id="__codelineno-12-18" name="__codelineno-12-18" href="#__codelineno-12-18"></a>► pushing sync manifests to &quot;https://github.com/ariesbabu/gitops-config.git&quot;
+</span><span id="__span-12-19"><a id="__codelineno-12-19" name="__codelineno-12-19" href="#__codelineno-12-19"></a>► applying sync manifests
+</span><span id="__span-12-20"><a id="__codelineno-12-20" name="__codelineno-12-20" href="#__codelineno-12-20"></a>✔ reconciled sync configuration
+</span><span id="__span-12-21"><a id="__codelineno-12-21" name="__codelineno-12-21" href="#__codelineno-12-21"></a>◎ waiting for GitRepository &quot;flux-system/flux-system&quot; to be reconciled
+</span><span id="__span-12-22"><a id="__codelineno-12-22" name="__codelineno-12-22" href="#__codelineno-12-22"></a>✔ GitRepository reconciled successfully
+</span><span id="__span-12-23"><a id="__codelineno-12-23" name="__codelineno-12-23" href="#__codelineno-12-23"></a>◎ waiting for Kustomization &quot;flux-system/flux-system&quot; to be reconciled
+</span><span id="__span-12-24"><a id="__codelineno-12-24" name="__codelineno-12-24" href="#__codelineno-12-24"></a>✔ Kustomization reconciled successfully
+</span><span id="__span-12-25"><a id="__codelineno-12-25" name="__codelineno-12-25" href="#__codelineno-12-25"></a>► confirming components are healthy
+</span><span id="__span-12-26"><a id="__codelineno-12-26" name="__codelineno-12-26" href="#__codelineno-12-26"></a>✔ helm-controller: deployment ready
+</span><span id="__span-12-27"><a id="__codelineno-12-27" name="__codelineno-12-27" href="#__codelineno-12-27"></a>✔ kustomize-controller: deployment ready
+</span><span id="__span-12-28"><a id="__codelineno-12-28" name="__codelineno-12-28" href="#__codelineno-12-28"></a>✔ notification-controller: deployment ready
+</span><span id="__span-12-29"><a id="__codelineno-12-29" name="__codelineno-12-29" href="#__codelineno-12-29"></a>✔ source-controller: deployment ready
+</span><span id="__span-12-30"><a id="__codelineno-12-30" name="__codelineno-12-30" href="#__codelineno-12-30"></a>✔ all components are healthy
+</span></code></pre></div>
+</div>
+</div>
+</div>
+</li>
+<li>
+<p>Run a flux check to verify </p>
+</li>
+<li>
+<div class="tabbed-set tabbed-alternate" data-tabs="8:2"><input checked="checked" id="__tabbed_8_1" name="__tabbed_8" type="radio" /><input id="__tabbed_8_2" name="__tabbed_8" type="radio" /><div class="tabbed-labels"><label for="__tabbed_8_1"><span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16"><path d="m6.354 8.04-4.773 4.773a.75.75 0 1 0 1.061 1.06L7.945 8.57a.75.75 0 0 0 0-1.06L2.642 2.206a.75.75 0 0 0-1.06 1.061L6.353 8.04ZM8.75 11.5a.75.75 0 0 0 0 1.5h5.5a.75.75 0 0 0 0-1.5z"/></svg></span> Command</label><label for="__tabbed_8_2"><span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16"><path d="m6.354 8.04-4.773 4.773a.75.75 0 1 0 1.061 1.06L7.945 8.57a.75.75 0 0 0 0-1.06L2.642 2.206a.75.75 0 0 0-1.06 1.061L6.353 8.04ZM8.75 11.5a.75.75 0 0 0 0 1.5h5.5a.75.75 0 0 0 0-1.5z"/></svg></span> Command output</label></div>
+<div class="tabbed-content">
+<div class="tabbed-block">
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-13-1"><a id="__codelineno-13-1" name="__codelineno-13-1" href="#__codelineno-13-1"></a>flux<span class="w"> </span>check
+</span><span id="__span-13-2"><a id="__codelineno-13-2" name="__codelineno-13-2" href="#__codelineno-13-2"></a>kubectl<span class="w"> </span>get<span class="w"> </span>pods<span class="w"> </span>-n<span class="w"> </span>flux-system
+</span></code></pre></div>
+</div>
+<div class="tabbed-block">
+<div class="language-text no-copy highlight"><pre><span></span><code><span id="__span-14-1"><a id="__codelineno-14-1" name="__codelineno-14-1" href="#__codelineno-14-1"></a>$ flux check
+</span><span id="__span-14-2"><a id="__codelineno-14-2" name="__codelineno-14-2" href="#__codelineno-14-2"></a>#
+</span><span id="__span-14-3"><a id="__codelineno-14-3" name="__codelineno-14-3" href="#__codelineno-14-3"></a>► checking prerequisites
+</span><span id="__span-14-4"><a id="__codelineno-14-4" name="__codelineno-14-4" href="#__codelineno-14-4"></a>✔ Kubernetes 1.35.0 &gt;=1.33.0-0
+</span><span id="__span-14-5"><a id="__codelineno-14-5" name="__codelineno-14-5" href="#__codelineno-14-5"></a>► checking version in cluster
+</span><span id="__span-14-6"><a id="__codelineno-14-6" name="__codelineno-14-6" href="#__codelineno-14-6"></a>✔ distribution: flux-v2.8.5
+</span><span id="__span-14-7"><a id="__codelineno-14-7" name="__codelineno-14-7" href="#__codelineno-14-7"></a>✔ bootstrapped: true
+</span><span id="__span-14-8"><a id="__codelineno-14-8" name="__codelineno-14-8" href="#__codelineno-14-8"></a>► checking controllers
+</span><span id="__span-14-9"><a id="__codelineno-14-9" name="__codelineno-14-9" href="#__codelineno-14-9"></a>✔ helm-controller: deployment ready
+</span><span id="__span-14-10"><a id="__codelineno-14-10" name="__codelineno-14-10" href="#__codelineno-14-10"></a>► ghcr.io/fluxcd/helm-controller:v1.5.3
+</span><span id="__span-14-11"><a id="__codelineno-14-11" name="__codelineno-14-11" href="#__codelineno-14-11"></a>✔ kustomize-controller: deployment ready
+</span><span id="__span-14-12"><a id="__codelineno-14-12" name="__codelineno-14-12" href="#__codelineno-14-12"></a>► ghcr.io/fluxcd/kustomize-controller:v1.8.3
+</span><span id="__span-14-13"><a id="__codelineno-14-13" name="__codelineno-14-13" href="#__codelineno-14-13"></a>✔ notification-controller: deployment ready
+</span><span id="__span-14-14"><a id="__codelineno-14-14" name="__codelineno-14-14" href="#__codelineno-14-14"></a>► ghcr.io/fluxcd/notification-controller:v1.8.3
+</span><span id="__span-14-15"><a id="__codelineno-14-15" name="__codelineno-14-15" href="#__codelineno-14-15"></a>✔ source-controller: deployment ready
+</span><span id="__span-14-16"><a id="__codelineno-14-16" name="__codelineno-14-16" href="#__codelineno-14-16"></a>► ghcr.io/fluxcd/source-controller:v1.8.2
+</span><span id="__span-14-17"><a id="__codelineno-14-17" name="__codelineno-14-17" href="#__codelineno-14-17"></a>► checking crds
+</span><span id="__span-14-18"><a id="__codelineno-14-18" name="__codelineno-14-18" href="#__codelineno-14-18"></a>✔ alerts.notification.toolkit.fluxcd.io/v1beta3
+</span><span id="__span-14-19"><a id="__codelineno-14-19" name="__codelineno-14-19" href="#__codelineno-14-19"></a>✔ buckets.source.toolkit.fluxcd.io/v1
+</span><span id="__span-14-20"><a id="__codelineno-14-20" name="__codelineno-14-20" href="#__codelineno-14-20"></a>✔ externalartifacts.source.toolkit.fluxcd.io/v1
+</span><span id="__span-14-21"><a id="__codelineno-14-21" name="__codelineno-14-21" href="#__codelineno-14-21"></a>✔ gitrepositories.source.toolkit.fluxcd.io/v1
+</span><span id="__span-14-22"><a id="__codelineno-14-22" name="__codelineno-14-22" href="#__codelineno-14-22"></a>✔ helmcharts.source.toolkit.fluxcd.io/v1
+</span><span id="__span-14-23"><a id="__codelineno-14-23" name="__codelineno-14-23" href="#__codelineno-14-23"></a>✔ helmreleases.helm.toolkit.fluxcd.io/v2
+</span><span id="__span-14-24"><a id="__codelineno-14-24" name="__codelineno-14-24" href="#__codelineno-14-24"></a>✔ helmrepositories.source.toolkit.fluxcd.io/v1
+</span><span id="__span-14-25"><a id="__codelineno-14-25" name="__codelineno-14-25" href="#__codelineno-14-25"></a>✔ kustomizations.kustomize.toolkit.fluxcd.io/v1
+</span><span id="__span-14-26"><a id="__codelineno-14-26" name="__codelineno-14-26" href="#__codelineno-14-26"></a>✔ ocirepositories.source.toolkit.fluxcd.io/v1
+</span><span id="__span-14-27"><a id="__codelineno-14-27" name="__codelineno-14-27" href="#__codelineno-14-27"></a>✔ providers.notification.toolkit.fluxcd.io/v1beta3
+</span><span id="__span-14-28"><a id="__codelineno-14-28" name="__codelineno-14-28" href="#__codelineno-14-28"></a>✔ receivers.notification.toolkit.fluxcd.io/v1
+</span><span id="__span-14-29"><a id="__codelineno-14-29" name="__codelineno-14-29" href="#__codelineno-14-29"></a>✔ all checks passed
+</span><span id="__span-14-30"><a id="__codelineno-14-30" name="__codelineno-14-30" href="#__codelineno-14-30"></a>
+</span><span id="__span-14-31"><a id="__codelineno-14-31" name="__codelineno-14-31" href="#__codelineno-14-31"></a>$ kubectl get pods -n flux-system
+</span><span id="__span-14-32"><a id="__codelineno-14-32" name="__codelineno-14-32" href="#__codelineno-14-32"></a>#
+</span><span id="__span-14-33"><a id="__codelineno-14-33" name="__codelineno-14-33" href="#__codelineno-14-33"></a>NAME                                     READY   STATUS    RESTARTS   AGE
+</span><span id="__span-14-34"><a id="__codelineno-14-34" name="__codelineno-14-34" href="#__codelineno-14-34"></a>helm-controller-9655d6568-4hbkh          1/1     Running   0          38m
+</span><span id="__span-14-35"><a id="__codelineno-14-35" name="__codelineno-14-35" href="#__codelineno-14-35"></a>kustomize-controller-8c5b8dfbb-c44w7     1/1     Running   0          38m
+</span><span id="__span-14-36"><a id="__codelineno-14-36" name="__codelineno-14-36" href="#__codelineno-14-36"></a>notification-controller-54fccc9d-p8mgg   1/1     Running   0          38m
+</span><span id="__span-14-37"><a id="__codelineno-14-37" name="__codelineno-14-37" href="#__codelineno-14-37"></a>source-controller-7768cbf8d5-7xw5w       1/1     Running   0          38m
+</span></code></pre></div>
+</div>
+</div>
+</div>
+</li>
+</ol>
+<p>Rest is under constuction.. Be sure to check tomorrow. ^^</p>
 
 
 
@@ -3006,7 +3483,7 @@
     <span class="md-icon" title="Last update">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21 13.1c-.1 0-.3.1-.4.2l-1 1 2.1 2.1 1-1c.2-.2.2-.6 0-.8l-1.3-1.3c-.1-.1-.2-.2-.4-.2m-1.9 1.8-6.1 6V23h2.1l6.1-6.1zM12.5 7v5.2l4 2.4-1 1L11 13V7zM11 21.9c-5.1-.5-9-4.8-9-9.9C2 6.5 6.5 2 12 2c5.3 0 9.6 4.1 10 9.3-.3-.1-.6-.2-1-.2s-.7.1-1 .2C19.6 7.2 16.2 4 12 4c-4.4 0-8 3.6-8 8 0 4.1 3.1 7.5 7.1 7.9l-.1.2z"/></svg>
     </span>
-    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="June 30, 2025 03:23:02 UTC">June 30, 2025</span>
+    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="April 21, 2026 07:27:30 UTC">April 21, 2026</span>
   </span>
 
     
@@ -3016,7 +3493,7 @@
     <span class="md-icon" title="Created">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M14.47 15.08 11 13V7h1.5v5.25l3.08 1.83c-.41.28-.79.62-1.11 1m-1.39 4.84c-.36.05-.71.08-1.08.08-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8c0 .37-.03.72-.08 1.08.69.1 1.33.32 1.92.64.1-.56.16-1.13.16-1.72 0-5.5-4.5-10-10-10S2 6.5 2 12s4.47 10 10 10c.59 0 1.16-.06 1.72-.16-.32-.59-.54-1.23-.64-1.92M18 15v3h-3v2h3v3h2v-3h3v-2h-3v-3z"/></svg>
     </span>
-    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="June 30, 2025 03:23:02 UTC">June 30, 2025</span>
+    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="April 21, 2026 07:27:30 UTC">April 21, 2026</span>
   </span>
 
     
@@ -3103,7 +3580,7 @@
       <nav class="md-footer__inner md-grid" aria-label="Footer" >
         
           
-          <a href="../../airgap_nai/airgap_nai_test/" class="md-footer__link md-footer__link--prev" aria-label="Previous: Test NAI">
+          <a href="../nkp_ci_setup/" class="md-footer__link md-footer__link--prev" aria-label="Previous: CI Setup and Test">
             <div class="md-footer__button md-icon">
               
               <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
@@ -3113,20 +3590,20 @@
                 Previous
               </span>
               <div class="md-ellipsis">
-                Test NAI
+                CI Setup and Test
               </div>
             </div>
           </a>
         
         
           
-          <a href="nkp_ndb_lab/" class="md-footer__link md-footer__link--next" aria-label="Next: NDB Operator on NKP">
+          <a href="../../nkp_mcp_lab/nkp_nai_mcp/" class="md-footer__link md-footer__link--next" aria-label="Next: MCP Server Setup">
             <div class="md-footer__title">
               <span class="md-footer__direction">
                 Next
               </span>
               <div class="md-ellipsis">
-                NDB Operator on NKP
+                MCP Server Setup
               </div>
             </div>
             <div class="md-footer__button md-icon">
@@ -3271,10 +3748,10 @@
     
       
       
-      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.instant", "navigation.instant.progress", "navigation.path", "navigation.footer", "navigation.tracking", "navigation.tabs", "navigation.tabs.sticky", "navigation.top", "navigation.integrate\u00e5\u00df", "search.highlight", "search.suggest", "search.share", "toc.follow", "announce.dismiss", "content.action.edit", "content.action.view", "content.code.annotate", "content.code.copy", "content.code.annotate", "content.code.select"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": {"provider": "mike"}}</script>
+      <script id="__config" type="application/json">{"annotate": null, "base": "../../..", "features": ["navigation.instant", "navigation.instant.progress", "navigation.path", "navigation.footer", "navigation.tracking", "navigation.tabs", "navigation.tabs.sticky", "navigation.top", "navigation.integrate\u00e5\u00df", "search.highlight", "search.suggest", "search.share", "toc.follow", "announce.dismiss", "content.action.edit", "content.action.view", "content.code.annotate", "content.code.copy", "content.code.annotate", "content.code.select"], "search": "../../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": {"provider": "mike"}}</script>
     
     
-      <script src="../../assets/javascripts/bundle.79ae519e.min.js"></script>
+      <script src="../../../assets/javascripts/bundle.79ae519e.min.js"></script>
       
     
   </body>
