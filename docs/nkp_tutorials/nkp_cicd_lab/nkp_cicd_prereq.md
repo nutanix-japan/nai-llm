@@ -231,7 +231,8 @@ Below are minimum requirements for this lab to deploy CICD on the NKP workload c
         --docker-server=$REGISTRY_URL \
         --docker-username=$REGISTRY_USERNAME \
         --docker-password=$REGISTRY_PASSWORD
-
+        ```
+        ```bash
         kubectl annotate secret docker-credentials \
         tekton.dev/docker-0=$REGISTRY_URL \
         --namespace=default
@@ -245,15 +246,11 @@ Below are minimum requirements for this lab to deploy CICD on the NKP workload c
         --docker-server=$DOCKER_REGISTRY_URL \
         --docker-username=$DOCKER_REGISTRY_USERNAME \
         --docker-password=$DOCKER_REGISTRY_PASSWORD
-
-        kubectl annotate secret harbor-credentials \
+        ```
+        ```bash
+        kubectl annotate secret docker-credentials \
         tekton.dev/docker-0=$DOCKER_REGISTRY_URL\
         --namespace=default
-        ```
-    
-    === ":octicons-command-palette-16: Command output"
-    
-        ```bash
         ```
    
 5. Create the Tekton service account (sa)
@@ -261,7 +258,7 @@ Below are minimum requirements for this lab to deploy CICD on the NKP workload c
     === ":octicons-command-palette-16: Harbor Command"
     
         ```bash
-        k apply -f -<<
+        k apply -f -<<EOF
         apiVersion: v1
         kind: ServiceAccount
         metadata:
@@ -275,7 +272,7 @@ Below are minimum requirements for this lab to deploy CICD on the NKP workload c
     === ":octicons-command-palette-16: Docker command"
     
         ```bash
-        k apply -f -<<
+        k apply -f -<<EOF
         apiVersion: v1
         kind: ServiceAccount
         metadata:
@@ -289,6 +286,7 @@ Below are minimum requirements for this lab to deploy CICD on the NKP workload c
     === ":octicons-command-palette-16: Command output"
     
         ```bash
+        serviceaccount/tekton-build-sa created
         ```
 
 All pre-requisites are now setup. Go to next section for Continuous Integration (CI) setup.
