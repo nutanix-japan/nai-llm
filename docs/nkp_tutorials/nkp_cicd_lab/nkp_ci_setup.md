@@ -1,5 +1,5 @@
 ---
-title: "CI NKP"
+title: "Continuous Integration NKP"
 lastupdate: git
 lastupdateauthor: "Lakshmi Balaramane"
 ---
@@ -336,7 +336,7 @@ Since our ``nkpcicd`` cluster is hosted in a private network, we need [SMEE clie
 
 ### Install Tekton
 
-1.  Login to the workload NKP servers context
+1. Login to the ``nkpcicd`` workload kubernetes server context and ensure you are using the right context before proceeding
    
     === ":octicons-command-palette-16: Command"
     
@@ -358,7 +358,7 @@ Since our ``nkpcicd`` cluster is hosted in a private network, we need [SMEE clie
         nkpcicd-md-0-4jkvk-mcp9r-phlv7      Ready    <none>          5d3h   v1.34.3
         ```
 
-1. Install Tekton Components
+2. Install Tekton Components
 
     === ":octicons-command-palette-16: Command"
     
