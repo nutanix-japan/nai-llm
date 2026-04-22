@@ -319,7 +319,7 @@ Since our ``nkpcicd`` cluster is hosted in a private network, we need [SMEE clie
     
         ```bash
         cd $HOME/cicd/
-        git clone https://github.com/ariesbabu/app-source.git
+        git clone https://github.com/student1/app-source.git
         ```
     
     === ":octicons-command-palette-16: Command output"
@@ -336,7 +336,7 @@ Since our ``nkpcicd`` cluster is hosted in a private network, we need [SMEE clie
 
 ### Install Tekton
 
-1. Login to the ``nkpcicd`` workload kubernetes server context and ensure you are using the right context before proceeding
+1. Login to the ``nkpcicd`` workload kubernetes server and ensure you are using the right context before proceeding
    
     === ":octicons-command-palette-16: Command"
     

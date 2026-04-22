@@ -50,6 +50,7 @@ Here is the comparison of the two repositories organized into a Markdown table f
 ---
 
 ### Key Workflow Differences
+
 * **The App Repo** is where developers spend most of their time writing code and triggering automated builds (CI).
 * **The GitOps Repo** acts as the "Source of Truth" for your cluster, where Flux monitors for changes to deploy the application (CD).
 ---
@@ -59,7 +60,6 @@ Here is the comparison of the two repositories organized into a Markdown table f
 * **Security:** Your CI system needs write access to the GitOps repo to update image tags, but it only needs read access to the App repo.
 * **Reduced Noise:** Merging a README change in the App repo won't trigger a Flux reconciliation of your infrastructure.
 * **Clean Audit Trail:** The GitOps repo becomes a pure "log" of every deployment to production, separate from the messy history of feature development.
-
 
 ---
 
@@ -73,7 +73,7 @@ Here is the comparison of the two repositories organized into a Markdown table f
 
 ---
 
-#### Setup Github Repo
+### Setup Github Repo
 
 1. We will create Tekton objects in the NKP cluster using manifests files
 2. Open [Github](https://www.github.com) in a browser
@@ -120,7 +120,37 @@ Here is the comparison of the two repositories organized into a Markdown table f
      - **Repository access** - Only select repositories
      - **Repositories** - select ``app-source`` and ``gitops-config`` repositories
      - **Permissions** - select **Read access to metadata** and **Read and Write access to code and repository hooks**
+
 12. Copy the token value to use in the next section
+
+13. Create a local copy of the gitrepo on the jumphost VM
+   
+    === ":octicons-command-palette-16: Command"
+    
+        ```bash
+        cd $HOME/cicd/
+        git clone https://github.com/_your_github_handle/gitops-config.git
+        ```
+    
+    === ":octicons-command-palette-16: Sample command"
+    
+        ```bash
+        cd $HOME/cicd/
+        git clone https://github.com/student1/app-source.git
+        ```
+    
+    === ":octicons-command-palette-16: Command output"
+    
+        ```bash
+        Cloning into 'gitops-config'...
+        remote: Enumerating objects: 166, done.
+        remote: Counting objects: 100% (166/166), done.
+        remote: Compressing objects: 100% (126/126), done.
+        remote: Total 166 (delta 53), reused 127 (delta 27), pack-reused 0 (from 0)
+        Receiving objects: 100% (166/166), 61.07 KiB | 1.39 MiB/s, done.
+        Resolving deltas: 100% (53/53), done.
+        ```
+    
 
 ### Bootstrap Flux
 
@@ -229,6 +259,7 @@ Here is the comparison of the two repositories organized into a Markdown table f
         --repository=gitops-config \
         --branch=main \
         --path=clusters/nkpcicd \
+        --components-extra=image-reflector-controller,image-automation-controller \
         --personal \
         --token-auth
         ```
@@ -241,6 +272,7 @@ Here is the comparison of the two repositories organized into a Markdown table f
         --repository=gitops-config \
         --branch=main \
         --path=clusters/nkpcicd \
+        --components-extra=image-reflector-controller,image-automation-controller \
         --personal \
         --token-auth
         ```
@@ -281,7 +313,7 @@ Here is the comparison of the two repositories organized into a Markdown table f
         ```
 
 7. Run a flux check to verify 
-8. 
+
     === ":octicons-command-palette-16: Command"
     
         ```bash
@@ -331,4 +363,501 @@ Here is the comparison of the two repositories organized into a Markdown table f
         source-controller-7768cbf8d5-7xw5w       1/1     Running   0          38m
         ```
 
-Rest is under constuction.. Be sure to check tomorrow. ^^
+
+### Deploy Application
+
+We will deploy the application on our ``nkpcicd`` cluster with Flux in this section.
+
+1. Create the dev and staging namespaces
+   
+    === ":octicons-command-palette-16: Command"
+    
+        ```bash
+        kubectl create ns dev
+        kubectl create ns staging
+        ```   
+
+2. Create the ``ImageRepository`` for flux to pull application container images from
+
+    === ":octicons-command-palette-16: Command"
+    
+        ```yaml
+        kubectl apply -f -<<EOF
+        apiVersion: image.toolkit.fluxcd.io/v1
+        kind: ImageRepository
+        metadata:
+          name: my-app
+          namespace: flux-system
+        spec:
+          image: docker.io/_your_git_handle/app-source
+          interval: 1m
+          insecure: true
+        EOF
+        ```
+
+    === ":octicons-command-palette-16: Sample command"
+    
+        ```yaml
+        kubectl apply -f -<<EOF
+        apiVersion: image.toolkit.fluxcd.io/v1
+        kind: ImageRepository
+        metadata:
+          name: my-app
+          namespace: flux-system
+        spec:
+          image: docker.io/ariesbabu/app-source
+          interval: 1m
+          insecure: true
+        EOF
+        ```
+    
+    === ":octicons-command-palette-16: Command output"
+    
+        ```bash
+        imagerepository.image.toolkit.fluxcd.io/my-app created
+        ```
+
+3. Create ``ImagePolicy`` which choose image tags alphabetically (keeping is simple for now)
+    
+    === ":octicons-command-palette-16: Command"
+    
+        ```yaml
+        k apply -f -<<EOF
+        apiVersion: image.toolkit.fluxcd.io/v1
+        kind: ImagePolicy
+        metadata:
+          name: my-app
+          namespace: flux-system
+        spec:
+          imageRepositoryRef:
+            name: my-app          # matches ImageRepository name above
+          filterTags:
+            pattern: '^[a-f0-9]{7,}$'
+          policy:
+            alphabetical:
+              order: desc         # latest pushed tag wins
+        EOF
+        ```
+
+    === ":octicons-command-palette-16: Command output"
+    
+        ```bash
+        imagepolicy.image.toolkit.fluxcd.io/my-app created
+        ```
+    
+4. Create ``ImageUpdateAutomation`` to push new image tag to ``gitops-config`` git repository which holds the application ``Deployment`` manifests
+    
+    === ":octicons-command-palette-16: Command"
+    
+        ```yaml
+        k apply -f -<<EOF
+        apiVersion: image.toolkit.fluxcd.io/v1
+        kind: ImageUpdateAutomation
+        metadata:
+          name: my-app
+          namespace: flux-system
+        spec:
+          interval: 1m
+          sourceRef:
+            kind: GitRepository
+            name: flux-system
+          git:
+            checkout:
+              ref:
+                branch: main
+            commit:
+              author:
+                email: flux-bot@example.com
+                name: Flux Bot
+              messageTemplate: 'chore: update image from Tekton build {{range .Changed.Changes}}{{print .OldValue}} -> {{println .NewValue}}{{end}}'
+              # Debug - messageTemplate: "{{.}}"
+            push:
+              branch: main
+          update:
+            path: ./apps
+            strategy: Setters
+        EOF
+        ```
+
+    === ":octicons-command-palette-16: Command output"
+    
+        ```bash
+        imageupdateautomation.image.toolkit.fluxcd.io/my-app created
+        ```
+
+5. Create Flux ``Kustomization`` to deploy the app to dev and staging namespaces
+   
+    === ":octicons-command-palette-16: Command"
+    
+        ```yaml
+        kubectl apply -f -<<EOF
+        ---
+        apiVersion: kustomize.toolkit.fluxcd.io/v1
+        kind: Kustomization
+        metadata:
+          name: my-app-dev
+          namespace: flux-system
+        spec:
+          interval: 1m
+          path: ./apps/dev
+          prune: true
+          sourceRef:
+            kind: GitRepository
+            name: flux-system
+          targetNamespace: dev
+          # --- Health Check Integration ---
+          wait: true
+          timeout: 2m
+          healthChecks:
+            - apiVersion: apps/v1
+              kind: Deployment
+              name: my-app
+              namespace: dev # Must match the namespace where the app actually runs
+        ---
+        apiVersion: kustomize.toolkit.fluxcd.io/v1
+        kind: Kustomization
+        metadata:
+          name: my-app-staging
+          namespace: flux-system
+        spec:
+          interval: 1m
+          path: ./apps/staging
+          prune: true
+          sourceRef:
+            kind: GitRepository
+            name: flux-system
+          targetNamespace: staging
+          # --- Health Check Integration ---
+          wait: true
+          timeout: 2m
+          healthChecks:
+            - apiVersion: apps/v1
+              kind: Deployment
+              name: my-app
+              namespace: staging # Updated to match staging
+        EOF
+        ```
+
+    
+    === ":octicons-command-palette-16: Command output"
+    
+        ```{ .text, .no-copy}
+        kustomization.kustomize.toolkit.fluxcd.io/my-app-dev configured
+        kustomization.kustomize.toolkit.fluxcd.io/my-app-staging configured
+        ```
+
+6. Verify the three resources are healthy
+   
+    === ":octicons-command-palette-16: Command"
+    
+        ```bash
+        flux get images repository my-app
+        flux get images policy my-app
+        flux get images update my-app
+        ```
+    
+    === ":octicons-command-palette-16: Command output"
+    
+        ```{ .text .no-copy }
+        NAME    LAST SCAN               SUSPENDED       READY   MESSAGE                                                
+        my-app  2026-04-22T06:46:28Z    False           True    successful scan: found 18 tags with checksum 611007973
+        NAME    IMAGE                           TAG     READY   MESSAGE                                                                 
+        my-app  docker.io/ariesbabu/app-source  3338bbe True    Latest image tag for docker.io/ariesbabu/app-source resolved to 3338bbe
+        NAME    LAST RUN                SUSPENDED       READY   MESSAGE               
+        my-app  2026-04-22T06:46:19Z    False           True    repository up-to-date
+        ```
+
+7. Watch the pods and Ingresses come up. This is synchronised by **Flux** from the ``deployment.yaml`` file in the ``gitops-config`` git repository
+   
+    === ":octicons-command-palette-16: Command"
+    
+        ```bash
+        kubectl get pods -n dev 
+        kubectl get pods -n staging 
+        ```
+    
+    === ":octicons-command-palette-16: Command output"
+    
+        ```{ .text .no-copy }
+        $ k get pods -n dev
+        #
+        NAME                         READY   STATUS    RESTARTS   AGE
+        dev-my-app-b58bcb4b8-nplmm   1/1     Running   0          48m
+        dev-my-app-b58bcb4b8-vdp5d   1/1     Running   0          48m
+        
+        $ k get pods -n staging
+        #
+        NAME                              READY   STATUS    RESTARTS   AGE
+        staging-my-app-787875fb78-dzw97   1/1     Running   0          42m
+        staging-my-app-787875fb78-wzwpr   1/1     Running   0          42m
+        ```
+
+### Tests
+
+#### Delete Workload Test
+
+In this test we will delete workloads directly on the ``nkpcicd`` cluster and check if Flux detects the change and maintains desired state that is defined in the deployment.yaml file in the ``gitops-config`` github repository.
+
+1. Delete the ``staging-my-app`` deployment
+   
+    === ":octicons-command-palette-16: Command"
+    
+        ```bash
+        kubectl delete  deploy staging-my-app -n staging
+        ```
+    
+    === ":octicons-command-palette-16: Command output"
+    
+        ```{ .text .no-copy }
+        deployment.apps "staging-my-app" deleted
+        ```
+
+2. Watch the staging namespace pods
+   
+    === ":octicons-command-palette-16: Command"
+    
+        ```bash
+        kubectl get pods -n staging 
+        ```
+    
+    === ":octicons-command-palette-16: Command output"
+    
+        ```{ .text .no-copy }
+        $ k get pods -n staging
+        No resources found in staging namespace.
+        ```
+
+3. It takes 1 minute interval for the ``Kustomization`` to synchronise state from github as we have set the interval to 1 minute in this [section step 5](#deploy-application)
+   
+4. Check the my-app-staging ``Kustomization`` status
+    
+    === ":octicons-command-palette-16: Command"
+    
+        ```bash
+        kubectl get kustomization -w
+        ```
+
+    === ":octicons-command-palette-16: Command output"
+    
+        ```{ .text .no-copy }
+        $ kubectl get kustomization 
+        #
+        NAME             AGE     READY      STATUS
+        my-app-staging   6h32m   Unknown    Reconciliation in progress
+        my-app-staging   6h32m   True       Applied revision: main@sha1:469dca4487fdac19deff465f7c363fc5161589cd
+        my-app-staging   6h32m   True       Applied revision: main@sha1:469dca4487fdac19deff465f7c363fc5161589cd
+        ```
+    
+5. Now check the pods come up in staging namespace
+   
+    === ":octicons-command-palette-16: Command"
+    
+        ```bash
+        kubectl get pods -n staging
+        ```
+
+    
+    === ":octicons-command-palette-16: Command output"
+    
+        ```{ .text .no-copy }
+        NAME                              READY   STATUS    RESTARTS   AGE
+        staging-my-app-787875fb78-h567t   1/1     Running   0          1m
+        staging-my-app-787875fb78-j2vk4   1/1     Running   0          1m
+        ```
+    
+#### Increase Workload Replicas Test
+
+In this test we will increase the number of replicas in the ``deployment.yaml`` file, which serves as the one source of desired state and check if Flux reconciles and maintains desired state on the ``nkpcicd`` cluster.
+
+1. Open ``VSCode`` on the Jumphost VM and increase the deployment replicas from 2 to 3 in the following file
+   
+    === ":octicons-file-code-16: ``deployment.yaml``"
+    
+        ```bash
+        $HOME/cicd/gitops-config/apps/base/deployment.yaml
+        ```
+
+2. Increase the replicas to 3 and save the file
+   
+    === ":octicons-file-code-16: Edited ``deployment.yaml``"
+     
+         ```yaml hl_lines="6"
+         apiVersion: apps/v1
+         kind: Deployment
+         metadata:
+           name: my-app
+         spec:
+           replicas: 3      # from 2 
+           selector:
+             matchLabels:
+               app: my-app
+         ```
+         
+    === ":octicons-file-code-16: Original ``deployment.yaml``"
+     
+         ```yaml hl_lines="6"
+         apiVersion: apps/v1
+         kind: Deployment
+         metadata:
+           name: my-app
+         spec:
+           replicas: 2 
+           selector:
+             matchLabels:
+               app: my-app
+         ```
+
+3. Push the changes to git
+   
+    === ":octicons-command-palette-16: Command"
+    
+        ```bash
+        cd $HOME/cicd/gitops-config/
+        git add .
+        git commit -am "Update: Testing first automated Flux reconciling Deployment"
+        git push
+        cd ..
+        ```
+
+    
+    === ":octicons-command-palette-16: Command output"
+    
+        ```{ .text .no-copy }
+        $ git add .
+        
+        $ git commit -am "Update: Testing first automated Flux reconciling Deployment"
+        
+        $ git push
+        #
+        [main a13dd3e] Update: Testing first automated Flux reconciling Deployment
+        1 file changed, 1 insertion(+), 1 deletion(-)
+        Enumerating objects: 9, done.
+        Counting objects: 100% (9/9), done.
+        Delta compression using up to 12 threads
+        Compressing objects: 100% (5/5), done.
+        Writing objects: 100% (5/5), 493 bytes | 493.00 KiB/s, done.
+        Total 5 (delta 2), reused 0 (delta 0), pack-reused 0
+        remote: Resolving deltas: 100% (2/2), completed with 2 local objects.
+        To https://github.com/ariesbabu/gitops-config.git
+        469dca4..a13dd3e  main -> main
+        ```
+
+4. Watch the pods in the dev and staging namespace for at least 1 minute interval. The additional pod will be spinning up soon.
+
+    === ":octicons-command-palette-16: Command"
+    
+        ```bash
+        kubectl get po -n dev -w
+        kubectl get po -n staging -w
+        ```
+
+    === ":octicons-command-palette-16: Command output"
+    
+        ```{ .text .no-copy }
+        $ kubectl get po -n dev -w
+        #
+        NAME                         READY   STATUS              RESTARTS   AGE
+        dev-my-app-b58bcb4b8-nplmm   1/1     Running             0          161m
+        dev-my-app-b58bcb4b8-vdp5d   1/1     Running             0          161m
+        dev-my-app-b58bcb4b8-gm7sq   0/1     Pending             0          0s
+        dev-my-app-b58bcb4b8-gm7sq   0/1     Pending             0          0s
+        dev-my-app-b58bcb4b8-gm7sq   0/1     ContainerCreating   0          0s
+        dev-my-app-b58bcb4b8-gm7sq   0/1     Running             0          2s
+        dev-my-app-b58bcb4b8-gm7sq   1/1     Running             0          13s
+        #
+        $ kubectl get po -n staging -w
+        NAME                              READY   STATUS    RESTARTS   AGE
+        staging-my-app-787875fb78-6mlrv   1/1     Running   0          33s
+        staging-my-app-787875fb78-h567t   1/1     Running   0          111m
+        staging-my-app-787875fb78-j2vk4   1/1     Running   0          111m
+        ```
+
+#### CICD Flow Test
+
+In this test we will do a combined CI(Tekton) and CD(Flux) automation test. 
+
+1.  Push a change to the python application
+2.  Commit the change to ``app-source`` git repository
+3.  Let tekton detect the change in the repository and clone the repository
+4.  Tekton to build and push a new image to the registry
+5.  Flux to detect the change in the container registry and update the ``Deployment`` in the ``gitops-config`` git repository and update the deployments in the ``nkpcicd`` cluster
+
+---
+
+1. Go to ``VSCode`` > Terminal
+2. Check the current deployment's image and make a note of it
+   
+    === ":octicons-command-palette-16: Command"
+    
+        ```bash
+        k get deploy dev-my-app -n dev -ojsonpath='{.spec.template.spec.containers[0].image}'
+        ```
+    
+    === ":octicons-command-palette-16: Command output"
+    
+         ```bash
+        docker.io/_your_git_handle/app-source:3338bbe
+        ```
+
+3. Create a small change to the application source code and push to git hub
+   
+    === ":octicons-command-palette-16: Command"
+    
+        ```bash
+        cd $HOME/cicd/app-source/
+        echo "# Testing first CICD" >> app.py
+        git add .
+        git commit -am "Chore: Testing first CICD flow"
+        git push
+        cd ..
+        ```
+    
+    === ":octicons-command-palette-16: Sample command"
+    
+        ```bash
+        [main bdd2a1b] Chore: Testing first CICD flow
+        1 file changed, 1 insertion(+)
+        Enumerating objects: 5, done.
+        Counting objects: 100% (5/5), done.
+        Delta compression using up to 12 threads
+        Compressing objects: 100% (3/3), done.
+        Writing objects: 100% (3/3), 307 bytes | 307.00 KiB/s, done.
+        Total 3 (delta 2), reused 0 (delta 0), pack-reused 0
+        remote: Resolving deltas: 100% (2/2), completed with 2 local objects.
+        To https://github.com/ariesbabu/app-source.git
+        eb9a379..bdd2a1b  main -> main
+        ```
+    
+    === ":octicons-command-palette-16: Command output"
+    
+        ```{ .text .no-copy }
+        [main bdd2a1b] Chore: Testing first CICD flow
+        1 file changed, 1 insertion(+)
+        Enumerating objects: 5, done.
+        Counting objects: 100% (5/5), done.
+        Delta compression using up to 12 threads
+        Compressing objects: 100% (3/3), done.
+        Writing objects: 100% (3/3), 307 bytes | 307.00 KiB/s, done.
+        Total 3 (delta 2), reused 0 (delta 0), pack-reused 0
+        remote: Resolving deltas: 100% (2/2), completed with 2 local objects.
+        To https://github.com/ariesbabu/app-source.git
+        eb9a379..bdd2a1b  main -> main
+        ```
+
+4. Observe the ``PipelineRun`` logs using ``tkn`` command
+   
+    === ":octicons-command-palette-16: Command"
+    
+        ```bash
+        tkn pipelinerun list 
+        tkn pipelinerun logs --last -f 
+        ```
+    === ":octicons-command-palette-16: Command output"
+    
+        ```text hl_lines="12-13 67-68"
+        $ tkn pipelinerun list 
+        #
+        NAME                       STARTED         DURATION   STATUS
+        build-triggered-5cft4      3 minutes ago   26s        Succeeded
+        build-triggered-b5lgd      59 minutes ago  25s        Succeeded
+        ```
