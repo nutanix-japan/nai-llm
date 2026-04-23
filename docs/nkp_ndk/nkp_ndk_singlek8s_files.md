@@ -294,6 +294,7 @@ We need to create a Dynamic Files based storage class for use with our applicati
     cat << EOF > kustomization.yaml
     apiVersion: kustomize.config.k8s.io/v1beta1
     kind: Kustomization
+    namespace: wordpress
     secretGenerator:
     - name: mysql-pass
       literals:
@@ -388,7 +389,7 @@ We will use the Traefik Ingress Controller that comes with NKP to expose Wordpre
           kind: Ingress
           metadata:
             name: wordpress-app
-            namespace: word
+            namespace: wordpress
           spec:
             ingressClassName: kommander-traefik
             rules:
@@ -413,7 +414,7 @@ We will use the Traefik Ingress Controller that comes with NKP to expose Wordpre
         kind: Ingress
         metadata:
           name: wordpress-app
-          namespace: word
+          namespace: wordpress
         spec:
           ingressClassName: kommander-traefik
           rules:
@@ -491,6 +492,36 @@ We will need to establish a relationship between Nutanix Files servers that we w
 
 This ``FileServerReplicationRelationships`` resource will be used for snapshot replication for the shares that we will be replicating. 
 
+1. Create the Remote resource on the primary NKP cluster
+   
+    === ":octicons-command-palette-16: Command"
+ 
+          ```text
+          kubectl apply -f - <<EOF
+          apiVersion: dataservices.nutanix.com/v1alpha1
+          kind: Remote
+          metadata:
+            name: ${NDK_REPLICATION_CLUSTER_NAME}
+          spec:
+            ndkServiceIp: ${SECONDARY_NDK_IP}
+            ndkServicePort: ${SECONDARY_NDK_PORT}
+          EOF
+          ```
+ 
+    === ":octicons-command-palette-16:  Sample Command"
+        
+        ```{ .text .no-copy }
+        kubectl apply -f - <<EOF
+        apiVersion: dataservices.nutanix.com/v1alpha1
+        kind: Remote
+        metadata:
+          name: nkpsecondary
+        spec:
+          ndkServiceIp: 10.x.x.32
+          ndkServicePort: 2021
+        EOF
+        ```
+
 1. Add (append) the following environment variables and save it
    
     === ":octicons-file-code-16: Template .env"
@@ -498,13 +529,15 @@ This ``FileServerReplicationRelationships`` resource will be used for snapshot r
         ```bash
         export PRIMARY_FS_FQDN=_primary_files_server_fqdn
         export SECONDARY_FS_FQDN_secondary_files_server_fqdn
+        export REMOTE_NDK_CLUSTER=_remote_ndk_remote_object
         ```
     
     === ":octicons-file-code-16: Sample .env"
         
         ```{ .text .no-copy }
-        export PRIMARY_FS_NAME=filesprimary.example.com
-        export SECONDARY_FS_NAME=filessecondary.example.com
+        export PRIMARY_FS_FQDN=filesprimary.example.com
+        export SECONDARY_FS_FQDN=filessecondary.example.com
+        export REMOTE_NDK_CLUSTER=nkpprimary # since we don't have the secondary cluster yet
         ```
 
 2. Source the ``.env`` file to load new environment variables
@@ -522,7 +555,7 @@ This ``FileServerReplicationRelationships`` resource will be used for snapshot r
     metadata:
       name: files-servers-fssr
     spec:
-      remoteName: ndk-nutanix-secondary
+      remoteName: $REMOTE_NDK_CLUSTER
       relationships:
         - primaryFileserverFQDN: $PRIMARY_FS_FQDN
           recoveryFileserverFQDN: $SECONDARY_FS_FQDN
@@ -658,14 +691,45 @@ This ``FileServerReplicationRelationships`` resource will be used for snapshot r
         ```bash
         kubectl get applicationsnapshot wordpress-app-snapshot 
         ```
+        ```bash
+        kubectl describe applicationsnapshot wordpress-app-snapshot
+        ```
   
     === ":octicons-command-palette-16: Command output"
     
-        ```bash hl_lines="4"
+        ```bash hl_lines="4 27"
         ~ ❯ kubectl get applicationsnapshot wordpress-app-snapshot 
         #
         NAME                     AGE     READY-TO-USE   BOUND-SNAPSHOTCONTENT                      SNAPSHOT-AGE   CONSISTENCY-TYPE
         wordpress-app-snapshot   22m     false          asc-0fecc22d-8b03-44ba-a2da-98d917eca3c3   22m            NoConsistencyGuarantee
+        ```
+        ```bash hl_lines="4 23"
+        ~ ❯ kubectl describe applicationsnapshot wordpress-app-snapshot 
+        #
+        Name:         wordpress-app-snapshot
+        Namespace:    wordpress
+        Labels:       <none>
+        Annotations:  <none>
+        API Version:  dataservices.nutanix.com/v1alpha1
+        Kind:         ApplicationSnapshot
+        Metadata:
+          Creation Timestamp:  2026-04-23T04:08:40Z
+          Finalizers:
+            dataservices.nutanix.com/app-snap
+          Generation:        1
+          Resource Version:  7238989
+          UID:               15963738-0344-479b-ba1f-8c60509e9cdf
+        Spec:
+          Expires After:                1h0m0s
+          Force Delete Files Snapshot:  false
+          Source:
+            Application Ref:
+              Name:  wordpress-app
+        Status:
+          Bound Application Snapshot Content Name:  asc-15963738-0344-479b-ba1f-8c60509e9cdf
+          Consistency Type:                         NoConsistencyGuarantee
+          Creation Time:                            2026-04-23T04:10:30Z
+          Expiration Time:                          2026-04-23T05:10:30Z
         ```
 
     !!! info "Relationship between NDK custom resources"

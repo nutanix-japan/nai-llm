@@ -857,7 +857,96 @@ In this test we will do a combined CI(Tekton) and CD(Flux) automation test.
         ```text hl_lines="12-13 67-68"
         $ tkn pipelinerun list 
         #
-        NAME                       STARTED         DURATION   STATUS
-        build-triggered-5cft4      3 minutes ago   26s        Succeeded
-        build-triggered-b5lgd      59 minutes ago  25s        Succeeded
+        tkn pipelinerun list 
+        NAME                       STARTED          DURATION   STATUS
+        build-triggered-xkxkt      32 seconds ago   23s        Succeeded
+
+        $  tkn pipelinerun logs --last -f 
+        #
+        [build-image : build-and-push] INFO[0000] Retrieving image manifest python:3.12-slim   
+        [build-image : build-and-push] INFO[0000] Retrieving image python:3.12-slim from registry index.docker.io 
+        [build-image : build-and-push] INFO[0001] Retrieving image manifest python:3.12-slim   
+        [build-image : build-and-push] INFO[0001] Returning cached image manifest              
+        [build-image : build-and-push] INFO[0001] Built cross stage deps: map[]                
+        [build-image : build-and-push] INFO[0001] Retrieving image manifest python:3.12-slim   
+        [build-image : build-and-push] INFO[0001] Returning cached image manifest              
+        [build-image : build-and-push] INFO[0001] Retrieving image manifest python:3.12-slim   
+        [build-image : build-and-push] INFO[0001] Returning cached image manifest              
+        [build-image : build-and-push] INFO[0001] Executing 0 build triggers                   
+        [build-image : build-and-push] INFO[0001] Building stage 'python:3.12-slim' [idx: '0', base-idx: '-1'] 
+        [build-image : build-and-push] INFO[0001] Checking for cached layer docker.io/ariesbabu/app-source-cache:d5894a48dadadea8a0ccb1abca54eeab333b15a9009c1e7357e837bf2d21cafa... 
+        [build-image : build-and-push] INFO[0002] Using caching version of cmd: RUN useradd -u 1001 -m appuser 
+        [build-image : build-and-push] INFO[0002] Checking for cached layer docker.io/ariesbabu/app-source-cache:d47dbdb272eb6f36798a009ed40a006fe8b623d6ef12b15ccaf7659d591f3dab... 
+        [build-image : build-and-push] INFO[0002] Using caching version of cmd: RUN pip install --no-cache-dir -r requirements.txt 
+        [build-image : build-and-push] INFO[0002] Cmd: USER                                    
+        [build-image : build-and-push] INFO[0002] Cmd: EXPOSE                                  
+        [build-image : build-and-push] INFO[0002] Adding exposed port: 8000/tcp                
+        [build-image : build-and-push] INFO[0002] Unpacking rootfs as cmd COPY requirements.txt . requires it. 
+        [build-image : build-and-push] INFO[0005] ARG APP_VERSION=dev                          
+        [build-image : build-and-push] INFO[0005] No files changed in this command, skipping snapshotting. 
+        [build-image : build-and-push] INFO[0005] ARG GIT_SHA=dev                              
+        [build-image : build-and-push] INFO[0005] No files changed in this command, skipping snapshotting. 
+        [build-image : build-and-push] INFO[0005] ARG BUILD_TIME=dev                           
+        [build-image : build-and-push] INFO[0005] No files changed in this command, skipping snapshotting. 
+        [build-image : build-and-push] INFO[0005] ENV APP_VERSION=${APP_VERSION} GIT_SHA=${GIT_SHA} BUILD_TIME=${BUILD_TIME} 
+        [build-image : build-and-push] INFO[0005] No files changed in this command, skipping snapshotting. 
+        [build-image : build-and-push] INFO[0005] RUN useradd -u 1001 -m appuser               
+        [build-image : build-and-push] INFO[0005] Found cached layer, extracting to filesystem 
+        [build-image : build-and-push] INFO[0005] WORKDIR /app                                 
+        [build-image : build-and-push] INFO[0005] Cmd: workdir                                 
+        [build-image : build-and-push] INFO[0005] Changed working directory to /app            
+        [build-image : build-and-push] INFO[0005] Creating directory /app with uid -1 and gid -1 
+        [build-image : build-and-push] INFO[0005] Taking snapshot of files...                  
+        [build-image : build-and-push] INFO[0005] COPY requirements.txt .                      
+        [build-image : build-and-push] INFO[0005] Taking snapshot of files...                  
+        [build-image : build-and-push] INFO[0005] RUN pip install --no-cache-dir -r requirements.txt 
+        [build-image : build-and-push] INFO[0005] Found cached layer, extracting to filesystem 
+        [build-image : build-and-push] INFO[0007] COPY app.py .                                
+        [build-image : build-and-push] INFO[0007] Taking snapshot of files...                  
+        [build-image : build-and-push] INFO[0007] USER appuser                                 
+        [build-image : build-and-push] INFO[0007] Cmd: USER                                    
+        [build-image : build-and-push] INFO[0007] No files changed in this command, skipping snapshotting. 
+        [build-image : build-and-push] INFO[0007] EXPOSE 8000                                  
+        [build-image : build-and-push] INFO[0007] Cmd: EXPOSE                                  
+        [build-image : build-and-push] INFO[0007] Adding exposed port: 8000/tcp                
+        [build-image : build-and-push] INFO[0007] No files changed in this command, skipping snapshotting. 
+        [build-image : build-and-push] INFO[0007] CMD ["uvicorn", "app:app", "--host", "0.0.0.0", "--port", "8000"] 
+        [build-image : build-and-push] INFO[0007] No files changed in this command, skipping snapshotting. 
+        [build-image : build-and-push] INFO[0007] Pushing image to docker.io/ariesbabu/app-source:027ad8c 
+        [build-image : build-and-push] INFO[0011] Pushed index.docker.io/ariesbabu/app-source@sha256:52ce84ac64ad3468257eddba2530dec97ea583873a6aaad2c2fc33a6df102961 
         ```
+
+4. Watch the pods in the dev and staging namespace for at least 1 minute interval. The additional pod will be spinning up soon.
+
+    === ":octicons-command-palette-16: Command"
+    
+        ```bash
+        kubectl get po -n dev -w
+        kubectl get po -n staging -w
+        ```
+
+    === ":octicons-command-palette-16: Command output"
+    
+        ```{ .text .no-copy }
+        $ kubectl get po -n dev -w
+        #
+        NAME                         READY   STATUS    RESTARTS   AGE
+        dev-my-app-b58bcb4b8-gm7sq   1/1     Running   0          16h
+        dev-my-app-b58bcb4b8-nplmm   1/1     Running   0          19h
+        dev-my-app-b58bcb4b8-vdp5d   1/1     Running   0          19h
+        dev-my-app-69c89bc7d7-zlvrb   0/1     Pending   0          0s
+        dev-my-app-69c89bc7d7-zlvrb   0/1     Pending   0          0s
+        dev-my-app-69c89bc7d7-zlvrb   0/1     ContainerCreating   0          0s
+        dev-my-app-69c89bc7d7-zlvrb   0/1     Running             0          4s
+        dev-my-app-69c89bc7d7-zlvrb   1/1     Running             0          16s
+        dev-my-app-b58bcb4b8-nplmm    1/1     Terminating         0          19h
+        #
+        $ kubectl get po -n staging -w
+        NAME                              READY   STATUS    RESTARTS   AGE
+        staging-my-app-787875fb78-6mlrv   1/1     Running   0          33s
+        staging-my-app-787875fb78-h567t   1/1     Running   0          111m
+        staging-my-app-787875fb78-j2vk4   1/1     Running   0          111m
+        ```
+
+We have seen end-to-end event. When a developer pushes an application code change, Tekton builds a new image and Flux detects the new image and deploys to the kubernetes cluster. This is completely automated and checks can be implemented in several phases of this pipeline. 
+
