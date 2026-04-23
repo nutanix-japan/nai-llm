@@ -402,7 +402,7 @@ Since our ``nkpcicd`` cluster is hosted in a private network, we need [SMEE clie
     
         ```yaml
         cd $HOME/cicd/
-        kubectl apply -f app-source/rbac.yaml
+        kubectl apply -f app-source/tekton/rbac.yaml
         ```
     
     === ":octicons-command-palette-16: Command output"
@@ -449,7 +449,144 @@ Since our ``nkpcicd`` cluster is hosted in a private network, we need [SMEE clie
         pipeline.tekton.dev/build-and-push-pipeline created
         ```
 
-11. Create the ``TriggerTemplate`` to get the ``git_ur``l and ``git_revision`` from a github push event
+11. Edit the ``TriggerTemplate`` manifest from here and open it VSCode
+   
+    === ":octicons-command-palette-16: Command"
+     
+         ```bash
+         code app-source/tekton/triggers/trigger-template.yaml
+         # You can also use vim
+         # vim app-source/tekton/triggers/trigger-template.yaml
+         ```
+     
+12. Change the ``image`` value field to represent your Docker or Harbor registry
+    
+    === ":octicons-file-code-16: Template ``trigger-template.yaml``"
+    
+        ```yaml hl_lines="27"
+        apiVersion: triggers.tekton.dev/v1beta1
+        kind: TriggerTemplate
+        metadata:
+        name: build-trigger-template
+        namespace: default
+        spec:
+        params:
+            - name: git-revision
+            description: The Git revision
+            - name: git-url
+            description: The Git repository URL
+        resourcetemplates:
+            - apiVersion: tekton.dev/v1
+            kind: PipelineRun
+            metadata:
+                generateName: build-triggered-
+            spec:
+                pipelineRef:
+                name: build-and-push-pipeline
+                serviceAccountName: tekton-build-sa
+                params:
+                - name: git-url
+                    value: $(tt.params.git-url)
+                - name: git-revision
+                    value: $(tt.params.git-revision)
+                - name: image
+                    value: "docker.io/_your_git_handle/app-source"
+                workspaces:
+                - name: shared-workspace
+                    volumeClaimTemplate:
+                    spec:
+                        accessModes:
+                        - ReadWriteOnce
+                        resources:
+                        requests:
+                            storage: 1Gi
+        ```
+    
+    === ":octicons-file-code-16: Harbor Reg Sample ``trigger-template.yaml`"
+    
+        ```yaml hl_lines="27"
+        apiVersion: triggers.tekton.dev/v1beta1
+        kind: TriggerTemplate
+        metadata:
+        name: build-trigger-template
+        namespace: default
+        spec:
+        params:
+            - name: git-revision
+            description: The Git revision
+            - name: git-url
+            description: The Git repository URL
+        resourcetemplates:
+            - apiVersion: tekton.dev/v1
+            kind: PipelineRun
+            metadata:
+                generateName: build-triggered-
+            spec:
+                pipelineRef:
+                name: build-and-push-pipeline
+                serviceAccountName: tekton-build-sa
+                params:
+                - name: git-url
+                    value: $(tt.params.git-url)
+                - name: git-revision
+                    value: $(tt.params.git-revision)
+                - name: image
+                    value: "harbor.10.x.x.134.nip.io/student1/app-source"
+                workspaces:
+                - name: shared-workspace
+                    volumeClaimTemplate:
+                    spec:
+                        accessModes:
+                        - ReadWriteOnce
+                        resources:
+                        requests:
+                            storage: 1Gi
+        ```
+
+    === ":octicons-file-code-16: Docker Reg Sample ``trigger-template.yaml`"
+    
+        ```yaml hl_lines="27"
+        apiVersion: triggers.tekton.dev/v1beta1
+        kind: TriggerTemplate
+        metadata:
+        name: build-trigger-template
+        namespace: default
+        spec:
+        params:
+            - name: git-revision
+            description: The Git revision
+            - name: git-url
+            description: The Git repository URL
+        resourcetemplates:
+            - apiVersion: tekton.dev/v1
+            kind: PipelineRun
+            metadata:
+                generateName: build-triggered-
+            spec:
+                pipelineRef:
+                name: build-and-push-pipeline
+                serviceAccountName: tekton-build-sa
+                params:
+                - name: git-url
+                    value: $(tt.params.git-url)
+                - name: git-revision
+                    value: $(tt.params.git-revision)
+                - name: image
+                    value: "docker.io/student1/app-source"
+                workspaces:
+                - name: shared-workspace
+                    volumeClaimTemplate:
+                    spec:
+                        accessModes:
+                        - ReadWriteOnce
+                        resources:
+                        requests:
+                            storage: 1Gi
+        ```
+    
+     
+
+13. Create the ``TriggerTemplate`` to get the ``git_ur``l and ``git_revision`` from a github push event
    
     === ":octicons-command-palette-16: Command"
     
@@ -463,7 +600,7 @@ Since our ``nkpcicd`` cluster is hosted in a private network, we need [SMEE clie
         triggertemplate.triggers.tekton.dev/build-trigger-template created
         ```
 
-12. Create the ``TriggerBinding`` which supplies values for ``git_url`` and ``git_revision`` at that point in time
+14. Create the ``TriggerBinding`` which supplies values for ``git_url`` and ``git_revision`` at that point in time
    
     === ":octicons-command-palette-16: Command"
     
@@ -477,7 +614,7 @@ Since our ``nkpcicd`` cluster is hosted in a private network, we need [SMEE clie
         triggerbinding.triggers.tekton.dev/github-push-binding created
         ```
 
-13. Create the github ``EventListener`` which listens for ``git push`` events
+15. Create the github ``EventListener`` which listens for ``git push`` events
     
     === ":octicons-command-palette-16: Command"
     

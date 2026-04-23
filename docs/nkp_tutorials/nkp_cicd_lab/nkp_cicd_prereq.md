@@ -249,7 +249,7 @@ Below are minimum requirements for this lab to deploy CICD on the NKP workload c
         ```
         ```bash
         kubectl annotate secret docker-credentials \
-        tekton.dev/docker-0=$DOCKER_REGISTRY_URL\
+        tekton.dev/docker-0=$DOCKER_REGISTRY_URL \
         --namespace=default
         ```
    
