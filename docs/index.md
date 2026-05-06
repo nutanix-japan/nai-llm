@@ -9,11 +9,29 @@ description: "This project will take your through design, sizing and hosting of 
 
 ## Introduction
 
-This project will take your through design and hosting AI applications on Nutanix.
+### **The Nutanix Cloud Native & AI (NAI) Unofficial Field Guide**
 
-Intended to be used by any Nutanix user to setup and run LLMs, LLM with RAG, Support GPT and other AI applications. 
+---
 
-This site follows **Design > Deploy** model.
+This site follows **Design > Size > Deploy** model.
+
+---
+
+!!! warning
+
+    **Status:** *This site is unofficial, unsupported, rigourously tested and frequently updated.*
+
+This community-maintained resource provides a practical, **Design > Size > Deploy** framework for architects and engineers looking to harness the power of Nutanix for modern workloads(including AI). While unofficial and unsupported, this site is actively maintained to bridge the gap between high-level documentation and real-world implementation.
+
+**What’s Inside:**
+
+  * **Infrastructure Design:** Architectural deep dives into Nutanix Kubernetes Platform (NKP), Nutanix Enterprise AI (NAI), and GPT-in-a-Box.
+  * **Rapid Deployment:** Step-by-step tutorials to stand up Nutanix clusters, NKP, and Large Language Models (LLMs) in record time.
+  * **Advanced Scenarios:** Comprehensive guides for air-gapped environments, CI/CD pipelines, and NDB (Nutanix Database Service) integration.
+  * **Interactive Simulators:** Visual tools for LLM model selection, pod scheduling, and K8s deployment strategies.
+  * **Developer-First:** Built entirely in Markdown—if you find a bug or a better way to do things, the repo is open for PRs.
+
+---
 
 ## Design Infra, K8S and AI Apps
 ---

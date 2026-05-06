@@ -574,7 +574,17 @@ This ``FileServerReplicationRelationships`` resource will be used for snapshot r
            name: wordpress-app
            namespace: wordpress
          spec:
-           applicationSelector:                       # << Include all resources in the namespace.
+         applicationSelector:
+          resourceLabelSelectors:
+           - includeResources:
+             - group: ""
+               kind: PersistentVolumeClaim
+             - group: apps
+               kind: Deployment
+             - group: ""
+               kind: Service
+             - group: ""
+               kind: Secret                   
          EOF
          ```
 

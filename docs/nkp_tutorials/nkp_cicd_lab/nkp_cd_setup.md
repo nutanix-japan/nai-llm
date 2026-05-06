@@ -170,7 +170,7 @@ Here is the comparison of the two repositories organized into a Markdown table f
         export DOCKER_REGISTRY_PASSWORD=_your_registry_password
         export SMEE_URL=_your_smee_url
         export GIT_USER=_your_git_handle
-        export GIT_PAT=_your_git_repos_personal_token       # (2)!
+        export GIT_TOKEN=_your_git_repos_personal_token       # (2)!
         ```
 
         1. File must contain CA server and Harbor server's public certificate in one file
@@ -189,7 +189,7 @@ Here is the comparison of the two repositories organized into a Markdown table f
         export DOCKER_REGISTRY_PASSWORD=_XXXXXXXXXX
         export SMEE_URL=https://smee.io/pPxxxxxxxxxxxxxxxd
         export GIT_USER=ariesbabu
-        export GIT_PAT=github_pat_xxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+        export GIT_TOKEN=github_pat_xxxxxxxxxxxxxxxxxxxxxxxxxxxxx
         ```
 
         3. File must contain CA server and Harbor server's public certificate in one file
@@ -235,7 +235,8 @@ Here is the comparison of the two repositories organized into a Markdown table f
         apiVersion: v1
         kind: Secret
         metadata:
-          name: git-pat
+          name: git-token
+          namespace: flux-system
         type: Opaque
         stringData:
           username: $GITHUB_USER
@@ -246,7 +247,7 @@ Here is the comparison of the two repositories organized into a Markdown table f
     === ":octicons-command-palette-16: Command output"
     
         ```bash
-        secret/git-pat created
+        secret/git-token created
         ```
    
 6. Bootstrap flux to see your new ``gitops-config`` repository

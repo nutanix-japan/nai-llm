@@ -379,6 +379,40 @@ Since we have a sample workload configured on the primary NKP cluster, we will:
         ```
 
 4. Create the replication target on the primary NKP cluster
+    
+    ??? tip "If Target namespace is already present use the manifest here "
+        
+        If the wordpress or any target namespace is available at this point in time. The ``ReplicationTarget`` resource could be configured to replicate to this target namespace like so:
+
+        === ":octicons-command-palette-16: Command"
+
+            ```text hl_lines="9"
+            kubectl apply -f -<<EOF
+            apiVersion: dataservices.nutanix.com/v1alpha1
+            kind: ReplicationTarget
+            metadata:
+                name: ${NDK_REPLICATION_CLUSTER_NAME}
+                namespace: wordpress
+            spec:
+                remoteName: ${NDK_REPLICATION_CLUSTER_NAME}
+                namespaceName: ${TARGET_NAMESPACE}
+            EOF
+            ```
+
+        === ":octicons-command-palette-16:  Sample Command"
+            
+            ```text hl_lines="9"
+            kubectl apply -f -<<EOF
+            apiVersion: dataservices.nutanix.com/v1alpha1
+            kind: ReplicationTarget
+            metadata:
+              name: nkpsecondary
+              namespace: wordpress          # Source cluster namespace
+            spec:
+              remoteName: nkpsecondary
+              namespaceName: wordpress.     # Target cluster namespace
+            EOF
+            ```
    
     === ":octicons-command-palette-16: Command"
  
@@ -388,7 +422,7 @@ Since we have a sample workload configured on the primary NKP cluster, we will:
           kind: ReplicationTarget
           metadata:
             name: ${NDK_REPLICATION_CLUSTER_NAME}
-            namespace: default
+            namespace: wordpress
           spec:
             remoteName: ${NDK_REPLICATION_CLUSTER_NAME}
           EOF
@@ -402,7 +436,7 @@ Since we have a sample workload configured on the primary NKP cluster, we will:
         kind: ReplicationTarget
         metadata:
           name: nkpsecondary
-          namespace: default
+          namespace: wordpress
         spec:
           remoteName: nkpsecondary
         EOF
@@ -414,7 +448,7 @@ Since we have a sample workload configured on the primary NKP cluster, we will:
         replicationtarget.dataservices.nutanix.com/nkpsecondary created
         ```
 
-3. Make sure the ``ReplicationTarget`` is healthy
+5. Make sure the ``ReplicationTarget`` is healthy
    
     === ":octicons-command-palette-16:  Sample Command"
           
@@ -437,7 +471,7 @@ Since we have a sample workload configured on the primary NKP cluster, we will:
             type: Available
         ```
 
-4. Replicate the Snapshot to the Replication Cluster
+6. Replicate the Snapshot to the Replication Cluster
    
     === ":octicons-command-palette-16: Command"
 
@@ -462,7 +496,7 @@ Since we have a sample workload configured on the primary NKP cluster, we will:
          applicationsnapshotreplication.dataservices.nutanix.com/wordpress-snap-replication created
          ```
 
-5. Monitor the progress of the replication and make sure to complete it
+7. Monitor the progress of the replication and make sure to complete it
    
     === ":octicons-command-palette-16: Command"
 
@@ -792,7 +826,7 @@ We will go through the process of cross-namespace restore in this section.
          kind: ApplicationSnapshotRestore
          metadata:
           name: wordpress-wordpress-cross-ns-asr
-          namespace: restore
+          namespace: wordpress
          spec:
           applicationSnapshotName: wordpress-app-snapshot
           applicationSnapshotNamespace: default
