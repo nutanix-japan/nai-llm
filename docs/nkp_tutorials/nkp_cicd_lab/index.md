@@ -17,11 +17,6 @@ By following these modules, you will establish a robust **Continuous Integration
   * **Pipeline Development:** Building **Tekton Pipelines** that utilize **Kaniko** to compile "Hello World" containers and push them to a private **Harbor** registry or public **Docker** registry.
   * **Automation:** Implementing **Tekton Triggers** and the **SMEE client** to allow your cluster to receive GitHub webhooks, ensuring your pipeline fires automatically on every code push.
 
-### **Current Status and Future CD Integration**
-The existing documentation focuses heavily on the **Continuous Integration (CI)** phase using Tekton. You will begin by manually testing your pipelines before moving to full automation. 
-
-As you noted, the **Continuous Deployment (CD)** portion of this lab—which will utilize **Flux v2**—is the final piece of the architecture. Once that section is built and integrated, Flux will be bootstrapped against your GitHub repository to manage the automated deployment of your application manifests, completing the full GitOps loop.
-
 ### **Getting Started**
 Before proceeding to the CI setup, ensure your jumphost VM and NKP cluster meet the minimum requirements, such as having the appropriate vCPU, memory, and storage allocations defined in the prerequisites. Once your tools are installed and your environment is sourced, you will be ready to build your first Tekton objects.
 
