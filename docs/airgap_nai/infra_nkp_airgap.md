@@ -371,7 +371,7 @@ In this section we will go through creating a base image for all the control pla
         export NKP_CLUSTER_NAME=nkpdarksite
         export CONTROLPLANE_VIP=10.x.x.214
         export LB_IP_RANGE=10.x.x.215-10.x.x.216
-        export OS_BUNDLE_DIR=kib/artifacts
+        export OS_BUNDLE_DIR=nkp-v2.17.1/image-artifacts/
         export OS=ubuntu-24.04
         export BASE_IMAGE=ubuntu-24.04-server-cloudimg-amd64.img
         ```
@@ -384,18 +384,63 @@ In this section we will go through creating a base image for all the control pla
     cd nkp-v2.17.1/
     ```
 
-7. Create the base image
+7. Upload ``ubuntu24.04`` base image to Prism Central > Images using the following download URL
    
-    === "Command"
-
+    === ":material-link: URL"
+    
         ```bash
-        nkp create package-bundle --artifacts-directory ${OS_BUNDLE_DIR} ${OS}
+        https://cloud-images.ubuntu.com/releases/24.04/release/ubuntu-24.04-server-cloudimg-amd64.img
+        ```
+   
+
+8. Download the NKP offline-bundle from **Nutanix portal** > **Downloads** > **Nutanix Kubernetes Platform**
+   
+    === ":octicons-command-palette-16: Command"
+    
+        ```bash
+        curl -OL "_download_nkp_offline_bundle_url"
+        ```
+    
+    === ":octicons-command-palette-16: Sample command"
+    
+        ```bash
+        curl -OL "https://download.nutanix.com/downloads/nkp/v2.17.1/nkp-air-gapped-bundle_v2.17.1_linux_amd64.tar.gz?Expires=xxxx"
         ```
 
-    === "Command output"
+9. Verify checksum with the one published in download site and extract the offline bundle
+    
+    === ":octicons-command-palette-16: Command"
+    
+        ```bash
+        sha256sum _downloaded_offline_bundle.tar.gz
+        tar xvf _downloaded_offline_bundle.tar.gz
+        ```
+    
+    === ":octicons-command-palette-16: Sample command"
+    
+        ```bash
+        sha256sum nkp-air-gapped-bundle_v2.17.1_linux_amd64.tar.gz
+        tar xvf nkp-air-gapped-bundle_v2.17.1_linux_amd64.tar.gz
+        ```
+    
+10. Create the package bundle to include in the image using ``ubuntu-24.04`` as the target OS
+
+    === ":octicons-command-palette-16: Command"
+    
+        ```bash
+        nkp create package-bundle ${OS} --artifacts-directory ${OS_BUNDLE_DIR}
+        ```
+    
+    === ":octicons-command-palette-16: Sample command"
+    
+        ```bash
+        nkp create package-bundle ubuntu-24.04 --artifacts-directory nkp-v2.17.1/image-artifacts/
+        ```
+
+    === ":octicons-command-palette-16: Command output"
 
         ```{ .text .no-copy }
-        $ nkp create package-bundle --artifacts-directory ${OS_BUNDLE_DIR} ${OS}
+        $ nkp create package-bundle ubuntu-24.04 --artifacts-directory nkp-v2.17.1/image-artifacts/ 
 
         OS bundle configuration files extracted to /home/ubuntu/airgap-nkp/nkp-v2.17.1/kib/artifacts/.dkp-image-builder-2593079857
         Get:1 http://archive.ubuntu.com/ubuntu jammy InRelease [270 kB]
@@ -411,19 +456,62 @@ In this section we will go through creating a base image for all the control pla
         /home/ubuntu/airgap-nkp/nkp-v2.17.1/kib/artifacts/.dkp-image-builder-2593079857/ubuntu-24.04/Packages       
         ```
 
+11. After a successful run of the create package-bundle command, there will be ``1.34.3_ubuntu_24.04_x86_64.tar.gz`` file inside the image-artifacts directory
+   
+    === ":octicons-command-palette-16: Command"
+    
+        ```bash
+        tree .  # Downloaded and extracted location
+        ```
 
-8. Create the os image and upload to Prism Central using the following command. 
+    === ":octicons-command-palette-16: Command output"
+    
+        ```text hl_lines="13"
+        ├── nkp-air-gapped-bundle_v2.17.1_linux_amd64.tar.gz
+        └── nkp-v2.17.1
+            ├── NOTICES
+            ├── application-repositories
+            │   └── kommander-applications-v2.17.1.tar.gz
+            ├── cli
+            │   ├── NOTICES
+            │   └── nkp
+            ├── container-images
+            │   ├── kommander-image-bundle-v2.17.1.tar
+            │   └── konvoy-image-bundle-v2.17.1.tar
+            ├── image-artifacts
+            │   ├── 1.34.3_ubuntu_24.04_x86_64.tar.gz
+            │   ├── containerd-1.7.29-d2iq.1-ol-8.9-x86_64.tar.gz
+            │   ├── containerd-1.7.29-d2iq.1-ol-8.9-x86_64_fips.tar.gz
+            │   ├── containerd-1.7.29-d2iq.1-ol-9.4-x86_64.tar.gz
+            │   ├── containerd-1.7.29-d2iq.1-ol-9.4-x86_64_fips.tar.gz
+        ```
+
+12. Create the NKP OS image (including the package-bundle) and upload to Prism Central using the following command. 
    
     !!!note 
            Image creation will take up to 5 minutes.
 
-    === "Command"
+    === ":octicons-command-palette-16: Command"
 
         ```bash
-        nkp create image nutanix ${OS} --endpoint ${NUTANIX_ENDPOINT} --cluster ${NUTANIX_CLUSTER} --subnet ${NUTANIX_SUBNET_NAME} --source-image ${BASE_IMAGE} --artifacts-directory ${OS_BUNDLE_DIR}
+        nkp create image nutanix ${OS} --endpoint ${NUTANIX_ENDPOINT} \
+        --cluster ${NUTANIX_CLUSTER} --subnet ${NUTANIX_SUBNET_NAME} \ 
+        --source-image ${BASE_IMAGE} --artifacts-directory ${OS_BUNDLE_DIR}
+        --insecure # (1)!
+        ```
+        
+        1. Use ``--insecure`` if your Prism Central does not have proper SSL cert installed
+
+    === ":octicons-command-palette-16: Sample Command"
+
+        ```bash
+        nkp create image nutanix ubuntu-24.04 --endpoint pc.example.com \
+        --cluster pe --subnet User1 --source-image ubuntu-24.04 \ 
+        --artifacts-directory nkp-v2.17.1/image-artifacts/ \
+        --insecure
         ```
 
-    === "Command output"
+    === ":octicons-command-palette-16: Command output"
 
         ```{ .text .no-copy }
         nkp create image nutanix ${OS} --endpoint ${NUTANIX_ENDPOINT} --cluster ${NUTANIX_CLUSTER} --subnet ${NUTANIX_SUBNET_NAME} --source-image ${BASE_IMAGE} --artifacts-directory ${OS_BUNDLE_DIR}
@@ -459,7 +547,7 @@ In this section we will go through creating a base image for all the control pla
 
         Make sure to use image name that is generated in your environment for the next steps.
 
-9.  Populate the ``.env`` file with the NKP image name by adding (appending) the following environment variables and save it
+13. Populate the ``.env`` file with the NKP image name by adding (appending) the following environment variables and save it
 
     === "Template .env"
 

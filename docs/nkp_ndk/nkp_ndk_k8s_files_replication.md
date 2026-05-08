@@ -380,7 +380,7 @@ Since we have a sample workload configured on the primary NKP cluster, we will:
 
 4. Create the replication target on the primary NKP cluster
     
-    ??? tip "If Target namespace is already present use the manifest here "
+    ??? tip "If remote Cluster's target namespace is already present use the manifest here "
         
         If the wordpress or any target namespace is available at this point in time. The ``ReplicationTarget`` resource could be configured to replicate to this target namespace like so:
 

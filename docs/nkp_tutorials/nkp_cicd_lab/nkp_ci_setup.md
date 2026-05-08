@@ -393,6 +393,121 @@ Since our ``nkpcicd`` cluster is hosted in a private network, we need [SMEE clie
         tekton-triggers-webhook-55c8dd895f-9bz68             1/1     Running   0          53s
         ```
 
+3. **Optional** - Install Tekton Dashboard - to observe PipelineRuns in a UI
+   
+    === ":octicons-command-palette-16: Command"
+    
+        ```bash
+        kubectl apply -f \
+          https://storage.googleapis.com/tekton-releases/dashboard/latest/release.yaml
+        ```
+        ```bash
+        kubectl get po,svc  -l app=tekton-dashboard
+        ```
+    
+    === ":octicons-command-palette-16: Command output"
+    
+        ```{ .text .no-copy }
+        $ kubectl apply -f \
+        https://storage.googleapis.com/tekton-releases/dashboard/latest/release.yaml
+        #
+
+        customresourcedefinition.apiextensions.k8s.io/extensions.dashboard.tekton.dev created
+        serviceaccount/tekton-dashboard created
+        role.rbac.authorization.k8s.io/tekton-dashboard-info created
+        clusterrole.rbac.authorization.k8s.io/tekton-dashboard-backend-edit created
+        clusterrole.rbac.authorization.k8s.io/tekton-dashboard-backend-view created
+        clusterrole.rbac.authorization.k8s.io/tekton-dashboard-tenant-view created
+        rolebinding.rbac.authorization.k8s.io/tekton-dashboard-info created
+        clusterrolebinding.rbac.authorization.k8s.io/tekton-dashboard-backend-view created
+        configmap/dashboard-info created
+        service/tekton-dashboard created
+        deployment.apps/tekton-dashboard created
+        clusterrolebinding.rbac.authorization.k8s.io/tekton-dashboard-tenant-view created
+        clusterrolebinding.rbac.authorization.k8s.io/tekton-dashboard-pipelines-view created
+        ```
+        ```{ .text .no-copy }
+        $ kubectl get po,svc  -l app=tekton-dashboard
+        #
+        NAME                                   READY   STATUS    RESTARTS   AGE
+        pod/tekton-dashboard-699dcfc5b-dpwk2   1/1     Running   0          12m
+
+        NAME                       TYPE        CLUSTER-IP      EXTERNAL-IP   PORT(S)    AGE
+        service/tekton-dashboard   ClusterIP   10.108.186.26   <none>        9097/TCP   12m
+        ```
+ 
+4. **Optional** - Create an Ingress for the Tekton Dashboard using the NKP inbuilt Trefik ingress
+ 
+    === ":octicons-command-palette-16: Command"
+    
+        ```bash
+        kubectl apply -f -<<EOF
+        apiVersion: networking.k8s.io/v1
+        kind: Ingress
+        metadata:
+          name: tekton
+          namespace: tekton-pipelines
+        spec:
+          ingressClassName: kommander-traefik
+          rules:
+            - host: tekton._nkpcicd_cluster_ingress_ip.nip.io
+              http:
+                paths:
+                  - path: /
+                    pathType: Prefix
+                    backend:
+                      service:
+                        name: tekton-dashboard
+                        port:
+                          number: 9097
+        EOF
+        ```
+    
+    === ":octicons-command-palette-16: Sample command"
+    
+        ```bash
+        kubectl apply -f -<<EOF
+        apiVersion: networking.k8s.io/v1
+        kind: Ingress
+        metadata:
+          name: tekton
+          namespace: tekton-pipelines
+        spec:
+          ingressClassName: kommander-traefik
+          rules:
+            - host: tekton.10.x.x.x.nip.io
+              http:
+                paths:
+                  - path: /
+                    pathType: Prefix
+                    backend:
+                      service:
+                        name: tekton-dashboard
+                        port:
+                          number: 9097
+        EOF
+        ```
+    
+    === ":octicons-command-palette-16: Command output"
+    
+        ```{ .text .no-copy }
+        ingress.networking.k8s.io/tekton created
+        ```
+   
+6. **Optional** - open the ingress URL in a browser to observe.
+
+    === ":material-link: URL"
+    
+        ```bash
+        tekton._nkpcicd_cluster_ingress_ip.nip.io
+        ```
+    
+    === ":material-link: Sample URL"
+    
+        ```bash
+        tekton.10.x.x.x.nip.io
+        ```
+
 ### Create Tekton Objects
 
 
@@ -732,7 +847,7 @@ As we have created the ``Pipeline`` consisting of our ``git-clone`` and ``kaniko
         ```bash
         ```
 
-2. Observe the logs using ``tkn`` command
+2. Observe the PipelineRun logs using ``tkn`` command or **optionally** in the Tekton dasboard (if it was deployed from the previous section)
    
     === ":octicons-command-palette-16: Command"
     
@@ -806,6 +921,22 @@ As we have created the ``Pipeline`` consisting of our ``git-clone`` and ``kaniko
         [build-image : build-and-push] INFO[0010] Pushing image to docker.io/_your_github_handle/app-source:latest 
         [build-image : build-and-push] INFO[0012] Pushed index.docker.io/_your_github_handle/app-source@sha256:ef8671bb7454711023109926ba29658e3fdac34f619168432f22f6974add7b2e 
         ```
+    
+    Tekton URL:
+   
+    === ":material-link: URL"
+    
+        ```bash
+        https://tekton._nkpcicd_cluster_ingress_ip.nip.io/#/namespaces/default/pipelineruns
+        ```
+    
+    === ":material-link: Sample URL"
+    
+        ```bash
+        https://tekton.10.x.x.x.nip.io/#/namespaces/default/pipelineruns
+        ```
+
+    ![](images/manual_pipelinerun.png)
 
 3. Confirm new image in **Docker** or **Harbor** registry that was chosen during initial Secret and ServiceAccount configuration in the [Pre-requisites section](../nkp_cicd_lab/nkp_cicd_prereq.md#configure-secrets-sa-and-rbac).
    
