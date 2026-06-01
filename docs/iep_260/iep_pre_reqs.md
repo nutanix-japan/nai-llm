@@ -97,7 +97,7 @@ We will create Nutanix Files storage class which will be used to create a pvc th
           name: nai-nfs-storage
         parameters:
           nfsPath: /model_share
-          nfsServer: labFS.example.com
+          nfsServer: labFS.ntnxlab.local
           storageType: NutanixFiles
         provisioner: csi.nutanix.com
         reclaimPolicy: Delete
