@@ -1,0 +1,622 @@
+<!DOCTYPE html><html><head><meta http-equiv="Content-Security-Policy" content="default-src 'self' 'unsafe-inline' 'unsafe-eval' data: blob: https://cdnjs.cloudflare.com https://cdn.jsdelivr.net https://code.jquery.com https://unpkg.com https://d3js.org https://threejs.org https://cdn.plot.ly https://stackpath.bootstrapcdn.com https://maps.googleapis.com https://cdn.tailwindcss.com https://ajax.googleapis.com https://kit.fontawesome.com https://cdn.datatables.net https://maxcdn.bootstrapcdn.com https://code.highcharts.com https://tako-static-assets-production.s3.amazonaws.com https://www.youtube.com https://fonts.googleapis.com https://fonts.gstatic.com https://pfst.cf2.poecdn.net https://puc.poecdn.net https://i.imgur.com https://wikimedia.org https://*.icons8.com https://*.giphy.com https://picsum.photos https://images.unsplash.com; frame-src 'self' https://www.youtube.com https://trytako.com; child-src 'self'; manifest-src 'self'; worker-src 'self'; upgrade-insecure-requests; block-all-mixed-content;"><script src="https://puc.poecdn.net/standard.c8d3df4d67dddca2ccac.js"></script>
+    <meta charset="utf-8">
+    <title>Custom Nodepools and Deployment Pod Scheduling</title>
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+  <script src="https://puc.poecdn.net/tw.b9024aecac666455e183.js"></script><script src="https://puc.poecdn.net/deps.ac7e4de820f1e47e84a2.js"></script><script src="https://puc.poecdn.net/exports.b0f0f482cdeb5302b0b9.js"></script><script src="https://puc.poecdn.net/renderer.6065bf6c6271ccf44fe1.js"></script><script>Object.defineProperty(exports, "__esModule", {value: true}); function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }var _react = require('react'); var _react2 = _interopRequireDefault(_react);
+var _lucidereact = require('lucide-react');
+
+const POD_SIZES = {
+  small: { cpu: 0.5, memory: 1, label: 'Small' },
+  medium: { cpu: 1, memory: 2, label: 'Medium' },
+  large: { cpu: 2, memory: 4, label: 'Large' },
+  xlarge: { cpu: 4, memory: 8, label: 'X-Large' },
+  custom: { cpu: 1, memory: 1, label: 'Custom' }
+};
+
+const DEFAULT_NODE_SPEC = {
+  cpu: 4,
+  memory: 8
+};
+
+const ResourceBar = ({ used, total }) => {
+  const percentage = Math.min((used / total) * 100, 100);
+  const isOverloaded = used > total;
+  
+  return (
+    _react2.default.createElement('div', { className: "h-2 bg-gray-700 rounded-full overflow-hidden"   ,}
+      , _react2.default.createElement('div', {
+        className: `h-full transition-all duration-300 ${
+          isOverloaded ? 'bg-red-500' : percentage > 80 ? 'bg-yellow-500' : 'bg-blue-500'
+        }`,
+        style: { width: `${percentage}%` },}
+      )
+    )
+  );
+};
+
+const Pod = ({ name, deploymentName, cpu, memory, status = 'running', onDelete }) => (
+  _react2.default.createElement('div', { className: `group bg-gray-700 rounded-lg p-3 hover:bg-gray-600 transition-colors ${
+    status === 'pending' ? 'border border-yellow-500/50' : ''
+  }`,}
+    , _react2.default.createElement('div', { className: "flex items-center justify-between gap-2"   ,}
+      , _react2.default.createElement('div', { className: "flex items-center gap-2"  ,}
+        , _react2.default.createElement('div', { className: `w-2 h-2 rounded-full ${
+          status === 'running' ? 'bg-green-500' : 'bg-yellow-500'
+        }`,} )
+        , _react2.default.createElement('div', null
+          , _react2.default.createElement('div', { className: "text-sm font-medium" ,}, name)
+          , _react2.default.createElement('div', { className: "text-xs text-gray-400" ,}
+            , deploymentName
+            , status === 'pending' && (
+              _react2.default.createElement('div', { className: "flex items-center gap-1 text-yellow-500 mt-1"    ,}
+                , _react2.default.createElement(_lucidereact.Clock, { className: "w-3 h-3" ,} ), "Pending: Insufficient resources"
+
+              )
+            )
+          )
+        )
+      )
+      , _react2.default.createElement('button', {
+        onClick: onDelete,
+        className: "opacity-0 group-hover:opacity-100 p-1 hover:bg-gray-500 rounded transition-opacity"     ,}
+
+        , _react2.default.createElement(_lucidereact.Trash2, { className: "w-4 h-4 text-gray-400 hover:text-red-400"   ,} )
+      )
+    )
+    , _react2.default.createElement('div', { className: "mt-2 text-xs text-gray-400"  ,}
+      , cpu, " CPU • "   , memory, " GB"
+    )
+  )
+);
+
+const Node = ({ name, cpu, memory, pods, onDeletePod }) => {
+  const usedCPU = pods.reduce((sum, pod) => sum + pod.cpu, 0);
+  const usedMemory = pods.reduce((sum, pod) => sum + pod.memory, 0);
+
+  return (
+    _react2.default.createElement('div', { className: "bg-gray-800 rounded-lg border border-gray-700"   ,}
+      , _react2.default.createElement('div', { className: "p-4 space-y-4" ,}
+        , _react2.default.createElement('div', { className: "flex items-center gap-3"  ,}
+          , _react2.default.createElement('div', { className: "p-2 rounded-lg bg-gray-700"  ,}
+            , _react2.default.createElement(_lucidereact.Server, { className: "w-5 h-5 text-gray-400"  ,} )
+          )
+          , _react2.default.createElement('div', null
+            , _react2.default.createElement('h3', { className: "font-medium",}, name)
+            , _react2.default.createElement('p', { className: "text-sm text-gray-400" ,}, pods.length, " pods" )
+          )
+        )
+
+        , _react2.default.createElement('div', { className: "space-y-3",}
+          , _react2.default.createElement('div', null
+            , _react2.default.createElement('div', { className: "text-sm text-gray-400 mb-1"  ,}, "CPU ("
+               , usedCPU.toFixed(1), "/", cpu, ")"
+            )
+            , _react2.default.createElement(ResourceBar, { used: usedCPU, total: cpu,} )
+          )
+          , _react2.default.createElement('div', null
+            , _react2.default.createElement('div', { className: "text-sm text-gray-400 mb-1"  ,}, "Memory ("
+               , usedMemory, "/", memory, " GB)"
+            )
+            , _react2.default.createElement(ResourceBar, { used: usedMemory, total: memory,} )
+          )
+        )
+      )
+
+      , pods.length > 0 && (
+        _react2.default.createElement('div', { className: "border-t border-gray-700 p-4"  ,}
+          , _react2.default.createElement('div', { className: "grid gap-2" ,}
+            , pods.map(pod => (
+              _react2.default.createElement(Pod, {
+                key: pod.id,
+                ...pod,
+                onDelete: () => onDeletePod(pod.id),}
+              )
+            ))
+          )
+        )
+      )
+    )
+  );
+};
+
+const CreateDialog = ({ onClose, onSubmit }) => {
+  const [size, setSize] = _react.useState.call(void 0, 'small');
+  const [name, setName] = _react.useState.call(void 0, '');
+  const [replicas, setReplicas] = _react.useState.call(void 0, 1);
+  const [antiAffinity, setAntiAffinity] = _react.useState.call(void 0, true);
+  const [customSize, setCustomSize] = _react.useState.call(void 0, { cpu: 1, memory: 1 });
+  const [deployment, setDeployment] = _react.useState.call(void 0, '');
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    const podSpec = {
+      name: name.trim() || `pod-${Date.now().toString(36)}`,
+      deploymentName: deployment.trim() || `deploy-${Date.now().toString(36)}`,
+      ...(size === 'custom' ? customSize : POD_SIZES[size]),
+      replicas,
+      antiAffinity
+    };
+    onSubmit(podSpec);
+  };
+
+  const currentPodSize = size === 'custom' ? customSize : POD_SIZES[size];
+
+  return (
+    _react2.default.createElement('div', { className: "fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50 overflow-y-auto"        ,}
+      , _react2.default.createElement('div', { className: "bg-gray-800 rounded-lg p-6 w-full max-w-md my-8"     ,}
+        , _react2.default.createElement('div', { className: "flex justify-between items-center mb-6"   ,}
+          , _react2.default.createElement('h2', { className: "text-lg font-medium" ,}, "Deploy Pods" )
+          , _react2.default.createElement('button', { onClick: onClose, className: "text-gray-400 hover:text-gray-300" ,}
+            , _react2.default.createElement(_lucidereact.X, { className: "w-5 h-5" ,} )
+          )
+        )
+
+        , _react2.default.createElement('form', { onSubmit: handleSubmit, className: "space-y-4",}
+          , _react2.default.createElement('div', null
+            , _react2.default.createElement('label', { className: "block text-sm font-medium mb-2"   ,}, "Deployment Name" )
+            , _react2.default.createElement('input', {
+              type: "text",
+              value: deployment,
+              onChange: (e) => setDeployment(e.target.value),
+              className: "w-full bg-gray-700 border border-gray-600 rounded-lg px-3 py-2 focus:border-blue-500 focus:outline-none"        ,
+              placeholder: "Enter deployment name"  ,}
+            )
+          )
+
+          , _react2.default.createElement('div', null
+            , _react2.default.createElement('label', { className: "block text-sm font-medium mb-2"   ,}, "Pod Name Prefix"  )
+            , _react2.default.createElement('input', {
+              type: "text",
+              value: name,
+              onChange: (e) => setName(e.target.value),
+              className: "w-full bg-gray-700 border border-gray-600 rounded-lg px-3 py-2 focus:border-blue-500 focus:outline-none"        ,
+              placeholder: "Enter pod name prefix"   ,}
+            )
+          )
+
+          , _react2.default.createElement('div', null
+            , _react2.default.createElement('label', { className: "block text-sm font-medium mb-2"   ,}, "Pod Size" )
+            , _react2.default.createElement('div', { className: "grid grid-cols-2 sm:grid-cols-3 gap-2"   ,}
+              , Object.entries(POD_SIZES).map(([key, config]) => (
+                _react2.default.createElement('button', {
+                  key: key,
+                  type: "button",
+                  onClick: () => setSize(key),
+                  className: `p-2 rounded-lg border text-left ${
+                    size === key
+                      ? 'border-blue-500 bg-blue-500/10'
+                      : 'border-gray-600 hover:border-gray-500'
+                  }`,}
+
+                  , _react2.default.createElement('div', { className: "text-sm font-medium" ,}, config.label)
+                  , key !== 'custom' && (
+                    _react2.default.createElement('div', { className: "text-xs text-gray-400" ,}
+                      , config.cpu, " CPU • "   , config.memory, " GB"
+                    )
+                  )
+                )
+              ))
+            )
+          )
+
+          , size === 'custom' && (
+            _react2.default.createElement('div', { className: "space-y-3",}
+              , _react2.default.createElement('div', null
+                , _react2.default.createElement('label', { className: "block text-sm font-medium mb-2"   ,}, "Custom CPU" )
+                , _react2.default.createElement('input', {
+                  type: "number",
+                  min: "0.1",
+                  max: "16",
+                  step: "0.1",
+                  value: customSize.cpu,
+                  onChange: (e) => setCustomSize(prev => ({ ...prev, cpu: Number(e.target.value) })),
+                  className: "w-full bg-gray-700 border border-gray-600 rounded-lg px-3 py-2 focus:border-blue-500 focus:outline-none"        ,}
+                )
+              )
+              , _react2.default.createElement('div', null
+                , _react2.default.createElement('label', { className: "block text-sm font-medium mb-2"   ,}, "Custom Memory (GB)"  )
+                , _react2.default.createElement('input', {
+                  type: "number",
+                  min: "0.5",
+                  max: "32",
+                  step: "0.5",
+                  value: customSize.memory,
+                  onChange: (e) => setCustomSize(prev => ({ ...prev, memory: Number(e.target.value) })),
+                  className: "w-full bg-gray-700 border border-gray-600 rounded-lg px-3 py-2 focus:border-blue-500 focus:outline-none"        ,}
+                )
+              )
+            )
+          )
+
+          , _react2.default.createElement('div', null
+            , _react2.default.createElement('label', { className: "block text-sm font-medium mb-2"   ,}, "Number of Replicas"  )
+            , _react2.default.createElement('div', { className: "flex items-center gap-3"  ,}
+              , _react2.default.createElement('button', {
+                type: "button",
+                onClick: () => setReplicas(r => Math.max(1, r - 1)),
+                className: "p-2 rounded-lg border border-gray-600 hover:border-gray-500"    ,}
+
+                , _react2.default.createElement(_lucidereact.Minus, { className: "w-4 h-4" ,} )
+              )
+              , _react2.default.createElement('input', {
+                type: "number",
+                min: "1",
+                value: replicas,
+                onChange: (e) => setReplicas(Math.max(1, parseInt(e.target.value) || 1)),
+                className: "w-20 bg-gray-700 border border-gray-600 rounded-lg px-3 py-2 text-center focus:border-blue-500 focus:outline-none"         ,}
+              )
+              , _react2.default.createElement('button', {
+                type: "button",
+                onClick: () => setReplicas(r => r + 1),
+                className: "p-2 rounded-lg border border-gray-600 hover:border-gray-500"    ,}
+
+                , _react2.default.createElement(_lucidereact.Plus, { className: "w-4 h-4" ,} )
+              )
+            )
+          )
+
+          , _react2.default.createElement('div', { className: "flex items-center gap-2"  ,}
+            , _react2.default.createElement('input', {
+              type: "checkbox",
+              id: "antiAffinity",
+              checked: antiAffinity,
+              onChange: (e) => setAntiAffinity(e.target.checked),
+              className: "rounded border-gray-600 bg-gray-700"  ,}
+            )
+            , _react2.default.createElement('label', { htmlFor: "antiAffinity", className: "text-sm",}, "Spread replicas across nodes"
+
+            )
+          )
+
+          , _react2.default.createElement('div', { className: "bg-gray-700/50 rounded-lg p-3"  ,}
+            , _react2.default.createElement('h3', { className: "text-sm font-medium mb-2"  ,}, "Resource Summary" )
+            , _react2.default.createElement('div', { className: "text-sm text-gray-400" ,}
+              , _react2.default.createElement('p', null, "CPU per pod: "   , currentPodSize.cpu)
+              , _react2.default.createElement('p', null, "Memory per pod: "   , currentPodSize.memory, " GB" )
+              , _react2.default.createElement('p', null, "Total CPU: "  , (currentPodSize.cpu * replicas).toFixed(1))
+              , _react2.default.createElement('p', null, "Total Memory: "  , (currentPodSize.memory * replicas), " GB" )
+              , _react2.default.createElement('p', null, "Total Pods: "  , replicas)
+            )
+          )
+
+          , _react2.default.createElement('div', { className: "flex justify-end gap-3 pt-4"   ,}
+            , _react2.default.createElement('button', {
+              type: "button",
+              onClick: onClose,
+              className: "px-4 py-2 text-sm font-medium hover:bg-gray-700 rounded-lg"     ,}
+, "Cancel"
+
+            )
+            , _react2.default.createElement('button', {
+              type: "submit",
+              className: "px-4 py-2 text-sm font-medium bg-blue-500 hover:bg-blue-600 rounded-lg"      ,}
+, "Deploy"
+
+            )
+          )
+        )
+      )
+    )
+  );
+};
+
+const NodePoolConfig = ({ config, onClose, onSubmit }) => {
+  const [nodeSpec, setNodeSpec] = _react.useState.call(void 0, config.nodeSpec);
+  const [nodeCount, setNodeCount] = _react.useState.call(void 0, config.nodes.length);
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    onSubmit({
+      nodeSpec,
+      nodes: Array.from({ length: nodeCount }, (_, i) => ({
+        id: i + 1,
+        name: `node-${i + 1}`,
+        ...nodeSpec
+      }))
+    });
+    onClose();
+  };
+
+  return (
+    _react2.default.createElement('div', { className: "fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50"       ,}
+      , _react2.default.createElement('div', { className: "bg-gray-800 rounded-lg p-6 w-full max-w-md"    ,}
+        , _react2.default.createElement('div', { className: "flex justify-between items-center mb-6"   ,}
+          , _react2.default.createElement('h2', { className: "text-lg font-medium" ,}, "Configure Node Pool"  )
+          , _react2.default.createElement('button', { onClick: onClose, className: "text-gray-400 hover:text-gray-300" ,}
+            , _react2.default.createElement(_lucidereact.X, { className: "w-5 h-5" ,} )
+          )
+        )
+
+        , _react2.default.createElement('form', { onSubmit: handleSubmit, className: "space-y-4",}
+          , _react2.default.createElement('div', null
+            , _react2.default.createElement('label', { className: "block text-sm font-medium mb-2"   ,}, "CPU per Node"  )
+            , _react2.default.createElement('input', {
+              type: "number",
+              min: "1",
+              max: "32",
+              value: nodeSpec.cpu,
+              onChange: (e) => setNodeSpec(prev => ({ ...prev, cpu: Number(e.target.value) })),
+              className: "w-full bg-gray-700 border border-gray-600 rounded-lg px-3 py-2 focus:border-blue-500 focus:outline-none"        ,}
+            )
+          )
+
+          , _react2.default.createElement('div', null
+            , _react2.default.createElement('label', { className: "block text-sm font-medium mb-2"   ,}, "Memory per Node (GB)"   )
+            , _react2.default.createElement('input', {
+              type: "number",
+              min: "1",
+              max: "128",
+              value: nodeSpec.memory,
+              onChange: (e) => setNodeSpec(prev => ({ ...prev, memory: Number(e.target.value) })),
+              className: "w-full bg-gray-700 border border-gray-600 rounded-lg px-3 py-2 focus:border-blue-500 focus:outline-none"        ,}
+            )
+          )
+
+          , _react2.default.createElement('div', null
+            , _react2.default.createElement('label', { className: "block text-sm font-medium mb-2"   ,}, "Number of Nodes"  )
+            , _react2.default.createElement('div', { className: "flex items-center gap-3"  ,}
+              , _react2.default.createElement('button', {
+                type: "button",
+                onClick: () => setNodeCount(n => Math.max(1, n - 1)),
+                className: "p-2 rounded-lg border border-gray-600 hover:border-gray-500"    ,}
+
+                , _react2.default.createElement(_lucidereact.Minus, { className: "w-4 h-4" ,} )
+              )
+              , _react2.default.createElement('input', {
+                type: "number",
+                min: "1",
+                value: nodeCount,
+                onChange: (e) => setNodeCount(Math.max(1, parseInt(e.target.value) || 1)),
+                className: "w-20 bg-gray-700 border border-gray-600 rounded-lg px-3 py-2 text-center focus:border-blue-500 focus:outline-none"         ,}
+              )
+              , _react2.default.createElement('button', {
+                type: "button",
+                onClick: () => setNodeCount(n => n + 1),
+                className: "p-2 rounded-lg border border-gray-600 hover:border-gray-500"    ,}
+
+                , _react2.default.createElement(_lucidereact.Plus, { className: "w-4 h-4" ,} )
+              )
+            )
+          )
+
+          , _react2.default.createElement('div', { className: "bg-gray-700/50 rounded-lg p-3"  ,}
+            , _react2.default.createElement('h3', { className: "text-sm font-medium mb-2"  ,}, "Pool Summary" )
+            , _react2.default.createElement('div', { className: "text-sm text-gray-400" ,}
+              , _react2.default.createElement('p', null, "Total CPU: "  , nodeSpec.cpu * nodeCount)
+              , _react2.default.createElement('p', null, "Total Memory: "  , nodeSpec.memory * nodeCount, " GB" )
+              , _react2.default.createElement('p', null, "Total Nodes: "  , nodeCount)
+            )
+          )
+
+          , _react2.default.createElement('div', { className: "flex justify-end gap-3 pt-4"   ,}
+            , _react2.default.createElement('button', {
+              type: "button",
+              onClick: onClose,
+              className: "px-4 py-2 text-sm font-medium hover:bg-gray-700 rounded-lg"     ,}
+, "Cancel"
+
+            )
+            , _react2.default.createElement('button', {
+              type: "submit",
+              className: "px-4 py-2 text-sm font-medium bg-blue-500 hover:bg-blue-600 rounded-lg"      ,}
+, "Apply"
+
+            )
+          )
+        )
+      )
+    )
+  );
+};
+
+const Cluster = () => {
+  const [config, setConfig] = _react.useState.call(void 0, {
+    nodeSpec: DEFAULT_NODE_SPEC,
+    nodes: Array.from({ length: 3 }, (_, i) => ({
+      id: i + 1,
+      name: `node-${i + 1}`,
+      ...DEFAULT_NODE_SPEC
+    }))
+  });
+  
+  const [pods, setPods] = _react.useState.call(void 0, []);
+  const [showCreate, setShowCreate] = _react.useState.call(void 0, false);
+  const [showNodePool, setShowNodePool] = _react.useState.call(void 0, false);
+
+  // Try to schedule pending pods whenever resources change
+  _react.useEffect.call(void 0, () => {
+    const pendingPods = pods.filter(pod => pod.status === 'pending');
+    if (pendingPods.length === 0) return;
+
+    const updatedPods = [...pods];
+    let changed = false;
+
+    pendingPods.forEach(pod => {
+      const targetNode = findBestNode(pod);
+      if (targetNode) {
+        const podIndex = updatedPods.findIndex(p => p.id === pod.id);
+        updatedPods[podIndex] = {
+          ...pod,
+          status: 'running',
+          nodeId: targetNode.id
+        };
+        changed = true;
+      }
+    });
+
+    if (changed) {
+      setPods(updatedPods);
+    }
+  }, [config.nodes, pods]);
+
+  const calculateNodeLoad = (nodeId) => {
+    const nodePods = pods.filter(pod => pod.nodeId === nodeId && pod.status === 'running');
+    const cpuLoad = nodePods.reduce((sum, pod) => sum + pod.cpu, 0);
+    const memoryLoad = nodePods.reduce((sum, pod) => sum + pod.memory, 0);
+    return { cpuLoad, memoryLoad };
+  };
+
+  const findBestNode = (podSpec, excludeNodes = []) => {
+    const availableNodes = config.nodes.filter(node => !excludeNodes.includes(node.id));
+    if (availableNodes.length === 0) return null;
+
+    return availableNodes.reduce((best, node) => {
+      const { cpuLoad, memoryLoad } = calculateNodeLoad(node.id);
+      const cpuAvailable = node.cpu - cpuLoad;
+      const memoryAvailable = node.memory - memoryLoad;
+
+      if (cpuAvailable < podSpec.cpu || memoryAvailable < podSpec.memory) {
+        return best;
+      }
+
+      const currentScore = Math.min(cpuAvailable / podSpec.cpu, memoryAvailable / podSpec.memory);
+      const bestScore = best ? Math.min(
+        (best.cpu - calculateNodeLoad(best.id).cpuLoad) / podSpec.cpu,
+        (best.memory - calculateNodeLoad(best.id).memoryLoad) / podSpec.memory
+      ) : -1;
+
+      return currentScore > bestScore ? node : best;
+    }, null);
+  };
+
+  const schedulePods = (podSpec) => {
+    const newPods = [];
+    const baseId = Date.now();
+    const usedNodes = new Set();
+
+    for (let i = 0; i < podSpec.replicas; i++) {
+      const excludeNodes = podSpec.antiAffinity ? Array.from(usedNodes) : [];
+      const targetNode = findBestNode(podSpec, excludeNodes);
+
+      const pod = {
+        id: baseId + i,
+        name: `${podSpec.name}-${i + 1}`,
+        deploymentName: podSpec.deploymentName,
+        cpu: podSpec.cpu,
+        memory: podSpec.memory,
+        status: targetNode ? 'running' : 'pending'
+      };
+
+      if (targetNode) {
+        pod.nodeId = targetNode.id;
+        usedNodes.add(targetNode.id);
+      }
+
+      newPods.push(pod);
+    }
+
+    return newPods;
+  };
+
+  const handleAddPods = (podSpec) => {
+    const newPods = schedulePods(podSpec);
+    setPods(current => [...current, ...newPods]);
+    setShowCreate(false);
+  };
+
+  const handleDeletePod = (podId) => {
+    setPods(current => current.filter(pod => pod.id !== podId));
+  };
+
+  const handleNodePoolUpdate = (newConfig) => {
+    setConfig(newConfig);
+    setShowNodePool(false);
+  };
+
+  const runningPods = pods.filter(pod => pod.status === 'running');
+  const pendingPods = pods.filter(pod => pod.status === 'pending');
+
+  const totalResources = {
+    cpu: config.nodes.reduce((sum, node) => sum + node.cpu, 0),
+    memory: config.nodes.reduce((sum, node) => sum + node.memory, 0)
+  };
+
+  const usedResources = {
+    cpu: runningPods.reduce((sum, pod) => sum + pod.cpu, 0),
+    memory: runningPods.reduce((sum, pod) => sum + pod.memory, 0)
+  };
+
+  return (
+    _react2.default.createElement('div', { className: "min-h-screen bg-gray-900 text-gray-100 p-6"   ,}
+      , _react2.default.createElement('div', { className: "max-w-6xl mx-auto space-y-6"  ,}
+        , _react2.default.createElement('div', { className: "flex flex-col gap-4 sm:flex-row sm:justify-between sm:items-start"     ,}
+          , _react2.default.createElement('div', null
+            , _react2.default.createElement('h1', { className: "text-2xl font-semibold" ,}, "Cluster Overview" )
+            , _react2.default.createElement('p', { className: "text-gray-400",}
+              , runningPods.length, " running • "   , pendingPods.length, " pending • "   , config.nodes.length, " nodes •"
+              , ' ', usedResources.cpu.toFixed(1), "/", totalResources.cpu, " CPU •"
+              , ' ', usedResources.memory, "/", totalResources.memory, " GB RAM"
+            )
+          )
+          , _react2.default.createElement('div', { className: "flex flex-wrap gap-2"  ,}
+            , _react2.default.createElement('button', {
+              onClick: () => setShowNodePool(true),
+              className: "flex items-center gap-2 px-4 py-2 bg-gray-700 hover:bg-gray-600 rounded-lg"       ,}
+
+              , _react2.default.createElement(_lucidereact.Settings, { className: "w-4 h-4" ,} ), "Configure Pool"
+
+            )
+            , _react2.default.createElement('button', {
+              onClick: () => setShowCreate(true),
+              className: "flex items-center gap-2 px-4 py-2 bg-blue-500 hover:bg-blue-600 rounded-lg"       ,}
+
+              , _react2.default.createElement(_lucidereact.Plus, { className: "w-4 h-4" ,} ), "Deploy Pods"
+
+            )
+          )
+        )
+
+        , _react2.default.createElement('div', { className: "grid grid-cols-1 lg:grid-cols-3 gap-4"   ,}
+          , config.nodes.map(node => (
+            _react2.default.createElement(Node, {
+              key: node.id,
+              ...node,
+              pods: pods.filter(pod => pod.nodeId === node.id && pod.status === 'running'),
+              onDeletePod: handleDeletePod,}
+            )
+          ))
+        )
+
+        , pendingPods.length > 0 && (
+          _react2.default.createElement('div', { className: "bg-gray-800 rounded-lg border border-yellow-500/50 p-4"    ,}
+            , _react2.default.createElement('h3', { className: "text-lg font-medium mb-3 flex items-center gap-2"     ,}
+              , _react2.default.createElement(_lucidereact.Clock, { className: "w-5 h-5 text-yellow-500"  ,} ), "Pending Pods ("
+                , pendingPods.length, ")"
+            )
+            , _react2.default.createElement('div', { className: "grid gap-2" ,}
+              , pendingPods.map(pod => (
+                _react2.default.createElement(Pod, {
+                  key: pod.id,
+                  ...pod,
+                  onDelete: () => handleDeletePod(pod.id),}
+                )
+              ))
+            )
+          )
+        )
+
+        , showCreate && (
+          _react2.default.createElement(CreateDialog, {
+            onClose: () => setShowCreate(false),
+            onSubmit: handleAddPods,}
+          )
+        )
+
+        , showNodePool && (
+          _react2.default.createElement(NodePoolConfig, {
+            config: config,
+            onClose: () => setShowNodePool(false),
+            onSubmit: handleNodePoolUpdate,}
+          )
+        )
+      )
+    )
+  );
+};
+
+exports. default = Cluster;
+</script></head>
+  <body>
+  
+
+<div id="preview-app"></div></body></html>
