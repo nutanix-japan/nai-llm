@@ -1,0 +1,5 @@
+cluster_name = "Prism Elemenet"
+subnet_name  = "primary"
+user         = "admin"
+password     = "!"
+endpoint     = ""

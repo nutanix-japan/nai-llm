@@ -1,0 +1,432 @@
+<!DOCTYPE html><html><head><meta http-equiv="Content-Security-Policy" content="default-src 'self' 'unsafe-inline' 'unsafe-eval' data: blob: https://cdnjs.cloudflare.com https://cdn.jsdelivr.net https://code.jquery.com https://unpkg.com https://d3js.org https://threejs.org https://cdn.plot.ly https://stackpath.bootstrapcdn.com https://maps.googleapis.com https://cdn.tailwindcss.com https://ajax.googleapis.com https://kit.fontawesome.com https://cdn.datatables.net https://maxcdn.bootstrapcdn.com https://code.highcharts.com https://tako-static-assets-production.s3.amazonaws.com https://www.youtube.com https://fonts.googleapis.com https://fonts.gstatic.com https://pfst.cf2.poecdn.net https://puc.poecdn.net https://i.imgur.com https://wikimedia.org https://*.icons8.com https://*.giphy.com https://picsum.photos https://images.unsplash.com; frame-src 'self' https://www.youtube.com https://trytako.com; child-src 'self'; manifest-src 'self'; worker-src 'self'; upgrade-insecure-requests; block-all-mixed-content;"><script src="https://puc.poecdn.net/standard.c8d3df4d67dddca2ccac.js"></script>
+    <meta charset="utf-8">
+    <title>Scheduling Mixed Workload Types</title>
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+  <script src="https://puc.poecdn.net/tw.b9024aecac666455e183.js"></script><script src="https://puc.poecdn.net/deps.ac7e4de820f1e47e84a2.js"></script><script src="https://puc.poecdn.net/exports.b0f0f482cdeb5302b0b9.js"></script><script src="https://puc.poecdn.net/renderer.6065bf6c6271ccf44fe1.js"></script><script>Object.defineProperty(exports, "__esModule", {value: true}); function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }var _react = require('react'); var _react2 = _interopRequireDefault(_react);
+var _framermotion = require('framer-motion');
+
+
+
+
+var _lucidereact = require('lucide-react');
+
+const WORKLOAD_TYPES = {
+  nginx: { type: 'DEPLOYMENT', size: 'small', category: 'web' },
+  mongodb: { type: 'STATEFULSET', size: 'medium', category: 'db' },
+  redis: { type: 'STATEFULSET', size: 'small', category: 'cache' },
+  postgresql: { type: 'STATEFULSET', size: 'medium', category: 'db' },
+  'fluent-bit': { type: 'DAEMONSET', size: 'small', category: 'logging' },
+  'node-exporter': { type: 'DAEMONSET', size: 'small', category: 'monitoring' }
+};
+
+const POD_SIZES = {
+  small: { cpu: 1, memory: 1 },
+  medium: { cpu: 2, memory: 2 }, 
+  large: { cpu: 4, memory: 4 }
+};
+
+function findBestNode(pod, nodes, currentPods, workload) {
+  let bestNode = null;
+  let bestScore = -1;
+
+  const workloadPods = currentPods.filter(p => 
+    p.workloadId === pod.workloadId && p.nodeId
+  );
+
+  for (const node of nodes) {
+    const nodePods = currentPods.filter(p => p.nodeId === node.id);
+    
+    const usage = nodePods.reduce((acc, p) => ({
+      cpu: acc.cpu + POD_SIZES[p.size].cpu,
+      memory: acc.memory + POD_SIZES[p.size].memory
+    }), { cpu: 0, memory: 0 });
+
+    if (usage.cpu + POD_SIZES[pod.size].cpu > node.cpu ||
+        usage.memory + POD_SIZES[pod.size].memory > node.memory) {
+      continue;
+    }
+
+    if (workload.antiAffinity) {
+      const sameWorkloadPodsOnNode = workloadPods.filter(p => 
+        p.nodeId === node.id
+      ).length;
+      
+      if (sameWorkloadPodsOnNode > 0) {
+        continue;
+      }
+    }
+
+    const cpuRatio = usage.cpu / node.cpu;
+    const memoryRatio = usage.memory / node.memory;
+    const score = 100 - ((cpuRatio + memoryRatio) * 50);
+
+    if (score > bestScore) {
+      bestScore = score;
+      bestNode = node;
+    }
+  }
+
+  return bestNode;
+}
+
+function ResourceBar({ used, total }) {
+  const percentage = Math.min((used / total) * 100, 100);
+  const color = percentage > 90 ? 'bg-red-500' : 
+                percentage > 70 ? 'bg-yellow-500' : 
+                'bg-blue-500';
+  
+  return (
+    _react2.default.createElement('div', { className: "h-2 bg-gray-700 rounded-full overflow-hidden"   ,}
+      , _react2.default.createElement('div', { 
+        className: `h-full ${color} transition-all duration-300`, 
+        style: { width: `${percentage}%` },} 
+      )
+    )
+  );
+}
+
+function Pod({ name, size, status }) {
+  return (
+    _react2.default.createElement(_framermotion.motion.div, {
+      layout: true,
+      initial: { opacity: 0, y: 10 },
+      animate: { opacity: 1, y: 0 },
+      exit: { opacity: 0, scale: 0.95 },
+      className: `flex items-center justify-between ${status === 'pending' ? 'bg-gray-600' : 'bg-gray-700'} rounded p-2`,}
+
+      , _react2.default.createElement('div', { className: "flex items-center gap-2"  ,}
+        , _react2.default.createElement(_lucidereact.Circle, { 
+          className: status === 'running' ? 'text-green-400' : 'text-yellow-400', 
+          size: 8,} 
+        )
+        , _react2.default.createElement('span', { className: "text-sm truncate" ,}, name)
+      )
+      , _react2.default.createElement('span', { className: "text-xs text-gray-400" ,}, size)
+    )
+  );
+}
+
+function NodeCard({ node, pods, onDelete, canDelete }) {
+  const nodePods = pods.filter(p => p.nodeId === node.id);
+  
+  const resources = nodePods.reduce((acc, pod) => ({
+    cpu: acc.cpu + POD_SIZES[pod.size].cpu,
+    memory: acc.memory + POD_SIZES[pod.size].memory
+  }), { cpu: 0, memory: 0 });
+
+  return (
+    _react2.default.createElement('div', { className: "bg-gray-800 rounded-lg p-4 space-y-4"   ,}
+      , _react2.default.createElement('div', { className: "space-y-3",}
+        , _react2.default.createElement('div', { className: "flex justify-between items-center"  ,}
+          , _react2.default.createElement('h3', { className: "font-medium",}, node.name)
+          , canDelete && (
+            _react2.default.createElement('button', {
+              onClick: () => onDelete(node.id),
+              className: "p-1 hover:bg-gray-700 rounded text-gray-400 hover:text-white"    ,}
+
+              , _react2.default.createElement(_lucidereact.Trash2, { size: 16,} )
+            )
+          )
+        )
+
+        , _react2.default.createElement('div', { className: "space-y-2",}
+          , _react2.default.createElement('div', { className: "space-y-1",}
+            , _react2.default.createElement('div', { className: "flex justify-between text-sm text-gray-400"   ,}
+              , _react2.default.createElement('span', null, "CPU")
+              , _react2.default.createElement('span', null, resources.cpu, "/", node.cpu)
+            )
+            , _react2.default.createElement(ResourceBar, { used: resources.cpu, total: node.cpu,} )
+          )
+
+          , _react2.default.createElement('div', { className: "space-y-1",}
+            , _react2.default.createElement('div', { className: "flex justify-between text-sm text-gray-400"   ,}
+              , _react2.default.createElement('span', null, "Memory")
+              , _react2.default.createElement('span', null, resources.memory, "/", node.memory, "GB")
+            )
+            , _react2.default.createElement(ResourceBar, { used: resources.memory, total: node.memory,} )
+          )
+        )
+      )
+
+      , _react2.default.createElement('div', { className: "space-y-2",}
+        , _react2.default.createElement(_framermotion.AnimatePresence, { mode: "popLayout",}
+          , nodePods.map(pod => (
+            _react2.default.createElement(Pod, {
+              key: pod.id,
+              name: pod.name,
+              size: pod.size,
+              status: pod.status,}
+            )
+          ))
+        )
+      )
+    )
+  );
+}
+
+function PendingPodsCard({ pods }) {
+  if (pods.length === 0) return null;
+
+  return (
+    _react2.default.createElement(_framermotion.motion.div, { 
+      initial: { opacity: 0 }, 
+      animate: { opacity: 1 },
+      exit: { opacity: 0 },
+      className: "bg-gray-800 rounded-lg p-4 space-y-4"   ,}
+
+      , _react2.default.createElement('h3', { className: "font-medium text-gray-400" ,}, "Pending Pods" )
+      , _react2.default.createElement('div', { className: "space-y-2",}
+        , _react2.default.createElement(_framermotion.AnimatePresence, { mode: "popLayout",}
+          , pods.map(pod => (
+            _react2.default.createElement(Pod, {
+              key: pod.id,
+              name: pod.name,
+              size: pod.size,
+              status: pod.status,}
+            )
+          ))
+        )
+      )
+    )
+  );
+}
+
+function WorkloadModal({ isOpen, onClose, onDeploy }) {
+  const [selected, setSelected] = _react.useState.call(void 0, '');
+  const [replicas, setReplicas] = _react.useState.call(void 0, 1);
+  const [antiAffinity, setAntiAffinity] = _react.useState.call(void 0, false);
+
+  if (!isOpen) return null;
+
+  return (
+    _react2.default.createElement('div', { className: "fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4"       ,}
+      , _react2.default.createElement('div', { className: "bg-gray-800 rounded-lg p-6 w-full max-w-md space-y-6"     ,}
+        , _react2.default.createElement('div', { className: "flex justify-between items-center"  ,}
+          , _react2.default.createElement('h2', { className: "text-lg font-semibold" ,}, "Deploy Workload" )
+          , _react2.default.createElement('button', { onClick: onClose,}, _react2.default.createElement(_lucidereact.X, { className: "text-gray-400 hover:text-white" ,} ))
+        )
+
+        , _react2.default.createElement('div', { className: "grid grid-cols-2 gap-2"  ,}
+          , Object.entries(WORKLOAD_TYPES).map(([name, config]) => (
+            _react2.default.createElement('button', {
+              key: name,
+              onClick: () => {
+                setSelected(name);
+                setAntiAffinity(config.type !== 'DAEMONSET');
+              },
+              className: `p-3 rounded border ${
+                selected === name 
+                  ? 'border-blue-500 bg-blue-500/10' 
+                  : 'border-gray-600'
+              }`,}
+
+              , config.type === 'DEPLOYMENT' && _react2.default.createElement(_lucidereact.Globe, { className: "w-5 h-5 mx-auto mb-2"   ,} )
+              , config.type === 'STATEFULSET' && _react2.default.createElement(_lucidereact.Database, { className: "w-5 h-5 mx-auto mb-2"   ,} )
+              , config.type === 'DAEMONSET' && _react2.default.createElement(_lucidereact.Server, { className: "w-5 h-5 mx-auto mb-2"   ,} )
+              , _react2.default.createElement('div', { className: "text-sm",}, name)
+            )
+          ))
+        )
+
+        , selected && WORKLOAD_TYPES[selected].type !== 'DAEMONSET' && (
+          _react2.default.createElement('div', { className: "space-y-4",}
+            , _react2.default.createElement('div', null
+              , _react2.default.createElement('label', { className: "block mb-2 text-sm"  ,}, "Replicas")
+              , _react2.default.createElement('input', {
+                type: "number",
+                value: replicas,
+                onChange: e => setReplicas(Math.max(1, parseInt(e.target.value) || 1)),
+                className: "bg-gray-700 rounded p-2 w-24"   ,
+                min: "1",}
+              )
+            )
+
+            , _react2.default.createElement('label', { className: "flex items-center gap-2"  ,}
+              , _react2.default.createElement('input', {
+                type: "checkbox",
+                checked: antiAffinity,
+                onChange: e => setAntiAffinity(e.target.checked),}
+              )
+              , _react2.default.createElement(_lucidereact.SplitSquareHorizontal, { className: "w-4 h-4" ,} )
+              , _react2.default.createElement('span', { className: "text-sm",}, "Pod Anti-Affinity" )
+            )
+          )
+        )
+
+        , _react2.default.createElement('div', { className: "flex justify-end gap-2"  ,}
+          , _react2.default.createElement('button', {
+            onClick: onClose,
+            className: "px-4 py-2 hover:bg-gray-700 rounded"   ,}
+, "Cancel"
+
+          )
+          , _react2.default.createElement('button', {
+            onClick: () => {
+              if (!selected) return;
+              const workload = WORKLOAD_TYPES[selected];
+              onDeploy({
+                name: selected,
+                type: workload.type,
+                size: workload.size,
+                replicas: workload.type === 'DAEMONSET' ? null : replicas,
+                antiAffinity
+              });
+              onClose();
+            },
+            disabled: !selected,
+            className: "px-4 py-2 bg-blue-500 hover:bg-blue-600 disabled:opacity-50 rounded"     ,}
+, "Deploy"
+
+          )
+        )
+      )
+    )
+  );
+}
+
+ function KubernetesVisualizer() {
+  const [nodes, setNodes] = _react.useState.call(void 0, [
+    { id: 'node-1', name: 'node-1', cpu: 8, memory: 8 }
+  ]);
+  const [workloads, setWorkloads] = _react.useState.call(void 0, []);
+  const [pods, setPods] = _react.useState.call(void 0, []);
+  const [showModal, setShowModal] = _react.useState.call(void 0, false);
+
+  const pendingPods = pods.filter(p => !p.nodeId);
+
+  // Create DaemonSet pods for a new node
+  const createDaemonSetPods = (nodeId) => {
+    const daemonSetWorkloads = workloads.filter(w => w.type === 'DAEMONSET');
+    
+    const newPods = daemonSetWorkloads.map(workload => ({
+      id: `pod-${Date.now()}-${nodeId}-${workload.name}`,
+      name: `${workload.name}-${nodeId}`,
+      workloadId: workload.id,
+      size: workload.size,
+      nodeId: null,
+      status: 'pending'
+    }));
+
+    if (newPods.length > 0) {
+      setPods(prev => [...prev, ...newPods]);
+    }
+  };
+
+  _react.useEffect.call(void 0, () => {
+    const interval = setInterval(() => {
+      setPods(currentPods => {
+        const pendingPods = currentPods.filter(p => !p.nodeId);
+        if (!pendingPods.length) return currentPods;
+
+        const newPods = [...currentPods];
+        let updated = false;
+
+        for (const pod of pendingPods) {
+          const workload = workloads.find(w => w.id === pod.workloadId);
+          if (!workload) continue;
+
+          const bestNode = findBestNode(pod, nodes, newPods, workload);
+          if (bestNode) {
+            const index = newPods.findIndex(p => p.id === pod.id);
+            newPods[index] = { ...pod, nodeId: bestNode.id, status: 'running' };
+            updated = true;
+          }
+        }
+
+        return updated ? newPods : currentPods;
+      });
+    }, 1000);
+
+    return () => clearInterval(interval);
+  }, [workloads, nodes]);
+
+  const handleWorkloadCreate = (config) => {
+    const workload = {
+      id: `workload-${Date.now()}`,
+      ...config
+    };
+    
+    setWorkloads(prev => [...prev, workload]);
+    
+    const podCount = config.type === 'DAEMONSET' ? nodes.length : config.replicas;
+    const newPods = Array.from({ length: podCount }, (_, i) => ({
+      id: `pod-${Date.now()}-${i}`,
+      name: `${config.name}-${i}`,
+      workloadId: workload.id,
+      size: config.size,
+      nodeId: null,
+      status: 'pending'
+    }));
+    
+    setPods(prev => [...prev, ...newPods]);
+  };
+
+  return (
+    _react2.default.createElement('div', { className: "min-h-screen bg-gray-900 text-white p-6"   ,}
+      , _react2.default.createElement('div', { className: "max-w-7xl mx-auto space-y-6"  ,}
+        , _react2.default.createElement('div', { className: "flex justify-between items-center"  ,}
+          , _react2.default.createElement('h1', { className: "text-2xl font-bold" ,}, "Kubernetes Cluster" )
+          , _react2.default.createElement('div', { className: "flex gap-2" ,}
+            , _react2.default.createElement('button', {
+              onClick: () => {
+                const nodeName = `node-${nodes.length + 1}`;
+                const nodeId = nodeName;
+                setNodes(prev => [...prev, {
+                  id: nodeId,
+                  name: nodeName,
+                  cpu: 8,
+                  memory: 8
+                }]);
+                createDaemonSetPods(nodeId);
+              },
+              className: "flex items-center gap-2 px-3 py-2 rounded bg-gray-700 hover:bg-gray-600"       ,}
+
+              , _react2.default.createElement(_lucidereact.Plus, { size: 16,} ), "Add Node"
+
+            )
+            , _react2.default.createElement('button', {
+              onClick: () => setShowModal(true),
+              className: "flex items-center gap-2 px-3 py-2 rounded bg-blue-500 hover:bg-blue-600"       ,}
+
+              , _react2.default.createElement(_lucidereact.Plus, { size: 16,} ), "Deploy Workload"
+
+            )
+          )
+        )
+
+        , _react2.default.createElement('div', { className: "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4"    ,}
+          , nodes.map(node => (
+            _react2.default.createElement(NodeCard, {
+              key: node.id,
+              node: node,
+              pods: pods,
+              onDelete: (nodeId) => {
+                setPods(prev => prev.filter(pod => pod.nodeId !== nodeId));
+                setNodes(prev => prev.filter(n => n.id !== nodeId));
+              },
+              canDelete: nodes.length > 1,}
+            )
+          ))
+          , pendingPods.length > 0 && (
+            _react2.default.createElement(PendingPodsCard, { pods: pendingPods,} )
+          )
+        )
+      )
+
+      , _react2.default.createElement(_framermotion.AnimatePresence, null
+        , showModal && (
+          _react2.default.createElement(WorkloadModal, {
+            isOpen: showModal,
+            onClose: () => setShowModal(false),
+            onDeploy: handleWorkloadCreate,}
+          )
+        )
+      )
+    )
+  );
+} exports.default = KubernetesVisualizer;
+</script></head>
+  <body>
+  
+
+<div id="preview-app"></div></body></html>

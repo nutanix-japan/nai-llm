@@ -1,0 +1,311 @@
+<!DOCTYPE html><html><head><meta http-equiv="Content-Security-Policy" content="default-src 'self' 'unsafe-inline' 'unsafe-eval' data: blob: https://cdnjs.cloudflare.com https://cdn.jsdelivr.net https://code.jquery.com https://unpkg.com https://d3js.org https://threejs.org https://cdn.plot.ly https://stackpath.bootstrapcdn.com https://maps.googleapis.com https://cdn.tailwindcss.com https://ajax.googleapis.com https://kit.fontawesome.com https://cdn.datatables.net https://maxcdn.bootstrapcdn.com https://code.highcharts.com https://tako-static-assets-production.s3.amazonaws.com https://www.youtube.com https://fonts.googleapis.com https://fonts.gstatic.com https://pfst.cf2.poecdn.net https://puc.poecdn.net https://i.imgur.com https://wikimedia.org https://*.icons8.com https://*.giphy.com https://picsum.photos https://images.unsplash.com; frame-src 'self' https://www.youtube.com https://trytako.com; child-src 'self'; manifest-src 'self'; worker-src 'self'; upgrade-insecure-requests; block-all-mixed-content;"><script src="https://puc.poecdn.net/standard.c8d3df4d67dddca2ccac.js"></script>
+    <meta charset="utf-8">
+    <title>K8s Deployment Strategies Visualizer</title>
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+  <script src="https://puc.poecdn.net/tw.b9024aecac666455e183.js"></script><script src="https://puc.poecdn.net/deps.ac7e4de820f1e47e84a2.js"></script><script src="https://puc.poecdn.net/exports.b0f0f482cdeb5302b0b9.js"></script><script src="https://puc.poecdn.net/renderer.6065bf6c6271ccf44fe1.js"></script><script>Object.defineProperty(exports, "__esModule", {value: true}); function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }var _react = require('react'); var _react2 = _interopRequireDefault(_react);
+var _framermotion = require('framer-motion');
+var _lucidereact = require('lucide-react');
+
+const KubernetesVisualizer = () => {
+  const [deploymentType, setDeploymentType] = _react.useState.call(void 0, 'rolling');
+  const [currentVersion, setCurrentVersion] = _react.useState.call(void 0, 'v1');
+  const [isDeploying, setIsDeploying] = _react.useState.call(void 0, false);
+  const [progress, setProgress] = _react.useState.call(void 0, 0);
+
+  const [nodes] = _react.useState.call(void 0, [
+    { 
+      id: 1, 
+      name: 'Node 1',
+      capacity: 4, // max pods per node
+      used: 2
+    },
+    { 
+      id: 2, 
+      name: 'Node 2',
+      capacity: 4,
+      used: 2
+    },
+    { 
+      id: 3, 
+      name: 'Node 3',
+      capacity: 4,
+      used: 2
+    }
+  ]);
+
+  const [pods, setPods] = _react.useState.call(void 0, [
+    { id: 1, version: 'v1', nodeId: 1, status: 'running' },
+    { id: 2, version: 'v1', nodeId: 1, status: 'running' },
+    { id: 3, version: 'v1', nodeId: 2, status: 'running' },
+    { id: 4, version: 'v1', nodeId: 2, status: 'running' },
+    { id: 5, version: 'v1', nodeId: 3, status: 'running' },
+    { id: 6, version: 'v1', nodeId: 3, status: 'running' },
+  ]);
+
+  const updatePodStatus = (podId, status) => {
+    setPods(currentPods =>
+      currentPods.map(pod =>
+        pod.id === podId ? { ...pod, status } : pod
+      )
+    );
+  };
+
+  const performRollingUpdate = async () => {
+    setIsDeploying(true);
+    setProgress(0);
+    const newVersion = currentVersion === 'v1' ? 'v2' : 'v1';
+    
+    for (let i = 0; i < pods.length; i++) {
+      const pod = pods[i];
+      setProgress((i / pods.length) * 100);
+      
+      updatePodStatus(pod.id, 'terminating');
+      await new Promise(resolve => setTimeout(resolve, 1000));
+      
+      updatePodStatus(pod.id, 'creating');
+      await new Promise(resolve => setTimeout(resolve, 1000));
+      
+      setPods(currentPods => 
+        currentPods.map((p, index) => 
+          index === i ? { ...p, version: newVersion, status: 'running' } : p
+        )
+      );
+      
+      await new Promise(resolve => setTimeout(resolve, 500));
+    }
+    
+    setProgress(100);
+    setCurrentVersion(newVersion);
+    await new Promise(resolve => setTimeout(resolve, 500));
+    setIsDeploying(false);
+    setProgress(0);
+  };
+
+  const performRecreate = async () => {
+    setIsDeploying(true);
+    setProgress(0);
+    const newVersion = currentVersion === 'v1' ? 'v2' : 'v1';
+    
+    setPods(currentPods =>
+      currentPods.map(pod => ({ ...pod, status: 'terminating' }))
+    );
+    setProgress(33);
+    await new Promise(resolve => setTimeout(resolve, 1000));
+    
+    setPods(currentPods =>
+      currentPods.map(pod => ({ ...pod, status: 'creating', version: newVersion }))
+    );
+    setProgress(66);
+    await new Promise(resolve => setTimeout(resolve, 1000));
+    
+    setPods(currentPods =>
+      currentPods.map(pod => ({ ...pod, status: 'running' }))
+    );
+    
+    setProgress(100);
+    setCurrentVersion(newVersion);
+    await new Promise(resolve => setTimeout(resolve, 500));
+    setIsDeploying(false);
+    setProgress(0);
+  };
+
+  const performBlueGreen = async () => {
+    setIsDeploying(true);
+    setProgress(0);
+    const newVersion = currentVersion === 'v1' ? 'v2' : 'v1';
+    
+    const newPods = pods.map(pod => ({
+      ...pod,
+      id: pod.id + pods.length,
+      version: newVersion,
+      status: 'creating'
+    }));
+    
+    setPods([...pods, ...newPods]);
+    setProgress(33);
+    await new Promise(resolve => setTimeout(resolve, 1000));
+    
+    setPods(currentPods =>
+      currentPods.map(pod =>
+        pod.version === newVersion ? { ...pod, status: 'running' } : { ...pod, status: 'terminating' }
+      )
+    );
+    setProgress(66);
+    await new Promise(resolve => setTimeout(resolve, 1000));
+    
+    setPods(currentPods =>
+      currentPods.filter(pod => pod.version === newVersion)
+    );
+    
+    setProgress(100);
+    setCurrentVersion(newVersion);
+    await new Promise(resolve => setTimeout(resolve, 500));
+    setIsDeploying(false);
+    setProgress(0);
+  };
+
+  const deploy = () => {
+    switch (deploymentType) {
+      case 'rolling':
+        performRollingUpdate();
+        break;
+      case 'recreate':
+        performRecreate();
+        break;
+      case 'bluegreen':
+        performBlueGreen();
+        break;
+    }
+  };
+
+  const PodStatus = ({ status }) => {
+    switch (status) {
+      case 'running':
+        return _react2.default.createElement(_lucidereact.CheckCircle, { className: "w-4 h-4 text-green-500"  ,} );
+      case 'terminating':
+        return _react2.default.createElement(_lucidereact.AlertCircle, { className: "w-4 h-4 text-red-500"  ,} );
+      case 'creating':
+        return _react2.default.createElement(_lucidereact.Loader, { className: "w-4 h-4 animate-spin text-blue-500"   ,} );
+      default:
+        return null;
+    }
+  };
+
+  const CapacityBar = ({ used, capacity }) => {
+    const percentage = (used / capacity) * 100;
+    return (
+      _react2.default.createElement('div', { className: "w-full",}
+        , _react2.default.createElement('div', { className: "h-2 bg-gray-200 rounded-full"  ,}
+          , _react2.default.createElement('div', {
+            className: `h-2 rounded-full transition-all duration-300 ${
+              percentage < 75 ? 'bg-green-500' : percentage < 90 ? 'bg-yellow-500' : 'bg-red-500'
+            }`,
+            style: { width: `${percentage}%` },}
+          )
+        )
+        , _react2.default.createElement('div', { className: "text-xs mt-1 text-gray-600"  ,}
+          , used, " / "  , capacity, " pods"
+        )
+      )
+    );
+  };
+
+  return (
+    _react2.default.createElement('div', { className: "p-6 bg-gray-100 min-h-screen"  ,}
+      , _react2.default.createElement('div', { className: "max-w-6xl mx-auto" ,}
+        , _react2.default.createElement('h1', { className: "text-3xl font-bold mb-8"  ,}, "Kubernetes Deployment Visualizer"  )
+
+        , _react2.default.createElement('div', { className: "mb-6 bg-white p-4 rounded-lg shadow"    ,}
+          , _react2.default.createElement('div', { className: "flex items-center space-x-4 mb-4"   ,}
+            , _react2.default.createElement('select', {
+              value: deploymentType,
+              onChange: (e) => setDeploymentType(e.target.value),
+              className: "border rounded p-2"  ,
+              disabled: isDeploying,}
+
+              , _react2.default.createElement('option', { value: "rolling",}, "Rolling Update" )
+              , _react2.default.createElement('option', { value: "recreate",}, "Recreate")
+              , _react2.default.createElement('option', { value: "bluegreen",}, "Blue/Green")
+            )
+
+            , _react2.default.createElement('button', {
+              onClick: deploy,
+              disabled: isDeploying,
+              className: "bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 disabled:bg-gray-400 flex items-center space-x-2"         ,}
+
+              , isDeploying && _react2.default.createElement(_lucidereact.Loader, { className: "w-4 h-4 animate-spin"  ,} )
+              , _react2.default.createElement('span', null, "Deploy " , currentVersion === 'v1' ? 'v2' : 'v1')
+            )
+          )
+
+          , isDeploying && (
+            _react2.default.createElement('div', { className: "mb-4",}
+              , _react2.default.createElement('div', { className: "flex justify-between mb-1"  ,}
+                , _react2.default.createElement('span', { className: "text-sm font-medium" ,}, "Deployment Progress" )
+                , _react2.default.createElement('span', { className: "text-sm font-medium" ,}, Math.round(progress), "%")
+              )
+              , _react2.default.createElement('div', { className: "w-full bg-gray-200 rounded-full h-2.5"   ,}
+                , _react2.default.createElement('div', {
+                  className: "bg-blue-600 h-2.5 rounded-full transition-all duration-300"    ,
+                  style: { width: `${progress}%` },}
+                )
+              )
+            )
+          )
+        )
+
+        , _react2.default.createElement('div', { className: "grid grid-cols-1 md:grid-cols-3 gap-6"   ,}
+          , nodes.map((node) => (
+            _react2.default.createElement(_framermotion.motion.div, {
+              key: node.id,
+              className: "p-4 rounded-lg shadow-lg bg-white"   ,}
+
+              , _react2.default.createElement('div', { className: "flex items-center justify-between mb-4"   ,}
+                , _react2.default.createElement('div', { className: "flex items-center space-x-2"  ,}
+                  , _react2.default.createElement(_lucidereact.Server, { className: "w-5 h-5 text-green-500"  ,} )
+                  , _react2.default.createElement('span', { className: "font-medium",}, node.name)
+                )
+                , _react2.default.createElement(CapacityBar, {
+                  used: pods.filter(pod => pod.nodeId === node.id).length,
+                  capacity: node.capacity,}
+                )
+              )
+
+              , _react2.default.createElement('div', { className: "grid grid-cols-2 gap-2"  ,}
+                , _react2.default.createElement(_framermotion.AnimatePresence, null
+                  , pods.filter(pod => pod.nodeId === node.id).map((pod) => (
+                    _react2.default.createElement(_framermotion.motion.div, {
+                      key: pod.id,
+                      initial: { scale: 0.9, opacity: 0 },
+                      animate: { scale: 1, opacity: 1 },
+                      exit: { scale: 0.9, opacity: 0 },
+                      className: `p-2 rounded flex justify-between items-center ${
+                        pod.version === 'v1' ? 'bg-blue-100' : 'bg-green-100'
+                      }`,}
+
+                      , _react2.default.createElement('div', { className: "flex items-center space-x-2"  ,}
+                        , _react2.default.createElement(_lucidereact.Box, { className: "w-4 h-4 text-blue-500"  ,} )
+                        , _react2.default.createElement('span', { className: "text-sm",}, "Pod " , pod.id)
+                        , _react2.default.createElement('span', { className: "text-xs",}, "(", pod.version, ")")
+                      )
+                      , _react2.default.createElement(PodStatus, { status: pod.status,} )
+                    )
+                  ))
+                )
+              )
+            )
+          ))
+        )
+
+        , _react2.default.createElement('div', { className: "mt-6 bg-white p-4 rounded-lg shadow"    ,}
+          , _react2.default.createElement('h2', { className: "text-xl font-bold mb-4"  ,}, "Cluster Status" )
+          , _react2.default.createElement('div', { className: "grid grid-cols-2 gap-4"  ,}
+            , _react2.default.createElement('div', null
+              , _react2.default.createElement('h3', { className: "font-medium mb-2" ,}, "Pod Distribution" )
+              , _react2.default.createElement('div', { className: "space-y-1",}
+                , _react2.default.createElement('div', null, "Total Pods: "  , pods.length)
+                , _react2.default.createElement('div', null, "Running: " , pods.filter(pod => pod.status === 'running').length)
+                , _react2.default.createElement('div', null, "Creating: " , pods.filter(pod => pod.status === 'creating').length)
+                , _react2.default.createElement('div', null, "Terminating: " , pods.filter(pod => pod.status === 'terminating').length)
+              )
+            )
+            , _react2.default.createElement('div', null
+              , _react2.default.createElement('h3', { className: "font-medium mb-2" ,}, "Version Distribution" )
+              , _react2.default.createElement('div', { className: "space-y-1",}
+                , _react2.default.createElement('div', null, "v1: " , pods.filter(pod => pod.version === 'v1').length)
+                , _react2.default.createElement('div', null, "v2: " , pods.filter(pod => pod.version === 'v2').length)
+              )
+            )
+          )
+        )
+      )
+    )
+  );
+};
+
+exports. default = KubernetesVisualizer;
+</script></head>
+  <body>
+  
+
+<div id="preview-app"></div></body></html>

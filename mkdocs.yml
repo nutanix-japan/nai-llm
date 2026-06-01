@@ -1,0 +1,247 @@
+site_name: Nutanix Cloud Native and AI Solutions
+site_url: https://nai.howntnx.win/
+site_description: >-
+  The one-stop shop for Nutanix Cloud Native and AI solutions. 
+
+repo_url: https://github.com/nutanix-japan/nai-llm
+theme:
+  name: material
+
+# Site navigation
+
+nav:
+- Home: index.md
+#- Possibilities: possibilities/possibilities.md
+- Design:
+  - Conceptual Design and Components: conceptual/conceptual.md
+  - Sizing: sizing/sizing.md
+- Infra Preparation:
+  - infra/index.md
+  - Workstation Setup: infra/workstation.md
+  - Jumphost VM Tofu: infra/infra_jumphost_tofu.md
+- NAI on NKP Tutorials:
+  - Nutanix Enterprise AI v2.7.0 (NAI):
+    - Getting Started: iep/index.md
+    - Setup NKP Cluster: infra/infra_nkp.md
+    - Pre-requisites NAI: iep/iep_pre_reqs.md
+    - Deploy NAI: iep/iep_deploy.md
+    - Test NAI: iep/iep_test.md
+  # - Air-gapped Nutanix Enterprise AI v2.6.0 (NAI):
+  #   - Getting Started: airgap_nai/index.md
+  #   - Harbor Container Registry: airgap_nai/harbor.md
+  #   - Setup Air-gapped NKP Cluster: airgap_nai/infra_nkp_airgap.md
+  #   - Pre-requisites NAI: airgap_nai/airgap_nai_pre_reqs.md
+  #   - Deploy NAI: airgap_nai/airgap_nai_deploy.md
+  #   - Test NAI: airgap_nai/airgap_nai_test.md
+  # - GPT-in-a-Box v1 NVD Reference App:
+  #   - Getting Started: llmmgmt/index.md
+  #   - Setup NKE Cluster: infra/infra_nke.md
+  #   - Pre-requisites: llmmgmt/llm_pre_reqs.md
+  #   - Deploy Management Cluster: llmmgmt/llm_mgt_deploy.md
+  #   - Deploy Dev Cluster: llmmgmt/llm_dev_deploy.md
+  #   - Test LLM App: llmmgmt/llm_test.md
+- NKP Workload Tutorials: 
+  - NKP and NDB: 
+    - Getting Started: nkp_tutorials/nkp_ndb_lab/index.md
+    - NDB Operator on NKP: nkp_tutorials/nkp_ndb_lab/nkp_ndb_lab.md
+    - NDB Workload: nkp_tutorials/nkp_ndb_lab/nkp_ndb_install_app.md
+  - NKP CICD:
+    - Getting started: nkp_tutorials/nkp_cicd_lab/index.md
+    - CICD Pre-requisites: nkp_tutorials/nkp_cicd_lab/nkp_cicd_prereq.md
+    - CI Setup and Test: nkp_tutorials/nkp_cicd_lab/nkp_ci_setup.md
+    - CD Setup and Test: nkp_tutorials/nkp_cicd_lab/nkp_cd_setup.md
+    - CICD Troubleshooting: nkp_tutorials/nkp_cicd_lab/nkp_cicd_tshooting.md
+  - Nutanix MCP Server: 
+    - MCP Server Setup: nkp_tutorials/nkp_mcp_lab/nkp_nai_mcp.md
+    - MCP N8N Chat Workflow: nkp_tutorials/nkp_mcp_lab/nkp_nai_n8n.md
+- NDK Tutorials:
+  - Getting Started: nkp_ndk/index.md
+  - Preparing NDK: nkp_ndk/nkp_ndk.md
+  - Volumes (RWO CSI) Replication:
+    - Single PC/PE/K8s Workflow: nkp_ndk/nkp_ndk_singlek8s.md
+    - Multiple PC/PE/K8s Workflow: nkp_ndk/nkp_ndk_k8s_replication.md
+  - Files (RWX CSI)Replication:
+    - Single PC/PE/K8s Workflow: nkp_ndk/nkp_ndk_singlek8s_files.md
+    - Multiple PE/K8s/Files Workflow: nkp_ndk/nkp_ndk_k8s_files_replication.md
+- Appendix:
+  - Jumphost VM Manual: infra/infra_jumphost.md
+  - NKP The Hard Way: appendix/infra_nkp_hard_way.md
+  - Harbor Container Registry: infra/harbor.md
+  - Deploying Private CA Certificate to NKP Cluster: appendix/nkp_cert_ds.md
+  - Opentofu: appendix/opentofu.md
+- References:
+  - Nutanix Components: ntxcomponents/ntxcomponents.md
+  - Tools used and why?: tools/tools.md
+  - Contributing: contributing.md
+  - Roadmap: roadmap.md
+- Simulators:
+  - static/index.md
+  - Pods and Nodepools Simulation: static/scheduling-mixed-pods-and-nodepool-v1.html
+  - K8S Deployment Strategies: static/k8s-deployment-strategies-visualizer.html
+  - LLM Model Selector: static/nai-llm-model-selectr.html
+  - LLM Scheduling Kubernetes Clusters: static/nai-llm-simulation-v1-nim-rag.html
+- Takeaways: takeaways/takeaways.md
+
+
+# Repository
+
+repo_name: nutanix-japan/nai-llm
+repo_url: https://github.com/nutanix-japan/nai-llm
+edit_uri: edit/main/docs/
+
+# Copyright
+copyright: Copyright &copy; 2016 - 2026 Nutanix
+
+# Configuration
+
+theme:
+  palette:
+  #   - primary: deep purple
+  #   - accent: black
+
+  # Palette toggle for automatic mode
+  - media: "(prefers-color-scheme)"
+    toggle:
+      icon: material/brightness-auto
+      name: Switch to light mode
+
+  # Palette toggle for light mode
+  - media: "(prefers-color-scheme: light)"
+    scheme: default
+    toggle:
+      icon: material/brightness-7
+      name: Switch to dark mode
+
+  # Palette toggle for dark mode
+  - media: "(prefers-color-scheme: dark)"
+    scheme: slate
+    toggle:
+      icon: material/brightness-4
+      name: Switch to system preference
+
+  name: material
+  icon:
+    admonition:
+      note: octicons/tag-16
+      abstract: octicons/checklist-16
+      info: octicons/info-16
+      tip: octicons/squirrel-16
+      success: octicons/check-16
+      question: octicons/question-16
+      warning: octicons/alert-16
+      failure: octicons/x-circle-16
+      danger: octicons/zap-16
+      bug: octicons/bug-16
+      example: octicons/beaker-16
+      quote: octicons/quote-16
+  features:
+  - navigation.instant
+  - navigation.instant.progress
+  - navigation.path
+  - navigation.footer
+  - navigation.tracking
+  # - navigation.sections
+  - navigation.tabs
+  - navigation.tabs.sticky
+  # - navigation.expand
+  - navigation.top
+  - navigation.integrateåß
+  - search.highlight
+  - search.suggest
+  - search.share
+  - toc.follow
+  - announce.dismiss
+  - content.action.edit
+  - content.action.view
+  - content.code.annotate
+  - content.code.copy
+  - content.code.annotate
+  - content.code.select
+  # - toc.integrate
+  #- content.tabs.link
+
+markdown_extensions:
+- admonition
+- pymdownx.details
+- pymdownx.highlight:
+    anchor_linenums: true
+    line_spans: __span
+    pygments_lang_class: true
+- pymdownx.inlinehilite
+- pymdownx.snippets
+- pymdownx.superfences:
+    custom_fences:
+    - name: mermaid
+      class: mermaid
+      format: !!python/name:pymdownx.superfences.fence_code_format
+- pymdownx.emoji:
+    emoji_index: !!python/name:material.extensions.emoji.twemoji
+    emoji_generator: !!python/name:material.extensions.emoji.to_svg
+- pymdownx.tabbed:
+    alternate_style: true
+- pymdownx.tasklist:
+    custom_checkbox: true
+- attr_list
+- md_in_html
+- pymdownx.keys
+- markdown_grid_tables
+
+plugins:
+- search
+- social
+- git-revision-date-localized:
+    enable_creation_date: true
+    enabled: !ENV [CI, false]
+#- include-markdown
+# - macros:
+#     include_dir: docs
+#- git-authors
+# - git-committers:
+#     repository: nutanix-japan/nai-llm
+#     branch: main
+#     enabled: !ENV [CI, false]
+
+# # Style sheeting here
+# extra_css:
+#   - stylesheets/extra.css
+
+# Additional configuration
+extra:
+  version: 
+    provider: mike
+  analytics:
+    provider: google
+    property: G-ZC4ZYRZBH3
+    feedback:
+      title: Was this page helpful?
+      ratings:
+        - icon: material/emoticon-happy-outline
+          name: This page was helpful
+          data: 1
+          note: >-
+            Thanks for your feedback!
+        - icon: material/emoticon-sad-outline
+          name: This page could be improved
+          data: 0
+          note: >-
+            Thanks for letting us know. 
+            [Open an issue](https://github.com) to help us improve.
+  consent:
+    title: Cookie consent
+    description: >-
+      We use cookies to recognize your repeated visits and preferences, as well
+      as to measure the effectiveness of our documentation and whether users
+      find what they're searching for. With your consent, you're helping us to
+      make our documentation better.
+  status:
+    new: Recently added
+    deprecated: Deprecated
+  # analytics:
+  #   provider: google
+  #   property: !ENV GOOGLE_ANALYTICS_KEY
+  social:
+  - icon: fontawesome/brands/github
+    link: https://github.com/nutanix-japan
+  - icon: fontawesome/brands/github
+    link: https://github.com/jesse-gonzalez
+
