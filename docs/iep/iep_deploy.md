@@ -2,7 +2,7 @@
 
 !!! info "Version 2.7.0"
 
-    This version of the NAI deployment is based on the Nutanix Enterprise AI (NAI) ``v2.6.0`` release.
+    This version of the NAI deployment is based on the Nutanix Enterprise AI (NAI) ``v2.7.0`` release.
 
 ```mermaid
 stateDiagram-v2
@@ -573,12 +573,12 @@ We will use the Docker login credentials we created in the previous section to d
         #
         NAME                            CHART VERSION   APP VERSION     DESCRIPTION                                       
         ntnx-charts/nai-operators       2.7.0           0.1.0           A Helm chart for CRDs and Operators required by...
-        ntnx-charts/nai-operators       2.6.0           0.1.0           A Helm chart for CRDs and Operators required by...
+        ntnx-charts/nai-operators       2.7.0           0.1.0           A Helm chart for CRDs and Operators required by...
         ntnx-charts/nai-operators       2.5.0           0.1.0           A Helm chart for CRDs and Operators required by...
 
         NAME                    CHART VERSION   APP VERSION     DESCRIPTION                         
         ntnx-charts/nai-core    2.7.0           0.1.0           A Helm chart for NAI core components
-        ntnx-charts/nai-core    2.6.0           0.1.0           A Helm chart for NAI core components
+        ntnx-charts/nai-core    2.7.0           0.1.0           A Helm chart for NAI core components
         ntnx-charts/nai-core    2.5.0           0.1.0           A Helm chart for NAI core components
         ntnx-charts/nai-core    2.4.0           0.1.0           A Helm chart for NAI core components
         ntnx-charts/nai-core    2.3.0           0.1.0           A Helm chart for NAI core components
