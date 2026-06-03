@@ -1,8 +1,8 @@
 # Deploying Nutanix Enterprise AI (NAI) NVD Reference Application
 
-!!! info "Version 2.6.0"
+!!! info "Version 2.7.0"
 
-    This version of the NAI deployment is based on the Nutanix Enterprise AI (NAI) ``v2.6.0`` release.
+    This version of the NAI deployment is based on the Nutanix Enterprise AI (NAI) ``v2.7.0`` release.
 
 ```mermaid
 stateDiagram-v2
@@ -25,23 +25,23 @@ stateDiagram-v2
 ## Prepare for NAI Deployment
 
 
-!!! example "Early Access(EA)/Technical Preview(TP) Software with NAI v2.6.0"
+!!! example "GA Software with NAI v2.7.0"
     
-    In this lab, we will deploy EA and TP version of the following software to test the following:
+    In this lab, we will deploy GA version of the following software to test the following:
 
     -  Nutanix Enterprise AI 
   
-        * Unified Endpoints - multiple endpoints for HA and token-based rate limiting
-        * Providers - Add remote endpoints from providers to utilize their models in Nutanix Enterprise AI workloads.
+        * **Unified Endpoints** - multiple endpoints for HA and token-based rate limiting
+        * **Providers** - Add remote endpoints from providers to utilize their models in Nutanix Enterprise AI workloads.
 
 !!! info
 
-    Changes in NAI ``v2.6.0``
+    Changes in NAI ``v2.7.0``
 
     - Kserve is of at least of ``v0.15.0``
     - Cert-manager is at least of ``v1.17.2``
     - OpenTelemetry operator is at least of ``v0.102.0``
-    - Envoy Gateway is at least of ``v1.6.3``
+    - Envoy Gateway is at least of ``v1.7.0``
   
 ## Enable Pre-requisite Applications  
 
@@ -59,22 +59,40 @@ The following pre-requisite applications will be enabled on NKP GUI:
 
     The helm charts and the container images for these applications are stored in internal Harbor registry. These images got uploaded to Harbor at the time of install NKE in this [section](../airgap_nai/infra_nkp_airgap.md#push-container-images-to-localprivate-registry-to-be-used-by-nkp).
 
+
+**Search** and **Enable** the following applications: follow this order to install dependencies for NAI application
+
+
 1. In the NKP GUI, Go to **Clusters**
 2. Click on **Management Cluster Workspace**
-3. Go to **Applications** 
-4. Search and enable the following applications: follow this order to install dependencies for NAI application
+3. Go to **Applications** to search and enable the following:
    
-    - Kube-prometheus-stack: version ``71.0.0`` or later (pre-installed on NKP cluster)
-    - Cert-manager - v1.17.2
-    
-    !!! tip "Cert-manager - v1.17.2"
+     * **Prometheus Monitoring** : version ``78.4.0`` or higher with the following ``Values`` configuration 
+     
+        ```yaml
+        alertmanager:
+          enabled: false
+        grafana:
+          enabled: false
+        prometheus:
+          enabled: false
+        kubeStateMetrics:
+          enabled: false
+        kubernetesServiceMonitors:
+          enabled: false
+        prometheus-node-exporter.kubeRBACProxy:
+          kubeRBACProxy:
+            enabled: true
+        ```
 
+     * **Cert-manager**- ``v1.17.2``
+    
         The following application are pre-installed on NKP cluster with Pro license
     
         - Cert Manager ``v1.17.2`` or higher
         
         Check if Cert Manager is installed (pre-installed on NKP cluster if license is installed)
-       
+        
         === ":octicons-command-palette-16: Command"
         
             ```bash
@@ -92,13 +110,16 @@ The following pre-requisite applications will be enabled on NKP GUI:
             cert-manager-webhook      1/1     1            1           145m
             ```
     
-        If not installed, use the following command or **NKP Applications GUI** to install it
-    
+        If not installed, use  or **NKP Applications GUI** to install it
+        
+        The following command can also be used to install Cert-manager
+
         === ":octicons-command-palette-16: Command"
         
             ```bash
             kubectl apply -f https://github.com/cert-manager/cert-manager/releases/download/v1.17.2/cert-manager.yaml
             ```
+
 
 The following pre-requisite applications will be enabled from the command line on the jumphost VM.
 
@@ -164,13 +185,13 @@ The following pre-requisite applications will be enabled from the command line o
         secret/private-regcred created
         ```
 
-10. Enable **Envoy Gateway CRDs** ``v1.6.3`` in **AI gateway mode**
+10. Enable **Envoy Gateway CRDs** ``v1.7.0`` in **AI gateway mode**
    
     === ":octicons-command-palette-16: Command"
     
         ```bash
-        helm template eg oci://${REGISTRY}/nutanix/gateway-crds-helm \
-          --version v1.6.3 \
+        helm template eg oci://${REGISTRY}/${PROJECT}/gateway-crds-helm \
+          --version v1.7.0 \
           --set crds.gatewayAPI.enabled=true \
           --set crds.envoyGateway.enabled=true \
           | kubectl apply --server-side --force-conflicts -f -
@@ -180,7 +201,7 @@ The following pre-requisite applications will be enabled from the command line o
     
         ```bash
         helm template eg oci://harbor.10.x.x.x.nip.io/nutanix/gateway-crds-helm \
-          --version v1.6.3 \
+          --version v1.7.0 \
           --set crds.gatewayAPI.enabled=true \
           --set crds.envoyGateway.enabled=true \
           | kubectl apply --server-side --force-conflicts -f -
@@ -189,8 +210,8 @@ The following pre-requisite applications will be enabled from the command line o
     === ":octicons-command-palette-16: Command Output"
 
         ```{ .text .no-copy }
-        Pulled: harbor.10.x.x.x.nip.io/nutanix/gateway-crds-helm:v1.6.3
-        Digest: sha256:55a2c0a4974cc2a83b9e144ec5b9ac687f0ae1b9d26ec178762184d0185db096
+        Pulled: harbor.x.x.x.x.nip.io/nutanix/gateway-crds-helm:v1.7.0
+        Digest: sha256:625ee2409826d30e70ac26eb1a93e80650ba2c81464f65aaca6968cd33793b37
         customresourcedefinition.apiextensions.k8s.io/backendtlspolicies.gateway.networking.k8s.io serverside-applied
         customresourcedefinition.apiextensions.k8s.io/gatewayclasses.gateway.networking.k8s.io serverside-applied
         customresourcedefinition.apiextensions.k8s.io/gateways.gateway.networking.k8s.io serverside-applied
@@ -220,72 +241,7 @@ The following pre-requisite applications will be enabled from the command line o
         ```bash
         cat << EOF > eg-config-for-gateway-mode.yaml
         # This file configures Envoy Gateway for AI Gateway mode with rate limiting
-        
-        config:
-          envoyGateway:
-            gateway:
-              controllerName: "gateway.envoyproxy.io/gatewayclass-controller"
-            logging:
-              level:
-                default: "info"
-            provider:
-              kubernetes:
-                rateLimitDeployment:
-                  container:
-                    image: "${REGISTRY}/nutanix/nai-ratelimit:99d85510"
-                  patch:
-                    type: "StrategicMerge"
-                    value:
-                      spec:
-                        template:
-                          spec:
-                            containers:
-                              - imagePullPolicy: "IfNotPresent"
-                                name: "envoy-ratelimit"
-                                image: "${REGISTRY}/nutanix/nai-ratelimit:99d85510"
-              type: "Kubernetes"
-            extensionApis:
-              enableEnvoyPatchPolicy: true
-              enableBackend: true
-            extensionManager:
-              maxMessageSize: 11Mi
-              backendResources:
-                - group: inference.networking.k8s.io
-                  kind: InferencePool
-                  version: v1
-              hooks:
-                xdsTranslator:
-                  translation:
-                    listener:
-                      includeAll: true
-                    route:
-                      includeAll: true
-                    cluster:
-                      includeAll: true
-                    secret:
-                      includeAll: true
-                  post:
-                    - "Translation"
-                    - "Cluster"
-                    - "Route"
-              service:
-                fqdn:
-                  hostname: "ai-gateway-controller.nai-system.svc.cluster.local"
-                  port: 1063
-            rateLimit:
-              backend:
-                type: "Redis"
-                redis:
-                  url: "redis-sentinel.nai-system.svc.cluster.local:6379"
-        EOF
-        ```
 
-    === ":octicons-command-palette-16: Sample command ``eg-config-for-gateway-mode.yaml``"
-  
-        ```bash
-        cat << EOF > eg-config-for-gateway-mode.yaml
-        # This file configures Envoy Gateway for AI Gateway mode with rate limiting
-        
         config:
           envoyGateway:
             gateway:
@@ -297,7 +253,7 @@ The following pre-requisite applications will be enabled from the command line o
               kubernetes:
                 rateLimitDeployment:
                   container:
-                    image: "harbor.10.x.x.x.nip.io/nutanix/nai-ratelimit:99d85510"
+                    image: "${REGISTRY}/${PROJECT}/nai-ratelimit:99d85510"
                   patch:
                     type: "StrategicMerge"
                     value:
@@ -307,7 +263,7 @@ The following pre-requisite applications will be enabled from the command line o
                             containers:
                               - imagePullPolicy: "IfNotPresent"
                                 name: "envoy-ratelimit"
-                                image: "harbor.10.x.x.x.nip.io/nutanix/nai-ratelimit:99d85510"
+                                image: "${REGISTRY}/${PROJECT}/nai-ratelimit:99d85510"
               type: "Kubernetes"
             extensionApis:
               enableEnvoyPatchPolicy: true
@@ -345,18 +301,18 @@ The following pre-requisite applications will be enabled from the command line o
         EOF
         ```
         
-11. Enable **Envoy Gateway** ``v1.6.3`` in **AI gateway mode**
+12. Enable **Envoy Gateway** ``v1.7.0`` in **AI gateway mode**
     
     === ":octicons-command-palette-16: Command"
     
         ```bash
-        helm upgrade --install eg oci://${REGISTRY}/nutanix/gateway-helm \
-          --version v1.6.3 \
+        helm upgrade --install eg oci://${REGISTRY}/${PROJECT}/gateway-helm \
+          --version v1.7.0 \
           -n envoy-gateway-system \
           --create-namespace --wait \
-          --set global.images.envoyGateway.image=${REGISTRY}/nutanix/nai-gateway:v1.6.3 \
-          --set global.images.ratelimit.image=${REGISTRY}/nutanix/nai-ratelimit:99d85510 \
-          --set global.imagePullSecrets[0].name=${IMAGE_PULL_SECRET} \
+          --set global.images.envoyGateway.image=${REGISTRY}/${PROJECT}/nai-gateway:v1.7.0 \
+          --set global.images.ratelimit.image=${REGISTRY}/${PROJECT}/nai-ratelimit:99d85510 \
+          --set "global.imagePullSecrets[0].name=${IMAGE_PULL_SECRET}" \
           -f ./eg-config-for-gateway-mode.yaml
         ```
 
@@ -364,10 +320,10 @@ The following pre-requisite applications will be enabled from the command line o
   
         ```bash
         helm upgrade --install eg oci://harbor.10.x.x.x.nip.io/nutanix/gateway-helm \
-          --version v1.6.3 \
+          --version v1.7.0 \
           -n envoy-gateway-system \
           --create-namespace --wait \
-          --set global.images.envoyGateway.image=harbor.10.x.x.x.nip.io/nutanix/nai-gateway:v1.6.3 \
+          --set global.images.envoyGateway.image=harbor.10.x.x.x.nip.io/nutanix/nai-gateway:v1.7.0 \
           --set global.images.ratelimit.image=harbor.10.x.x.x.nip.io/nutanix/nai-ratelimit:99d85510 \
           --set global.imagePullSecrets[0].name=private-regcred \
           -f ./eg-config-for-gateway-mode.yaml
@@ -377,78 +333,44 @@ The following pre-requisite applications will be enabled from the command line o
     
         ```{ .text .no-copy }
         Release "eg" does not exist. Installing it now.
-        Pulled: harbor.10.x.x.x.nip.io/nutanix/gateway-helm:v1.6.3
-        Digest: sha256:924799edea136fe405ea37480f5d5e65a81c6b01e3cbe53bf2ab5cde935ef0d6
+        Pulled: harbor.x.x.x.x.nip.io/nutanix/gateway-helm:v1.7.0
+        Digest: sha256:80ce6293c5a8658897971cd10adef51880a3ee6e5e1bbc92415b943cd4b94cb5
         NAME: eg
-        LAST DEPLOYED: Tue Apr  7 07:04:05 2026
+        LAST DEPLOYED: Tue Jun  2 06:50:14 2026
         NAMESPACE: envoy-gateway-system
         STATUS: deployed
         REVISION: 1
+        DESCRIPTION: Install complete
         TEST SUITE: None
         ```
 
-12. Create an EnvoyProxy custom resource to configure the Envoy data plane with private registry access:
-
-    === ":octicons-command-palette-16: Command"
-    
-        ```bash
-        cat <<EOF | kubectl apply -f -
-        apiVersion: gateway.envoyproxy.io/v1alpha1
-        kind: EnvoyProxy
-        metadata:
-          name: nai-envoyproxy
-          namespace: envoy-gateway-system
-        spec:
-          provider:
-            type: Kubernetes
-            kubernetes:
-              envoyDeployment:
-                pod:
-                  imagePullSecrets:
-                    - name: ${IMAGE_PULL_SECRET}
-                container:
-                  image: "${REGISTRY}/nutanix/nai-envoy:distroless-v1.36.4"
-        EOF
-        ```
-
-    === ":octicons-command-palette-16: Sample command"
-    
-        ```bash
-        cat <<EOF | kubectl apply -f -
-        apiVersion: gateway.envoyproxy.io/v1alpha1
-        kind: EnvoyProxy
-        metadata:
-          name: nai-envoyproxy
-          namespace: envoy-gateway-system
-        provider:
-        kubernetes:
-          envoyDeployment:
-            pod:
-              imagePullSecrets:
-              - name: private-regcred
-            container:
-              image: harbor.10.x.x.x/nip.io/nutanix/nai-envoy:distroless-v1.36.4
-        EOF
-        ```
-
-    === ":octicons-command-palette-16: Command output"
-    
-        ```{ .text .no-copy }
-        envoyproxy.gateway.envoyproxy.io/nai-envoyproxy created
-        ```
-
 13. Check if Envoy Gateway resources are ready
+    
+    !!! warning 
+        
+        The ``envoy-ratelimit-`` pod will temporarily be in ``CrashLoopBackOff`` state and eventually will transition to ``Running`` after redis-standalone pod is fully deployed in the upcoming [Deploy NAI](iep_deploy.md#deploy-nai) section.
+
+        Ignore the ``CrashLoopBackOff`` state for now and move on to the next section. 
    
     === ":octicons-command-palette-16: Command"
     
         ```bash
         kubectl wait --timeout=5m -n envoy-gateway-system deployment/envoy-gateway --for=condition=Available
+        kubectl get pods
         ```
 
     === ":octicons-command-palette-16: Output"
 
         ```{ .text .no-copy }
+        $ kubectl wait --timeout=5m -n envoy-gateway-system deployment/envoy-gateway --for=condition=Available
+        #
         deployment.apps/envoy-gateway condition met
+
+        $ kubectl get pods
+        #
+        NAME                               READY   STATUS    RESTARTS      AGE
+        envoy-gateway-c885698c5-f88wl      1/1     Running   0             102s
+        envoy-ratelimit-7c47dd84cc-8qz7n   0/1     Error     4 (48s ago)   101s
         ```
 
 ### Kserve
@@ -485,10 +407,9 @@ The following pre-requisite applications will be enabled from the command line o
     
         ```bash
         helm upgrade --install kserve-crd \
-          oci://${REGISTRY}/kserve-crd \
+          oci://${REGISTRY}/${PROJECT}/kserve-crd \
           --version v0.15.0 \
-          -n kserve \
-          --create-namespace 
+          -n kserve 
         ```
     
     === ":octicons-command-palette-16: Sample command"
@@ -497,37 +418,39 @@ The following pre-requisite applications will be enabled from the command line o
         helm upgrade --install kserve-crd \
           oci://harbor.10.x.x.x.nip.io/nutanix/kserve-crd \
           --version v0.15.0 \
-          -n kserve \
-          --create-namespace
+          -n kserve 
         ```
     
     === ":octicons-command-palette-16: Command output"
     
         ```{ .text .no-copy }
-        Release "kserve-crd" does not exist. Installing it now.
-        Pulled: harbor.10.x.x.x.nip.io/nutanix/kserve-crd:v0.15.0
-        Digest: sha256:01533cdda82c767fdd39172846f04c5185011eab2769b2c3d727bdd0f244a8f5
+        Pulled: harbor.x.x.x.x.nip.io/nutanix/kserve-crd:v0.15.0
+        Digest: sha256:b673a75fdf45602ae58bb528e7b445e4530617b18f8eebb5d6337c16d4596951
+        Release "kserve-crd" has been upgraded. Happy Helming!
         NAME: kserve-crd
-        LAST DEPLOYED: Tue Apr  7 07:10:02 2026
+        LAST DEPLOYED: Tue Jun  2 07:03:11 2026
         NAMESPACE: kserve
         STATUS: deployed
-        REVISION: 1
+        REVISION: 2
+        DESCRIPTION: Upgrade complete
         TEST SUITE: None
         ```
   
 15. Run the **Kserve** installation
 
+
     === ":octicons-command-palette-16: Command"
     
         ```bash
         helm upgrade --install kserve \
-          oci://${REGISTRY}/kserve \
+          oci://${REGISTRY}/${PROJECT}/kserve \
           --version v0.15.0 \
-          -n kserve \
-          --set controller.image.repository=${REGISTRY}/kserve-controller \
-          --set controller.image.tag=v0.15.0 \
+          -n kserve --wait \
           --set kserve.controller.deploymentMode=RawDeployment \
-          --set kserve.controller.gateway.disableIngressCreation=true
+          --set kserve.controller.gateway.disableIngressCreation=true \
+          --set kserve.controller.image=${REGISTRY}/${PROJECT}/nai-kserve-controller \
+          --set kserve.controller.rbacProxyImage=${REGISTRY}/${PROJECT}/nai-kube-rbac-proxy:v0.20.0 \
+          --set kserve.controller.imagePullSecrets[0].name=${IMAGE_PULL_SECRET}
         ```
     
     === ":octicons-command-palette-16: Command"
@@ -536,26 +459,53 @@ The following pre-requisite applications will be enabled from the command line o
         helm upgrade --install kserve \
           oci://harbor.10.x.x.x.nip.io/kserve \
           --version v0.15.0 \
-          -n kserve \
-          --set controller.image.repository=harbor.10.x.x.x.nip.io/kserve-controller \
-          --set controller.image.tag=v0.15.0 \
+          -n kserve --wait \
           --set kserve.controller.deploymentMode=RawDeployment \
-          --set kserve.controller.gateway.disableIngressCreation=true
+          --set kserve.controller.gateway.disableIngressCreation=true \
+          --set kserve.controller.image=${REGISTRY}/${PROJECT}/nai-kserve-controller \
+          --set kserve.controller.rbacProxyImage=${REGISTRY}/${PROJECT}/nai-kube-rbac-proxy:v0.20.0 \
+          --set kserve.controller.imagePullSecrets[0].name=${IMAGE_PULL_SECRET}
         ```
     
     === ":octicons-command-palette-16: Command output"
     
         ```{ .text .no-copy }
-        Pulled: harbor.10.x.x.134.nip.io/nkp/kserve:v0.15.0
-        Digest: sha256:cafd90ab1d91a54a28c1ff2761d976bdda0bb173675ef392a16ac250b044d15f
-        I0226 01:59:34.229355  555781 warnings.go:110] "Warning: spec.privateKey.rotationPolicy: In cert-manager >= v1.18.0, the default value changed from `Never` to `Always`."
+        Pulled: harbor.x.x.x.x.nip.io/nutanix/kserve:v0.15.0
+        Digest: sha256:e1bc365c75dd28f0c43581107b78614ffe21e6fbaf95a9351af440d3eec45130
+        Release "kserve" has been upgraded. Happy Helming!
         NAME: kserve
-        LAST DEPLOYED: Tue Apr  7 07:10:05 2026
+        LAST DEPLOYED: Tue Jun  2 07:08:10 2026
         NAMESPACE: kserve
         STATUS: deployed
-        REVISION: 1
-        TEST SUITE: None
+        REVISION: 2
+        DESCRIPTION: Upgrade complete
         ```
+   
+    ??? warning "Kserve install failure?"
+
+        Ocassionally the Kserve install might fail due to webhook race condition. If this happens, wait a few minutes and run the ``helm update --install kserve ...`` commmand from above once again.
+
+        ```bash
+        failed calling webhook "clusterservingruntime.kserve-webhook-server.validator": failed to call webhook: Post "https://kserve-webhook-server-service.kserve.svc:443/validate-serving-kserve-io-v1alpha1-clusterservingruntime?timeout=10s": dial tcp 10.106.128.236:443: connect: operation not permitted
+        ```
+
+16. Confirm if kserve pod is running
+     
+    === ":octicons-command-palette-16: Command"
+    
+        ```bash
+        kubectl get pods -n kserve
+        ```
+    
+    === ":octicons-command-palette-16: Command output"
+    
+        ```{ .text .no-copy }
+        $ kubectl get pods 
+        #
+        NAME                                         READY   STATUS    RESTARTS   AGE
+        kserve-controller-manager-7f85994d77-pz9mq   2/2     Running   0          62s
+        ```
+     
 
 ### OpenTelemetry
 
@@ -585,54 +535,62 @@ The following pre-requisite applications will be enabled from the command line o
         secret/private-regcred created
         ```
 
-16. Run the **OpenTelemetry** operator installation
+2. Run the **OpenTelemetry** operator installation
 
     === ":octicons-command-palette-16: Command"
     
         ```bash
-        helm upgrade --install opentelemetry-operator oci://${REGISTRY}/nutanix/opentelemetry-operator \
+        helm upgrade --install opentelemetry-operator oci://${REGISTRY}/${PROJECT}/opentelemetry-operator \
           --version 0.102.0 \
           -n opentelemetry --create-namespace --wait \
-          --set manager.image.repository=${REGISTRY}/nutanix/nai-opentelemetry-operator \
-          --set manager.collectorImage.repository=${REGISTRY}/nutanix/nai-opentelemetry-collector-k8s \
-          --set kubeRBACProxy.image.repository=${REGISTRY}/nutanix/nai-kube-rbac-proxy
+          --set manager.image.repository=${REGISTRY}/${PROJECT}/nai-opentelemetry-operator \
+          --set manager.collectorImage.repository=${REGISTRY}/${PROJECT}/nai-opentelemetry-collector-contrib \
+          --set kubeRBACProxy.image.repository=${REGISTRY}/${PROJECT}/nai-kube-rbac-proxy \
+          --set imagePullSecrets[0].name=${IMAGE_PULL_SECRET}
         ```
     
     === ":octicons-command-palette-16: Command sample"
     
         ```bash
-        helm upgrade --install opentelemetry-operator oci://harbor.10.x.x.134.nip.io/opentelemetry-operator \
+        helm upgrade --install opentelemetry-operator oci://harbor.10.x.x.134.nip.io/nutanix/opentelemetry-operator \
           --version 0.102.0 \
           -n opentelemetry --create-namespace --wait \
           --set manager.image.repository=harbor.10.x.x.134.nip.io/nutanix/nai-opentelemetry-operator \
           --set manager.collectorImage.repository=harbor.10.x.x.134.nip.io/nutanix/nai-opentelemetry-collector-k8s \
           --set kubeRBACProxy.image.repository=harbor.10.x.x.134.nip.io/nutanix/nai-kube-rbac-proxy 
+          --set imagePullSecrets[0].name=private-regcred
         ```
     
     === ":octicons-command-palette-16: Command output"
     
         ```{ .text .no-copy }
-        Release "opentelemetry-operator" does not exist. Installing it now.
-        Pulled: harbor.10.x.x.134/nutanix/opentelemetry-operator:0.102.0
-        Digest: sha256:1616912e98fbce5236707de9f7c8b91a98c9ecef6c207f625d9d5fa7683a31c8
-        I0407 08:26:51.082158 1388823 warnings.go:107] "Warning: spec.privateKey.rotationPolicy: In cert-manager >= v1.18.0, the default value changed from `Never` to `Always`."
+        Pulled: harbor.x.x.x.x.nip.io/nutanix/opentelemetry-operator:0.102.0
+        Digest: sha256:bb3a48aeca0320a5c999b3849619e2d692eeec8ce59a6c43ca965c1fd1ffdb24
+        I0602 07:18:04.217343 1235342 warnings.go:107] "Warning: spec.privateKey.rotationPolicy: In cert-manager >= v1.18.0, the default value changed from `Never` to `Always`."
         NAME: opentelemetry-operator
-        LAST DEPLOYED: Tue Apr  7 08:26:49 2026
+        LAST DEPLOYED: Tue Jun  2 07:18:02 2026
         NAMESPACE: opentelemetry
         STATUS: deployed
         REVISION: 1
-        NOTES:
-        [WARNING] No resource limits or requests were set. Consider setter resource requests and limits via the `resources` field.
+        DESCRIPTION: Install complete
         ```
 
-    ??? tip "Check helm deployment status"
 
-        Check the status of the ``nai`` helm deployments using the following command:
-        
+3. Confirm if Opentelemetry pod is running
+     
+    === ":octicons-command-palette-16: Command"
+    
         ```bash
-        helm list -n envoy-gateway-system
-        helm list -n kserve
-        helm list -n opentelemetry
+        kubectl get pods -n opentelemetry
+        ```
+    
+    === ":octicons-command-palette-16: Command output"
+    
+        ```{ .text .no-copy }
+        $ kubectl get pods 
+        #
+        NAME                                      READY   STATUS    RESTARTS   AGE
+        opentelemetry-operator-85df5fbdc8-n9zm9   2/2     Running   0          27s
         ```
         
 ## Deploy NAI
@@ -677,9 +635,35 @@ The following pre-requisite applications will be enabled from the command line o
     source $HOME/airgap-nai/.env
     ```
 
-2. In `VSCode` Explorer pane, browse to ``$HOME/airgap-nai`` folder
+2. Create kubernetes namespaces and docker-registry secrets for **NAI**
    
-3. Run the following command to create a helm values file:
+    === ":octicons-command-palette-16: Command"
+    
+        ```bash
+        kubectl create namespace nai-system --dry-run=client -o yaml | kubectl apply -f -
+        ```
+        ```bash
+        kubectl create secret docker-registry ${IMAGE_PULL_SECRET} \
+          --docker-server=${REGISTRY} \
+          --docker-username=${REGISTRY_USERNAME} \
+          --docker-password=${REGISTRY_PASSWORD} \
+          --docker-email=${REGISTRY_EMAIL} \
+          -n nai-system \
+          --dry-run=client -o yaml | kubectl apply -f -
+        ```
+    
+    === ":octicons-command-palette-16: Command output"
+    
+        ```bash
+        namespace/nai-system created
+        ```
+        ```bash
+        secret/private-regcred created
+        ```
+
+3. In `VSCode` Explorer pane, browse to ``$HOME/airgap-nai`` folder
+   
+4. Run the following command to create a helm values file:
 
     === ":octicons-command-palette-16: Command - ``darksite-nai-operators.yaml``"
 
@@ -688,32 +672,32 @@ The following pre-requisite applications will be enabled from the command line o
         global:
           imagePullSecrets:
             - name: ${IMAGE_PULL_SECRET}
-
+        
         naiRedis:
           naiRedisImage:
-            name: ${REGISTRY}/nutanix/nai-redis
-
+            name: ${REGISTRY}/${PROJECT}/nai-redis
+        
         naiJobs:
           naiJobsImage:
-            image: ${REGISTRY}/nutanix/nai-jobs
-
+            image: ${REGISTRY}/${PROJECT}/nai-jobs
+        
         nai-clickhouse-operator:
           operator:
             image:
               registry: ${REGISTRY}
-              repository: nutanix/nai-clickhouse-operator
+              repository: ${PROJECT}/nai-clickhouse-operator
           metrics:
             image:
               registry: ${REGISTRY}
-              repository: nutanix/nai-clickhouse-metrics-exporter
-
+              repository: ${PROJECT}/nai-clickhouse-metrics-exporter
+        
         ai-gateway-helm:
           extProc:
-            image: 
-              repository: ${REGISTRY}/nutanix/nai-ai-gateway-extproc
+            image:
+              repository: ${REGISTRY}/${PROJECT}/nai-ai-gateway-extproc
           controller:
             image:
-              repository: ${REGISTRY}/nutanix/nai-ai-gateway-controller
+              repository: ${REGISTRY}/${PROJECT}/nai-ai-gateway-controller
         EOF
         ```
 
@@ -723,15 +707,15 @@ The following pre-requisite applications will be enabled from the command line o
         global:
           imagePullSecrets:
             - name: private-regcred
-
+        
         naiRedis:
           naiRedisImage:
             name: harbor.10.x.x.134.nip.io/nutanix/nai-redis
-
+        
         naiJobs:
           naiJobsImage:
             image: harbor.10.x.x.134.nip.io/nutanix/nai-jobs
-
+        
         nai-clickhouse-operator:
           operator:
             image:
@@ -741,37 +725,34 @@ The following pre-requisite applications will be enabled from the command line o
             image:
               registry: harbor.10.x.x.134.nip.io
               repository: nutanix/nai-clickhouse-metrics-exporter
-
+        
         ai-gateway-helm:
           extProc:
-            image: 
+            image:
               repository: harbor.10.x.x.134.nip.io/nutanix/nai-ai-gateway-extproc
           controller:
             image:
               repository: harbor.10.x.x.134.nip.io/nutanix/nai-ai-gateway-controller
         ```
 
-4. Install nai-operators helm chart in the nai-system namespace 
+5. Install nai-operators helm chart in the nai-system namespace 
    
     === ":octicons-command-palette-16: Command"
 
         ```bash
-        helm upgrade --install nai-operators oci://${REGISTRY}/nutanix/nai-operators \
-          --version=2.6.0 \
-          -n nai-system --create-namespace --wait \
-          --set "naiAIGateway.enabled=true" \
-          --insecure-skip-tls-verify \
+        helm upgrade --install nai-operators oci://${REGISTRY}/${PROJECT}/nai-operators \
+          --version=2.7.0 \
+          -n nai-system --create-namespace --take-ownership --wait \
           -f ./darksite-nai-operators.yaml
         ```
 
     === ":octicons-command-palette-16: Sample Command"
       
         ```{ .text .no-copy }
-        helm upgrade --install nai-operators oci://harbor.10.x.x.134.nip.io/nkp/nai-operators \
-          --version=2.6.0 \
+        helm upgrade --install nai-operators oci://harbor.10.x.x.134.nip.io/nutanix/nai-operators \
+          --version=2.7.0 \
           -n nai-system --create-namespace --wait \
-          --set "naiAIGateway.enabled=true" \
-          --insecure-skip-tls-verify \
+          -n nai-system --create-namespace --take-ownership --wait \
           -f ./darksite-nai-operators.yaml
         ```
 
@@ -779,15 +760,16 @@ The following pre-requisite applications will be enabled from the command line o
       
         ```{ .text .no-copy }
         Release "nai-operators" does not exist. Installing it now.
-        Pulled: harbor.10.x.x.134/nutanix/nai-operators:2.6.0
-        Digest: sha256:06d4b66a5d64add26bc6cc0f0864482ddabcdf735e05ab2a5ba347fcf4deae9b
-        I0407 07:33:29.955493 1376860 warnings.go:107] "Warning: spec.template.spec.containers[1].ports[0]: duplicate port name \"metrics\" with spec.template.spec.containers[0].ports[0], services and probes that select ports by name will use spec.template.spec.containers[0].ports[0]"
-        I0407 07:33:29.976628 1376860 warnings.go:107] "Warning: spec.privateKey.rotationPolicy: In cert-manager >= v1.18.0, the default value changed from `Never` to `Always`."
+        Pulled: harbor.x.x.x.x.nip.io/nutanix/nai-operators:2.7.0
+        Digest: sha256:8a377a20f58f28500daab57730cf71bc4c7e2385615e061a9bd98e73ed47a978
+        I0602 07:33:51.855835 1236713 warnings.go:107] "Warning: spec.template.spec.containers[1].ports[0]: duplicate port name \"metrics\" with spec.template.spec.containers[0].ports[0], services and probes that select ports by name will use spec.template.spec.containers[0].ports[0]"
+        I0602 07:33:51.875877 1236713 warnings.go:107] "Warning: spec.privateKey.rotationPolicy: In cert-manager >= v1.18.0, the default value changed from `Never` to `Always`."
         NAME: nai-operators
-        LAST DEPLOYED: Tue Apr  7 07:33:28 2026
+        LAST DEPLOYED: Tue Jun  2 07:33:50 2026
         NAMESPACE: nai-system
         STATUS: deployed
         REVISION: 1
+        DESCRIPTION: Install complete
         TEST SUITE: None
         ```
 
@@ -803,15 +785,15 @@ The following pre-requisite applications will be enabled from the command line o
     === ":octicons-command-palette-16: Command output"
     
         ```{ .text .no-copy }
-        kubectl get po
-
+        $ kubectl get po
+        #
         NAME                                                    READY   STATUS    RESTARTS   AGE
-        ai-gateway-controller-fc568fdc-hpsfv                    1/1     Running   0          30s
-        nai-operators-nai-clickhouse-operator-86d684894-b6swh   2/2     Running   0          30s
-        redis-standalone-6dd5f64ff5-98r5b                       2/2     Running   0          30s
+        ai-gateway-controller-77d6cb4764-c6ct6                  1/1     Running   0          37s
+        nai-operators-nai-clickhouse-operator-86d684894-5rqkc   2/2     Running   0          37s
+        redis-standalone-67d4865578-tcgmv                       2/2     Running   0          37s
         ```
 
-7. Run the following command to create a helm values file:
+1. Run the following command to create a helm values file:
 
     === ":octicons-command-palette-16: Template - ``darksite-nai-core.yaml``"
 
@@ -820,121 +802,139 @@ The following pre-requisite applications will be enabled from the command line o
         global:
           imagePullSecrets:
             - name: ${IMAGE_PULL_SECRET}
-
-        defaultStorageClassName: ${NAI_DEFAULT_RWO_STORAGECLASS}
+          storage:
+            storageClassName: ${NAI_DEFAULT_RWO_STORAGECLASS}
+            storageClassNameRWX: ${NAI_API_RWX_STORAGECLASS}
+        
+        gateway:
+          envoyDeployment:
+            container:
+              image: ${REGISTRY}/${PROJECT}/nai-envoy:distroless-v1.37.0
+        
         naiIepOperator:
           iepOperatorImage:
-            image: ${REGISTRY}/nutanix/nai-iep-operator
-
+            image: ${REGISTRY}/${PROJECT}/nai-iep-operator
+        
           modelProcessorImage:
-            image: ${REGISTRY}/nutanix/nai-python-processor
-
+            image: ${REGISTRY}/${PROJECT}/nai-python-processor
+        
           dataSourceProcessorImage:
-            image: ${REGISTRY}/nutanix/nai-python-processor
-
+            image: ${REGISTRY}/${PROJECT}/nai-python-processor
+        
+          batchInferenceProcessor:
+            containers:
+              processor:
+                image: ${REGISTRY}/${PROJECT}/nai-go-processor
+              statusProvider:
+                image: ${REGISTRY}/${PROJECT}/nai-go-processor
+        
           finetuneProcessorImage:
-            image: ${REGISTRY}/nutanix/nai-finetuning
-
+            image: ${REGISTRY}/${PROJECT}/nai-finetuning
+        
         naiInferenceUi:
           naiUiImage:
-            image: ${REGISTRY}/nutanix/nai-inference-ui
-
+            image: ${REGISTRY}/${PROJECT}/nai-inference-ui
+        
         naiJobs:
           naiJobsImage:
-            image: ${REGISTRY}/nutanix/nai-jobs
-
+            image: ${REGISTRY}/${PROJECT}/nai-jobs
+        
         naiApi:
-          storageClassName: ${NAI_API_RWX_STORAGECLASS}
           naiApiImage:
-            image: ${REGISTRY}/nutanix/nai-api
-          supportedTGIImage: ${REGISTRY}/nutanix/nai-tgi
-          supportedKserveRuntimeImage: ${REGISTRY}/nutanix/nai-kserve-huggingfaceserver
-          eppImage: ${REGISTRY}/nutanix/nai-epp-inference-scheduler
-          supportedVLLMImage: ${REGISTRY}/nutanix/nai-vllm
-          supportedKserveCustomModelServerRuntimeImage: ${REGISTRY}/nutanix/nai-kserve-custom-model-server
+            image: ${REGISTRY}/${PROJECT}/nai-api
+          supportedTGIImage: ${REGISTRY}/${PROJECT}/nai-tgi
+          supportedKserveRuntimeImage: ${REGISTRY}/${PROJECT}/nai-kserve-huggingfaceserver
+          eppImage: ${REGISTRY}/${PROJECT}/nai-epp-inference-scheduler
+          supportedVLLMImage: ${REGISTRY}/${PROJECT}/nai-vllm
+          supportedKserveCustomModelServerRuntimeImage: ${REGISTRY}/${PROJECT}/nai-kserve-custom-model-server
           superAdmin:
-            username: admin
+            username: ${NAI_USER}
             password: ${NAI_TEMP_PASS} # At least 8 characters
             # email: admin@nutanix.com
             # firstName: admin
-
+        
         naiDatabase:
           naiDbImage:
-            image: ${REGISTRY}/nutanix/nai-postgres:16.1-alpine
-
+            image: ${REGISTRY}/${PROJECT}/nai-postgres:16.13-alpine
+        
         naiIam:
           iamProxy:
-            image: ${REGISTRY}/nutanix/nai-iam-proxy
-
+            image: ${REGISTRY}/${PROJECT}/nai-iam-proxy
+        
           iamProxyControlPlane:
-            image: ${REGISTRY}/nutanix/nai-iam-proxy-control-plane
-
+            image: ${REGISTRY}/${PROJECT}/nai-iam-proxy-control-plane
+        
           iamUi:
-            image: ${REGISTRY}/nutanix/nai-iam-ui
-
+            image: ${REGISTRY}/${PROJECT}/nai-iam-ui
+        
           iamUserAuthn:
-            image: ${REGISTRY}/nutanix/nai-iam-user-authn
-
+            image: ${REGISTRY}/${PROJECT}/nai-iam-user-authn
+        
           iamThemis:
-            image: ${REGISTRY}/nutanix/nai-iam-themis
-
+            image: ${REGISTRY}/${PROJECT}/nai-iam-themis
+        
           iamThemisBootstrap:
-            image: ${REGISTRY}/nutanix/nai-iam-bootstrap
-
+            image: ${REGISTRY}/${PROJECT}/nai-iam-bootstrap
+        
         naiLabs:
           labsImage:
-            image: ${REGISTRY}/nutanix/nai-rag-app
-
+            image: ${REGISTRY}/${PROJECT}/nai-rag-app
+        
         nai-clickhouse-keeper:
           clickhouseKeeper:
-            storage:
-              storageClass: ${NAI_DEFAULT_RWO_STORAGECLASS}
             image:
               registry: ${REGISTRY}
-              repository: nutanix/nai-clickhouse-keeper
-
+              repository: ${PROJECT}/nai-clickhouse-keeper
+        
         oauth2-proxy:
           image:
-            repository: ${REGISTRY}/nutanix/nai-oauth2-proxy
-
+            repository: ${REGISTRY}/${PROJECT}/nai-oauth2-proxy
+        
         nai-clickhouse-server:
           clickhouse:
-            storage:
-              storageClass: ${NAI_DEFAULT_RWO_STORAGECLASS}
             image:
               registry: ${REGISTRY}
-              repository: nutanix/nai-clickhouse-server
+              repository: ${PROJECT}/nai-clickhouse-server
             initContainers:
               addUdf:
                 image:
                   registry: ${REGISTRY}
-                  repository: nutanix/nai-clickhouse-udf
+                  repository: ${PROJECT}/nai-clickhouse-udf
               waitForKeeper:
                 image:
                   registry: ${REGISTRY}
-                  repository: nutanix/nai-jobs
-
+                  repository: ${PROJECT}/nai-jobs
+        
         nai-clickhouse-schemas:
           image:
             registry: ${REGISTRY}
-            repository: nutanix/nai-clickhouse-schemas
-
+            repository: ${PROJECT}/nai-clickhouse-schemas
+        
+        naiAgent:
+          agentImage:
+            image: ${REGISTRY}/${PROJECT}/nai-agent-app
+        
         naiMonitoring:
           opentelemetry:
-            storageClassName: ${NAI_API_RWX_STORAGECLASS}
-            collectorImage: ${REGISTRY}/nutanix/nai-opentelemetry-collector-contrib:0.141.0
+            collectorImage: ${REGISTRY}/${PROJECT}/nai-opentelemetry-collector-contrib:0.141.0
             targetAllocator:
               image:
-                repository: ${REGISTRY}/nutanix/nai-target-allocator
+                repository: ${REGISTRY}/${PROJECT}/nai-target-allocator
           nodeExporter:
             serviceMonitor:
               namespaceSelector:
                 matchNames:
+                  - prometheus
+                  - kommander
+                  - kommander-default-workspace
                   - ${NKP_WORKSPACE_NAMESPACE}
           dcgmExporter:
             serviceMonitor:
               namespaceSelector:
                 matchNames:
+                  - prometheus
+                  - kommander
+                  - kommander-default-workspace
                   - ${NKP_WORKSPACE_NAMESPACE}
         EOF
         ```
@@ -943,136 +943,152 @@ The following pre-requisite applications will be enabled from the command line o
        
         ```yaml
         global:
-        imagePullSecrets:
-          - name: private-regcred
-      
-        defaultStorageClassName: nutanix-volume
+          imagePullSecrets:
+            - name: private-regcred
+          storage:
+            storageClassName: nutanix-volume
+            storageClassNameRWX: nai-nfs-storage
+        
+        gateway:
+          envoyDeployment:
+            container:
+              image: harbor.10.x.x.134.nip.io/nutanix/nai-envoy:distroless-v1.37.0
+        
         naiIepOperator:
           iepOperatorImage:
-            image: harbor.10.x.x.134/nutanix/nai-iep-operator
+            image: harbor.10.x.x.134.nip.io/nutanix/nai-iep-operator
         
           modelProcessorImage:
-            image: harbor.10.x.x.134/nutanix/nai-python-processor
+            image: harbor.10.x.x.134.nip.io/nutanix/nai-python-processor
         
           dataSourceProcessorImage:
-            image: harbor.10.x.x.134/nutanix/nai-python-processor
+            image: harbor.10.x.x.134.nip.io/nutanix/nai-python-processor
+        
+          batchInferenceProcessor:
+            containers:
+              processor:
+                image: harbor.10.x.x.134.nip.io/nutanix/nai-go-processor
+              statusProvider:
+                image: harbor.10.x.x.134.nip.io/nutanix/nai-go-processor
         
           finetuneProcessorImage:
-            image: harbor.10.x.x.134/nutanix/nai-finetuning
+            image: harbor.10.x.x.134.nip.io/nutanix/nai-finetuning
         
         naiInferenceUi:
           naiUiImage:
-            image: harbor.10.x.x.134/nutanix/nai-inference-ui
+            image: harbor.10.x.x.134.nip.io/nutanix/nai-inference-ui
         
         naiJobs:
           naiJobsImage:
-            image: harbor.10.x.x.134/nutanix/nai-jobs
+            image: harbor.10.x.x.134.nip.io/nutanix/nai-jobs
         
         naiApi:
-          storageClassName: nai-nfs-storage
           naiApiImage:
-            image: harbor.10.x.x.134/nutanix/nai-api
-          supportedTGIImage: harbor.10.x.x.134/nutanix/nai-tgi
-          supportedKserveRuntimeImage: harbor.10.x.x.134/nutanix/nai-kserve-huggingfaceserver
-          eppImage: harbor.10.x.x.134/nutanix/nai-epp-inference-scheduler
-          supportedVLLMImage: harbor.10.x.x.134/nutanix/nai-vllm
-          supportedKserveCustomModelServerRuntimeImage: harbor.10.x.x.134/nutanix/nai-kserve-custom-model-server
+            image: harbor.10.x.x.134.nip.io/nutanix/nai-api
+          supportedTGIImage: harbor.10.x.x.134.nip.io/nutanix/nai-tgi
+          supportedKserveRuntimeImage: harbor.10.x.x.134.nip.io/nutanix/nai-kserve-huggingfaceserver
+          eppImage: harbor.10.x.x.134.nip.io/nutanix/nai-epp-inference-scheduler
+          supportedVLLMImage: harbor.10.x.x.134.nip.io/nutanix/nai-vllm
+          supportedKserveCustomModelServerRuntimeImage: harbor.10.x.x.134.nip.io/nutanix/nai-kserve-custom-model-server
           superAdmin:
             username: admin
-            password: XXXXXXXXXX # At least 8 characters
+            password: xxxxxxx # At least 8 characters
             # email: admin@nutanix.com
             # firstName: admin
         
         naiDatabase:
           naiDbImage:
-            image: harbor.10.x.x.134/nutanix/nai-postgres:16.1-alpine
+            image: harbor.10.x.x.134.nip.io/nutanix/nai-postgres:16.13-alpine
         
         naiIam:
           iamProxy:
-            image: harbor.10.x.x.134/nutanix/nai-iam-proxy
+            image: harbor.10.x.x.134.nip.io/nutanix/nai-iam-proxy
         
           iamProxyControlPlane:
-            image: harbor.10.x.x.134/nutanix/nai-iam-proxy-control-plane
+            image: harbor.10.x.x.134.nip.io/nutanix/nai-iam-proxy-control-plane
         
           iamUi:
-            image: harbor.10.x.x.134/nutanix/nai-iam-ui
+            image: harbor.10.x.x.134.nip.io/nutanix/nai-iam-ui
         
           iamUserAuthn:
-            image: harbor.10.x.x.134/nutanix/nai-iam-user-authn
+            image: harbor.10.x.x.134.nip.io/nutanix/nai-iam-user-authn
         
           iamThemis:
-            image: harbor.10.x.x.134/nutanix/nai-iam-themis
+            image: harbor.10.x.x.134.nip.io/nutanix/nai-iam-themis
         
           iamThemisBootstrap:
-            image: harbor.10.x.x.134/nutanix/nai-iam-bootstrap
+            image: harbor.10.x.x.134.nip.io/nutanix/nai-iam-bootstrap
         
         naiLabs:
           labsImage:
-            image: harbor.10.x.x.134/nutanix/nai-rag-app
+            image: harbor.10.x.x.134.nip.io/nutanix/nai-rag-app
         
         nai-clickhouse-keeper:
           clickhouseKeeper:
-            storage:
-              storageClass: nutanix-volume
             image:
-              registry: harbor.10.x.x.134
+              registry: harbor.10.x.x.134.nip.io
               repository: nutanix/nai-clickhouse-keeper
         
         oauth2-proxy:
           image:
-            repository: harbor.10.x.x.134/nutanix/nai-oauth2-proxy
+            repository: harbor.10.x.x.134.nip.io/nutanix/nai-oauth2-proxy
         
         nai-clickhouse-server:
           clickhouse:
-            storage:
-              storageClass: nutanix-volume
             image:
-              registry: harbor.10.x.x.134
+              registry: harbor.10.x.x.134.nip.io
               repository: nutanix/nai-clickhouse-server
             initContainers:
               addUdf:
                 image:
-                  registry: harbor.10.x.x.134
+                  registry: harbor.10.x.x.134.nip.io
                   repository: nutanix/nai-clickhouse-udf
               waitForKeeper:
                 image:
-                  registry: harbor.10.x.x.134
+                  registry: harbor.10.x.x.134.nip.io
                   repository: nutanix/nai-jobs
         
         nai-clickhouse-schemas:
           image:
-            registry: harbor.10.x.x.134
+            registry: harbor.10.x.x.134.nip.io
             repository: nutanix/nai-clickhouse-schemas
+        
+        naiAgent:
+          agentImage:
+            image: harbor.10.x.x.134.nip.io/nutanix/nai-agent-app
         
         naiMonitoring:
           opentelemetry:
-            storageClassName: nai-nfs-storage
-            collectorImage: harbor.10.x.x.134/nutanix/nai-opentelemetry-collector-contrib:0.141.0
+            collectorImage: harbor.10.x.x.134.nip.io/nutanix/nai-opentelemetry-collector-contrib:0.141.0
             targetAllocator:
               image:
-                repository: harbor.10.x.x.134/nutanix/nai-target-allocator
+                repository: harbor.10.x.x.134.nip.io/nutanix/nai-target-allocator
           nodeExporter:
             serviceMonitor:
               namespaceSelector:
                 matchNames:
-                  - kommander-workspace
+                  - prometheus
+                  - kommander
+                  - kommander-default-workspace
+                  - kommander
           dcgmExporter:
             serviceMonitor:
               namespaceSelector:
                 matchNames:
-                  - kommander-workspace
+                  - prometheus
+                  - kommander
+                  - kommander-default-workspace
+                  - kommander
         ```
 
-8. Install NAI Core helm chart in the nai-system namespace 
+2. Install NAI Core helm chart in the nai-system namespace 
    
     === ":octicons-command-palette-16: Command"
 
         ```bash
-        helm upgrade --install nai-core oci://${REGISTRY}/nutanix/nai-core \
-          --version 2.6.0 \
+        helm upgrade --install nai-core oci://${REGISTRY}/${PROJECT}/nai-core \
+          --version 2.7.0 --force-conflicts \
           -n nai-system --create-namespace --wait \
-          --set "naiAIGateway.enabled=true" \
-          --insecure-skip-tls-verify \
           -f ./darksite-nai-core.yaml
         ```
 
@@ -1080,26 +1096,26 @@ The following pre-requisite applications will be enabled from the command line o
       
         ```{ .text .no-copy }
         helm upgrade --install nai-core oci://harbor.10.x.x.134/nutanix/nai-core \
-          --version 2.6.0 \
+          --version 2.7.0 --force-conflicts \
           -n nai-system --create-namespace --wait \
-          --set "naiAIGateway.enabled=true" \
-          --insecure-skip-tls-verify \
           -f ./darksite-nai-core.yaml
         ```
 
     === ":octicons-command-palette-16: Command output"
       
         ```{ .text .no-copy }
-        Release "nai-core" has been upgraded. Happy Helming!
+        Release "nai-core" does not exist. Installing it now.
+        Pulled: harbor.x.x.x.x.nip.io/nutanix/nai-core:2.7.0
         NAME: nai-core
-        LAST DEPLOYED: Tue Apr  7 08:31:50 2026
+        LAST DEPLOYED: Wed Jun  3 01:38:56 2026
         NAMESPACE: nai-system
         STATUS: deployed
         REVISION: 1
+        DESCRIPTION: Install complete
         TEST SUITE: None
         ```
 
-9.  Check if all NAI core pods are running 
+3.  Check if all NAI core pods are running 
    
     === ":octicons-command-palette-16: Command"
 
@@ -1112,70 +1128,37 @@ The following pre-requisite applications will be enabled from the command line o
 
         ```{ .text, .no-copy}
         Active namespace is "nai-system".
-        NAME                                                    READY   STATUS      RESTARTS     AGE
-        ai-gateway-controller-fc568fdc-vdcln                    1/1     Running     0            9h
-        chi-nai-clickhouse-server-chcluster1-0-0-0              1/1     Running     0            9h
-        chk-nai-clickhouse-keeper-chkeeper-0-0-0                1/1     Running     0            9h
-        iam-database-bootstrap-shkz5-xmwmr                      0/1     Completed   0            9h
-        iam-proxy-6899b56d94-bnkph                              1/1     Running     0            9h
-        iam-proxy-control-plane-58c67c59b7-dzq5q                1/1     Running     1            9h
-        iam-themis-79955f5cb-8tdgw                              1/1     Running     1            9h
-        iam-themis-bootstrap-b2uzx-vqq24                        0/1     Completed   0            9h
-        iam-ui-55f7f7bc95-t25d2                                 1/1     Running     0            9h
-        iam-user-authn-6c59768cb9-x8dbv                         1/1     Running     0            9h
-        nai-api-5ffcf69697-4k6bw                                1/1     Running     2            9h
-        nai-api-db-migrate-tm42r-9qkf8                          0/1     Completed   0            9h
-        nai-clickhouse-schema-job-1775611064-cp5jk              0/1     Completed   0            9h
-        nai-db-0                                                1/1     Running     0            9h
-        nai-iep-model-controller-7449cf9fc7-gxq4t               1/1     Running     0            9h
-        nai-labs-694c7bfc46-t7mw7                               1/1     Running     0            9h
-        nai-oauth2-proxy-5d4ff7c6d6-ncbtm                       1/1     Running     0            9h
-        nai-oidc-client-registration-wplkm-xf6b7                0/1     Completed   0            9h
-        nai-operators-nai-clickhouse-operator-86d684894-r8qh7   2/2     Running     0            9h
-        nai-otel-collector-collector-7kxzd                      1/1     Running     0            9h
-        nai-otel-collector-collector-854nl                      1/1     Running     0            9h
-        nai-otel-collector-collector-lf2kd                      1/1     Running     0            9h
-        nai-otel-collector-collector-m9w5c                      1/1     Running     0            9h
-        nai-otel-collector-collector-pk7v9                      1/1     Running     0            9h
-        nai-otel-collector-collector-qs44c                      1/1     Running     0            9h
-        nai-otel-collector-collector-rdd8f                      1/1     Running     0            9h
-        nai-otel-collector-targetallocator-844556594c-mq9jk     1/1     Running     0            9h
-        nai-ui-8c9fd97b9-fb82k                                  1/1     Running     0            9h
-        redis-standalone-6dd5f64ff5-qjhdm                       2/2     Running     0            9h
-        ```
-
-10. The Prometheus monitoring from the NKP catalog has specific RBAC rules applied. Create the required ``clusterRole`` to enable Nutanix Enterprise AI to fetch metrics
-    
-    === ":octicons-command-palette-16: Command"
-    
-        ```bash
-        kubectl patch clusterrole nai-otel-role --type='json' -p='[
-          {
-            "op": "add",
-            "path": "/rules/-",
-            "value": {
-              "apiGroups": [""],
-              "resources": ["services/kube-prometheus-stack-prometheus-node-exporter"],
-              "verbs": ["get"]
-            }
-          }
-        ]'
-        ```
-        ```bash
-        kubectl patch servicemonitor nai-node-exporter-monitor -n nai-system --type='json' -p='[
-          {"op": "add", "path": "/spec/endpoints/0/bearerTokenFile", "value": "/var/run/secrets/kubernetes.io/serviceaccount/token"},
-          {"op": "replace", "path": "/spec/endpoints/0/scheme", "value": "https"},
-          {"op": "add", "path": "/spec/endpoints/0/tlsConfig", "value": {"insecureSkipVerify": true}}
-        ]'
-        ```
         
-    === ":octicons-command-palette-16: Command output"
-    
-        ```{ .text .no-copy }
-        clusterrole.rbac.authorization.k8s.io/nai-otel-role patched
-        ```
-        ```{ .text .no-copy }
-        servicemonitor.monitoring.coreos.com/nai-node-exporter-monitor patched
+        NAME                                                    READY   STATUS      RESTARTS        AGE
+        ai-gateway-controller-77d6cb4764-h2jfs                  1/1     Running     0               17h
+        chi-nai-clickhouse-server-chcluster1-0-0-0              1/1     Running     0               4m30s
+        chk-nai-clickhouse-keeper-chkeeper-0-0-0                1/1     Running     0               4m14s
+        iam-database-bootstrap-awoad-cwxqf                      0/1     Completed   0               4m45s
+        iam-proxy-8fcc9599c-xggpz                               1/1     Running     0               4m45s
+        iam-proxy-control-plane-54489f7bf7-h8xqz                1/1     Running     0               4m45s
+        iam-themis-7f65594f9d-z8krt                             1/1     Running     0               4m44s
+        iam-themis-bootstrap-1grir-k7kst                        0/1     Completed   0               4m45s
+        iam-ui-5bf8747f4-hbnmb                                  1/1     Running     0               4m45s
+        iam-user-authn-676df76bc5-j6b8v                         1/1     Running     0               4m45s
+        nai-agent-6db7856f5f-6z947                              1/1     Running     0               4m45s
+        nai-api-cffbdf967-kllbj                                 1/1     Running     2 (2m29s ago)   4m45s
+        nai-api-db-migrate-nv7cs-8gz2r                          0/1     Completed   4               4m45s
+        nai-clickhouse-schema-job-1780450736-p4kxd              0/1     Completed   0               4m45s
+        nai-db-0                                                1/1     Running     0               4m45s
+        nai-iep-model-controller-5468d4844f-jfcsl               1/1     Running     0               4m45s
+        nai-oauth2-proxy-744f8d6c56-kbvnb                       1/1     Running     0               4m45s
+        nai-operators-nai-clickhouse-operator-86d684894-7jsbw   2/2     Running     0               17h
+        nai-otel-collector-collector-5ftxs                      1/1     Running     0               4m43s
+        nai-otel-collector-collector-flf9z                      1/1     Running     0               4m43s
+        nai-otel-collector-collector-fmcz6                      1/1     Running     0               4m43s
+        nai-otel-collector-collector-fz47d                      1/1     Running     0               4m43s
+        nai-otel-collector-collector-k7s2g                      1/1     Running     0               4m43s
+        nai-otel-collector-collector-l6dj4                      1/1     Running     0               4m43s
+        nai-otel-collector-collector-rxzmw                      1/1     Running     0               4m43s
+        nai-otel-collector-targetallocator-d85875d76-cvlzl      1/1     Running     0               4m43s
+        nai-securityscan-manager-6b7589cbbb-5w7v7               1/1     Running     3 (4m21s ago)   4m45s
+        nai-ui-c99b9dcd5-b7lzv                                  1/1     Running     0               4m45s
+        redis-standalone-67d4865578-47pm6                       2/2     Running     0               17h
         ```
 
 ## Install SSL Certificate and Gateway Elements
@@ -1216,7 +1199,7 @@ To create and use a self-signed certificate, follow these steps:
 1. Get the NAI UI ingress gateway host using the following command:
    
     ```bash
-    NAI_UI_ENDPOINT=$(kubectl get svc -n envoy-gateway-system -l "gateway.envoyproxy.io/owning-gateway-name=nai-ingress-gateway,gateway.envoyproxy.io/owning-gateway-namespace=nai-system" -o jsonpath='{.items[0].status.loadBalancer.ingress[0].ip}' | grep -v '^$' || kubectl get svc -n envoy-gateway-system -l "gateway.envoyproxy.io/owning-gateway-name=nai-ingress-gateway,gateway.envoyproxy.io/owning-gateway-namespace=nai-system" -o jsonpath='{.items[0].status.loadBalancer.ingress[0].hostname}')
+    NAI_UI_ENDPOINT=$(kubectl get svc -n envoy-gateway-system -l "gateway.envoyproxy.io/owning-gateway-name=nai-ingress-gateway,gateway.envoyproxy.io/owning-gateway-namespace=nai-system" -o jsonpath='{.items[0].status.loadBalancer.ingress[0].ip}')
     ```
 
 2. Get the value of ``NAI_UI_ENDPOINT`` environment variable

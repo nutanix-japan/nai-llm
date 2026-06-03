@@ -27,7 +27,7 @@ stateDiagram-v2
 
 !!! example "GA Software with NAI v2.7.0"
     
-    In this lab, we will deploy EA and TP version of the following software to test the following:
+    In this lab, we will deploy GA version of the following software to test the following:
 
     -  Nutanix Enterprise AI 
   
@@ -635,7 +635,7 @@ We will use the Docker login credentials we created in the previous section to d
         ```text
         helm upgrade --install nai-core ntnx-charts/nai-core \
           --version 2.7.0 -n nai-system --create-namespace \
-          --force --wait \
+          --force-conflicts --wait \
           --set "global.imagePullSecrets[0].name=${REGISTRY_SECRET_NAME}" \
           --set "global.storage.storageClassNameRWX=${NAI_API_RWX_STORAGECLASS}" \
           --set "global.storage.storageClassName=${NAI_DEFAULT_RWO_STORAGECLASS}" \
@@ -649,7 +649,7 @@ We will use the Docker login credentials we created in the previous section to d
         ```text
         helm upgrade --install nai-core ntnx-charts/nai-core \
           --version 2.7.0 -n nai-system --create-namespace \
-          --force --wait \
+          --force-conflicts --wait \
           --set "global.imagePullSecrets[0].name=nai-regcred" \
           --set "global.storage.storageClassNameRWX=nai-nfs-storage" \
           --set "global.storage.storageClassName=nutanix-volume" \

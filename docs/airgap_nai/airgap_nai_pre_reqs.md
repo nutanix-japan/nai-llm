@@ -276,18 +276,18 @@ The procedure will be done on the jumphost VM.
      source $HOME/airgap-nai/.env
      ```
 
-13.  Download the NAI ``2.6.0`` helm chart bundle from Nutanix Portal
+13.  Download the NAI ``2.7.0`` helm chart bundle from Nutanix Portal
    
     === ":octicons-command-palette-16: Command"
 
         ```bash
-        curl -o " nai-helm-charts-2.6.0.tar" "_paste_download_URL_here"
+        curl -o "nai-helm-charts-2.7.0.tar" "_paste_download_URL_here"
         ```
     
     === ":octicons-command-palette-16: Sample command"
     
         ```{ .text .no-copy }
-        curl -o "nai-helm-charts-2.6.0.tar" "https://download.nutanix.com/downloads/nai/2.6.0/nai-helm-charts-2.6.0.tarr?Expires=xxxxx"
+        curl -o "nai-helm-charts-2.7.0.tar" "https://download.nutanix.com/downloads/nai/2.7.0/nai-helm-charts-2.7.0.tarr?Expires=xxxxx"
         ```
 
 14. Extract the helm charts file
@@ -295,21 +295,21 @@ The procedure will be done on the jumphost VM.
     === ":octicons-command-palette-16: Command"
     
         ```bash
-        tar xvf nai-helm-charts-2.6.0.tar
+        tar xvf nai-helm-charts-2.7.0.tar
         ```
     
     === ":octicons-command-palette-16: Command output"
     
         ```bash
-        $ tar xvf nai-helm-charts-2.6.0.tar
+        $ tar xvf nai-helm-charts-2.7.0.tar
 
-        gateway-crds-helm-v1.6.3.tgz
-        gateway-helm-v1.6.3.tgz
+        gateway-crds-helm-v1.7.0.tgz
+        gateway-helm-v1.7.0.tgz
         kserve-crd-v0.15.0.tgz
         kserve-v0.15.0.tgz
-        nai-core-2.6.0.tgz
-        nai-operators-2.6.0.tgz
-        opentelemetry-operator-0.102.0.tgz
+        nai-core-2.7.0.tgz
+        nai-operators-2.7.0.tgz
+        opentelemetry-operator-0.102.0.tgz          
         ```
     
 15. Login to Harbor registry on the command line (if not done so)
@@ -317,7 +317,9 @@ The procedure will be done on the jumphost VM.
     === ":octicons-command-palette-16: Command"
     
         ```bash
-        docker login harbor.10.x.x.134.nip.io --username ${REGISTRY_USERNAME} --password ${REGISTRY_PASSWORD}
+        docker login harbor.10.x.x.134.nip.io \
+        --username ${REGISTRY_USERNAME} \
+        --password ${REGISTRY_PASSWORD}
         ```
 
     === ":octicons-command-palette-16: Command output"
@@ -325,46 +327,73 @@ The procedure will be done on the jumphost VM.
         ```bash
         Login succeeded!
         ```
-   
-16.  Upload the downloaded and prepared helm charts to Harbor
+
+16. Create a project called ``nutanix`` in the Harbor registry using the following ``curl`` command or simply use the Harbor GUI
     
     === ":octicons-command-palette-16: Command"
     
         ```bash
-        # Change to chart directory
-        cd charts/
+        curl -X POST \
+          -u "${REGISTRY_USERNAME}:${REGISTRY_PASSWORD}" \
+          -H "Content-Type: application/json" \
+          "https://${REGISTRY}" \
+          -d '{
+          "project_name": "nutanix",
+          "metadata": {
+              "public": "false"
+          }
+          }'
         ```
+    
+    === ":octicons-command-palette-16: Sample command"
+    
+        ```bash
+        curl -X POST \
+          -u "admin:_XXXXXXXXX" \
+          -H "Content-Type: application/json" \
+          "https://harbor.10.x.x.134.nip.io" \
+          -d '{
+          "project_name": "nutanix",
+          "metadata": {
+              "public": "false"
+          }
+          }'
+        ```
+     
+17.  Upload the downloaded and prepared helm charts to Harbor
+    
+    === ":octicons-command-palette-16: Command"
+
         ```bash
         # Push charts
-        for chart in $(ls *.tgz); do echo $chart;helm push $chart oci://$REGISTRY/nutanix;done
+        for chart in $(ls *.tgz); do echo "Pushing: $chart";helm push $chart oci://$REGISTRY/nutanix;done
         ```
 
     === ":octicons-command-palette-16: Command output"
 
         ```{ .text, .no-copy}
-        for chart in $(ls *.tgz); do echo $chart;helm push $chart oci://harbor.10.x.x.134.nip.io/nutanix;done
-        gateway-crds-helm-v1.6.3.tgz
-        Pushed: harbor.10.x.x.134.nip.io/nutanix/gateway-crds-helm:v1.6.3
-        Digest: sha256:55a2c0a4974cc2a83b9e144ec5b9ac687f0ae1b9d26ec178762184d0185db096
-        gateway-helm-v1.6.3.tgz
-        Pushed: harbor.10.x.x.134.nip.io/nutanix/gateway-helm:v1.6.3
-        Digest: sha256:924799edea136fe405ea37480f5d5e65a81c6b01e3cbe53bf2ab5cde935ef0d6
-        kserve-crd-v0.15.0.tgz
-        Pushed: harbor.10.x.x.134.nip.io/nutanix/kserve-crd:v0.15.0
-        Digest: sha256:01533cdda82c767fdd39172846f04c5185011eab2769b2c3d727bdd0f244a8f5
-        kserve-v0.15.0.tgz
-        Pushed: harbor.10.x.x.134.nip.io/nutanix/kserve:v0.15.0
-        Digest: sha256:ee7fb3824268edc253f2b7d4ccae4a326e35cda38c89d3635b12a4a58cf45339
-        nai-core-2.6.0.tgz
-        Pushed: harbor.10.x.x.134.nip.io/nutanix/nai-core:2.6.0
-        Digest: sha256:5859e99b2c4eff85bd6f78fd4170b7c580fc03131978dcf1f707811d908fe859
-        nai-operators-2.6.0.tgz
-        Pushed: harbor.10.x.x.134.nip.io/nutanix/nai-operators:2.6.0
-        Digest: sha256:06d4b66a5d64add26bc6cc0f0864482ddabcdf735e05ab2a5ba347fcf4deae9b
-        opentelemetry-operator-0.102.0.tgz
-        Pushed: harbor.10.x.x.134.nip.io/nutanix/opentelemetry-operator:0.102.0
-        Digest: sha256:1616912e98fbce5236707de9f7c8b91a98c9ecef6c207f625d9d5fa7683a31c8
-        Now the charts are available in the OCI compatible container/chart registry.
+        $ for chart in $(ls *.tgz); do echo "Pushing: $chart";helm push $chart oci://$REGISTRY/nutanix;done
+        Pushing: gateway-crds-helm-v1.7.0.tgz
+        Pushed: harbor.apj-cxrules.win/nutanix/gateway-crds-helm:v1.7.0
+        Digest: sha256:625ee2409826d30e70ac26eb1a93e80650ba2c81464f65aaca6968cd33793b37
+        Pushing: gateway-helm-v1.7.0.tgz
+        Pushed: harbor.apj-cxrules.win/nutanix/gateway-helm:v1.7.0
+        Digest: sha256:80ce6293c5a8658897971cd10adef51880a3ee6e5e1bbc92415b943cd4b94cb5
+        Pushing: kserve-crd-v0.15.0.tgz
+        Pushed: harbor.apj-cxrules.win/nutanix/kserve-crd:v0.15.0
+        Digest: sha256:b673a75fdf45602ae58bb528e7b445e4530617b18f8eebb5d6337c16d4596951
+        Pushing: kserve-v0.15.0.tgz
+        Pushed: harbor.apj-cxrules.win/nutanix/kserve:v0.15.0
+        Digest: sha256:e1bc365c75dd28f0c43581107b78614ffe21e6fbaf95a9351af440d3eec45130
+        Pushing: nai-core-2.7.0.tgz
+        Pushed: harbor.apj-cxrules.win/nutanix/nai-core:2.7.0
+        Digest: sha256:2484532e59822e3c660aa4fa4a9152788d68bd51d1a47ea6e4b4884fa02bafe1
+        Pushing: nai-operators-2.7.0.tgz
+        Pushed: harbor.apj-cxrules.win/nutanix/nai-operators:2.7.0
+        Digest: sha256:8a377a20f58f28500daab57730cf71bc4c7e2385615e061a9bd98e73ed47a978
+        Pushing: opentelemetry-operator-0.102.0.tgz
+        Pushed: harbor.apj-cxrules.win/nutanix/opentelemetry-operator:0.102.0
+        Digest: sha256:bb3a48aeca0320a5c999b3849619e2d692eeec8ce59a6c43ca965c1fd1ffdb24
         ```
 
 ## Prepare Container Images
@@ -407,13 +436,13 @@ stateDiagram-v2
     === ":octicons-command-palette-16: Command"
 
         ```text title="Paste the download URL within double quotes"
-        curl -o nai-2.6.0.tar "_paste_download_URL_here"
+        curl -o nai-2.7.0.tar "_paste_download_URL_here"
         ```
 
     === ":octicons-command-palette-16: Sample command"
         
         ```bash title="This download is about 63 GBs"
-        curl -o nai-2.6.0-1.tar "https://download.nutanix.com/downloads/nai/2.6.0/nai-2.6.0.tar?..."
+        curl -o nai-2.7.0-1.tar "https://download.nutanix.com/downloads/nai/2.7.0/nai-2.7.0.tar?..."
         ```
 
 2. Since we will be using the same internal Harbor container registry to upload container images, make sure the following environment variables are set (these were already set during air-gap NKP preparation). Append (add) the following to your ``$HOME/airgap-nai/.env`` file
@@ -426,79 +455,74 @@ stateDiagram-v2
         export REGISTRY_USERNAME=admin
         export REGISTRY_PASSWORD=xxxxxxx
         export REGISTRY_CACERT=$HOME/harbor/certs/ca.crt
+        export PROJECT=nutanix
         ```
 
-3. **(Optional)** - To view the container images loaded in your local docker container registry, run the following command:
-
-    === ":octicons-command-palette-16:Command"
-
-         ```bash
-         docker images --format '{{.Repository}}:{{.Tag}}' | grep nai
-         ```
-    === ":octicons-command-palette-16: Output"
+3. Download this script (provided by Nutanix) from this location
     
-         ```bash
-         nutanix/nai-python-processor:v2.6.0
-         nutanix/nai-iep-operator:v2.6.0
-         nutanix/nai-inference-ui:v2.6.0
-         nutanix/nai-finetuning:v2.6.0
-         nutanix/nai-kserve-custom-model-server:v2.6.0
-         nutanix/nai-iam-bootstrap:v2.6.0
-         nutanix/nai-jobs:v2.6.0
-         nutanix/nai-clickhouse-udf:v2.6.0
-         nutanix/nai-rag-app:v2.6.0
-         nutanix/nai-ai-gateway-extproc:df2530f2
-         nutanix/nai-ai-gateway-controller:df2530f2
-         nutanix/nai-gateway:v1.6.3
-         nutanix/nai-clickhouse-schemas:1.1.3
-         nutanix/nai-vllm:v0.13.0-gpu
-         nutanix/nai-vllm:v0.13.0
-         nutanix/nai-epp-inference-scheduler:v1.2.1-98db134-982d862
-         nutanix/nai-envoy:distroless-v1.36.4
-         nutanix/nai-target-allocator:0.141.0
-         nutanix/nai-opentelemetry-operator:0.141.0
-         nutanix/nai-opentelemetry-collector-contrib:0.141.0
-         nutanix/nai-ratelimit:99d85510
-         nutanix/nai-iam-ui:v2.6.0
-         nutanix/nai-iam-user-authn:v2.6.0
-         nutanix/nai-kube-rbac-proxy:v0.20.0
-         nutanix/nai-vllm:v0.10.2-gpu
-         nutanix/nai-iam-proxy-control-plane:v2.6.0
-         nutanix/nai-iam-proxy:v2.6.0
-         nutanix/nai-iam-themis:v2.6.0
-         nutanix/nai-clickhouse-keeper:25.3.5.42
-         nutanix/nai-clickhouse-server:25.3.5.42
-         nutanix/nai-oauth2-proxy:v7.9.0
-         nutanix/nai-kserve-controller:v0.15.0
-         nutanix/nai-clickhouse-metrics-exporter:0.24.2
-         nutanix/nai-clickhouse-operator:0.24.2
-         nutanix/nai-kube-rbac-proxy:v0.18.0
-         nutanix/nai-postgres:16.1-alpine
-         nutanix/nai-redis:7.0.11-alpine
-         ```
+    ??? tip "Usage of image upload script provided by Nutanix"
 
-4. Push the images to the jumphost VM local docker images store
+        Use the upload script provided by Nutanix. Original location is on the [portal](https://portal.nutanix.com/page/documents/details?targetId=Nutanix-Enterprise-AI-v2_7:top-push-image-registry-airgap-t.html).
+
+        You can also download a copy of the script using the commands below.
+   
+    === ":octicons-command-palette-16: Command"
+    
+        ```bash
+        curl -OL https://raw.github..
+        ```
+
+4. Change permission to execute on the script
+   
+    === ":octicons-command-palette-16: Command"
+    
+        ```bash
+        chmod u+x push-images-to-registry.sh
+        ```
+        
+5. Push the images to the jumphost VM local docker images store
    
     === ":octicons-command-palette-16: Command"
 
          ```bash
-         docker image load -i nai-2.6.0.tar
+         ./push-images-to-registry.sh ${REGISTRY} ${PROJECT} nai-v2.7.0.tar
          ```
-   
-5. Tag and push all the NAI images to refer to the internal/private harbor registry
-   
-    !!! tip "Use image upload script provided by Nutanix"
-
-        Use the upload script provided by Nutanix. This is available on the Nutanix [portal](https://portal.nutanix.com/page/documents/details?targetId=Nutanix-Enterprise-AI-v2_6:top-push-image-registry-airgap-t.html).
-
-        For most cases the following simple script works. 
-
-    === ":octicons-command-palette-16: Command"
+    
+    === ":octicons-command-palette-16: Sample command"
 
          ```bash
-         for image in $(docker images --format '{{.Repository}}:{{.Tag}}' | grep 'nai' | grep -v ${REGISTRY}); do
-           docker tag $image ${REGISTRY}/nutanix/$(echo $image);
-           docker push ${REGISTRY}/nutanix/$(echo $image);
-         done
+         ./push-images-to-registry.sh harbor.10.x.x.134.nip.io nutanix nai-v2.7.0.tar
          ```
+
+    === ":octicons-command-palette-16: Command output"
+    
+        ```{ .text .no-copy }
+
+        < Snipped output >
+
+        → [40/40] Processing: nutanix/nai-go-processor:v2.7.0
+        → Tagging as: harbor.apj-cxrules.win/nutanix/nai-go-processor:v2.7.0
+        → Pushing to registry...
+        The push refers to repository [harbor.apj-cxrules.win/nutanix/nai-go-processor]
+        68c62dd01600: Layer already exists 
+        9f1399477dbf: Layer already exists 
+        6fd88674c4ba: Layer already exists 
+        14087c42d4b4: Layer already exists 
+        2cb1f8643318: Layer already exists 
+        ffcaa2070b2e: Layer already exists 
+        a9f9b89dc1f2: Layer already exists 
+        29df493baa13: Layer already exists 
+        v2.7.0: digest: sha256:22d4558b118f0f5afb0d572e080f44dd6518d5365783222de21a721fa947b9ee size: 1993
+        ✓ Pushed successfully
+        
+        ========================================
+        Summary
+        ========================================
+        Total images loaded:    40
+        Successfully pushed:    40
+        Failed:                 0
+        
+        ✓ All images successfully pushed to harbor.apj-cxrules.win/nutanix
+        ```
+
 Now we are ready to deploy our NAI workloads.
