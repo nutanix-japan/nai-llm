@@ -33,13 +33,9 @@ nav:
     - Pre-requisites NAI: airgap_nai/airgap_nai_pre_reqs.md
     - Deploy NAI: airgap_nai/airgap_nai_deploy.md
     - Test NAI: airgap_nai/airgap_nai_test.md
-  # - GPT-in-a-Box v1 NVD Reference App:
-  #   - Getting Started: llmmgmt/index.md
-  #   - Setup NKE Cluster: infra/infra_nke.md
-  #   - Pre-requisites: llmmgmt/llm_pre_reqs.md
-  #   - Deploy Management Cluster: llmmgmt/llm_mgt_deploy.md
-  #   - Deploy Dev Cluster: llmmgmt/llm_dev_deploy.md
-  #   - Test LLM App: llmmgmt/llm_test.md
+  - NAI Unified Endpoints:
+    - Getting Started: uep/index.md
+    - Fall Back Endpoints: uep/iep_uep_test.md
 - NKP Workload Tutorials: 
   - NKP and NDB: 
     - Getting Started: nkp_tutorials/nkp_ndb_lab/index.md

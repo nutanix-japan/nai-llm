@@ -42,6 +42,7 @@ stateDiagram-v2
     - Cert-manager is at least of ``v1.17.2``
     - OpenTelemetry operator is at least of ``v0.102.0``
     - Envoy Gateway is at least of ``v1.7.0``
+    - Prometheus Monitoring is at least of ``78.4.0``
   
 ## Enable Pre-requisite Applications  
 
@@ -449,7 +450,7 @@ The following pre-requisite applications will be enabled from the command line o
           --set kserve.controller.deploymentMode=RawDeployment \
           --set kserve.controller.gateway.disableIngressCreation=true \
           --set kserve.controller.image=${REGISTRY}/${PROJECT}/nai-kserve-controller \
-          --set kserve.controller.rbacProxyImage=${REGISTRY}/${PROJECT}/nai-kube-rbac-proxy:v0.20.0 \
+          --set kserve.controller.rbacProxyImage=${REGISTRY}/${PROJECT}/nai-kube-rbac-proxy:v0.18.0 \
           --set kserve.controller.imagePullSecrets[0].name=${IMAGE_PULL_SECRET}
         ```
     
@@ -463,7 +464,7 @@ The following pre-requisite applications will be enabled from the command line o
           --set kserve.controller.deploymentMode=RawDeployment \
           --set kserve.controller.gateway.disableIngressCreation=true \
           --set kserve.controller.image=${REGISTRY}/${PROJECT}/nai-kserve-controller \
-          --set kserve.controller.rbacProxyImage=${REGISTRY}/${PROJECT}/nai-kube-rbac-proxy:v0.20.0 \
+          --set kserve.controller.rbacProxyImage=${REGISTRY}/${PROJECT}/nai-kube-rbac-proxy:v0.18.0 \
           --set kserve.controller.imagePullSecrets[0].name=${IMAGE_PULL_SECRET}
         ```
     

@@ -42,6 +42,7 @@ stateDiagram-v2
     - Cert-manager is at least of ``v1.17.2``
     - OpenTelemetry operator is at least of ``v0.102.0``
     - Envoy Gateway is at least of ``v1.7.0``
+    - Prometheus Monitoring is at least of ``78.4.0``
   
 ## Enable Pre-requisite Applications  
 
