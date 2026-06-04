@@ -1,3 +1,10 @@
+---
+
+title: "Nutanix AI Unified Endpoints"
+description: "NAI Unified Endpoints ccting as a centralized inferencing control plane, a Unified Endpoint allows you to route, secure, and govern all your generative AI models—both self-hosted and cloud-based—behind a single, OpenAI-compatible API endpoint, all without needing to refactor your application code."
+
+---
+
 # Getting Started: Mastering Nutanix Enterprise AI Unified Endpoints
 
 ## Introduction
