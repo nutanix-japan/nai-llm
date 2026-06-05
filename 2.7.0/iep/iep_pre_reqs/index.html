@@ -961,7 +961,7 @@
   <span class="md-ellipsis">
     
   
-    Nutanix Enterprise AI v2.7.0 (NAI)
+    NAI v2.7.0
   
 
     
@@ -977,7 +977,7 @@
             <span class="md-nav__icon md-icon"></span>
             
   
-    Nutanix Enterprise AI v2.7.0 (NAI)
+    NAI v2.7.0
   
 
           </label>
@@ -1267,7 +1267,7 @@
   <span class="md-ellipsis">
     
   
-    Air-gapped Nutanix Enterprise AI v2.7.0 (NAI)
+    Air-gapped NAI v2.7.0 (NAI)
   
 
     
@@ -1283,7 +1283,7 @@
             <span class="md-nav__icon md-icon"></span>
             
   
-    Air-gapped Nutanix Enterprise AI v2.7.0 (NAI)
+    Air-gapped NAI v2.7.0 (NAI)
   
 
           </label>
@@ -1493,7 +1493,7 @@
   <span class="md-ellipsis">
     
   
-    NAI Unified Endpoints
+    NAI v2.7.0 using NKP Catalog Applications
   
 
     
@@ -1506,6 +1506,120 @@
         
         <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_4_3_label" aria-expanded="false">
           <label class="md-nav__title" for="__nav_4_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    NAI v2.7.0 using NKP Catalog Applications
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../nkp_catalog_nai/index.md" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Getting Started
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../nkp_catalog_nai/nkp_catalog_nai_deploy.md" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Deploy NAI
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4_4" >
+        
+          
+          <label class="md-nav__link" for="__nav_4_4" id="__nav_4_4_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    NAI Unified Endpoints
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_4_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4_4">
             <span class="md-nav__icon md-icon"></span>
             
   
@@ -3187,7 +3301,7 @@
         <a href="../" class="md-path__link">
           
   <span class="md-ellipsis">
-    Nutanix Enterprise AI v2.7.0 (NAI)
+    NAI v2.7.0
   </span>
 
         </a>
@@ -3282,8 +3396,12 @@
 <ol>
 <li>
 <p>Run the following command to check K8S status of the <code>nkpdev</code> cluster</p>
-<div class="language-bash highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>kubectl<span class="w"> </span>get<span class="w"> </span>nodes
-</span></code></pre></div>
+<p>=== "<span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16"><path d="m6.354 8.04-4.773 4.773a.75.75 0 1 0 1.061 1.06L7.945 8.57a.75.75 0 0 0 0-1.06L2.642 2.206a.75.75 0 0 0-1.06 1.061L6.353 8.04ZM8.75 11.5a.75.75 0 0 0 0 1.5h5.5a.75.75 0 0 0 0-1.5z"/></svg></span></p>
+<div class="language-text highlight"><pre><span></span><code>```bash
+export KUBECONFIG=nkpdev.conf
+kubectl get nodes
+```
+</code></pre></div>
 </li>
 <li>
 <p>In VSC Explorer, click on <strong>New File</strong> <span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13.81 22H6c-1.11 0-2-.89-2-2V4a2 2 0 0 1 2-2h8l6 6v5.09c-.33-.05-.66-.09-1-.09s-.67.04-1 .09V9h-5V4H6v16h7.09c.12.72.37 1.39.72 2M23 18h-3v-3h-2v3h-3v2h3v3h2v-3h3z"/></svg></span> and create a config file with the following name:</p>
@@ -3477,7 +3595,7 @@
     <span class="md-icon" title="Last update">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21 13.1c-.1 0-.3.1-.4.2l-1 1 2.1 2.1 1-1c.2-.2.2-.6 0-.8l-1.3-1.3c-.1-.1-.2-.2-.4-.2m-1.9 1.8-6.1 6V23h2.1l6.1-6.1zM12.5 7v5.2l4 2.4-1 1L11 13V7zM11 21.9c-5.1-.5-9-4.8-9-9.9C2 6.5 6.5 2 12 2c5.3 0 9.6 4.1 10 9.3-.3-.1-.6-.2-1-.2s-.7.1-1 .2C19.6 7.2 16.2 4 12 4c-4.4 0-8 3.6-8 8 0 4.1 3.1 7.5 7.1 7.9l-.1.2z"/></svg>
     </span>
-    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="June 1, 2026 02:34:52 UTC">June 1, 2026</span>
+    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="June 5, 2026 08:07:42 UTC">June 5, 2026</span>
   </span>
 
     
