@@ -57,9 +57,12 @@ We will create Nutanix Files storage class which will be used to create a pvc th
 
 12. Run the following command to check K8S status of the ``nkpdev`` cluster
     
-    ```bash
-    kubectl get nodes
-    ```
+    === ":octicons-command-palette-16:
+
+        ```bash
+        export KUBECONFIG=nkpdev.conf
+        kubectl get nodes
+        ```
 
 12. In VSC Explorer, click on **New File** :material-file-plus-outline: and create a config file with the following name:
 

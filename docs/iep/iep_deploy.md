@@ -722,73 +722,182 @@ In this section we will install SSL Certificate to access the NAI UI. This is re
 
 NAI UI is accessible using the Envoy Ingress Gateway.
 
-The following steps show how cert-manager can be used to generate a self signed certificate using the default selfsigned-issuer present in the cluster. 
-
-??? tip "Manual - using Public Certificate Authority (CA) for NAI SSL Certificate"
+??? tip "Optional and manual - using Public Certificate Authority (CA)"
     
     If an organization generates certificates using a different mechanism then obtain the certificate **+ key** and create a kubernetes secret manually using the following command:
-
-    ```bash
-    kubectl -n nai-system create secret tls nai-cert --cert=path/to/nai.crt --key=path/to/nai.key
-    ```
-
-    Use patch commmand (Step 6) onwards in this section to use this certificate.
-
-    Skip the steps in this self-signed certificate section to use the organisation generated certificates.
-
     
-??? tip "Automate - using Cert Manager and Public Certificate Authority (CA) for NAI SSL Certificate"  
+    1. Create the certificate from the files (generated using certbot or provided to you)
+  
+        ```bash
+        kubectl -n nai-system create secret tls nai-cert \
+        --cert=path/to/nai.crt \
+        --key=path/to/nai.key
+        ```
+    
+    2. Combine the certificates to get the certificate bundle
+       
+        ```bash
+        cat server.crt intermediate.crt > tls-bundle.crt
+        ```
+    
+    3. Create a kubernetes secret in the nai-system namespace to use during NAI install
+  
+        ```bash
+          kubectl secret tls nai-cert \
+          --cert=tls-bundle.crt \
+          --key=server.key \
+          -n nai-system
+        ```
+    
+    4. Use the created secret to install, just use the following helm value to do this
+       
+        ```bash
+        helm upgrade --install nai-core nai-core/ \
+        -n nai-system \
+        --set gateway.tlsSecretName=nai-cert
+        ```
+
+??? tip "Optional to automate - using Public Certificate Authority (CA) and Cert Manager"  
 
     Using **Cert Manager** to manage the Public Certificate Authority (CA) for NAI SSL Certificate is also a possiblity.
 
-    **Cloudflare Example** at a high level:
+    At a high level (Cloudflare Example):
 
-    1. Get a API key from DNS provider woth **Edit Zone** rights
+    1. Get a API key from DNS provider woth Edit Zone rights
     2. Create a Kubernetes ``Secret`` from the API key
-    3. Create a ``ClusterIssuer`` with Cert Mangager/Let's Encrypt - Configure cert-manager to use DNS-01 challenge with Cloudflare for automatic certificate issuance.
-    4. Create the certificate and store it as a ``Secret``
-    5. Patch the NAI Envoy Ingress Gateway ``gateway`` listener with the secret (SSL certificate)
+       
+        === "Cloudflare Example"
+        
+            ```yaml
+            apiVersion: v1
+            kind: Secret
+            metadata:
+              name: cloudflare-api-token-secret
+              namespace: harbor
+            type: Opaque
+            stringData:
+              api-token: _YOUR_CLOUDFLARE_API_TOKEN_HERE
+            ```
+        
+        === "AWS Route 53 Example"
+        
+            ```yaml
+            apiVersion: v1
+            kind: Secret
+            metadata:
+              creationTimestamp: null
+              name: route53-api-token-secret
+              namespace: cert-manager
+            data:
+              access-key-id: "_YOUR_AWS_ACCESS_KEY_ID"
+              secret-access-key: "_YOUR_AWS_SECRET_KEY_ID"
+            ```
 
-To create and use a self-signed certificate, follow these steps:
+    3. Create a ``ClusterIssuer`` with Cert Mangager/Let's Encrypt - Configure cert-manager to use DNS-01 challenge with Cloudflare for automatic certificate issuance.
+        
+        === "Cloudflare Example"
+
+            ```yaml hl_lines="8"
+            apiVersion: cert-manager.io/v1
+            kind: ClusterIssuer
+            metadata:
+              name: letsencrypt-cloudflare
+              namespace: cert-manager
+            spec:
+              acme:
+                email: _YOUR_DOMAIN_OWNER_EMAIL_ADDRESS
+                server: https://acme-v02.api.letsencrypt.org/directory
+                privateKeySecretRef:
+                  name: letsencrypt-cloudflare-account-key
+                solvers:
+                - dns01:
+                    cloudflare:
+                      apiTokenSecretRef:
+                        name: cloudflare-api-token-secret
+                        key: api-token
+            ```
+
+        === "AWS Route 53 Example"
+            
+            ```yaml
+            apiVersion: cert-manager.io/v1
+            kind: ClusterIssuer
+            metadata:
+              name: nai-letsencrypt-cluster-issuer
+            spec:
+              acme:
+                email: _YOUR_DOMAIN_OWNER_EMAIL_ADDRESS
+                server: https://acme-v02.api.letsencrypt.org/directory
+                privateKeySecretRef:
+                  name: nai-letsencrypt-cluster
+                solvers:
+                  - dns01:
+                      route53:
+                        region: us-east-1
+                        accessKeyIDSecretRef:
+                          name: route53-api-token-secret
+                          key: access-key-id
+                        secretAccessKeySecretRef:
+                          name: route53-api-token-secret
+                          key: secret-access-key
+                        hostedZoneID: _HOSTED_ZONE_ID
+            ```
+
+
+    4. Use the ClusterIssuer ``letsencrypt-cloudflare`` in the next section for installing NAI
+       
+        ```bash title="Sample NAI Install Command - add other necessary options"
+        helm upgrade --install nai-core nai-core/ \
+         -n nai-system \
+
+         # < Snipped for brevity >
+         # < add other necessary install options >
+
+         --set gateway.certManager.issuerRef.name=letsencrypt-cloudflare \
+         --set gateway.certManager.issuerRef.kind=ClusterIssuer \
+         --set gateway.certManager.dnsNames[0]=nai.domain.com
+        ``` 
+
+The following steps show how cert-manager can be used to generate a self signed certificate using the default **selfsigned-issuer** present in the cluster for the purposes of the lab.
 
 1. Get the NAI UI ingress gateway host using the following command:
-   
+
     ```bash
-    NAI_UI_ENDPOINT=$(kubectl get svc -n envoy-gateway-system -l "gateway.envoyproxy.io/owning-gateway-name=nai-ingress-gateway,gateway.envoyproxy.io/owning-gateway-namespace=nai-system" -o jsonpath='{.items[0].status.loadBalancer.ingress[0].ip}' | grep -v '^$' || kubectl get svc -n envoy-gateway-system -l "gateway.envoyproxy.io/owning-gateway-name=nai-ingress-gateway,gateway.envoyproxy.io/owning-gateway-namespace=nai-system" -o jsonpath='{.items[0].status.loadBalancer.ingress[0].hostname}')
+    NAI_UI_ENDPOINT=$(kubectl get svc -n envoy-gateway-system -l "gateway.envoyproxy.io/owning-gateway-name=nai-ingress-gateway,gateway.envoyproxy.io/owning-gateway-namespace=nai-system" -o jsonpath='{.items[0].status.loadBalancer.ingress[0].ip}')
     ```
 
 2. Get the value of ``NAI_UI_ENDPOINT`` environment variable
-   
-    === "Command"
 
+    === "Command"
+  
         ```bash
         echo $NAI_UI_ENDPOINT
         ```
-
+               
     === "Command output"
-
-        ``` { .text .no-copy }
+      
+        ```{ .text .no-copy }
         10.x.x.216
         ```
 
 3. We will use the command output e.g: ``10.x.x.216`` as the IP address for NAI as reserved in this [section](../infra/infra_nkp.md#reserve-control-plane-and-metallb-endpoint-ips)
 
 4. Construct the FQDN of NAI UI using [nip.io](https://nip.io/) and we will use this FQDN as the certificate's Common Name (CN).
-   
+
     === "Template URL"
-
-        ```bash
-        nai.${NAI_UI_ENDPOINT}.nip.io
-        ```
-
+    
+       ```bash
+       nai.${NAI_UI_ENDPOINT}.nip.io
+       ```
+    
     === "Sample URL"
-
-        ``` { .text .no-copy }
-        nai.10.x.x.216.nip.io
-        ```
+    
+       ``` { .text .no-copy }
+       nai.10.x.x.216.nip.io
+       ```
 
 5. Create the ingress resource certificate using the following command:
-   
+
     ```bash hl_lines="12 14 16"
     cat << EOF | k apply -f -
     apiVersion: cert-manager.io/v1

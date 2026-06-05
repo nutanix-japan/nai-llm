@@ -1,3 +1,10 @@
+---
+
+title: "Nutanix AI on NKP in Air-Gap Environment"
+description: "This is a document that walks through Nutanix AI (NAI) implementation on a NKP cluster in an Air-gap environment using Helm charts. The procedure also provides extra customisable options to suit an environment from testing to production. Various options are detailed and discussed along the way helping you make decisions on installation choices. A few testing components are also documented for once NAI is deployed "
+
+---
+
 # Getting Started
 
 In this part of the lab we will deploy LLM on GPU nodes.

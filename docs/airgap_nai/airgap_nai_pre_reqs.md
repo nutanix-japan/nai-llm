@@ -374,25 +374,25 @@ The procedure will be done on the jumphost VM.
         ```{ .text, .no-copy}
         $ for chart in $(ls *.tgz); do echo "Pushing: $chart";helm push $chart oci://$REGISTRY/nutanix;done
         Pushing: gateway-crds-helm-v1.7.0.tgz
-        Pushed: harbor.apj-cxrules.win/nutanix/gateway-crds-helm:v1.7.0
+        Pushed: harbor.x.x.x.x.nip.io/nutanix/gateway-crds-helm:v1.7.0
         Digest: sha256:625ee2409826d30e70ac26eb1a93e80650ba2c81464f65aaca6968cd33793b37
         Pushing: gateway-helm-v1.7.0.tgz
-        Pushed: harbor.apj-cxrules.win/nutanix/gateway-helm:v1.7.0
+        Pushed: harbor.x.x.x.x.nip.io/nutanix/gateway-helm:v1.7.0
         Digest: sha256:80ce6293c5a8658897971cd10adef51880a3ee6e5e1bbc92415b943cd4b94cb5
         Pushing: kserve-crd-v0.15.0.tgz
-        Pushed: harbor.apj-cxrules.win/nutanix/kserve-crd:v0.15.0
+        Pushed: harbor.x.x.x.x.nip.io/nutanix/kserve-crd:v0.15.0
         Digest: sha256:b673a75fdf45602ae58bb528e7b445e4530617b18f8eebb5d6337c16d4596951
         Pushing: kserve-v0.15.0.tgz
-        Pushed: harbor.apj-cxrules.win/nutanix/kserve:v0.15.0
+        Pushed: harbor.x.x.x.x.nip.io/nutanix/kserve:v0.15.0
         Digest: sha256:e1bc365c75dd28f0c43581107b78614ffe21e6fbaf95a9351af440d3eec45130
         Pushing: nai-core-2.7.0.tgz
-        Pushed: harbor.apj-cxrules.win/nutanix/nai-core:2.7.0
+        Pushed: harbor.x.x.x.x.nip.io/nutanix/nai-core:2.7.0
         Digest: sha256:2484532e59822e3c660aa4fa4a9152788d68bd51d1a47ea6e4b4884fa02bafe1
         Pushing: nai-operators-2.7.0.tgz
-        Pushed: harbor.apj-cxrules.win/nutanix/nai-operators:2.7.0
+        Pushed: harbor.x.x.x.x.nip.io/nutanix/nai-operators:2.7.0
         Digest: sha256:8a377a20f58f28500daab57730cf71bc4c7e2385615e061a9bd98e73ed47a978
         Pushing: opentelemetry-operator-0.102.0.tgz
-        Pushed: harbor.apj-cxrules.win/nutanix/opentelemetry-operator:0.102.0
+        Pushed: harbor.x.x.x.x.nip.io/nutanix/opentelemetry-operator:0.102.0
         Digest: sha256:bb3a48aeca0320a5c999b3849619e2d692eeec8ce59a6c43ca965c1fd1ffdb24
         ```
 
@@ -469,7 +469,7 @@ stateDiagram-v2
     === ":octicons-command-palette-16: Command"
     
         ```bash
-        curl -OL https://raw.github..
+        curl -OL https://raw.githubusercontent.com/nutanix-japan/nai-llm/refs/heads/main/docs/airgap_nai/push-images-to-registry.sh
         ```
 
 4. Change permission to execute on the script
@@ -501,9 +501,9 @@ stateDiagram-v2
         < Snipped output >
 
         → [40/40] Processing: nutanix/nai-go-processor:v2.7.0
-        → Tagging as: harbor.apj-cxrules.win/nutanix/nai-go-processor:v2.7.0
+        → Tagging as: harbor.x.x.x.x.nip.io/nutanix/nai-go-processor:v2.7.0
         → Pushing to registry...
-        The push refers to repository [harbor.apj-cxrules.win/nutanix/nai-go-processor]
+        The push refers to repository [harbor.x.x.x.x.nip.io/nutanix/nai-go-processor]
         68c62dd01600: Layer already exists 
         9f1399477dbf: Layer already exists 
         6fd88674c4ba: Layer already exists 
@@ -522,7 +522,7 @@ stateDiagram-v2
         Successfully pushed:    40
         Failed:                 0
         
-        ✓ All images successfully pushed to harbor.apj-cxrules.win/nutanix
+        ✓ All images successfully pushed to harbor.x.x.x.x.nip.io/nutanix
         ```
 
 Now we are ready to deploy our NAI workloads.
