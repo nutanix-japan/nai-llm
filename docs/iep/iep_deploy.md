@@ -749,12 +749,10 @@ NAI UI is accessible using the Envoy Ingress Gateway.
           -n nai-system
         ```
     
-    4. Use the created secret to install, just use the following helm value to do this
+    6. Patch the Envoy gateway with the ``nai-cert`` certificate details
        
         ```bash
-        helm upgrade --install nai-core nai-core/ \
-        -n nai-system \
-        --set gateway.tlsSecretName=nai-cert
+        kubectl patch gateway nai-ingress-gateway -n nai-system --type='json' -p='[{"op": "replace", "path": "/spec/listeners/1/tls/certificateRefs/0/name", "value": "nai-cert"}]'
         ```
 
 ??? tip "Optional to automate - using Public Certificate Authority (CA) and Cert Manager"  
@@ -766,9 +764,9 @@ NAI UI is accessible using the Envoy Ingress Gateway.
     1. Get a API key from DNS provider woth Edit Zone rights
     2. Create a Kubernetes ``Secret`` from the API key
        
-        === "Cloudflare Example"
+        === "Cloudflare Example" 
         
-            ```yaml
+            ```yaml hl_lines="8"
             apiVersion: v1
             kind: Secret
             metadata:
@@ -781,7 +779,7 @@ NAI UI is accessible using the Envoy Ingress Gateway.
         
         === "AWS Route 53 Example"
         
-            ```yaml
+            ```yaml hl_lines="8 9"
             apiVersion: v1
             kind: Secret
             metadata:
@@ -819,11 +817,11 @@ NAI UI is accessible using the Envoy Ingress Gateway.
 
         === "AWS Route 53 Example"
             
-            ```yaml
+            ```yaml hl_lines="7"
             apiVersion: cert-manager.io/v1
             kind: ClusterIssuer
             metadata:
-              name: nai-letsencrypt-cluster-issuer
+              name: letsencrypt-cloudflare
             spec:
               acme:
                 email: _YOUR_DOMAIN_OWNER_EMAIL_ADDRESS
@@ -843,22 +841,33 @@ NAI UI is accessible using the Envoy Ingress Gateway.
                         hostedZoneID: _HOSTED_ZONE_ID
             ```
 
-
-    4. Use the ClusterIssuer ``letsencrypt-cloudflare`` in the next section for installing NAI
+    4. Create the ingress resource certificate using the following command:
+    
+        ```bash hl_lines="12 14 16"
+        cat << EOF | k apply -f -
+        apiVersion: cert-manager.io/v1
+        kind: Certificate
+        metadata:
+          name: nai-cert
+          namespace: nai-system
+        spec:
+          issuerRef:
+            name: letsencrypt-cloudflare
+            kind: ClusterIssuer
+          secretName: nai-cert
+          commonName: nai.domain.com
+          dnsNames:
+          - nai.domain.com
+        EOF
+        ```
+    
+    5. Patch the Envoy gateway with the ``nai-cert`` certificate details
        
-        ```bash title="Sample NAI Install Command - add other necessary options"
-        helm upgrade --install nai-core nai-core/ \
-         -n nai-system \
+        ```bash
+        kubectl patch gateway nai-ingress-gateway -n nai-system --type='json' -p='[{"op": "replace", "path": "/spec/listeners/1/tls/certificateRefs/0/name", "value": "nai-cert"}]'
+        ```
 
-         # < Snipped for brevity >
-         # < add other necessary install options >
-
-         --set gateway.certManager.issuerRef.name=letsencrypt-cloudflare \
-         --set gateway.certManager.issuerRef.kind=ClusterIssuer \
-         --set gateway.certManager.dnsNames[0]=nai.domain.com
-        ``` 
-
-The following steps show how cert-manager can be used to generate a self signed certificate using the default **selfsigned-issuer** present in the cluster for the purposes of the lab.
+The following steps show how cert-manager can be used to generate a **self signed certificate** using the default **selfsigned-issuer** present in the cluster for the purposes of the lab.
 
 1. Get the NAI UI ingress gateway host using the following command:
 
