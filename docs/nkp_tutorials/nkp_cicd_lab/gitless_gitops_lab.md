@@ -7,7 +7,7 @@ This lab shows a minimal **gitless GitOps** continuous delivery flow using Flux,
 Deploy a simple app to Kubernetes where:
 - CI or a workstation packages Kubernetes YAML into an OCI artifact and pushes it to a registry.
 - Flux source-controller watches that OCI artifact using the `OCIRepository` CRD [web:1].
-- Flux kustomize-controller applies the content to the cluster through a `Kustomization` that references the `OCIRepository` [web:21].
+- Flux kustomize-controller applies the content to the cluster through a `Kustomization` that references the `OCIRepository`.
 
 This is useful when you want declarative reconciliation without depending on Git as the runtime source of truth, especially for edge or disconnected clusters that can reach a registry more easily than a Git service.
 
@@ -15,8 +15,8 @@ This is useful when you want declarative reconciliation without depending on Git
 
 1. Build an OCI artifact from Kubernetes manifests with `flux push artifact` or equivalent OCI tooling.
 2. Push the artifact to a registry such as Harbor or GHCR.
-3. Create an `OCIRepository` in `flux-system` that points at the registry artifact [web:1].
-4. Create a `Kustomization` that uses that `OCIRepository` as its source [web:21].
+3. Create an `OCIRepository` in `flux-system` that points at the registry artifact.
+4. Create a `Kustomization` that uses that `OCIRepository` as its source.
 5. Flux polls the registry, detects new tags or digests, fetches the artifact, and reconciles the cluster.
 
 ## What to confirm first
@@ -247,7 +247,7 @@ Check reconciliation:
     kubectl -n demo-app get all
     ```
 
-Flux will report the fetched revision for the OCI source, and the Kustomization status will show whether the manifests were applied successfully [web:21].
+Flux will report the fetched revision for the OCI source, and the Kustomization status will show whether the manifests were applied successfully.
 
 ## Demo update story
 
@@ -262,7 +262,7 @@ A simple demo sequence:
 
 ## Optional security angle
 
-Flux documentation also supports verifying OCI artifacts with Cosign or Notation before reconciliation, which is a strong talking point for supply-chain controls [web:1. A high-level message for the customer is that OCI-based delivery can combine image-style registry governance, signatures, and admission policies with GitOps-style reconciliation.
+Flux documentation also supports verifying OCI artifacts with Cosign or Notation before reconciliation, which is a strong talking point for supply-chain controls. A high-level message for the customer is that OCI-based delivery can combine image-style registry governance, signatures, and admission policies with GitOps-style reconciliation.
 
 ## Take away
 

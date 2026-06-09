@@ -81,6 +81,7 @@ nav:
   - LLM Model Selector: static/nai-llm-model-selectr.html
   - LLM Scheduling Kubernetes Clusters: static/nai-llm-simulation-v1-nim-rag.html
 - Takeaways: takeaways/takeaways.md
+- Releases: releases.md
 
 
 # Repository
