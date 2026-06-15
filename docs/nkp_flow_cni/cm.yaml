@@ -37,7 +37,7 @@ data:
     
     <div class="controls">
     <label><b>VM IP:</b></label>
-    <input type="text" id="vm_ip" value="10.24.155.106">
+    <input type="text" id="vm_ip" value="PG_VM IP # 10.x.x.x">
     
     <label><b>Clients:</b></label>
     <input type="number" id="clients" value="50" style="width:60px;">
