@@ -337,7 +337,7 @@ In this section we will go through creating a base image for all the control pla
         export CONTROLPLANE_VIP=_your_nkp_cluster_controlplane_ip
         export LB_IP_RANGE=_your_range_of_two_ips
         export DOCKER_USERNAME=_your_docker_username
-        export DOCKER_PASSWORD=_your_docker_password
+        export DOCKER_PASSWORD=_your_docker_password_pat
         ```
 
     === "Sample .env"

@@ -63,24 +63,35 @@ nav:
   - Files (RWX CSI)Replication:
     - Single PC/PE/K8s Workflow: nkp_ndk/nkp_ndk_singlek8s_files.md
     - Multiple PE/K8s/Files Workflow: nkp_ndk/nkp_ndk_k8s_files_replication.md
-- Appendix:
-  - Jumphost VM Manual: infra/infra_jumphost.md
-  - NKP The Hard Way: appendix/infra_nkp_hard_way.md
-  - Harbor Container Registry: infra/harbor.md
-  - Deploying Private CA Certificate to NKP Cluster: appendix/nkp_cert_ds.md
-  - Opentofu: appendix/opentofu.md
-- References:
-  - Nutanix Components: ntxcomponents/ntxcomponents.md
-  - Tools used and why?: tools/tools.md
-  - Contributing: contributing.md
-  - Roadmap: roadmap.md
+
+- NKP Flow CNI Tutorials:
+  - Getting Started: nkp_flow_cni/index.md
+  - Preparing for Flow CNI on NKP: nkp_flow_cni/nkp_flow_cni.md
+  - Deploy NKP Clusters with Flow CNI: nkp_flow_cni/nkp_flow_nkp_wrkld.md
+  - Preparing VPC and Subnets: nkp_flow_cni/nkp_flow_network.md
+  - Deploy and Test App: nkp_flow_cni/nkp_flow_deploy_app.md
+
+
 - Simulators:
   - static/index.md
   - Pods and Nodepools Simulation: static/scheduling-mixed-pods-and-nodepool-v1.html
   - K8S Deployment Strategies: static/k8s-deployment-strategies-visualizer.html
   - LLM Model Selector: static/nai-llm-model-selectr.html
   - LLM Scheduling Kubernetes Clusters: static/nai-llm-simulation-v1-nim-rag.html
-- Takeaways: takeaways/takeaways.md
+
+
+- Appendix:
+  - Jumphost VM Manual: infra/infra_jumphost.md
+  - NKP The Hard Way: appendix/infra_nkp_hard_way.md
+  - Harbor Container Registry: infra/harbor.md
+  - Deploying Private CA Certificate to NKP Cluster: appendix/nkp_cert_ds.md
+  - Opentofu: appendix/opentofu.md
+  - Nutanix Components: ntxcomponents/ntxcomponents.md
+  - Tools used and why?: tools/tools.md
+  - Contributing: contributing.md
+  - Roadmap: roadmap.md
+
+# - Takeaways: takeaways/takeaways.md
 - Releases: releases.md
 
 
