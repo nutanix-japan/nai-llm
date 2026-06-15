@@ -1,0 +1,221 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: tester-app-code
+data:
+  app.py: |
+    from flask import Flask, request, Response
+    import subprocess
+    import os
+    
+    app = Flask(__name__)
+    
+    HTML_PAGE = """
+    <!DOCTYPE html>
+    <html>
+    <head>
+        <title>NKP Network & DB Tester</title>
+        <style>
+            body { font-family: sans-serif; margin: 20px; background: #f4f4f9; }
+            .container { max-width: 900px; margin: auto; background: white; padding: 20px;
+                         border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
+            .controls { display:flex; gap:10px; margin-bottom:15px; flex-wrap:wrap; align-items:center; }
+            button { padding:10px 15px; cursor:pointer; background:#0056b3; color:white;
+                     border:none; border-radius:4px; font-weight:bold; }
+            button:hover { background:#003d82; }
+            .btn-danger { background:#dc3545; }
+            .btn-danger:hover { background:#a71d2a; }
+            input { padding:8px; border:1px solid #ccc; border-radius:4px; }
+            #console { background:#1e1e1e; color:#00ff00; padding:15px; height:500px;
+                       overflow-y:auto; font-family:monospace; border-radius:4px;
+                       white-space:pre-wrap; }
+        </style>
+    </head>
+    <body>
+    <div class="container">
+    <h2>NKP to Nutanix VM Tester</h2>
+    
+    <div class="controls">
+    <label><b>VM IP:</b></label>
+    <input type="text" id="vm_ip" value="10.24.155.106">
+    
+    <label><b>Clients:</b></label>
+    <input type="number" id="clients" value="50" style="width:60px;">
+    
+    <label><b>Threads:</b></label>
+    <input type="number" id="threads" value="4" style="width:60px;">
+    
+    <label><b>Time (s):</b></label>
+    <input type="number" id="time" value="60" style="width:60px;">
+    </div>
+    
+    <div class="controls">
+    <button onclick="startStream('/test/network')">1. Run iperf3 Test</button>
+    <button onclick="startStream('/test/db-init')">2. Init DB Data</button>
+    <button class="btn-danger" onclick="clearConsole()">Clear Console</button>
+    </div>
+    
+    <div id="console">Waiting for tests to start...</div>
+    </div>
+    
+    <script>
+    let eventSource;
+    const consoleDiv=document.getElementById('console');
+    
+    function clearConsole(){
+        consoleDiv.textContent="";
+    }
+    
+    function appendToConsole(text){
+        consoleDiv.appendChild(document.createTextNode(text));
+        consoleDiv.scrollTop=consoleDiv.scrollHeight;
+    }
+    
+    function startStream(endpoint){
+    
+        if(eventSource){
+            eventSource.close();
+        }
+    
+        const ip=document.getElementById('vm_ip').value;
+        const clients=document.getElementById('clients').value;
+        const threads=document.getElementById('threads').value;
+        const time=document.getElementById('time').value;
+    
+        const url=`${endpoint}?ip=${encodeURIComponent(ip)}&clients=${clients}&threads=${threads}&time=${time}`;
+    
+        if(consoleDiv.textContent.includes("Waiting")){
+            clearConsole();
+        }
+    
+        appendToConsole("\\n=========================================\\n");
+        appendToConsole(`> Executing: ${endpoint} against ${ip}\\n`);
+        appendToConsole("=========================================\\n\\n");
+    
+        eventSource=new EventSource(url);
+    
+        eventSource.onmessage=function(event){
+    
+            if(event.data==="[DONE]"){
+                appendToConsole("\\n> Process Completed.\\n");
+                eventSource.close();
+                return;
+            }
+    
+            appendToConsole(event.data+"\\n");
+        };
+    
+        eventSource.onerror=function(){
+            appendToConsole("\\n> Stream closed or connection error.\\n");
+            if(eventSource){
+                eventSource.close();
+            }
+        };
+    }
+    </script>
+    </body>
+    </html>
+    """
+    
+    STREAM_HEADERS = {
+        "X-Accel-Buffering": "no",
+        "Cache-Control": "no-cache",
+        "Connection": "keep-alive",
+    }
+    
+    @app.route("/")
+    def index():
+        return HTML_PAGE
+    
+    
+    def generate_output(cmd, env=None):
+        try:
+            process = subprocess.Popen(
+                cmd,
+                shell=True,
+                stdout=subprocess.PIPE,
+                stderr=subprocess.STDOUT,
+                text=True,
+                env=env,
+                bufsize=1,
+            )
+    
+            yield "data: Starting process...\n\n"
+            yield f"data: Command: {cmd}\n\n"
+    
+            while True:
+                line = process.stdout.readline()
+    
+                if line:
+                    yield f"data: {line.rstrip()}\n\n"
+                elif process.poll() is not None:
+                    break
+                else:
+                    # heartbeat keeps SSE alive while command is quiet
+                    yield "data: ...\n\n"
+    
+            rc = process.wait()
+            yield f"data: Exit code: {rc}\n\n"
+    
+        except Exception as e:
+            yield f"data: Exception: {e}\n\n"
+    
+        yield "data: [DONE]\n\n"
+    
+    
+    @app.route("/test/network")
+    def test_network():
+        vm_ip = request.args.get("ip", "127.0.0.1")
+        cmd = f"iperf3 -c {vm_ip}"
+        return Response(generate_output(cmd),
+                        mimetype="text/event-stream",
+                        headers=STREAM_HEADERS)
+    
+    
+    @app.route("/test/db-init")
+    def db_init():
+        vm_ip = request.args.get("ip", "127.0.0.1")
+        env = os.environ.copy()
+        env["PGPASSWORD"] = "testpassword"
+    
+        cmd = (
+            f"pgbench -i -s 5 "
+            f"-h {vm_ip} "
+            f"-U tester "
+            f"-d pgbench_test"
+        )
+    
+        return Response(generate_output(cmd, env),
+                        mimetype="text/event-stream",
+                        headers=STREAM_HEADERS)
+    
+    
+    @app.route("/test/db-run")
+    def db_run():
+        vm_ip = request.args.get("ip", "127.0.0.1")
+        clients = request.args.get("clients", "50")
+        threads = request.args.get("threads", "4")
+        time_sec = request.args.get("time", "60")
+    
+        env = os.environ.copy()
+        env["PGPASSWORD"] = "testpassword"
+        env["PGCONNECT_TIMEOUT"] = "5"
+    
+        cmd = (
+            f"pgbench "
+            f"-c {clients} "
+            f"-j {threads} "
+            f"-T {time_sec} "
+            f"-P 1 "
+            f"-h {vm_ip} "
+            f"-U tester "
+            f"-d pgbench_test"
+        )
+    
+        return Response(generate_output(cmd, env),
+                        mimetype="text/event-stream",
+                        headers=STREAM_HEADERS)
+    
+    
+    if __name__ == "__main__":
+        app.run(host="0.0.0.0", port=8080, threaded=True)
