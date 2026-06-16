@@ -11,32 +11,9 @@ In this section we will prepare the NKP Cluster with Flow CNI.
 
 This section will take you through install NKP(Kubernetes) on Nutanix cluster as we will be deploying Flow CNI on these kubernetes clusters and testing networking between containers and VMs.
 
-## NKP High Level Cluster Design
-
-The ``nkpflow`` cluster will be hosting the Flow CNI and the testing application stack. 
-
-### Management Cluster
-
-Management Cluster called ``nkpmanage`` will be essential to deploying a workload ``nkpflow`` cluster. 
-
-| Role   | No. of Nodes (VM) | vCPU | RAM   | Storage |
-| ------ | ----------------- | ---- | ----- | ------- |
-| Master | 1                 | 12    | 16 GB | 200 GB  |
-| Worker | 2                 | 12    | 16 GB  | 200 GB  |
-
-### Flow Workload Cluster
-
-For ``nkpflow``, we will deploy an NKP Cluster of with the following resources to be able to deploy Flow CNI.
-
-| Role   | No. of Nodes (VM) | vCPU | RAM   | Storage |
-| ------ | ----------------- | ---- | ----- | ------- |
-| Master | 1                 | 12    | 16 GB | 200 GB  |
-| Worker | 2                 | 12    | 16 GB  | 200 GB  |
-
-
 ## Create Externel Subnet
 
-We will create a external subnet to deploy the NKP cluster nodes. This has to be a separate network to the one that VM and contianers will be sharing to communicate.
+We will create a external subnet to deploy the NKP cluster nodes. This has to be a separate network to the one that VM and containers will be sharing to communicate.
 
 !!! note
     
@@ -64,6 +41,31 @@ We will create a external subnet to deploy the NKP cluster nodes. This has to be
 
 - See instructions [here](../infra/workstation.md) to prepare your workstation (Mac/PC) with Tools
 - See instructions [here](../infra/infra_jumphost_tofu.md) to create a Jumphost VM
+  
+
+## NKP High Level Cluster Design
+
+The ``nkpflow`` cluster will be hosting the Flow CNI and the testing application stack. 
+
+### Management Cluster
+
+Management Cluster called ``nkpmanage`` will be essential to deploying a workload ``nkpflow`` cluster. 
+
+| Role   | No. of Nodes (VM) | vCPU | RAM   | Storage |
+| ------ | ----------------- | ---- | ----- | ------- |
+| Master | 1                 | 12    | 16 GB | 200 GB  |
+| Worker | 2                 | 12    | 16 GB  | 200 GB  |
+
+### Flow Workload Cluster
+
+For ``nkpflow``, we will deploy an NKP Cluster of with the following resources to be able to deploy Flow CNI.
+
+| Role   | No. of Nodes (VM) | vCPU | RAM   | Storage |
+| ------ | ----------------- | ---- | ----- | ------- |
+| Master | 1                 | 12    | 16 GB | 200 GB  |
+| Worker | 2                 | 12    | 16 GB  | 200 GB  |
+
+
 
 ## Deploy NKP Management Cluster
 
@@ -187,6 +189,22 @@ We will create a external subnet to deploy the NKP cluster nodes. This has to be
 
 We are now ready to install the workload ``nkpflow`` cluster
 
+## Reservation of IPs
+
+1. We need to reserve two static IPs in NKP external subnet for NKP cluster with Flow CNI. See [here](../infra/infra_nkp.md#reserve-control-plane-and-metallb-ip) for instructions to check and reserve static IPs in a Nutanix subnet. 
+
+2. Reserve the first IP for NKP control plane 
+
+3. Reserve the second  IP for MetalLB distributed load balancer
+
+!!! tip
+    Here is a sample IP reservation
+
+    |   Component            |  IP                        | 
+    |  ------------          | --------                   |
+    | NKP Control Plane VIP  |  ``10.x.x.70``             | 
+    | NKP MetalLB IP Range   |  ``10.x.x.71-10.x.x.71``   | 
+
 ## Deploy NKP Workload Cluster
 
 We will create the workload cluster's cluster definition manifest first, modify values and proceed to deploy the workload cluster.
@@ -247,7 +265,7 @@ We will create the workload cluster's cluster definition manifest first, modify 
 
         ```text
         nkp create cluster nutanix -c nkpflow \
-          --control-plane-endpoint-ip 10.x.x.220 \
+          --control-plane-endpoint-ip 10.x.x.70 \
           --control-plane-prism-element-cluster pe \
           --control-plane-subnets NKP \
           --control-plane-vm-image \
@@ -257,7 +275,7 @@ We will create the workload cluster's cluster definition manifest first, modify 
           --worker-subnets NKP \
           --worker-vm-image nkp-rocky-9.6-1.34.3-20260609005954 \
           --ssh-public-key-file ~/.ssh/id_rsa.pub \
-          --kubernetes-service-load-balancer-ip-range 10.x.x.221-10.x.x.222 \
+          --kubernetes-service-load-balancer-ip-range 10.x.x.71-10.x.x.71 \
           --control-plane-disk-size 200 \
           --control-plane-memory 16 \
           --control-plane-vcpus 12 \
@@ -278,7 +296,7 @@ We will create the workload cluster's cluster definition manifest first, modify 
           --output=yaml > cluster-nkpflow-install.yaml
         ```
 
-9. Download the pull secret for Flow CNI contianer images from **Nutanix Portal** > **Downloads** > [**Flow Networking and Security**](https://portal.nutanix.com/page/downloads?product=flowNetworkSecurity)
+9. Download the pull secret for Flow CNI container images from **Nutanix Portal** > **Downloads** > [**Flow Networking and Security**](https://portal.nutanix.com/page/downloads?product=flowNetworkSecurity)
    
 10. Choose **Flow CNI** form the drop-down menu > Click on **Manage Access Tokens**
     

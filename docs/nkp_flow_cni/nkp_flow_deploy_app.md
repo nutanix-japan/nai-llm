@@ -16,6 +16,11 @@ In this section of the lab we will do the following:
 
     For production environments, use Nutanix database, Flow CNI, and HCI [Nutanix Validated Design (NVD)](https://www.nutanix.com/blog/nutanix-validated-designs-blueprints-for-success) directions.
 
+
+## App Design
+
+![](images/app-network-design.png)
+
 ## Deploy Postgres DB VM
 
 1. In Prism Central go to Compute > VM

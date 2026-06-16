@@ -20,8 +20,12 @@ In this section we will prepare all the networking components necessary for Flow
 | VPC               	| ``vpc-lb-flow`` 	| Federated VPC for VM and Containers communications         	|
 | Overlay Subnet    	| ``lb-vm-subnet``  | Overlay internal only subnet for VM                        	|
 | External Subnet 1 	| ``lb-external``   | External subnet for Floating IPs - external access for VMs 	|
-| External Subnet 2 	| ``NKP``           | External subnet for NKP control plane and worker nodes     	|
+| External Subnet 2 	| ``NKP``           | External subnet for NKP control plane and worker nodes (deployed in the previous section)     	|
 
+
+## Network Design
+
+![Network Design](images/network-design.png)
 
 ## Create Externel Subnet
 
