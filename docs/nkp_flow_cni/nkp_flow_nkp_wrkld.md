@@ -60,12 +60,18 @@ We will create a external subnet to deploy the NKP cluster nodes. This has to be
         - **End Address**: ``10.24.163.60``
 3. Click on **Create**
 
+## Create a Jumphost VM
+
+- See instructions [here](../infra/workstation.md) to prepare your workstation (Mac/PC) with Tools
+- See instructions [here](../infra/infra_jumphost_tofu.md) to create a Jumphost VM
 
 ## Deploy NKP Management Cluster
 
-Follow instructions [here](../appendix/infra_nkp_hard_way.md) to deploy a management cluster.
+- Follow instructions [here](../appendix/infra_nkp_hard_way.md) to deploy a management cluster.
 
-Ensure to license the Management cluster with at least NKP Pro License. Follow instructions [here](../appendix/infra_nkp_hard_way.md#license-management-cluster) to generate and license the NKP Management cluster.
+- Ensure to license the Management cluster with at least NKP Pro License
+  
+- Follow instructions [here](../appendix/infra_nkp_hard_way.md#license-management-cluster) to generate and license the NKP Management cluster.
 
 ## Create Rocky Linux Base Image
 
@@ -532,4 +538,4 @@ We will create the workload cluster's cluster definition manifest first, modify 
         replicaset.apps/ovnkube-master-64cbc8c88d   1         1         1       28m
         ```
 
-We have now deployed ``nkpflow`` cluster with **Flow CNI**. We can now proceed to onboarding this cluster to Nutanix Prism Central and creating required network components.
+We have now deployed ``nkpflow`` cluster with **Flow CNI**. We can now proceed to onboarding this cluster from Nutanix Prism Central and creating required network components.

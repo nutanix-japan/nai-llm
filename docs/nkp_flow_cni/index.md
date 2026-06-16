@@ -14,7 +14,9 @@ This integration simplifies network management for advanced use cases, such as s
 
 In a **Federated Environment**—which involves interconnecting VMs and Kubernetes clusters—Flow CNI orchestrates the networks connecting your traditional VMs and your modern Kubernetes pods. To achieve this, you configure the Kubernetes workload clusters in the same VPCs that contain your VMs.
 
-*Note: Flow CNI exclusively supports Kubernetes clusters that are created and managed by the Nutanix Kubernetes Platform (NKP).*
+!!! note
+    
+    Flow CNI exclusively supports Kubernetes clusters that are created and managed by the Nutanix Kubernetes Platform (NKP).
 
 ---
 
