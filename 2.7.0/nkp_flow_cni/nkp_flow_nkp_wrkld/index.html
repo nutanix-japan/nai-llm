@@ -2639,10 +2639,10 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#create-externel-subnet" class="md-nav__link">
+  <a href="#create-a-jumphost-vm" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Create Externel Subnet
+        Create a Jumphost VM
       
     </span>
   </a>
@@ -2650,10 +2650,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#create-a-jumphost-vm" class="md-nav__link">
+  <a href="#create-externel-subnet" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Create a Jumphost VM
+        Create Externel Subnet
       
     </span>
   </a>
@@ -3375,10 +3375,10 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#create-externel-subnet" class="md-nav__link">
+  <a href="#create-a-jumphost-vm" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Create Externel Subnet
+        Create a Jumphost VM
       
     </span>
   </a>
@@ -3386,10 +3386,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#create-a-jumphost-vm" class="md-nav__link">
+  <a href="#create-externel-subnet" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Create a Jumphost VM
+        Create Externel Subnet
       
     </span>
   </a>
@@ -3563,12 +3563,22 @@
 <p>In this section we will prepare the NKP Cluster with Flow CNI.</p>
 <h1 id="deploy-nkp-clusters">Deploy NKP Clusters</h1>
 <p>This section will take you through install NKP(Kubernetes) on Nutanix cluster as we will be deploying Flow CNI on these kubernetes clusters and testing networking between containers and VMs.</p>
+<h2 id="create-a-jumphost-vm">Create a Jumphost VM</h2>
+<p>Create a Jumphost VM in any available subnet or Nutanix cluster. </p>
+<ol>
+<li>See instructions <a href="../../infra/workstation/">here</a> to prepare your workstation (Mac/PC) with Tools</li>
+<li>See instructions <a href="../../infra/infra_jumphost_tofu/">here</a> to create a Jumphost VM</li>
+</ol>
 <h2 id="create-externel-subnet">Create Externel Subnet</h2>
 <p>We will create a external subnet to deploy the NKP cluster nodes. This has to be a separate network to the one that VM and containers will be sharing to communicate.</p>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>You must deploy the NKP clusters only on managed VLAN Basic (AHV-managed) subnets.</p>
+</div>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <p>The IP address schemes are for illustrative purposes. Choose your own subnet details.</p>
-<p>Make sure to have enough IP (at least 3) addresses for nkpflow workload NKP cluster. See <a href="../../appendix/infra_nkp_hard_way/#reserve-control-plane-and-metallb-endpoint-ips">here</a> for IP address requirement details for workload cluster.</p>
+<p>Make sure to have enough IP (at least 2) addresses for <code>nkpflow</code> workload NKP cluster. See <a href="../../appendix/infra_nkp_hard_way/#reserve-control-plane-and-metallb-endpoint-ips">here</a> for IP address requirement details for workload cluster.</p>
 </div>
 <ol>
 <li>Go to <strong>Prism Central</strong> &gt; <strong>Networking</strong> &gt; <strong>Subnets</strong></li>
@@ -3592,11 +3602,6 @@
 </ul>
 </li>
 </ol>
-<h2 id="create-a-jumphost-vm">Create a Jumphost VM</h2>
-<ul>
-<li>See instructions <a href="../../infra/workstation/">here</a> to prepare your workstation (Mac/PC) with Tools</li>
-<li>See instructions <a href="../../infra/infra_jumphost_tofu/">here</a> to create a Jumphost VM</li>
-</ul>
 <h2 id="nkp-high-level-cluster-design">NKP High Level Cluster Design</h2>
 <p>The <code>nkpflow</code> cluster will be hosting the Flow CNI and the testing application stack. </p>
 <h3 id="management-cluster">Management Cluster</h3>
@@ -3658,7 +3663,7 @@
 </tbody>
 </table>
 <h2 id="deploy-nkp-management-cluster">Deploy NKP Management Cluster</h2>
-<ul>
+<ol>
 <li>
 <p>Follow instructions <a href="../../appendix/infra_nkp_hard_way/">here</a> to deploy a management cluster.</p>
 </li>
@@ -3668,8 +3673,13 @@
 <li>
 <p>Follow instructions <a href="../../appendix/infra_nkp_hard_way/#license-management-cluster">here</a> to generate and license the NKP Management cluster.</p>
 </li>
-</ul>
+</ol>
 <h2 id="create-rocky-linux-base-image">Create Rocky Linux Base Image</h2>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>You can deploy Flow CNI to extend VPCs with VM configurations to NKP-managed Kubernetes workload clusters only in Nutanix environments with the following Nutanix software versions:</p>
+<p><strong>Nutanix Kubernetes Platform:</strong> <code>2.15</code> or later with <strong>Rocky Linux</strong> operating system.</p>
+</div>
 <ol>
 <li>
 <p>Connect to the Jumphost VM using <code>VSCode</code></p>
@@ -4211,7 +4221,7 @@
     <span class="md-icon" title="Last update">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21 13.1c-.1 0-.3.1-.4.2l-1 1 2.1 2.1 1-1c.2-.2.2-.6 0-.8l-1.3-1.3c-.1-.1-.2-.2-.4-.2m-1.9 1.8-6.1 6V23h2.1l6.1-6.1zM12.5 7v5.2l4 2.4-1 1L11 13V7zM11 21.9c-5.1-.5-9-4.8-9-9.9C2 6.5 6.5 2 12 2c5.3 0 9.6 4.1 10 9.3-.3-.1-.6-.2-1-.2s-.7.1-1 .2C19.6 7.2 16.2 4 12 4c-4.4 0-8 3.6-8 8 0 4.1 3.1 7.5 7.1 7.9l-.1.2z"/></svg>
     </span>
-    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="June 16, 2026 06:11:51 UTC">June 16, 2026</span>
+    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="June 17, 2026 05:56:32 UTC">June 17, 2026</span>
   </span>
 
     
