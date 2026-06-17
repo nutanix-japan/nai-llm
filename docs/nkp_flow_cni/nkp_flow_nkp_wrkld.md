@@ -11,15 +11,26 @@ In this section we will prepare the NKP Cluster with Flow CNI.
 
 This section will take you through install NKP(Kubernetes) on Nutanix cluster as we will be deploying Flow CNI on these kubernetes clusters and testing networking between containers and VMs.
 
+## Create a Jumphost VM
+
+Create a Jumphost VM in any available subnet or Nutanix cluster. 
+
+1. See instructions [here](../infra/workstation.md) to prepare your workstation (Mac/PC) with Tools
+2. See instructions [here](../infra/infra_jumphost_tofu.md) to create a Jumphost VM
+
 ## Create Externel Subnet
 
 We will create a external subnet to deploy the NKP cluster nodes. This has to be a separate network to the one that VM and containers will be sharing to communicate.
+
+!!! warning
+    
+    You must deploy the NKP clusters only on managed VLAN Basic (AHV-managed) subnets.
 
 !!! note
     
     The IP address schemes are for illustrative purposes. Choose your own subnet details.
 
-    Make sure to have enough IP (at least 3) addresses for nkpflow workload NKP cluster. See [here](../appendix/infra_nkp_hard_way.md#reserve-control-plane-and-metallb-endpoint-ips) for IP address requirement details for workload cluster.
+    Make sure to have enough IP (at least 2) addresses for ``nkpflow`` workload NKP cluster. See [here](../appendix/infra_nkp_hard_way.md#reserve-control-plane-and-metallb-endpoint-ips) for IP address requirement details for workload cluster.
 
 1. Go to **Prism Central** > **Networking** > **Subnets**
 2. Click on **Create Subnet** and fill the following details
@@ -37,11 +48,6 @@ We will create a external subnet to deploy the NKP cluster nodes. This has to be
         - **End Address**: ``10.24.163.60``
 3. Click on **Create**
 
-## Create a Jumphost VM
-
-- See instructions [here](../infra/workstation.md) to prepare your workstation (Mac/PC) with Tools
-- See instructions [here](../infra/infra_jumphost_tofu.md) to create a Jumphost VM
-  
 
 ## NKP High Level Cluster Design
 
@@ -69,13 +75,19 @@ For ``nkpflow``, we will deploy an NKP Cluster of with the following resources t
 
 ## Deploy NKP Management Cluster
 
-- Follow instructions [here](../appendix/infra_nkp_hard_way.md) to deploy a management cluster.
+1. Follow instructions [here](../appendix/infra_nkp_hard_way.md) to deploy a management cluster.
 
-- Ensure to license the Management cluster with at least NKP Pro License
+2. Ensure to license the Management cluster with at least NKP Pro License
   
-- Follow instructions [here](../appendix/infra_nkp_hard_way.md#license-management-cluster) to generate and license the NKP Management cluster.
+3. Follow instructions [here](../appendix/infra_nkp_hard_way.md#license-management-cluster) to generate and license the NKP Management cluster.
 
 ## Create Rocky Linux Base Image
+
+!!! warning
+    
+    You can deploy Flow CNI to extend VPCs with VM configurations to NKP-managed Kubernetes workload clusters only in Nutanix environments with the following Nutanix software versions:
+
+    **Nutanix Kubernetes Platform:** ``2.15`` or later with **Rocky Linux** operating system.
 
 
 1. Connect to the Jumphost VM using ``VSCode``

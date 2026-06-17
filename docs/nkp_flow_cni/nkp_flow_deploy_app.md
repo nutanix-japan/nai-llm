@@ -394,7 +394,6 @@ Now we will deploy the testing UI to your Kubernetes cluster.
         NAME                              READY   STATUS    RESTARTS   AGE     IP             NODE                          NOMINATED NODE   READINESS GATES
         flow-ovn-ic-7d6c5bdc87-pcxk7      1/1     Running   0          7h      10.24.163.48   flow-zfck9-57vxk              <none>           <none>
         network-tester-8688b44dd7-9bqvt   1/1     Running   0          16h     192.168.1.72   flow-md-0-4v9w6-b26pn-vbqwv   <none>           <none>
-        nginx-pod                         1/1     Running   0          6d19h   192.168.1.30   flow-md-0-4v9w6-b26pn-vbqwv   <none>           <none>
         ```
 
 2. Login to the VM using SSH (using exernal floating IP)
@@ -473,7 +472,7 @@ Now we will deploy the testing UI to your Kubernetes cluster.
         <Snipped for brevity>
         ```
 
-4. Run curl command to test in the application is running on the front end pods (instead of service) and to check connectivity
+5. Run curl command to test in the application is running on the front end pods (instead of service) and to check connectivity
 
     === ":octicons-command-palette-16: Command"
     
@@ -503,3 +502,141 @@ Flow CNI allows connectivity between VM, Pods and Services.
     ![](images/network-metrics.png)
 
 You now have a fully functional, repeatable testing harness to measure Nutanix Flow performance between your Kubernetes pods and your external infrastructure.
+
+
+## Flow CNI - Network Policy Tests
+
+### Pod to Pod Traffic Blocking
+
+We will define kubernetes network policy to restrict tranffic between pods
+
+1. Deploy a nginx container
+   
+    === ":octicons-command-palette-16: Command"
+    
+        ```bash
+        kubectl apply -f -<<EOF
+        apiVersion: v1
+        kind: Pod
+        metadata:
+          name: nginx-pod
+          labels:
+            app: nginx
+        spec:
+          containers:
+          - name: nginx
+            image: nginx:latest
+            ports:
+            - containerPort: 80
+        EOF
+        ```
+
+    === ":octicons-command-palette-16: Command output"
+    
+        ```{ .text .no-copy }
+        pod/nginx-pod created
+        ```
+
+2. Create a network policy to prevent all traffic outgoing traffic in network tester pod
+   
+    === ":octicons-command-palette-16: Command"
+    
+        ```bash
+        kubectl apply -f -<<EOF
+        apiVersion: networking.k8s.io/v1
+        kind: NetworkPolicy
+        metadata:
+          name: restrict-tester-egress
+          namespace: default 
+        spec:
+          podSelector:
+            matchLabels:
+              app: network-tester
+          policyTypes:
+          - Egress
+          egress:
+          - to:
+            - podSelector:
+                matchExpressions:
+                - key: app
+                  operator: NotIn
+                  values:
+                  - nginx
+        EOF
+        ```
+    
+    === ":octicons-command-palette-16: Command output"
+    
+        ```{ .text .no-copy }
+        networkpolicy.networking.k8s.io/restrict-tester-egress created
+        ```
+
+3. Set environment variables for nginx pod IP 
+   
+    === ":octicons-file-code-16: Template ``.env``"
+    
+        ```bash
+        export NGINX_IP=$(kubectl get po -l app=nginx -o jsonpath='{.items[0].status.podIP}')
+        ```
+
+4. Login to network tester pod and test connection to nginx pod
+   
+    === ":octicons-command-palette-16: Command"
+    
+        ```bash
+        kubectl exec -it ${POD_NAME} -- curl ${NGINX_IP}
+        ```
+    
+    === ":octicons-command-palette-16: Sample command"
+    
+        ```text
+        kubectl exec -it network-tester-8688b44dd7-9bqvt -- curl 192.168.1.30
+        ```
+
+5. Login to nginx pod and test connection to network test pod
+    
+    === ":octicons-command-palette-16: Command"
+    
+        ```bash
+        kubectl exec -it nginx-pod -- curl "${NGINX_IP}:8080"
+        ```
+    
+    === ":octicons-command-palette-16: Sample command"
+    
+        ```text
+        kubectl exec -it nginx-pod -- curl 192.168.1.72:8080
+        ```
+
+    === ":octicons-command-palette-16: Command output"
+    
+        ```{ .text .no-copy }
+        $ kubectl exec -it nginx-pod -- curl 192.168.1.72:8080
+        #
+        <!DOCTYPE html>
+        <html>
+        <head>
+            <title>NKP Network & DB Tester</title>
+            <style>
+                body { font-family: sans-serif; margin: 20px; background: #f4f4f9; }
+                .container { max-width: 900px; margin: auto; background: white; padding: 20px;
+                            border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
+                .controls { display:flex; gap:10px; margin-bottom:15px; flex-wrap:wrap; align-items:center; }
+                button { padding:10px 15px; cursor:pointer; background:#0056b3; color:white;
+                        border:none; border-radius:4px; font-weight:bold; }
+                button:hover { background:#003d82; }
+                .btn-danger { background:#dc3545; }
+                .btn-danger:hover { background:#a71d2a; }
+                input { padding:8px; border:1px solid #ccc; border-radius:4px; }
+                #console { background:#1e1e1e; color:#00ff00; padding:15px; height:500px;
+                        overflow-y:auto; font-family:monospace; border-radius:4px;
+                        white-space:pre-wrap; }
+            </style>
+        </head>
+        <body>
+        <div class="container">
+        <h2>NKP to Nutanix VM Tester</h2>
+
+        <Snipped for brevity>
+        ```
+
+We have successfully tested Flow CNI functionality with NKP (kubernetes) level network policies.
