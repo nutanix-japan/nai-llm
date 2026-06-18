@@ -8,7 +8,7 @@ In this section of the lab we will do the following:
 1. Deploy a Postgres DB on a VM and configure
 2. Deploy a front end network tester app on ``nkpflow`` cluster which we deployed in the previous section
 3. Run a few performance and network tests from the front end app's UI
-4. Implement a network policy and check how the communication between VM and front end app can be restricted
+4. Implement a network policy and check how the communication between pods can be restricted
 
 !!! warning
     
@@ -573,7 +573,7 @@ We will define kubernetes network policy to restrict tranffic between pods
 
 3. Set environment variables for nginx pod IP 
    
-    === ":octicons-file-code-16: Template ``.env``"
+    === ":octicons-command-palette-16: Command"
     
         ```bash
         export NGINX_IP=$(kubectl get po -l app=nginx -o jsonpath='{.items[0].status.podIP}')

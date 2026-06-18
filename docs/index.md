@@ -21,6 +21,10 @@ This site follows **Design > Size > Deploy** model.
 
     **Status:** *This site is unofficial, unsupported, rigourously tested and frequently updated.*
 
+    This site is maintained by enthusiasts for the community. 
+
+    Contributions are welcome, fork the repo and start.
+
 This community-maintained resource provides a practical, **Design > Size > Deploy** framework for architects and engineers looking to harness the power of Nutanix for modern workloads(including AI). While unofficial and unsupported, this site is actively maintained to bridge the gap between high-level documentation and real-world implementation.
 
 **What’s Inside:**
@@ -109,7 +113,33 @@ This community-maintained resource provides a practical, **Design > Size > Deplo
 
 <div class="grid cards" markdown>
 
--   :material-clock-fast:{ .lg .middle } __Set up Nutanix Enterprise AI (NAI) in 60 minutes__
+-   :material-clock-fast:{ .lg .middle } __Set up Nutanix Enterprise AI (NAI) in 20 minutes__
+
+    ---
+
+    Install and host an LLM on Nutanix Enterprise AI (NAI) platform on NKP Clusters using NKP Applications Catalog.
+
+    [:octicons-arrow-right-24: Start](nkp_catalog_nai/index.md)
+
+
+</div>
+
+<div class="grid cards" markdown>
+
+-   :material-clock-fast:{ .lg .middle } __Set up Nutanix Enterprise AI (NAI) in 60 minutes (Advanced)__
+
+    ---
+
+    Install and host an LLM on Nutanix Enterprise AI (NAI) platform.
+
+    [:octicons-arrow-right-24: Start](iep/index.md)
+
+
+</div>
+
+<div class="grid cards" markdown>
+
+-   :material-clock-fast:{ .lg .middle } __Set up Air-gap Nutanix Enterprise AI (NAI) in 60 minutes (Advanced)__
 
     ---
 
@@ -119,6 +149,7 @@ This community-maintained resource provides a practical, **Design > Size > Deplo
 
 
 </div>
+
 
 <div class="grid cards" markdown>
 

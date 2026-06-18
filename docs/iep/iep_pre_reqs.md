@@ -55,16 +55,16 @@ We will create Nutanix Files storage class which will be used to create a pvc th
 
 ### Create the Files Storage Class
 
-12. Run the following command to check K8S status of the ``nkpdev`` cluster
-    
-    === ":octicons-command-palette-16:
+1.  Run the following command to check K8S status of the ``nkpdev`` cluster
 
+    === ":octicons-command-palette-16: Command"
+    
         ```bash
         export KUBECONFIG=nkpdev.conf
         kubectl get nodes
         ```
 
-12. In VSC Explorer, click on **New File** :material-file-plus-outline: and create a config file with the following name:
+2.  In VSC Explorer, click on **New File** :material-file-plus-outline: and create a config file with the following name:
 
     ```bash
     nai-nfs-storage.yaml
@@ -75,8 +75,8 @@ We will create Nutanix Files storage class which will be used to create a pvc th
 
     ![Finding nfsServerName and nfsServer fqdn](images/nfs_server_domain_identify.png)
 
-    === "Template YAML"
-
+    === ":octicons-file-code-16: Template YAML"
+    
         ```yaml hl_lines="6 7"
         apiVersion: storage.k8s.io/v1
         kind: StorageClass
@@ -90,9 +90,9 @@ We will create Nutanix Files storage class which will be used to create a pvc th
         reclaimPolicy: Delete
         volumeBindingMode: Immediate
         ```
-
-    === "Sample YAML"
-
+    
+    === ":octicons-file-code-16: Sample YAML"
+    
         ```yaml hl_lines="6 7"
         apiVersion: storage.k8s.io/v1
         kind: StorageClass
@@ -107,22 +107,24 @@ We will create Nutanix Files storage class which will be used to create a pvc th
         volumeBindingMode: Immediate
         ```
 
-13. Create the storage class
+3.  Create the storage class
 
-    ```bash
-    kubectl apply -f nai-nfs-storage.yaml
-    ```
+    === ":octicons-command-palette-16: Command"
+    
+        ```bash
+        kubectl apply -f nai-nfs-storage.yaml
+        ```
 
-14. Check storage classes in the cluster for the Nutanix Files storage class
+4.  Check storage classes in the cluster for the Nutanix Files storage class
 
-    === "Command"
-
+    === ":octicons-command-palette-16: Command"
+    
         ```bash
         kubectl get storageclass
         ```
   
-    === "Command output"
-
+    === ":octicons-command-palette-16: Command output"
+    
         ```bash hl_lines="5"
         kubectl get storageclass
 
