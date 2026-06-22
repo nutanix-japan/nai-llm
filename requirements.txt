@@ -1,4 +1,4 @@
-mkdocs-material[imaging]
+mkdocs-materialx[imaging]
 mike
 termynal
 mkdocs-git-authors-plugin

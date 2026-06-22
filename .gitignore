@@ -260,12 +260,14 @@ iep_260/*
 iep_240/
 iep_250/
 iep_260/
+temp_cn_orchestrate/
 
 # Previous versions - soon to migrate to mike versioning
 docs/iep_240/*
 docs/iep_250/*
 docs/iep_260/*
 docs/airgap_nai_250/*
+docs/temp_cn_orchestrate/*
 
 # Releases script
 

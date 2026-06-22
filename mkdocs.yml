@@ -4,8 +4,8 @@ site_description: >-
   The one-stop shop for Nutanix Cloud Native and AI solutions. 
 
 repo_url: https://github.com/nutanix-japan/nai-llm
-theme:
-  name: material
+# theme:
+#   name: material
 
 # Site navigation
 
@@ -92,6 +92,10 @@ nav:
   - Nutanix Components: ntxcomponents/ntxcomponents.md
   - Tools used and why?: tools/tools.md
   - Contributing: contributing.md
+  # - Orchestration:
+  #   - Getting Started: temp_cn_orchestrate/index.md
+  #   - Pre-requisites: temp_cn_orchestrate/pre_reqs.md
+  #   - Deploy Infra: temp_cn_orchestrate/deploy_infra.md
   - Roadmap: roadmap.md
 
 # - Takeaways: takeaways/takeaways.md
@@ -134,7 +138,7 @@ theme:
       icon: material/brightness-4
       name: Switch to system preference
 
-  name: material
+  name: materialx
   icon:
     admonition:
       note: octicons/tag-16
