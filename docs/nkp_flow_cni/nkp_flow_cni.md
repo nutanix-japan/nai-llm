@@ -15,6 +15,7 @@ description: ""
     * **AHV (Acropolis Hypervisor):** Version ``11.0`` or later
     * **Prism Central:** Version ``pc.7.5`` or later
     * **Network Controller:** Version ``7.0.0`` or later
+    * **Flow CNI** ``v1.0.0`` or later
 
 ### Resource and Configuration Requirements
 

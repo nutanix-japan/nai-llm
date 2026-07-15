@@ -46,7 +46,13 @@ stateDiagram-v2
   
 ## Enable Pre-requisite Applications  
 
-### Prometheus and Cert Manager
+## Enable Pre-requisite Applications  
+
+!!! warning
+    
+    Make sure to license NKP cluster with at least NKP Pro License to make use of the NKP Applications catalog to provision NAI (and other applications)
+    
+### Prometheus
 
 The following pre-requisite applications will be enabled on NKP GUI:
 
@@ -56,11 +62,6 @@ The following pre-requisite applications will be enabled on NKP GUI:
 
     However, in a customer environment, it is recommended to use a separate workload NKP cluster.
 
-!!! info
-
-    The helm charts and the container images for these applications are stored in internal Harbor registry. These images got uploaded to Harbor at the time of install NKE in this [section](../airgap_nai/infra_nkp_airgap.md#push-container-images-to-localprivate-registry-to-be-used-by-nkp).
-
-
 **Search** and **Enable** the following applications: follow this order to install dependencies for NAI application
 
 
@@ -69,60 +70,20 @@ The following pre-requisite applications will be enabled on NKP GUI:
 3. Go to **Applications** to search and enable the following:
    
      * **Prometheus Monitoring** : version ``78.4.0`` or higher with the following ``Values`` configuration 
-     
-        ```yaml
-        alertmanager:
-          enabled: false
-        grafana:
-          enabled: false
-        prometheus:
-          enabled: false
-        kubeStateMetrics:
-          enabled: false
-        kubernetesServiceMonitors:
-          enabled: false
-        prometheus-node-exporter.kubeRBACProxy:
-          kubeRBACProxy:
-            enabled: true
-        ```
 
-     * **Cert-manager**- ``v1.17.2``
-    
-        The following application are pre-installed on NKP cluster with Pro license
-    
-        - Cert Manager ``v1.17.2`` or higher
-        
-        Check if Cert Manager is installed (pre-installed on NKP cluster if license is installed)
-        
-        === ":octicons-command-palette-16: Command"
-        
-            ```bash
-            kubectl get deploy -n cert-manager
-            ```
-    
-        === ":octicons-command-palette-16: Output"
-    
-            ```{ .text .no-copy }
-            $ kubectl get deploy -n cert-manager
-    
-            NAME                      READY   UP-TO-DATE   AVAILABLE   AGE
-            cert-manager              1/1     1            1           145m
-            cert-manager-cainjector   1/1     1            1           145m
-            cert-manager-webhook      1/1     1            1           145m
-            ```
-    
-        If not installed, use  or **NKP Applications GUI** to install it
-        
-        The following command can also be used to install Cert-manager
+4. Wait for ``Deployed`` state in the GUI
 
-        === ":octicons-command-palette-16: Command"
-        
-            ```bash
-            kubectl apply -f https://github.com/cert-manager/cert-manager/releases/download/v1.17.2/cert-manager.yaml
-            ```
+??? "Cert Manager" 
 
-
-The following pre-requisite applications will be enabled from the command line on the jumphost VM.
+    Cert Manager is pre-installed on all NKP Clusters. If not installed, use the following method to install:
+    
+    1. In the NKP GUI, Go to **Clusters**
+    2. Click on **Management Cluster Workspace**
+    3. Go to **Applications** to search and enable the following:
+    
+         * **Cert-manager**- ``v1.17.2``
+            
+    4. Wait for ``Deployed`` state in the GUI
 
 ### Envoy Gateway 
 

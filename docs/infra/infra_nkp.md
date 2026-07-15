@@ -258,7 +258,7 @@ We will reserve a total of three IPs for the following:
 
 ### Reservation of IPs
 
-Reserve the firs IPs for NKP control plane 
+Reserve the first IP for NKP control plane 
 Reserve the second two IPs for MetalLB distributed load balancer
 - We will use one of these IP for NAI
 

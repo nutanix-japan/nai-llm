@@ -1,0 +1,9 @@
+[tools]
+python = "3.11"
+
+[tasks]
+setup-docs = { run = "pip install -r requirements.txt", description = "Install MkDocs and Material theme" }
+serve = { run = "mkdocs serve", description = "Start local live-reload documentation server" }
+build = { run = "mkdocs build", description = "Build static documentation site" }
+reinstall = {run = "pip install --force-reinstall mkdocs-materialx", description="Reinstall materialx"}
+dirty = { run = "mkdocs serve --dirtyreload", description = "Start dirty load of site" }
