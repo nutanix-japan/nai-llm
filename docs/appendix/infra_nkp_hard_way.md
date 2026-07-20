@@ -1,63 +1,130 @@
 # Deploy NKP Clusters
 
-This section will take you through install NKP(Kubernetes) on Nutanix cluster as we will be deploying AI applications on these kubernetes clusters. 
+This section will take you through install NKP(Kubernetes) on Nutanix cluster as we will be deploying AI applications on these kubernetes clusters.
 
-This section will expand to other available Kubernetes implementations on Nutanix.
+We will use the [CAPI](https://cluster-api.sigs.k8s.io/) based deployment of NKP. This will automatically deploy the required infrastructure VMs for the cluster by connecting to Nutanix Cluster APIs. There is no requirement to use Terraform or or other IaC tools to deploy NKP.
 
 ```mermaid
 stateDiagram-v2
     direction LR
     
-    state DeployNKPk8s {
-        [*] --> CreateBootStrapCluster
-        CreateBootStrapCluster --> CreateNKPCluster
-        CreateNKPCluster --> DeployKommander
-        DeployKommander --> DeployGPUNodePool
-        DeployGPUNodePool --> [*]
+    state DeployNKPMgtCluster {
+        [*] --> CreateNkpMachineImage
+        CreateNkpMachineImage --> ExecuteMgtClusterDeploy
+        ExecuteMgtClusterDeploy --> MgtLicensing
+        MgtLicensing --> [*]
+        
+        %% Aliases to keep your display text clean
+        state "DeployNKPMgtCluster" as ExecuteMgtClusterDeploy
+        state "Licensing" as MgtLicensing
     }
 
-    PrepWorkstation --> DeployJumpHost 
-    DeployJumpHost --> DeployNKPk8s 
-    DeployNKPk8s --> DeployAIApps : Next section
+    state DeployNKPWorkloadCluster {
+        [*] --> NKPWorkloadCluster 
+        NKPWorkloadCluster --> WkldLicensing 
+        WkldLicensing --> DeployGpuNodePool
+        DeployGpuNodePool --> EnableGpuOperator
+        EnableGpuOperator --> [*]
+        
+        %% Unique ID for the second Licensing state
+        state "Licensing" as WkldLicensing
+    }
+
+    DeployJumpHost --> DeployNKPMgtCluster 
+    DeployNKPMgtCluster --> DeployNKPWorkloadCluster 
+    DeployNKPWorkloadCluster --> DeployNai : Next section
 ```
+
+!!! example "Pre-requisites"
+
+    1. Existing Ubuntu Linux jumphost VM. See here for jumphost installation [steps](../infra/infra_jumphost_tofu.md).
+    2. [Docker](#setup-docker-on-jumphost) or Podman installed on the jumphost VM
+    3. Nutanix PC is at least ``pc.7.5.0.1``
+    4. Nutanix AOS is at least ``7.3.0.5``
+    5. Download and install NKP ``v2.17.1`` binary from Nutanix Portal
+    6. Find and reserve 3 IPs for control plane and MetalLB access from AHV network
+    7. Find GPU details from Nutanix cluster
+    8. Create a base image to use with NKP nodes using ``nkp`` command
+   
 ## NKP High Level Cluster Design
 
-The `Bootstrap` NKP cluster will be a temporary [kind](https://kind.sigs.k8s.io/) cluster that will be used to deploy the ``nkpdev`` cluster.
+In this design, we will deploy two clusters: NKP Management to manage the fleet of workload clusters and a workload cluster to deploy NAI on (with GPU).
 
-The ``nkpdev`` cluster will be hosting the LLM model serving endpoints and AI application stack. This cluster and will require a dedicated GPU node pool.
+The ``nkpmanage`` nkp management cluster will be deployed to manage the fleet of workload clusters.
 
-Once ``nkpdev`` deployment has been tested successfully, we can deploy applications to optional PROD Workload cluster.
+The ``nkpnai`` cluster will be hosting the LLM model serving endpoints and AI application stack. This cluster and will require a dedicated GPU node pool.
+
+| Cluster Role   | Cluster Name   | Control Plane Nodes   |   Worker Nodes   | Purpose |
+| -------------  | --------       |  ------------      |  --------       |------------- |
+| Management     |``nkpmanage``   |  1                 |  2              |  Management of NKP Clusters Fleet  |
+| NAI            |``nkpnai``      |  3                 |  4              |  NAI workload cluster              |
+
 
 ### Management Cluster
 
-Since the Management Cluster called ``nkpmanage`` will be essential to deploying a workload ``nkpdev`` cluster. 
-
-We will use ``Kind`` cluster packaged by Nutanix to deploy the management cluster.
+Since the Management Cluster called ``nkpmanage`` will be essential to deploying a workload ``nkpnai`` cluster, we recommend at least the following node counts, compute and storage.
 
 
 | Role   | No. of Nodes (VM) | vCPU | RAM   | Storage |
 | ------ | ----------------- | ---- | ----- | ------- |
-| Master | 1                 | 6    | 12 GB | 200 GB  |
-| Worker | 2                 | 4    | 8 GB  | 200 GB  |
+| Master | 1                 | 8    | 12 GB | 200 GB  |
+| Worker | 2                 | 8    | 12 GB | 200 GB  |
+| **Totals** | 3        |   16 | 36 GB | 600 GB  |  
 
-### Dev Workload Cluster
+!!! Warning Sizing
 
-For ``nkpdev``, we will deploy an NKP Cluster of with the following resources to be able to deploy ``LLama 8B`` LLM. See [Sizing Requirements](../infra/infra_nkp.md#nkp-high-level-cluster-design) section of this site for more information.
+    Consult the [NKP NVD](https://portal.nutanix.com/page/documents/solutions/details?targetId=NVD-2118-NKP:portal-full-page-view-html) for in-depth requirements collection, analysis and sizing. 
 
-| Role   | No. of Nodes (VM) | vCPU | RAM   | Storage |
-| ------ | ----------------- | ---- | ----- | ------- |
-| Master | 3                 | 4    | 16 GB | 200 GB  |
-| Worker | 4                 | 8    | 32 GB | 200 GB  |
-| GPU    | 1                 | 20   | 64 GB | 200 GB  |
+### Workload Cluster
 
-## Pre-requisites for NKP Deployment
+We will use the workload cluster to deploy NAI on GPU nodes. 
 
-1. Existing Jumphost VM. See here for installation [steps](../infra/infra_jumphost_tofu.md)
-2. Download and install ``nkp`` binary from Nutanix Portal
-3. Find and reserve 3 IPs for control plane and MetalLB access from AHV network
-4. Find GPU details from Nutanix cluster
-5. Create a base image to use with NKP nodes using ``nkp`` command
+!!! tip ""CPU Only Nodes?""
 
+    CPU only node deployment of NAI is also possible in the following cicumstances:
+
+    - Large Language Model is less than 8B parameters (for now)
+    - NAI implementation is used as a gateway to other implementations of NAI 
+    - NAI implementation is used as a gateway to external (public) inferencing endpoint providers
+
+#### Sizing Requirements
+
+Below are the sizing requirements needed to successfully deploy NAI on a NKP Cluster (labeled as ``nkpnai``) and subsequently deploying single LLM inferencing endpoint on NAI using the `meta-llama/Meta-Llama-3-8B-Instruct` LLM model.
+
+??? Tip "Calculating GPU Resources Tips"
+
+    The calculations below assume that you're already aware of how much memory is required to load target LLM model.
+
+    For a general example:
+
+    - To host a 8b(illion) parameter model, multiply the parameter number by 2 to get minimum GPU memory requirments. 
+      e.g. 16GB of GPU memory is required for 8b parameter model.
+  
+    > So in the case of the `meta-llama/Meta-Llama-3-8B-Instruct` model, you'll need a min. 16 GiB GPU vRAM available
+
+    Below are additional sizing consideration "Rule of Thumb" for further calculating min. GPU node resources:
+
+    - For each GPU node will have 8 CPU cores, 24 GB of memory, and 300 GB of disk space.
+    - For each GPU attached to the node, add 16 GiB of memory.
+    - For each endpoint attached to the node, add 8 CPU cores.
+    - If a model needs multiple GPUs, ensure all GPUs are attached to the same worker node
+    - For resiliency, while running multiple instances of the same endpoint, ensure that the GPUs are on different worker nodes.
+
+Since we will be testing with the ``meta-llama/Meta-Llama-3-8B-Instruct`` HuggingFace model, we will require a GPU with a min. of 24 GiB GPU vRAM available to support this demo.
+
+!!! note
+    GPU min. vRAM should be 24 GB, such as NVIDIA L4 Model.
+
+Below are minimum requirements for deploying NAI on the NKP Demo Cluster.
+
+| Role          | No. of Nodes (VM) | vCPU per Node | Memory per Node | Storage per Node | Total vCPU | Total Memory |
+|---------------|-------------------|---------------|-----------------|------------------|------------|--------------|
+| Control plane | 3                 | 4             | 16 GB           | 150 GB           | 12         | 48 GB        |
+| Worker        | 4                 | 12            | 32 GB           | 150 GB           | 36         | 128 GB       |
+| GPU           | 1                 | 20            | 40 GB           | 300 GB           | 20         | 40 GB        |
+| **Totals**    |                   |               |                 |                  | **68**     | **216 GB**   |
+
+## Deploy NKP Clusters
 
 ### Install NKP Binaries
 
@@ -149,12 +216,12 @@ For ``nkpdev``, we will deploy an NKP Cluster of with the following resources to
 
 Nutanix AHV IPAM network allows you to black list IPs that needs to be reserved for specific application endpoints. We will use this feature to find and reserve three IPs. 
 
-We will need a total of three IPs for the following:
+We will need a total of six IPs for the following:
   
 | Cluster Role   | Cluster Name   | Control Plane IP   |   MetalLB  IP   |
 | -------------  | --------       |  ------------      |  --------       |
-| Manage         |``nkpmanage``   |  1                 |  2              |  
-| Dev            |``nkpdev``      |  1                 |  2              |  
+| Management     |``nkpmanage``   |  1                 |  2              |  
+| NAI            |``nkpnai``      |  1                 |  2              |  
 
 1. Get the CIDR range for the AHV network(subnet) where the application will be deployed
 
@@ -185,15 +252,15 @@ We will need a total of three IPs for the following:
         nmap -v -sn 10.x.x.0/24
         ```
 
-    ```text title="Sample output - choose the first three consecutive IPs"
-    Nmap scan report for 10.x.x.210 [host down]
-    Nmap scan report for 10.x.x.211 [host down]
-    Nmap scan report for 10.x.x.212 [host down]
+    ```text title="Sample output - choose two sets of three consecutive IPs"
+    Nmap scan report for 10.x.x.210 [host down]     # << Assign to management cluster's API endpoint
+    Nmap scan report for 10.x.x.211 [host down]     # << Assign to management cluster's load balancer's IP #1
+    Nmap scan report for 10.x.x.212 [host down]     # << Assign to management cluster's load balancer's IP #2
     Nmap scan report for 10.x.x.213
     Host is up (-0.098s latency).
-    Nmap scan report for 10.x.x.214 [host down] 
-    Nmap scan report for 10.x.x.215 [host down] 
-    Nmap scan report for 10.x.x.216 [host down]
+    Nmap scan report for 10.x.x.214 [host down]     # << Assign to workload cluster's load balancer's IP #1
+    Nmap scan report for 10.x.x.215 [host down]     # << Assign to workload cluster's load balancer's IP #1
+    Nmap scan report for 10.x.x.216 [host down]     # << Assign to workload cluster's load balancer's IP #1
     Nmap scan report for 10.x.x.217
     Host is up (-0.098s latency).
     
@@ -211,14 +278,14 @@ We will need a total of three IPs for the following:
         ip_list=10.x.x.210,10.x.x.211,10.x.x.212,10.x.x.214,10.x.x.215,10.x.x.216
         ```
 
-    === "Sample command"
+    === ":octicons-command-palette-16: Sample command"
 
-         ```text
-         acli net.add_to_ip_blacklist User1 \
-         ip_list=10.x.x.210,10.x.x.211,10.x.x.212,10.x.x.214,10.x.x.215,10.x.x.216
-         ```
+        ```text
+        acli net.add_to_ip_blacklist User1 \
+        ip_list=10.x.x.210,10.x.x.211,10.x.x.212,10.x.x.214,10.x.x.215,10.x.x.216
+        ```
 
-### Optional - Find GPU Details
+### Find GPU Details for NAI Workload Cluster
 
 If there is a requirement to deploy workloads that require GPU, find the GPU details in your Nutanix cluster.
 
@@ -233,7 +300,7 @@ Find the details of GPU on the Nutanix cluster while still connected to Prism Ce
 4. ``Lovelace 40s`` is the GPU available for use
 5. Use ``Lovelace 40s`` in the evironment variables in the next section. 
 
-## Create Base Image for NKP
+### Create Base Image for NKP
 
 In this section we will go through creating a base image for all the control plane and worker node VMs on Nutanix.
 
@@ -484,10 +551,10 @@ In this section we will create a NKP Management (bootstrap)  ``nkpmanage`` clust
         ✓ Creating ClusterClass resources 
         ✓ Creating ClusterClass resources
         > Generating cluster resources
-        cluster.cluster.x-k8s.io/nkpdev created
-        secret/nkpdev-pc-credentials created
-        secret/nkpdev-pc-credentials-for-csi created
-        secret/nkpdev-image-registry-credentials created
+        cluster.cluster.x-k8s.io/nkpnai created
+        secret/nkpnai-pc-credentials created
+        secret/nkpnai-pc-credentials-for-csi created
+        secret/nkpnai-image-registry-credentials created
         ✓ Waiting for cluster infrastructure to be ready 
         ✓ Waiting for cluster control-planes to be ready 
         ✓ Waiting for machines to be ready
@@ -496,13 +563,13 @@ In this section we will create a NKP Management (bootstrap)  ``nkpmanage`` clust
         ✓ Moving cluster resources 
 
         > You can now view resources in the moved cluster by using the --kubeconfig flag with kubectl.
-        For example: kubectl --kubeconfig="$HOME/nkp/nkpdev.conf" get nodes
+        For example: kubectl --kubeconfig="$HOME/nkp/nkpnai.conf" get nodes
 
         > ✓ Deleting bootstrap cluster 
 
-        Cluster default/nkpdev kubeconfig was written to to the filesystem.
+        Cluster default/nkpnai kubeconfig was written to to the filesystem.
         You can now view resources in the new cluster by using the --kubeconfig flag with kubectl.
-        For example: kubectl --kubeconfig="$HOME/nkp/nkpdev.conf" get nodes
+        For example: kubectl --kubeconfig="$HOME/nkp/nkpnai.conf" get nodes
 
         > Starting kommander installation
         ✓ Deploying Flux 
@@ -590,10 +657,10 @@ In this section we will create a NKP Management (bootstrap)  ``nkpmanage`` clust
 
         Username: recursing_xxxxxxxxx
         Password: YHbPsslIDB7p7rqwnfxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
-        URL: https://10.x.x.215/dkp/kommander/dashboard
+        URL: https://10.x.x.210.nip.io/dkp/kommander/dashboard
         ```
 
-## License Management Cluster
+### License Management Cluster
 
 It is necessary to install license to the Management Cluster ``nkpmanage`` to be able to deploy workload clusters. Especially if the OS of the workload clusters' nodes is going to be ``Ubuntu``
 
@@ -602,6 +669,8 @@ Follow the steps in this [document](../infra/infra_nkp.md#licensing) to create a
 !!! note
 
     This Pro/Ultimate licensing requirement to deploy workload clusters with Ubuntu OS may change in the future. We will be sure to update here.
+
+
 
 ## Create NKP Workload Cluster
 
@@ -629,7 +698,7 @@ Follow the steps in this [document](../infra/infra_nkp.md#licensing) to create a
     === ":octicons-file-code-16:  Sample ``.env``"
     
         ```{ .text .no-copy }
-        export NKP_WORKLOAD_CLUSTER_NAME=nkpdev
+        export NKP_WORKLOAD_CLUSTER_NAME=nkpnai
         export CONTROL_PLANE_REPLICAS=3
         export CONTROL_PLANE_VCPUS=4
         export CONTROL_PLANE_CORES_PER_VCPU=1
@@ -727,10 +796,10 @@ Follow the steps in this [document](../infra/infra_nkp.md#licensing) to create a
         ✓ Creating ClusterClass resources 
         ✓ Creating ClusterClass resources
         > Generating cluster resources
-        cluster.cluster.x-k8s.io/nkpdev created
-        secret/nkpdev-pc-credentials created
-        secret/nkpdev-pc-credentials-for-csi created
-        secret/nkpdev-image-registry-credentials created
+        cluster.cluster.x-k8s.io/nkpnai created
+        secret/nkpnai-pc-credentials created
+        secret/nkpnai-pc-credentials-for-csi created
+        secret/nkpnai-image-registry-credentials created
         ✓ Waiting for cluster infrastructure to be ready 
         ✓ Waiting for cluster control-planes to be ready 
         ✓ Waiting for machines to be ready
@@ -739,16 +808,16 @@ Follow the steps in this [document](../infra/infra_nkp.md#licensing) to create a
         ✓ Moving cluster resources 
 
         > You can now view resources in the moved cluster by using the --kubeconfig flag with kubectl.
-        For example: kubectl --kubeconfig="$HOME/nkp/nkpdev.conf" get nodes
+        For example: kubectl --kubeconfig="$HOME/nkp/nkpnai.conf" get nodes
 
         > ✓ Deleting bootstrap cluster 
 
-        Cluster default/nkpdev kubeconfig was written to to the filesystem.
+        Cluster default/nkpnai kubeconfig was written to to the filesystem.
         You can now view resources in the new cluster by using the --kubeconfig flag with kubectl.
-        For example: kubectl --kubeconfig="$HOME/nkp/nkpdev.conf" get nodes
+        For example: kubectl --kubeconfig="$HOME/nkp/nkpnai.conf" get nodes
 
         > Cluster was created successfully! Get the dashboard details with:
-        > nkp get dashboard --kubeconfig="$HOME/nkp/nkpdev.conf"
+        > nkp get dashboard --kubeconfig="$HOME/nkp/nkpnai.conf"
         ```
 
 5. Observe the events in the shell and in Prism Central events
@@ -768,7 +837,7 @@ Follow the steps in this [document](../infra/infra_nkp.md#licensing) to create a
     export KUBECONFIG=all-in-one-kubeconfig.yaml
     ```
 
-8. Run the following command to check K8S status of the ``nkpdev`` cluster
+8. Run the following command to check K8S status of the ``nkpnai`` cluster
  
     === ":octicons-command-palette-16: Command"
     
@@ -783,13 +852,13 @@ Follow the steps in this [document](../infra/infra_nkp.md#licensing) to create a
         $ kubectl get nodes
 
         NAME                                  STATUS   ROLES           AGE     VERSION
-        nkpdev-md-0-x948v-hvxtj-9r698           Ready    <none>          4h49m   v1.29.6
-        nkpdev-md-0-x948v-hvxtj-fb75c           Ready    <none>          4h50m   v1.29.6
-        nkpdev-md-0-x948v-hvxtj-mdckn           Ready    <none>          4h49m   v1.29.6
-        nkpdev-md-0-x948v-hvxtj-shxc8           Ready    <none>          4h49m   v1.29.6
-        nkpdev-r4fwl-8q4ch                      Ready    control-plane   4h50m   v1.29.6
-        nkpdev-r4fwl-jf2s8                      Ready    control-plane   4h51m   v1.29.6
-        nkpdev-r4fwl-q888c                      Ready    control-plane   4h49m   v1.29.6
+        nkpnai-md-0-x948v-hvxtj-9r698           Ready    <none>          4h49m   v1.29.6
+        nkpnai-md-0-x948v-hvxtj-fb75c           Ready    <none>          4h50m   v1.29.6
+        nkpnai-md-0-x948v-hvxtj-mdckn           Ready    <none>          4h49m   v1.29.6
+        nkpnai-md-0-x948v-hvxtj-shxc8           Ready    <none>          4h49m   v1.29.6
+        nkpnai-r4fwl-8q4ch                      Ready    control-plane   4h50m   v1.29.6
+        nkpnai-r4fwl-jf2s8                      Ready    control-plane   4h51m   v1.29.6
+        nkpnai-r4fwl-q888c                      Ready    control-plane   4h49m   v1.29.6
         ```
 
 9. Get dashboard URL and login credentials for the workload cluster
@@ -810,7 +879,7 @@ Follow the steps in this [document](../infra/infra_nkp.md#licensing) to create a
         URL: https://10.x.x.215/dkp/kommander/dashboard
         ```
 
-## Create NKP GPU Workload Pool
+### Create NKP GPU Workload Pool
 
 In this section we will create a nodepool to host the AI apps with a GPU.
 
@@ -914,13 +983,13 @@ In this section we will create a nodepool to host the AI apps with a GPU.
 
 7.  Monitor the progress of the command and check Prism Central events for creation of the GPU worker node
     
-    Change to workload ``nkpdev`` cluster context
+    Change to workload ``nkpnai`` cluster context
    
     ```bash
     kubectx ${NKP_WORKLOAD_CLUSTER_NAME}-admin@${NKP_WORKLOAD_CLUSTER_NAME}
     ```
 
-9.  Check nodes status in workload ``nkpdev`` cluster and note the gpu worker node
+9.  Check nodes status in workload ``nkpnai`` cluster and note the gpu worker node
     
     === ":octicons-command-palette-16: Command"
 
@@ -934,54 +1003,110 @@ In this section we will create a nodepool to host the AI apps with a GPU.
         $ kubectl get nodes
 
         NAME                                   STATUS   ROLES           AGE     VERSION
-        nkpdev-gpu-nodepool-7g4jt-2p7l7-49wvd   Ready    <none>          5m57s   v1.29.6
-        nkpdev-md-0-q679c-khl2n-9k7jk           Ready    <none>          74m     v1.29.6
-        nkpdev-md-0-q679c-khl2n-9nk6h           Ready    <none>          74m     v1.29.6
-        nkpdev-md-0-q679c-khl2n-nf9p6           Ready    <none>          73m     v1.29.6
-        nkpdev-md-0-q679c-khl2n-qgxp9           Ready    <none>          74m     v1.29.6
-        nkpdev-ncnww-2dg7h                      Ready    control-plane   73m     v1.29.6
-        nkpdev-ncnww-bbm4s                      Ready    control-plane   72m     v1.29.6
-        nkpdev-ncnww-hldm9                      Ready    control-plane   75m     v1.29.6
+        nkpnai-gpu-nodepool-7g4jt-2p7l7-49wvd   Ready    <none>          5m57s   v1.29.6
+        nkpnai-md-0-q679c-khl2n-9k7jk           Ready    <none>          74m     v1.29.6
+        nkpnai-md-0-q679c-khl2n-9nk6h           Ready    <none>          74m     v1.29.6
+        nkpnai-md-0-q679c-khl2n-nf9p6           Ready    <none>          73m     v1.29.6
+        nkpnai-md-0-q679c-khl2n-qgxp9           Ready    <none>          74m     v1.29.6
+        nkpnai-ncnww-2dg7h                      Ready    control-plane   73m     v1.29.6
+        nkpnai-ncnww-bbm4s                      Ready    control-plane   72m     v1.29.6
+        nkpnai-ncnww-hldm9                      Ready    control-plane   75m     v1.29.6
         ```
 
-The cluster is now ready to deploy AI workloads that require GPU.
+## Enable GPU Operator
 
+We will need to enable GPU operator ``v25.3.1`` for deploying NKP application. 
 
-## 
+1. In the NKP GUI, Go to **Clusters**
+2. Click on **Kommander Host**
+3. Go to **Applications** 
+4. Search for **NVIDIA GPU Operator**
+5. Click on **Enable**
+6. Click on **Configuration** tab
+7. Click on **Workspace Application Configuration Override** and paste the following yaml content
 
-## Optional - Cleanup
-
-Optionally, cleanup the workloads on nkp cluster by deleting it after deploying and testing your AI/ML application. 
-
-1. Change cluster context to use the workload ``bootstrap`` cluster
-   
-    ```bash
-    kubectx ${NKP_MGT_CLUSTER_NAME}-admin@${NKP_MGT_CLUSTER_NAME}
+    ```yaml
+    driver:
+      enabled: true
     ```
 
-2. Delete the workload cluster
+    As shown here:
 
-    === ":octicons-command-palette-16: Command"
+    ![alt text](images/gpu-operator-enable.png)
+
+8. Click on **Enable** on the top right-hand corner to enable GPU driver on the Ubuntu GPU nodes
+9. Check GPU operator resources and make sure they are running
+
+    === "Command"
 
         ```bash
-        nkp delete cluster -c ${NKP_WORKLOAD_CLUSTER_NAME}
+        kubectl get po -A | grep -i nvidia
         ```
 
-    === ":octicons-command-palette-16: Command output"
+    === "Command Output"
 
-        ```{ .bash .no-copy }
-        nkp delete cluster -c nkpdev
+        ```{ .text, no-copy}
+        kubectl get po -A | grep -i nvidia
 
-        ✓ Upgrading CAPI components 
-        ✓ Waiting for CAPI components to be upgraded 
-        ✓ Initializing new CAPI components 
-        ✓ Creating ClusterClass resources 
-        ✓ Creating ClusterClass resources
-        ✓ Moving cluster resources 
-        ✓ Waiting for cluster infrastructure to be ready 
-        ✓ Waiting for cluster control-planes to be ready
-        ✓ Waiting for machines to be ready
-        ✓ Deleting cluster resources
-        ✓ Waiting for cluster to be fully deleted 
-        Deleted default/nkpdev cluster
+        nvidia-container-toolkit-daemonset-fjzbt                          1/1     Running     0          28m
+        nvidia-cuda-validator-f5dpt                                       0/1     Completed   0          26m
+        nvidia-dcgm-exporter-9f77d                                        1/1     Running     0          28m
+        nvidia-dcgm-szqnx                                                 1/1     Running     0          28m
+        nvidia-device-plugin-daemonset-gzpdq                              1/1     Running     0          28m
+        nvidia-driver-daemonset-dzf55                                     1/1     Running     0          28m
+        nvidia-operator-validator-w48ms                                   1/1     Running     0          28m
         ```
+
+10. Run a sample GPU workload to confirm GPU operations
+
+    === "Command"
+
+        ```bash
+        kubectl apply -f - <<EOF
+        apiVersion: v1
+        kind: Pod
+        metadata:
+          name: cuda-vector-add
+        spec:
+          restartPolicy: OnFailure
+          containers:
+          - name: cuda-vector-add
+            image: k8s.gcr.io/cuda-vector-add:v0.1
+            resources:
+              limits:
+                nvidia.com/gpu: 1
+        EOF
+        ```
+
+    === "Command Output"
+
+        ```{ .text, no-copy}
+        pod/cuda-vector-add created
+        ```
+
+11. Follow the logs to check if the GPU operations are successful
+
+    === "Command"
+
+        ```bash
+        kubectl logs _gpu_worload_pod_name
+        ```
+    === "Sample Command"
+
+        ```bash
+        kubectl logs cuda-vector-add-xxx
+        ```
+
+    === "Command Output"
+
+        ```{ .text, no-copy}
+        kubectl logs cuda-vector-add
+        [Vector addition of 50000 elements]
+        Copy input data from the host memory to the CUDA device
+        CUDA kernel launch with 196 blocks of 256 threads
+        Copy output data from the CUDA device to the host memory
+        Test PASSED
+        Done
+        ```
+        
+Now we are ready to deploy our AI workloads.

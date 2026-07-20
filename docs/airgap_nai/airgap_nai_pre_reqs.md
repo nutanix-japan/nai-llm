@@ -136,6 +136,14 @@ We will create Nutanix Files storage class which will be used to create a pvc th
 
 ## Request Access to Model on Hugging Face
 
+Gated models will require a Hugging Face token to be able to download. 
+
+In this section we will create a token as Meta-Llama is a gated model.
+
+!!! info
+    
+    Non-gated models can be directly downloaded using Hugging Face CLI. 
+
 Follow these steps to request access to the `meta-llama/Meta-Llama-3.1-8B-Instruct` model:
 
 !!! info "LLM Recommendation"
@@ -208,6 +216,145 @@ Follow these steps to create a Hugging Face token with read permissions:
   
 Use this token for accessing Hugging Face resources with read-only permissions.
 
+## Download the model
+
+We have two options in downloading a model to be accessed later by NAI.
+
+Nutanix Files and Nutanix Objects (bucket) can be mounted as a file share on the jumphost with secure mount options.
+
+1. **File share**  - create a **file share** on Nutanix Files and mount it on the jumphost
+2. **Object storage** - create a **bucket** on Nutanix Objects and mount it as a file share on the jumphost
+
+### File Share
+
+1. Mount the ``/model_share`` file share created [here](#file-share) on the jumphost
+   
+    === ":octicons-command-palette-16: Command"
+    
+        ```bash
+        #!/bin/bash
+        set -e
+
+        # ==============================================================================
+        # CONFIGURATION
+        # ==============================================================================
+        # 1. Hugging Face Access Token (Must have accepted license terms on the web repo)
+        HF_TOKEN="hf_your_actual_token_here"
+
+        # 2. File share mounting details
+        SHARE_SOURCE="labFS.ntnxlab.local:/model_share/"
+        SHARE_TYPE="nfs"
+        SHARE_OPTIONS="rw,sync,hard,intr"
+
+        # Target Directories
+        MOUNT_POINT="/model_share"
+        TARGET_DIR="${MOUNT_POINT}/Llama-3.1-8B-Instruct"
+        MODEL_REPO="meta-llama/Llama-3.1-8B-Instruct"
+
+        # Binary Location from pipx
+        HF_BIN="/root/.local/bin/hf"
+
+        # ==============================================================================
+        # 1. MOUNT FILE SHARE
+        # ==============================================================================
+        echo "Creating mount point folder at ${MOUNT_POINT}..."
+        mkdir -p "${MOUNT_POINT}"
+
+        echo "Mounting ${SHARE_SOURCE} to ${MOUNT_POINT}..."
+        if mountpoint -q "${MOUNT_POINT}"; then
+            echo "Directory is already mounted."
+        else
+            sudo mount -t "${SHARE_TYPE}" -o "${SHARE_OPTIONS}" "${SHARE_SOURCE}" "${MOUNT_POINT}"
+            echo "Mount successful."
+        fi
+
+        # Create the final model directory inside the share 
+        # (This side-steps root-squashing permissions on the parent directory)
+        echo "Preparing local target folder..."
+        mkdir -p "${TARGET_DIR}"
+
+        # ==============================================================================
+        # 2. DOWNLOAD VIA MODERN HF CLIENT
+        # ==============================================================================
+        echo "Starting high-speed download for ${MODEL_REPO} using modern hf CLI..."
+
+        # Run the download command referencing the direct absolute path
+        # Using the updated 'hf download' structure and mapping parameters
+        ${HF_BIN} download \
+            "${MODEL_REPO}" \
+            --local-dir "${TARGET_DIR}" \
+            --token "${HF_TOKEN}"
+
+        echo "Download completed successfully!"
+        echo "Model files are located at: ${TARGET_DIR}"
+        ```
+
+    === ":octicons-command-palette-16: Command output"
+    
+        ```{ .text .no-copy }
+        Creating mount point at /model_share...
+        Mounting labFS.ntnxlab.local:/model_share/ to /model_share...
+        Directory is already mounted.
+        'huggingface-hub' already seems to be installed. Not modifying existing installation in
+        '/root/.local/share/pipx/venvs/huggingface-hub'. Pass '--force' to force installation.
+        injected package hf-transfer into venv huggingface-hub
+        done! ✨ 🌟 ✨
+        Starting high-speed download for meta-llama/Llama-3.1-8B-Instruct...
+        /root/.local/share/pipx/venvs/huggingface-hub/lib/python3.12/site-packages/huggingface_hub/constants.py:298: FutureWarning: The `HF_HUB_ENABLE_HF_TRANSFER` environment variable is deprecated as 'hf_transfer' is not used anymore. Please use `HF_XET_HIGH_PERFORMANCE` instead to enable high performance transfer with Xet. Visit https://huggingface.co/docs/huggingface_hub/package_reference/environment_variables#hfxethighperformance for more details.
+        warnings.warn(
+        Downloading bytes:                                                                      |  0.00B            Still waiting to acquire lock on /model_share/Llama-3.1-8B-Instruct/.cache/huggingface/.gitignore.lock (elapsed: 0.1 seconds)es:   0%|                                                             | 0/17 [00:00<?, ?it/s]
+        Fetching 17 files: 100%|████████████████████████████████████████████████████| 17/17 [01:07<00:00,  3.98s/it]
+        Download complete: : ███████████████████████████████████████████████████████████████████| 27.6GB, 37.5MB/s  ✓ Downloadedion complete: 100%|█████████████████████████████████████████████████| 32.1GB / 32.1GB,  303MB/s  
+        path: /model_share/Llama-3.1-8B-Instruct
+        Download complete: : ███████████████████████████████████████████████████████████████████| 27.6GB, 37.5MB/s  
+        Reconstruction complete: 100%|█████████████████████████████████████████████████| 32.1GB / 32.1GB,  303MB/s  
+        Download completed successfully! Model located at: /model_share/Llama-3.1-8B-Instruct
+        ```
+
+2. Confirm model files in the directory on the File share
+   
+    === ":octicons-command-palette-16: Command"
+    
+        ```bash
+        ls -l /model_share/Llama-3.1-8B-Instruct/
+        ```
+
+    === ":octicons-command-palette-16: Command output"
+    
+        ```{ .text .no-copy }
+        $ ls -l /model_share/Llama-3.1-8B-Instruct/
+        #
+        total 15714428
+        drwxr-xr-x  4 4294967294 4294967294         18 Jul 20 01:34 ./
+        drwxrwxrwt 12 root       root               12 Jul 20 01:38 ../
+        drwxr-xr-x  3 4294967294 4294967294          3 Jul 20 01:33 .cache/
+        -rw-r--r--  1 4294967294 4294967294       1519 Jul 20 01:33 .gitattributes
+        -rw-r--r--  1 4294967294 4294967294       7627 Jul 20 01:33 LICENSE
+        -rw-r--r--  1 4294967294 4294967294      44044 Jul 20 01:33 README.md
+        -rw-r--r--  1 4294967294 4294967294       4691 Jul 20 01:33 USE_POLICY.md
+        -rw-r--r--  1 4294967294 4294967294        855 Jul 20 01:33 config.json
+        -rw-r--r--  1 4294967294 4294967294        184 Jul 20 01:33 generation_config.json
+        -rw-r--r--  1 4294967294 4294967294 4976698672 Jul 20 01:34 model-00001-of-00004.safetensors
+        -rw-r--r--  1 4294967294 4294967294 4999802720 Jul 20 01:34 model-00002-of-00004.safetensors
+        -rw-r--r--  1 4294967294 4294967294 4915916176 Jul 20 01:34 model-00003-of-00004.safetensors
+        -rw-r--r--  1 4294967294 4294967294 1168138808 Jul 20 01:33 model-00004-of-00004.safetensors
+        -rw-r--r--  1 4294967294 4294967294      23950 Jul 20 01:33 model.safetensors.index.json
+        drwxr-xr-x  2 4294967294 4294967294          5 Jul 20 01:34 original/
+        -rw-r--r--  1 4294967294 4294967294        296 Jul 20 01:33 special_tokens_map.json
+        -rw-r--r--  1 4294967294 4294967294    9085657 Jul 20 01:33 tokenizer.json
+        -rw-r--r--  1 4294967294 4294967294      55351 Jul 20 01:33 tokenizer_config.json
+        ```
+
+### Buckets Store
+
+Follow the same procedure to mount the bucket on the jump host and download the model. 
+
+1. Create a bucket
+2. Create access and secret keys
+3. Enable NFS mount options on the buckets 
+4. Mount the share on jumphost VM
+5. Download the model to mounted file share using the script in the previous section
+   
 ## Prepare Helm Charts
 
 In this section we will prepare the helm charts necessary for NAI and pre-requisite applications install

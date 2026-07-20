@@ -270,6 +270,7 @@ Reserve the third IP for NAI. We will use the NAI IP in the next [NAI](../iep/ie
 | NKP MetalLB IP Range   |  ``10.x.x.215-10.x.x.216``   | -    |
 | NAI                    |  ``10.x.x.216``              | ``nai.10.x.x.216.nip.io``|
 
+
 ## Create Base Image for NKP
 
 !!! tip "About NKP Base Image OS Version on Nutanix Cluster"
@@ -905,7 +906,7 @@ In this section we will create a nodepool to host the AI apps with a GPU.
         nkpdev-md-0-tnx7k-wcbsf-xrz9v           Ready    <none>          24h   v1.34.1
         ```
 
-### Enable GPU Operator
+## Enable GPU Operator
 
 We will need to enable GPU operator ``v25.3.1`` for deploying NKP application. 
 

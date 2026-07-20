@@ -1394,13 +1394,21 @@ The following steps show how cert-manager can be used to generate a **self signe
 
 We will download and user llama3 8B model which we sized for in the previous section.
 
+We will use the model already downloaded to ``/model_share`` from our jumphost in this [section](../airgap_nai/airgap_nai_pre_reqs.md#download-the-model).
+
 1. In the NAI GUI, go to **Models**
-2. Click on Import Model from Hugging Face
-3. Choose the ``meta-llama/Meta-Llama-3.1-8B-Instruct`` model
-4. Input your Hugging Face token that was created in the previous [section](../iep/iep_pre_reqs.md#create-a-hugging-face-token-with-read-permissions) and click **Import**
+2. Click on **Import Model** from Hugging Face
+3. Select the **Manual Import** method
+4. Choose the ``meta-llama/Meta-Llama-3.1-8B-Instruct`` model
 
 5. Provide the Model Instance Name as ``Meta-Llama-3.1-8B-Instruct`` and click **Import**
-5. Go to VSC Terminal to monitor the download
+6. Choose the following:
+    - **Location** - File Share
+    - **File Server Address** - ``labFS.ntnxlab.local`` (point to your File server FQDN)
+    - **NFS Export Path**- ``/model_share``
+    - **Directory Parth for the Model** - ``Meta-Llama-3.1-8B-Instruct`` (this is the folder created by the model download script)
+  
+7. Go to VSC Terminal to monitor the download
     
     === ":octicons-command-palette-16: Command"
 
@@ -1440,21 +1448,27 @@ We will download and user llama3 8B model which we sized for in the previous sec
         ```text title="Verify download of model using pod logs"
         kubectl logs -f nai-c0d6ca61-1629-43d2-b57a-9f-model-job-9nmff 
 
-        /venv/lib/python3.9/site-packages/huggingface_hub/file_download.py:983: UserWarning: Not enough free disk space to download the file. The expected file size is: 0.05 MB. The target location /data/model-files only has 0.00 MB free disk space.
-        warnings.warn(
-        tokenizer_config.json: 100%|██████████| 51.0k/51.0k [00:00<00:00, 3.26MB/s]
-        tokenizer.json: 100%|██████████| 9.09M/9.09M [00:00<00:00, 35.0MB/s]<00:30, 150MB/s]
-        model-00004-of-00004.safetensors: 100%|██████████| 1.17G/1.17G [00:12<00:00, 94.1MB/s]
-        model-00001-of-00004.safetensors: 100%|██████████| 4.98G/4.98G [04:23<00:00, 18.9MB/s]
-        model-00003-of-00004.safetensors: 100%|██████████| 4.92G/4.92G [04:33<00:00, 18.0MB/s]
-        model-00002-of-00004.safetensors: 100%|██████████| 5.00G/5.00G [04:47<00:00, 17.4MB/s]
-        Fetching 16 files: 100%|██████████| 16/16 [05:42<00:00, 21.43s/it]:33<00:52, 9.33MB/s]
-        ## Successfully downloaded model_files|██████████| 5.00G/5.00G [04:47<00:00, 110MB/s] 
-
-        Deleting directory : /data/hf_cache
+        [Entrypoint] Downloading Model from Hugging Face
+        NAI Monitor: Downloaded directory size: 0.00MB
+        The new directory is created! - /data/model-files
+        NAI Monitor: Downloaded directory size: 1133.88MB
+        NAI Monitor: Downloaded directory size: 2192.08MB
+        NAI Monitor: Downloaded directory size: 3222.33MB
+        NAI Monitor: Downloaded directory size: 4268.83MB
+        NAI Monitor: Downloaded directory size: 5284.63MB
+        NAI Monitor: Downloaded directory size: 6246.70MB
+        NAI Monitor: Downloaded directory size: 7307.07MB
+        NAI Monitor: Downloaded directory size: 8385.94MB
+        NAI Monitor: Downloaded directory size: 9427.94MB
+        NAI Monitor: Downloaded directory size: 10488.94MB
+        NAI Monitor: Downloaded directory size: 11536.19MB
+        NAI Monitor: Downloaded directory size: 12567.45MB
+        NAI Monitor: Downloaded directory size: 13689.43MB
+        NAI Monitor: Downloaded directory size: 14733.81MB
+        NAI Monitor: Downloaded directory size: 15631.18MB
         ```
 
-6. Optional - verify the events in the namespace for the pvc creation 
+8. Optional - verify the events in the namespace for the pvc creation 
     
     === ":octicons-command-palette-16: Command"
 
