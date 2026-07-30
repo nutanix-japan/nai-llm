@@ -30,7 +30,7 @@
           <link rel="icon" href="../../assets/images/favicon.png">
         
       
-      <meta name="generator" content="mkdocs-ProperDocs 1.6.7, mkdocs-materialx-10.1.8">
+      <meta name="generator" content="mkdocs-ProperDocs 1.6.7, mkdocs-materialx-10.2.0">
     
     
       
@@ -38,7 +38,7 @@
       
     
     
-      <link rel="stylesheet" href="../../assets/stylesheets/main.314bbef5.min.css">
+      <link rel="stylesheet" href="../../assets/stylesheets/main.d7aee198.min.css">
       
         
         <link rel="stylesheet" href="../../assets/stylesheets/palette.a45159b5.min.css">
@@ -234,7 +234,7 @@
     </form>
     <div class="md-search__output">
       <div class="md-search__scrollwrap" tabindex="0">
-        <div class="md-search-result" data-md-component="search-result">
+        <div class="md-search-result md-search-result--pagefind" data-md-component="search-result">
           <div class="md-search-result__meta">
             Initializing search
           </div>
@@ -2757,6 +2757,28 @@
   
 </li>
       
+        <li class="md-nav__item">
+  <a href="#ip-address-planning" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        IP Address Planning
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#kubernetes-namespace-requirements" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Kubernetes Namespace Requirements
+      
+    </span>
+  </a>
+  
+</li>
+      
     </ul>
   
 </nav>
@@ -3578,6 +3600,28 @@
   
 </li>
       
+        <li class="md-nav__item">
+  <a href="#ip-address-planning" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        IP Address Planning
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#kubernetes-namespace-requirements" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Kubernetes Namespace Requirements
+      
+    </span>
+  </a>
+  
+</li>
+      
     </ul>
   
 </nav>
@@ -3637,7 +3681,9 @@
   </nav>
 
               
-              <article class="md-content__inner md-typeset">
+              
+              
+              <article class="md-content__inner md-typeset" data-pagefind-body>
                 
                   
   
@@ -3661,15 +3707,16 @@
 
 <div class="admonition example">
 <p class="admonition-title">Pre-requisites</p>
-<p>To enable and use Flow CNI to extend VM-configured VPCs to NKP-managed Kubernetes workload clusters, your Nutanix environment must meet the following hardware, software, and configuration prerequisites.</p>
+<p>To enable and use Flow CNI to extend VPCs (VM-configured, container-only, or hybrid) to NKP-managed Kubernetes workload clusters, your Nutanix environment must meet the following hardware, software, and configuration prerequisites.</p>
 <h3 id="minimum-software-versions">Minimum Software Versions</h3>
+<p><strong>For VPCs with VM-only, container-only, or hybrid (VMs and containers) configurations:</strong></p>
 <ul>
-<li><strong>Nutanix Kubernetes Platform (NKP):</strong> Version <code>2.15</code> or later (must be running the Rocky Linux operating system)</li>
-<li><strong>AOS (Acroplis Operating System):</strong> Version <code>7.5</code> or later</li>
-<li><strong>AHV (Acropolis Hypervisor):</strong> Version <code>11.0</code> or later</li>
-<li><strong>Prism Central:</strong> Version <code>pc.7.5</code> or later</li>
-<li><strong>Network Controller:</strong> Version <code>7.0.0</code> or later</li>
-<li><strong>Flow CNI</strong> <code>v1.0.0</code> or later</li>
+<li><strong>Nutanix Kubernetes Platform (NKP):</strong> Version <code>2.17</code> or later (must be running the Rocky Linux operating system on NKP nodes)</li>
+<li><strong>Ubuntu OS support</strong> - not available yet. This is upcoming in a future release..</li>
+<li><strong>AOS (Acropolis Operating System):</strong> Version <code>7.6</code> or later</li>
+<li><strong>AHV (Acropolis Hypervisor):</strong> Version <code>11.2</code> or later</li>
+<li><strong>Prism Central:</strong> Version <code>pc.7.6</code> or later</li>
+<li><strong>Network Controller:</strong> Version <code>7.6.0</code> or later</li>
 </ul>
 </div>
 <h3 id="resource-and-configuration-requirements">Resource and Configuration Requirements</h3>
@@ -3678,20 +3725,32 @@
 <p>Only Network Controller (Flow deployed in the <strong>Integrated</strong> with Prism Central mode) supports Flow CNI. The Flow Controller (Flow deployed in the Standalone mode) does not support Flow CNI.</p>
 </div>
 <ul>
-<li>Enable Flow in the <strong>Integrated</strong> with Prism Central (Network Controller) mode in Prism Central.</li>
-<li><strong>Underlay Networking:</strong> Ensure that the underlying AHV cluster nodes are successfully connected to a VLAN Basic subnet.</li>
-<li><strong>IP Address Management (IPAM):</strong> Ensure that the CIDR blocks designated for your Kubernetes pods and services <strong>do not overlap</strong> with the CIDRs of the Nutanix VPCs.</li>
-<li>
-<p><strong>Namespace Consistency:</strong> The cluster name and namespace defined in all custom resources must perfectly match the specific Kubernetes workload clusters during provisioning.</p>
-</li>
-<li>
-<p>Provision the NKP-managed Kubernetes workload cluster with the Flow CNI YAML for Flow CNI services in the Kubernetes cluster.
-Onboard the Kubernetes cluster to an <strong>extra-large (XL) Prism Central instance</strong> to use Flow CNI to extend the VPCs with VM configurations to the Kubernetes workload clusters.</p>
-</li>
-<li>Ensure that the AHV cluster nodes are connected to a VLAN Basic subnet.</li>
-<li>Ensure that the CIDRs for pods and services do not overlap with the CIDRs of the VPCs.</li>
+<li><strong>Flow Deployment Mode:</strong> Enable Flow in the <strong>Integrated</strong> with Prism Central (Network Controller) mode in Prism Central.</li>
+<li><strong>Underlay Networking:</strong> Ensure that the underlying AHV cluster nodes are successfully connected to a managed VLAN Basic (AHV-managed) subnet.</li>
+<li><strong>Prism Central Sizing:</strong> Onboard the Kubernetes workload cluster to an <strong>extra-large (XL) Prism Central instance</strong> when using Flow CNI to extend VPCs with VM configurations.</li>
+<li><strong>Helm &amp; Credentials:</strong> Install Helm on the deployment system, and generate base64 authorization credentials using an access token from the Flow Network and Security downloads page to pull the Flow CNI Helm package.</li>
+<li><strong>Cluster Manifest:</strong> Provision the NKP-managed Kubernetes workload cluster using the cluster manifest and Flow CNI YAML resource for Flow CNI services.</li>
+<li><strong>Namespace Consistency:</strong> The cluster name and namespace defined in all custom resources must perfectly match the specific Kubernetes workload clusters during provisioning.</li>
 </ul>
-<p>For more information on deploying Flow in the Integrated with Prism Central mode, see the <a href="https://portal.nutanix.com/page/documents/details?targetId=Nutanix-Flow-Virtual-Networking-Guide-v7_0_0:ear-flow-cni-prerequisites-pc-r.html">Flow Management Reference Guide</a>.</p>
+<h3 id="ip-address-planning">IP Address Planning</h3>
+<ul>
+<li><strong>CIDR Non-Overlap:</strong> Ensure that the CIDRs designated for Kubernetes pods and services <strong>do not overlap</strong> with the CIDRs of the Nutanix VPCs.</li>
+<li><strong>Container-Only VPCs:</strong> Ensure the Pod CIDR for each container-only VPC is unique and does not overlap with the Pod CIDR of any other VPC on the same cluster, including the Shared Services VPC.</li>
+<li><strong>Hybrid VPCs:</strong> For hybrid VPCs on the same cluster, ensure VM subnets and Pod CIDRs are unique and do not overlap with any other hybrid VPC on that cluster.</li>
+<li><strong>Prism Central Reserved Subnets:</strong> Ensure node, pod, and service CIDRs do not overlap with the subnets reserved by Microservices Infrastructure in Prism Central.</li>
+</ul>
+<h3 id="kubernetes-namespace-requirements">Kubernetes Namespace Requirements</h3>
+<ul>
+<li><strong>Pod-Free Namespaces:</strong> Ensure selected Kubernetes namespaces for a VPC do not contain any existing pods at the time of VPC creation.</li>
+<li><strong>Unique Mapping:</strong> Ensure selected Kubernetes namespaces are not already mapped to another VPC on the same cluster.</li>
+<li><strong>Single Mapping Model:</strong> For each Kubernetes cluster, use only <strong>one</strong> hybrid VPC-to-namespace mapping model:<ul>
+<li>Map <strong>all</strong> namespaces of the cluster to a single VPC, <strong>or</strong></li>
+<li>Map a set of namespaces to one or more additional VPCs.
+<em>(A single cluster cannot mix both mapping models simultaneously).</em></li>
+</ul>
+</li>
+</ul>
+<p>For more information on deploying Flow in the Integrated with Prism Central mode, see the <a href="https://portal.nutanix.com/page/documents/details?targetId=Nutanix-Flow-Virtual-Networking-Guide-v7_6_0:ear-flow-cni-prerequisites-pc-r.html">Flow Management Reference Guide</a>.</p>
 
 
 
@@ -3963,10 +4022,17 @@ Onboard the Kubernetes cluster to an <strong>extra-large (XL) Prism Central inst
     
       
       
-      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "code": null, "features": ["navigation.instant", "navigation.instant.progress", "navigation.path", "navigation.footer", "navigation.tracking", "navigation.tabs", "navigation.tabs.sticky", "navigation.top", "navigation.integrate", "search.highlight", "search.suggest", "search.share", "toc.follow", "announce.dismiss", "content.action.edit", "content.action.view", "content.code.annotate", "content.code.copy", "content.code.annotate", "content.code.select"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "code.collapse": "Collapse", "code.download": "Download", "code.expand": "Expand remaining # lines", "code.select": "Toggle line selection", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": {"provider": "mike"}}</script>
+      
+      
+        
+        
+          
+          
+        
+      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "code": null, "features": ["navigation.instant", "navigation.instant.progress", "navigation.path", "navigation.footer", "navigation.tracking", "navigation.tabs", "navigation.tabs.sticky", "navigation.top", "navigation.integrate", "search.highlight", "search.suggest", "search.share", "toc.follow", "announce.dismiss", "content.action.edit", "content.action.view", "content.code.annotate", "content.code.copy", "content.code.annotate", "content.code.select"], "search": {"options": {"baseUrl": "../..", "bundleUrl": "../../search/", "highlight": true, "searchOptions": {}}, "provider": "pagefind"}, "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "code.collapse": "Collapse", "code.download": "Download", "code.expand": "Expand remaining # lines", "code.select": "Toggle line selection", "search.offline": "Switch to Lunr for offline search", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": {"provider": "mike"}}</script>
     
     
-      <script src="../../assets/javascripts/bundle.fc193f93.min.js"></script>
+      <script src="../../assets/javascripts/bundle.44453a05.min.js"></script>
       
     
   </body>
