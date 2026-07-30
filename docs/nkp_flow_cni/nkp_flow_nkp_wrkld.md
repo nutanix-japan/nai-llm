@@ -362,7 +362,7 @@ We will create the workload cluster's cluster definition manifest first, modify 
               cluster.x-k8s.io/cluster-name: ${NKP_CLUSTER_NAME}
           repoURL: https://nutanix.github.io/helm-releases/
           chartName: nutanix-flow-cni
-          version: 1.0.0
+          version: 1.1.0
           namespace: flow-cni-system
           options:
             waitForJobs: true
@@ -406,7 +406,7 @@ We will create the workload cluster's cluster definition manifest first, modify 
               cluster.x-k8s.io/cluster-name: nkpflow
           repoURL: https://nutanix.github.io/helm-releases/
           chartName: nutanix-flow-cni
-          version: 1.0.0
+          version: 1.1.0
           namespace: flow-cni-system
           options:
             waitForJobs: true

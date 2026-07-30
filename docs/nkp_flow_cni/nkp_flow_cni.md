@@ -27,7 +27,7 @@ description: ""
 
 * **Flow Deployment Mode:** Enable Flow in the **Integrated** with Prism Central (Network Controller) mode in Prism Central.
 * **Underlay Networking:** Ensure that the underlying AHV cluster nodes are successfully connected to a managed VLAN Basic (AHV-managed) subnet.
-* **Prism Central Sizing:** Onboard the Kubernetes workload cluster to an **extra-large (XL) Prism Central instance** when using Flow CNI to extend VPCs with VM configurations.
+* **Prism Central Sizing:** Onboard the Kubernetes workload cluster to a **Prism Central** instance when using Flow CNI to extend VPCs with VM configurations.
 * **Helm & Credentials:** Install Helm on the deployment system, and generate base64 authorization credentials using an access token from the Flow Network and Security downloads page to pull the Flow CNI Helm package.
 * **Cluster Manifest:** Provision the NKP-managed Kubernetes workload cluster using the cluster manifest and Flow CNI YAML resource for Flow CNI services.
 * **Namespace Consistency:** The cluster name and namespace defined in all custom resources must perfectly match the specific Kubernetes workload clusters during provisioning.
