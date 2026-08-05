@@ -1346,7 +1346,7 @@
   <span class="md-ellipsis">
     
   
-    NAI (Air-gapped)
+    NAI Air-gapped
   
 
     
@@ -1362,11 +1362,467 @@
             <span class="md-nav__icon md-icon"></span>
             
   
-    NAI (Air-gapped)
+    NAI Air-gapped
   
 
           </label>
           <ul class="md-nav__list">
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4_2_1" >
+        
+          
+          <label class="md-nav__link" for="__nav_4_2_1" id="__nav_4_2_1_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    NAI (NKP App Catalog)
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_4_2_1_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4_2_1">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    NAI (NKP App Catalog)
+  
+
+          </label>
+          <ul class="md-nav__list">
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Getting Started
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../harbor/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Harbor Container Registry
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Setup Air-gapped NKP Cluster
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Setup Air-gapped NKP Cluster
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc">
+      
+        <li class="md-nav__item">
+  <a href="#nkp-high-level-cluster-design" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        NKP High Level Cluster Design
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="NKP High Level Cluster Design">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#sizing-requirements" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Sizing Requirements
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#download-offline-nkp-air-gapped-bundle" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Download Offline NKP Air-gapped Bundle
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#setup-docker-on-jumphost" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Setup Docker on Jumphost
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#load-docker-with-nkp-images" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Load Docker with NKP Images
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#reserve-control-plane-and-metallb-ip" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Reserve Control Plane and MetalLB IP
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Reserve Control Plane and MetalLB IP">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#reservation-of-ips" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Reservation of IPs
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#create-base-image-for-nkp" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Create Base Image for NKP
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#push-container-images-to-localprivate-registry-to-be-used-by-nkp" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Push Container Images to Local/Private Registry to be used by NKP
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#create-air-gapped-nkp-workload-cluster" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Create Air-gapped NKP Workload Cluster
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#add-nkp-gpu-workload-pool" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Add NKP GPU Workload Pool
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Add NKP GPU Workload Pool">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#find-gpu-device-details" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Find GPU Device Details
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#create-nkp-gpu-workload-pool" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Create NKP GPU Workload Pool
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#licensing" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Licensing
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Licensing">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#generate-nkp-pro-license" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Generate NKP Pro License
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#applying-nkp-pro-license-to-nkp-cluster" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Applying NKP Pro License to NKP Cluster
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#enable-gpu-operator" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Enable GPU Operator
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../airgap_nkp_catalog_nai/airgap_nkp_catalog_pre_reqs/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Pre-requisites NAI
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../airgap_nkp_catalog_nai/airgap_nkp_catalog_nai_deploy/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Deploy NAI
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
             
               
                 
@@ -1388,10 +1844,10 @@
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4_2_1" checked>
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4_2_2" checked>
         
           
-          <label class="md-nav__link" for="__nav_4_2_1" id="__nav_4_2_1_label" tabindex="0">
+          <label class="md-nav__link" for="__nav_4_2_2" id="__nav_4_2_2_label" tabindex="0">
             
   
   
@@ -1409,8 +1865,8 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_4_2_1_label" aria-expanded="true">
-          <label class="md-nav__title" for="__nav_4_2_1">
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_4_2_2_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_4_2_2">
             <span class="md-nav__icon md-icon"></span>
             
   
@@ -4057,7 +4513,7 @@
         <a href="../" class="md-path__link">
           
   <span class="md-ellipsis">
-    NAI (Air-gapped)
+    NAI Air-gapped
   </span>
 
         </a>
