@@ -33,7 +33,13 @@ nav:
       - Pre-requisites NAI: iep/iep_pre_reqs.md
       - Deploy NAI: iep/iep_deploy.md
       - Test NAI: iep/iep_test.md
-  - NAI (Air-gapped):
+  - NAI Air-gapped:
+    - NAI (NKP App Catalog):
+      - Getting Started: airgap_nai/index.md
+      - Harbor Container Registry: airgap_nai/harbor.md
+      - Setup Air-gapped NKP Cluster: airgap_nai/infra_nkp_airgap.md
+      - Pre-requisites NAI: airgap_nkp_catalog_nai/airgap_nkp_catalog_pre_reqs.md
+      - Deploy NAI: airgap_nkp_catalog_nai/airgap_nkp_catalog_nai_deploy.md
     - Air-gapped NAI (Helm):
       - Getting Started: airgap_nai/index.md
       - Harbor Container Registry: airgap_nai/harbor.md
