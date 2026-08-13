@@ -1,23 +1,45 @@
 # Deploying Private CA Certificate to NKP Cluster
 
-In this section we will deploy a private CA certificate to the NKP air-gapped cluster nodes if not already added at the time of deployment.
+In this tutorial we will deploy a private CA certificate to the NKP air-gapped cluster nodes if not already added at the time of deployment for registry and registry mirrors.
 
-!!! warning "Best Practice for Self-signed Certificates"
+
+!!! warning "Best Practice for Private CA Certificates"
     
-    The best practice is to deploy the NKP air-gapped cluster with a Self-signed Certificates (private) CA certificate at Day 0 using the ``nkp create cluster nutanix --additional-trust-bundle`` among other options.
+    The best practice is to deploy the NKP air-gapped cluster with a private CA certificate for validating registry and registry mirrors is as follows:
+    
+    - ``nkp create cluster nutanix --registry-cacert``
+    - ``nkp create cluster nutanix --registry-mirror-cacert``
 
-    For Day 1 and 2 operations, the private CA certificate will need to be added to all the NKP air-gapped cluster nodes.
+    For Day 1 and 2 operations, the private CA certificate will need to be added to all the NKP air-gapped cluster nodes as and when it is updated
+
+    - Update corresponding ``_cluster_name_-image-registry-mirror-credentials ``secret
+    - Rollout all nodes in the NKP cluster 
 
 Follow the steps here to add the Harbor container registry's CA certificate ``ca.crt`` that you created in this [section](../infra/harbor.md#setup-ssl-certificates-for-harbor) to the nodes.
 
+!!! info "Registry vs Registry Mirror"
 
-!!! danger "Self-signed Certificates"
+    In a Cluster API (CAPI) architecture, the core difference is how your image paths are resolved: a Registry requires you to explicitly change your Kubernetes YAML files to point to a specific server URL, whereas a Registry Mirror acts as a transparent, automated fallback configured directly within the container runtime (like containerd) of your workload nodes.
+
+    ## Quick Comparison
     
-    Make sure to install self-signed certificates **only** if you are using a test, lab or development environment.
+    | Feature | Registry (Custom/Private) | Registry Mirror (Pull-Through Cache) |
+    |---|---|---|
+    | **Image Path in YAML**| Must match the specific registry URL. | Keeps standard paths (e.g., docker.io/...). |
+    | **How it Works** | Direct pull from specified server. | Node intercepts pull request and redirects to local mirror. |
+    | **Air-Gap Use Case** | Requires fully modifying all CAPI manifests. | Keeps manifests intact; relies on node configurations. |
+    | **Configuration Level**| Kubernetes API / Manifest layer. | Node OS / Container runtime layer (containerd). |
+    | **Day 2 File Change**| Update Node OS file ``/etc/containerd/certs.d/_default/hosts.toml`` | Update Node OS file ``/etc/containerd/certs.d/_default/hosts.toml`` |
+    | **Day 2 Ops**| Update Node OS files / Container runtime restart (containerd).| Update Node OS files / Container runtime restart (containerd). |
+    
 
-    For production environments, use a trusted public CA certificate.
+!!! danger "Private CA or Self-signed Certificates"
+    
+    Make sure to install Private CA or self-signed certificates **only** if you are using a test, lab or development environment.
 
-    The recommendation from **Nutanix** is to use a trusted public CA certificate.
+    For production environments, use a trusted public CA certificate. 
+
+    The recommendation from **Nutanix** is to use a trusted public CA certificate. For dark site environments, a robust Private CA should be used. 
 
 1. Login to the Jumphost VM using VSCode
 

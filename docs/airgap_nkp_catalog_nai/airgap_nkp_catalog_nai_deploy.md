@@ -92,7 +92,7 @@ The following pre-requisite applications will be enabled on NKP GUI:
               kubernetes:
                 rateLimitDeployment:
                   container:
-                    image: "docker.io/envoyproxy/ratelimit:99d85510"
+                    image: "nutanix/nai-ratelimit:99d85510"
                   patch:
                     type: "StrategicMerge"
                     value:
@@ -102,7 +102,7 @@ The following pre-requisite applications will be enabled on NKP GUI:
                             containers:
                               - imagePullPolicy: "IfNotPresent"
                                 name: "envoy-ratelimit"
-                                image: "docker.io/envoyproxy/ratelimit:99d85510"
+                                image: "nutanix/nai-ratelimit:99d85510"
               type: "Kubernetes"
             extensionApis:
               enableEnvoyPatchPolicy: true
@@ -211,131 +211,9 @@ The following pre-requisite applications will be enabled on NKP GUI:
 
 We will use the Docker login credentials we created in the previous section to download the NAI Docker images.
 
-!!! warning "Change the Docker login credentials"
-
-    The following Docker based environment variable values need to be changed from your own Docker environment variables to the credentials downloaded from Nutanix Portal.
-
-    - ``$DOCKER_NAI_USERNAME``
-    - ``$DOCKER_NAI_ASSWORD``
-    - ``$DOCKER_NAI_EMAIL``
-
 1. Open ``$HOME/.env`` file in ``VSCode``
 
 2. Add (append) the following environment variables and save it
-
-    === ":octicons-file-code-16: Template ``.env``"
-
-        ```bash
-        export NAI_USER=_your_desired_nai_ui_username
-        export NAI_TEMP_PASS=_your_desired_nai_ui_password # At least 8 characters
-        export REGISTRY_SECRET_NAME=_k8s_secret_for_nai
-        export DOCKER_SERVER=https://index.docker.io/v1/
-        export DOCKER_NAI_USERNAME=_GA_release_docker_username
-        export DOCKER_NAI_PASSWORD=_GA_release_docker_password
-        export DOCKER_NAI_EMAIL=_GA_release_docker_email
-        export NAI_CORE_VERSION=_GA_release_nai_core_version
-        export NAI_API_RWX_STORAGECLASS=_nkp_rwx_storage_class
-        export NAI_DEFAULT_RWO_STORAGECLASS=_nkp_rwo_storage_class
-        export NKP_WORKSPACE_NAMESPACE=_nkp_workspace name # (1)!
-        export CLUSTER_ISSUER=_cluster_issuer_name
-        export NAI_PUBLIC_DOMAIN_NAME=_nai_domain_name
-        ```
-
-        1. To get the workspace namespace, run the following commmand. Note the **WORKSPACE NAMESPACE** column in the output
-           
-            === ":octicons-command-palette-16: Command"
-            
-                ```bash
-                kubectl get workspaces
-                ```
-            
-            
-            === ":octicons-command-palette-16: Command output"
-            
-                ```text hl_lines="5"
-                $ kubectl get workspaces
-                #
-                NAME                  DISPLAY NAME                   WORKSPACE NAMESPACE           AGE
-                default-workspace     Default Workspace              kommander-default-workspace   3d
-                kommander-workspace   Management Cluster Workspace   kommander                     3d
-                ```
-
-    === ":octicons-file-code-16: Sample ``.env``"
-
-        ```text
-        export NAI_USER=admin
-        export NAI_TEMP_PASS=_Xxxxxxxxxx
-        export REGISTRY_SECRET_NAME=nai-regcred
-        export DOCKER_SERVER=https://index.docker.io/v1/
-        export DOCKER_NAI_USERNAME=ntnxsvcgpt
-        export DOCKER_NAI_PASSWORD=dckr_pat_XXXXXXXXXXXXXXXXXXXXXXXXX
-        export DOCKER_NAI_EMAIL=ntnxsvcgpt
-        export NAI_CORE_VERSION=2.7.0
-        export NAI_API_RWX_STORAGECLASS=nai-nfs-storage
-        export NAI_DEFAULT_RWO_STORAGECLASS=nutanix-volume
-        export NKP_WORKSPACE_NAMESPACE=kommander
-        export CLUSTER_ISSUER=letsencrypt-cloudflare
-        export NAI_PUBLIC_DOMAIN_NAME=nai.domain.com
-        ```
-            
-
-3. Source the environment variables
-
-    === ":octicons-command-palette-16: Command"
-
-        ```bash
-        source $HOME/.env
-        ```
-
-4. Create the nai-system namespace to install Nutanix Enterprise AI
-   
-    === ":octicons-command-palette-16: Command"
-    
-        ```bash
-        kubectl create namespace nai-system --dry-run=client -o yaml | kubectl apply -f -
-        ```
-    
-    === ":octicons-command-palette-16: Command output"
-    
-        ```bash
-        kubectl create namespace nai-system --dry-run=client -o yaml | kubectl apply -f -
-        #
-        namespace/nai-system created     
-        ```
-   
-5. Create docker registry Secrets in both ``nai-system ``and ``envoy-gateway-system`` namespaces.
-   
-    === ":octicons-command-palette-16: Command"
-    
-        ```text
-        kubectl -n nai-system create secret docker-registry ${REGISTRY_SECRET_NAME} \
-        --docker-server=${DOCKER_SERVER} \
-        --docker-username=${DOCKER_NAI_USERNAME} \
-        --docker-password=${DOCKER_NAI_PASSWORD} \
-        --docker-email=${DOCKER_NAI_EMAIL} \
-        --dry-run=client -o yaml | kubectl apply -f -
-        ```
-        ```text
-        kubectl -n envoy-gateway-system create secret docker-registry ${REGISTRY_SECRET_NAME} \
-         --docker-server=${DOCKER_SERVER} \
-         --docker-username=${DOCKER_NAI_USERNAME} \
-         --docker-password=${DOCKER_NAI_PASSWORD} \
-         --docker-email=${DOCKER_NAI_EMAIL} \
-         --dry-run=client -o yaml | kubectl apply -f -
-        ```
-
-    === ":octicons-command-palette-16: Command output"
-    
-        ```{ .text, .no-copy}
-        secret/nai-regcred configured
-        ```
-        ```{ .text, .no-copy}
-        secret/nai-regcred configured
-        ```
-
-6. In the NKP GUI, Go to **Clusters**
-7. Click on **Management Cluster Workspace**
-8. Create a template file with Values configuration
    
     ??? tip "Optional - NAI with Public CA Certificate and Cert Manager"  
  
@@ -422,39 +300,79 @@ We will use the Docker login credentials we created in the previous section to d
                               key: secret-access-key
                             hostedZoneID: _HOSTED_ZONE_ID
                 ```
+
+    === ":octicons-file-code-16: Template ``.env``"
+
+        ```bash
+        export NAI_USER=_your_desired_nai_ui_username
+        export NAI_TEMP_PASS=_your_desired_nai_ui_password # At least 8 characters
+        export NAI_API_RWX_STORAGECLASS=_nkp_rwx_storage_class
+        export NAI_DEFAULT_RWO_STORAGECLASS=_nkp_rwo_storage_class
+        #
+        # Optional - for NAI Mangement UI endpoint
+        # To install public CA certificates for NAI UI endpoint 
+        #
+        export CLUSTER_ISSUER=_cluster_issuer_name
+        export NAI_PUBLIC_DOMAIN_NAME=_nai_domain_name
+        ```
+
+    === ":octicons-file-code-16: Sample ``.env``"
+
+        ```text
+        export NAI_USER=admin
+        export NAI_TEMP_PASS=_Xxxxxxxxxx
+        export NAI_API_RWX_STORAGECLASS=nai-nfs-storage
+        export NAI_DEFAULT_RWO_STORAGECLASS=nutanix-volume
+        #
+        # Optional - for NAI Mangement UI endpoint
+        # To install public CA certificates for NAI UI endpoint 
+        #
+        export CLUSTER_ISSUER=letsencrypt-cloudflare
+        export NAI_PUBLIC_DOMAIN_NAME=nai.domain.com
+        ```
+            
+
+3. Source the environment variables
+
+    === ":octicons-command-palette-16: Command"
+
+        ```bash
+        source $HOME/.env
+        ```
+
+4. In the NKP GUI, Go to **Clusters**
+5. Click on **Management Cluster Workspace**
+6. Create a template file with Values configuration
+   
    
     === ":octicons-command-palette-16: Command"
     
         ```yaml
         cat << EOF > nai-core-values.yaml
         global:
-          imagePullSecrets:
-            - name: ${REGISTRY_SECRET_NAME}
           storage:
             storageClassNameRWX: ${NAI_API_RWX_STORAGECLASS}
             storageClassName: ${NAI_DEFAULT_RWO_STORAGECLASS}
         
-        naiMonitoring:
-          nodeExporter:
-            serviceMonitor:
-              namespaceSelector:
-                matchNames:
-                  - ${NKP_WORKSPACE_NAMESPACE}
-          dcgmExporter:
-            serviceMonitor:
-              namespaceSelector:
-                matchNames:
-                  - ${NKP_WORKSPACE_NAMESPACE}
         naiApi:
           superAdmin:
             username: ${NAI_UI_USER}
             password: ${NAI_TEMP_PASS}      # At least 8 characters
             # email: admin@nutanix.com
             # firstName: admin
-        gateway:
-          tlsSecretName: "nai-cert"         # secret name written by cert-manager
-          certManager:
-            selfSigned: true                # enables self-signed issuer + certificate
+        #
+        # Optional - for NAI demo labs
+        #
+        # naiLabs:
+        #   enabled: true
+        #
+        # Optional - for NAI Mangement UI endpoint
+        # To install public CA certificates for NAI UI endpoint 
+        #
+        # gateway:
+        #   tlsSecretName: "nai-cert"         # secret name written by cert-manager
+        #   certManager:
+        #     selfSigned: true                # enables self-signed issuer + certificate
 
         # Optional - use if you are using cert-manager and ClusterIssuer with your own domain 
         # gateway:
@@ -471,35 +389,29 @@ We will use the Docker login credentials we created in the previous section to d
         
         ```yaml
         global:
-          imagePullSecrets:
-            - name: nai-regcred
           storage:
             storageClassNameRWX: nai-nfs-storage
             storageClassName: nutanix-volume
-        
-        naiMonitoring:
-          nodeExporter:
-            serviceMonitor:
-              namespaceSelector:
-                matchNames:
-                  - kommander
-          dcgmExporter:
-            serviceMonitor:
-              namespaceSelector:
-                matchNames:
-                  - kommander
-        
+      
         naiApi:
           superAdmin:
             username: admin
             password: _XXXXXXXXX # At least 8 characters
             # email: admin@nutanix.com
             # firstName: admin
-        
-        gateway:
-          tlsSecretName: "nai-cert"         # secret name written by cert-manager
-          certManager:
-            selfSigned: true                # enables self-signed issuer + certificate
+        #
+        # Optional - for NAI demo labs
+        #
+        # naiLabs:
+        #   enabled: true
+        #
+        # Optional - for NAI Mangement UI endpoint
+        # To install public CA certificates for NAI UI endpoint 
+        #
+        # gateway:
+        #   tlsSecretName: "nai-cert"         # secret name written by cert-manager
+        #   certManager:
+        #     selfSigned: true                # enables self-signed issuer + certificate
         
         # Optional - use if you are using cert-manager and ClusterIssuer with your own domain
         # gateway:
@@ -511,7 +423,7 @@ We will use the Docker login credentials we created in the previous section to d
         #      - nai.domain.com
         ```  
 
-9.  Go to **Applications** to search and enable the following:
+7.  Go to **Applications** to search and enable the following:
    
      * **Nutanix Enterprise AI** : version ``v2.7.0`` or higher with contents of ```nai-core-values.yaml``` file from previous step.
         

@@ -488,19 +488,19 @@ In this section we will go through creating a base image for all the control pla
     === "Template .env"
 
         ```text
-        export REGISTRY_URL=_your_registry_url
-        export REGISTRY_USERNAME=_your_registry_username
-        export REGISTRY_PASSWORD=_your_registry_password
-        export REGISTRY_CACERT=_path_to_ca_cert_of_registry
+        export REGISTRY_MIRROR_URL=_your_registry_url
+        export REGISTRY_MIRROR_USERNAME=_your_registry_username
+        export REGISTRY_MIRROR_PASSWORD=_your_registry_password
+        export REGISTRY_MIRROR_CACERT=_path_to_ca_cert_of_registry
         ```
 
     === "Sample .env"
 
         ```{ .text .no-copy }
-        export REGISTRY_URL=https://harbor.10.x.x.111.nip.io/nkp
-        export REGISTRY_USERNAME=admin
-        export REGISTRY_PASSWORD=xxxxxxxx
-        export REGISTRY_CACERT=$HOME/harbor/certs/ca.crt
+        export REGISTRY_MIRROR_URL=https://harbor.10.x.x.111.nip.io/nkp
+        export REGISTRY_MIRROR_USERNAME=admin
+        export REGISTRY_MIRROR_PASSWORD=xxxxxxxx
+        export REGISTRY_MIRROR_CACERT=$HOME/harbor/certs/ca.crt
         ```
 
 2. Source the new variables and values to the environment
@@ -519,30 +519,30 @@ In this section we will go through creating a base image for all the control pla
 
         ```bash
         nkp push bundle --bundle ./container-images/konvoy-image-bundle-v2.12.1.tar \
-        --to-registry=${REGISTRY_URL} --to-registry-username=${REGISTRY_USERNAME} \
-        --to-registry-password=${REGISTRY_PASSWORD} \
-        --to-registry-ca-cert-file=${REGISTRY_CACERT}
+        --to-registry=${REGISTRY_MIRROR_URL} --to-registry-username=${REGISTRY_MIRROR_USERNAME} \
+        --to-registry-password=${REGISTRY_MIRROR_PASSWORD} \
+        --to-registry-ca-cert-file=${REGISTRY_MIRROR_CACERT}
         ```
         ```bash
         nkp push bundle --bundle ./container-images/kommander-image-bundle-v2.12.1.tar \
-        --to-registry=${REGISTRY_URL} --to-registry-username=${REGISTRY_USERNAME} \
-        --to-registry-password=${REGISTRY_PASSWORD} \
-        --to-registry-ca-cert-file=${REGISTRY_CACERT}
+        --to-registry=${REGISTRY_MIRROR_URL} --to-registry-username=${REGISTRY_MIRROR_USERNAME} \
+        --to-registry-password=${REGISTRY_MIRROR_PASSWORD} \
+        --to-registry-ca-cert-file=${REGISTRY_MIRROR_CACERT}
         ```
         ```bash
         nkp push bundle --bundle ./container-images/nkp-catalog-applications-image-bundle-v2.12.1.tar \
-        --to-registry=${REGISTRY_URL} --to-registry-username=${REGISTRY_USERNAME} \
-        --to-registry-password=${REGISTRY_PASSWORD} \
-        --to-registry-ca-cert-file=${REGISTRY_CACERT}
+        --to-registry=${REGISTRY_MIRROR_URL} --to-registry-username=${REGISTRY_MIRROR_USERNAME} \
+        --to-registry-password=${REGISTRY_MIRROR_PASSWORD} \
+        --to-registry-ca-cert-file=${REGISTRY_MIRROR_CACERT}
         ```
 
     === "Command output"
 
         ```{ .text .no-copy }
         $ nkp push bundle --bundle ./container-images/konvoy-image-bundle-v2.12.1.tar \
-        --to-registry=${REGISTRY_URL} --to-registry-username=${REGISTRY_USERNAME} \
-        --to-registry-password=${REGISTRY_PASSWORD} \
-        --to-registry-ca-cert-file=${REGISTRY_CACERT}
+        --to-registry=${REGISTRY_MIRROR_URL} --to-registry-username=${REGISTRY_USERNAME} \
+        --to-registry-password=${REGISTRY_MIRROR_PASSWORD} \
+        --to-registry-ca-cert-file=${REGISTRY_MIRROR_CACERT}
         ✓ Creating temporary directory
         ✓ Unarchiving image bundle "./container-images/konvoy-image-bundle-v2.12.1.tar" 
         ✓ Parsing image bundle config
@@ -551,9 +551,9 @@ In this section we will go through creating a base image for all the control pla
         ```
         ```{ .text .no-copy }
         $ nkp push bundle --bundle ./container-images/kommander-image-bundle-v2.12.1.tar \
-        --to-registry=${REGISTRY_URL} --to-registry-username=${REGISTRY_USERNAME} \
-        --to-registry-password=${REGISTRY_PASSWORD} \
-        --to-registry-ca-cert-file=${REGISTRY_CACERT}
+        --to-registry=${REGISTRY_MIRROR_URL} --to-registry-username=${REGISTRY_USERNAME} \
+        --to-registry-password=${REGISTRY_MIRROR_PASSWORD} \
+        --to-registry-ca-cert-file=${REGISTRY_MIRROR_CACERT}
         ✓ Creating temporary directory
         ✓ Unarchiving image bundle "./container-images/kommander-image-bundle-v2.12.1.tar" 
         ✓ Parsing image bundle config
@@ -563,9 +563,9 @@ In this section we will go through creating a base image for all the control pla
         ```
         ```{ .text .no-copy }
         nkp push bundle --bundle ./container-images/nkp-catalog-applications-image-bundle-v2.12.1.tar \
-        --to-registry=${REGISTRY_URL} --to-registry-username=${REGISTRY_USERNAME} \
-        --to-registry-password=${REGISTRY_PASSWORD} \
-        --to-registry-ca-cert-file=${REGISTRY_CACERT}
+        --to-registry=${REGISTRY_MIRROR_URL} --to-registry-username=${REGISTRY_MIRROR_USERNAME} \
+        --to-registry-password=${REGISTRY_MIRROR_PASSWORD} \
+        --to-registry-ca-cert-file=${REGISTRY_MIRROR_CACERT}
         ✓ Creating temporary directory
         ✓ Unarchiving image bundle "./container-images/nkp-catalog-applications-image-bundle-v2.12.1.tar" 
         ✓ Parsing image bundle config
@@ -647,10 +647,10 @@ We are now ready to install the workload ``nkpdarksite`` cluster
                 --worker-cores-per-vcpu ${WORKER_CORES_PER_VCPU} \
                 --csi-file-system ${CSI_FILESYSTEM} \
                 --csi-hypervisor-attached-volumes=${CSI_HYPERVISOR_ATTACHED} \
-                --registry-mirror-url=${REGISTRY_URL} \
-                --registry-mirror-username=${REGISTRY_USERNAME} \
-                --registry-mirror-password=${REGISTRY_PASSWORD} \
-                --registry-mirror-cacert=${REGISTRY_CACERT} \
+                --registry-mirror-url=${REGISTRY_MIRROR_URL} \
+                --registry-mirror-username=${_MIRRORREGISTRY_USERNAME} \
+                --registry-mirror-password=${_MIRRORREGISTRY_PASSWORD} \
+                --registry-mirror-cacert=${REGISTRY_MIRROR_CACERT} \
                 --control-plane-pc-project ${NUTANIX_PROJECT_NAME} \
                 --worker-pc-project ${NUTANIX_PROJECT_NAME} \
                 --self-managed \
@@ -690,10 +690,10 @@ We are now ready to install the workload ``nkpdarksite`` cluster
             --worker-cores-per-vcpu ${WORKER_CORES_PER_VCPU} \
             --csi-file-system ${CSI_FILESYSTEM} \
             --csi-hypervisor-attached-volumes=${CSI_HYPERVISOR_ATTACHED} \
-            --registry-mirror-url=${REGISTRY_URL} \
-            --registry-mirror-username=${REGISTRY_USERNAME} \
-            --registry-mirror-password=${REGISTRY_PASSWORD} \
-            --registry-mirror-cacert=${REGISTRY_CACERT} \
+            --registry-mirror-url=${REGISTRY_MIRROR_URL} \
+            --registry-mirror-username=${REGISTRY_MIRROR_USERNAME} \
+            --registry-mirror-password=${REGISTRY_MIRROR_PASSWORD} \
+            --registry-mirror-cacert=${REGISTRY_MIRROR_CACERT} \
             --control-plane-pc-project ${NUTANIX_PROJECT_NAME} \
             --worker-pc-project ${NUTANIX_PROJECT_NAME} \
             --self-managed \

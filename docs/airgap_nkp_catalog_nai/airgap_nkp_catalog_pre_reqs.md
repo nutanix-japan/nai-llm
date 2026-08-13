@@ -571,7 +571,7 @@ The procedure will be done on the jumphost VM.
     === ":octicons-file-code-16: Command"
         
         ```bash
-        docker login -u {DOCKER_NAI_USERNAME} -p ${DOCKER_NAI_PAT}
+        docker login -u ${DOCKER_NAI_USERNAME} -p ${DOCKER_NAI_PAT}
         ```
 
     === ":octicons-command-palette-16: Command output"
