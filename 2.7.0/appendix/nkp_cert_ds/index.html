@@ -3339,6 +3339,24 @@
         
       
       
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Deploying Private CA Certificate to NKP Cluster
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
       <a href="./" class="md-nav__link md-nav__link--active">
         
   
@@ -3355,6 +3373,36 @@
   
 
       </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc">
+      
+        <li class="md-nav__item">
+  <a href="#quick-comparison" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Quick Comparison
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
       
     </li>
   
@@ -3697,6 +3745,25 @@
     
   
   
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc">
+      
+        <li class="md-nav__item">
+  <a href="#quick-comparison" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Quick Comparison
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
 </nav>
                   </div>
                 </div>
@@ -3777,18 +3844,72 @@
 
 
 <h1 id="deploying-private-ca-certificate-to-nkp-cluster">Deploying Private CA Certificate to NKP Cluster</h1>
-<p>In this section we will deploy a private CA certificate to the NKP air-gapped cluster nodes if not already added at the time of deployment.</p>
+<p>In this tutorial we will deploy a private CA certificate to the NKP air-gapped cluster nodes if not already added at the time of deployment for registry and registry mirrors.</p>
 <div class="admonition warning">
-<p class="admonition-title">Best Practice for Self-signed Certificates</p>
-<p>The best practice is to deploy the NKP air-gapped cluster with a Self-signed Certificates (private) CA certificate at Day 0 using the <code>nkp create cluster nutanix --additional-trust-bundle</code> among other options.</p>
-<p>For Day 1 and 2 operations, the private CA certificate will need to be added to all the NKP air-gapped cluster nodes.</p>
+<p class="admonition-title">Best Practice for Private CA Certificates</p>
+<p>The best practice is to deploy the NKP air-gapped cluster with a private CA certificate for validating registry and registry mirrors is as follows:</p>
+<ul>
+<li><code>nkp create cluster nutanix --registry-cacert</code></li>
+<li><code>nkp create cluster nutanix --registry-mirror-cacert</code></li>
+</ul>
+<p>For Day 1 and 2 operations, the private CA certificate will need to be added to all the NKP air-gapped cluster nodes as and when it is updated</p>
+<ul>
+<li>Update corresponding <code>_cluster_name_-image-registry-mirror-credentials</code>secret</li>
+<li>Rollout all nodes in the NKP cluster </li>
+</ul>
 </div>
 <p>Follow the steps here to add the Harbor container registry's CA certificate <code>ca.crt</code> that you created in this <a href="../../infra/harbor/#setup-ssl-certificates-for-harbor">section</a> to the nodes.</p>
+<div class="admonition info">
+<p class="admonition-title">Registry vs Registry Mirror</p>
+<p>In a Cluster API (CAPI) architecture, the core difference is how your image paths are resolved: a Registry requires you to explicitly change your Kubernetes YAML files to point to a specific server URL, whereas a Registry Mirror acts as a transparent, automated fallback configured directly within the container runtime (like containerd) of your workload nodes.</p>
+<h2 id="quick-comparison">Quick Comparison</h2>
+<table>
+<thead>
+<tr>
+<th>Feature</th>
+<th>Registry (Custom/Private)</th>
+<th>Registry Mirror (Pull-Through Cache)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Image Path in YAML</strong></td>
+<td>Must match the specific registry URL.</td>
+<td>Keeps standard paths (e.g., docker.io/...).</td>
+</tr>
+<tr>
+<td><strong>How it Works</strong></td>
+<td>Direct pull from specified server.</td>
+<td>Node intercepts pull request and redirects to local mirror.</td>
+</tr>
+<tr>
+<td><strong>Air-Gap Use Case</strong></td>
+<td>Requires fully modifying all CAPI manifests.</td>
+<td>Keeps manifests intact; relies on node configurations.</td>
+</tr>
+<tr>
+<td><strong>Configuration Level</strong></td>
+<td>Kubernetes API / Manifest layer.</td>
+<td>Node OS / Container runtime layer (containerd).</td>
+</tr>
+<tr>
+<td><strong>Day 2 File Change</strong></td>
+<td>Update Node OS file <code>/etc/containerd/certs.d/_default/hosts.toml</code></td>
+<td>Update Node OS file <code>/etc/containerd/certs.d/_default/hosts.toml</code></td>
+</tr>
+<tr>
+<td><strong>Day 2 Ops</strong></td>
+<td>Update Node OS files / Container runtime restart (containerd).</td>
+<td>Update Node OS files / Container runtime restart (containerd).</td>
+</tr>
+</tbody>
+</table>
+</div>
 <div class="admonition danger">
-<p class="admonition-title">Self-signed Certificates</p>
-<p>Make sure to install self-signed certificates <strong>only</strong> if you are using a test, lab or development environment.</p>
-<p>For production environments, use a trusted public CA certificate.</p>
-<p>The recommendation from <strong>Nutanix</strong> is to use a trusted public CA certificate.</p>
+<p class="admonition-title">Private CA or Self-signed Certificates</p>
+<p>Make sure to install Private CA or self-signed certificates <strong>only</strong> if you are using a test, lab or development environment.</p>
+<p>For production environments, use a trusted public CA certificate. </p>
+<p>The recommendation from <strong>Nutanix</strong> is to use a trusted public CA certificate. For dark site environments, a robust Private CA should be used. </p>
 </div>
 <ol>
 <li>
