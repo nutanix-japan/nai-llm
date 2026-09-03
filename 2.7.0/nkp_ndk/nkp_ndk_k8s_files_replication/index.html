@@ -4292,7 +4292,7 @@ Each PE has a Files Server. </p>
 </span></code></pre></div></p>
 </div>
 <div class="tabbed-block">
-<div class="language-text no-copy highlight"><pre><span></span><code><span id="__span-8-1"><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a>Release &quot;ndk&quot; does not exist. Installing it now.
+<div class="language-text no-copy highlight"><pre><span></span><code><span id="__span-8-1"><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a>Release "ndk" does not exist. Installing it now.
 </span><span id="__span-8-2"><a id="__codelineno-8-2" name="__codelineno-8-2" href="#__codelineno-8-2"></a>NAME: ndk
 </span><span id="__span-8-3"><a id="__codelineno-8-3" name="__codelineno-8-3" href="#__codelineno-8-3"></a>LAST DEPLOYED: Mon Jul  7 06:33:28 2025
 </span><span id="__span-8-4"><a id="__codelineno-8-4" name="__codelineno-8-4" href="#__codelineno-8-4"></a>NAMESPACE: ntnx-system
@@ -4314,7 +4314,7 @@ Each PE has a Files Server. </p>
 </span></code></pre></div>
 </div>
 <div class="tabbed-block">
-<div class="language-text highlight"><pre><span></span><code><span id="__span-10-1"><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a>Active namespace is &quot;ntnx-system&quot;.
+<div class="language-text highlight"><pre><span></span><code><span id="__span-10-1"><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a>Active namespace is "ntnx-system".
 </span><span id="__span-10-2"><a id="__codelineno-10-2" name="__codelineno-10-2" href="#__codelineno-10-2"></a>
 </span><span id="__span-10-3"><a id="__codelineno-10-3" name="__codelineno-10-3" href="#__codelineno-10-3"></a>~ ❯ kubectl get all -l app.kubernetes.io/name=ndk
 </span><span id="__span-10-4"><a id="__codelineno-10-4" name="__codelineno-10-4" href="#__codelineno-10-4"></a>
@@ -4342,18 +4342,18 @@ Each PE has a Files Server. </p>
 <div class="tabbed-set tabbed-alternate" data-tabs="5:3"><input checked="checked" id="__tabbed_5_1" name="__tabbed_5" type="radio" /><input id="__tabbed_5_2" name="__tabbed_5" type="radio" /><input id="__tabbed_5_3" name="__tabbed_5" type="radio" /><div class="tabbed-labels"><label for="__tabbed_5_1"><span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16"><path d="m6.354 8.04-4.773 4.773a.75.75 0 1 0 1.061 1.06L7.945 8.57a.75.75 0 0 0 0-1.06L2.642 2.206a.75.75 0 0 0-1.06 1.061L6.353 8.04ZM8.75 11.5a.75.75 0 0 0 0 1.5h5.5a.75.75 0 0 0 0-1.5z"/></svg></span>  Template Command</label><label for="__tabbed_5_2"><span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16"><path d="m6.354 8.04-4.773 4.773a.75.75 0 1 0 1.061 1.06L7.945 8.57a.75.75 0 0 0 0-1.06L2.642 2.206a.75.75 0 0 0-1.06 1.061L6.353 8.04ZM8.75 11.5a.75.75 0 0 0 0 1.5h5.5a.75.75 0 0 0 0-1.5z"/></svg></span>  Sample .command</label><label for="__tabbed_5_3"><span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16"><path d="m6.354 8.04-4.773 4.773a.75.75 0 1 0 1.061 1.06L7.945 8.57a.75.75 0 0 0 0-1.06L2.642 2.206a.75.75 0 0 0-1.06 1.061L6.353 8.04ZM8.75 11.5a.75.75 0 0 0 0 1.5h5.5a.75.75 0 0 0 0-1.5z"/></svg></span>  Command output</label></div>
 <div class="tabbed-content">
 <div class="tabbed-block">
-<div class="language-bash highlight"><pre><span></span><code><span id="__span-11-1"><a id="__codelineno-11-1" name="__codelineno-11-1" href="#__codelineno-11-1"></a>kubectl<span class="w"> </span>get<span class="w"> </span>node<span class="w"> </span>_any_nkp_node_name<span class="w"> </span>-o<span class="w"> </span><span class="nv">jsonpath</span><span class="o">=</span><span class="s1">&#39;{.metadata.labels}&#39;</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>grep<span class="w"> </span>-o<span class="w"> </span><span class="s1">&#39;csi\.nutanix\.com/[^,]*&#39;</span><span class="w"> </span>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-11-1"><a id="__codelineno-11-1" name="__codelineno-11-1" href="#__codelineno-11-1"></a>kubectl<span class="w"> </span>get<span class="w"> </span>node<span class="w"> </span>_any_nkp_node_name<span class="w"> </span>-o<span class="w"> </span><span class="nv">jsonpath</span><span class="o">=</span><span class="s1">'{.metadata.labels}'</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>grep<span class="w"> </span>-o<span class="w"> </span><span class="s1">'csi\.nutanix\.com/[^,]*'</span><span class="w"> </span>
 </span></code></pre></div>
 </div>
 <div class="tabbed-block">
-<div class="language-text highlight"><pre><span></span><code><span id="__span-12-1"><a id="__codelineno-12-1" name="__codelineno-12-1" href="#__codelineno-12-1"></a>kubectl get node nkpsecondary-md-0-fdrzg-clvf9-t8t4l -o jsonpath=&#39;{.metadata.labels}&#39; | grep -o &#39;csi\.nutanix\.com/[^,]*&#39; 
+<div class="language-text highlight"><pre><span></span><code><span id="__span-12-1"><a id="__codelineno-12-1" name="__codelineno-12-1" href="#__codelineno-12-1"></a>kubectl get node nkpsecondary-md-0-fdrzg-clvf9-t8t4l -o jsonpath='{.metadata.labels}' | grep -o 'csi\.nutanix\.com/[^,]*' 
 </span></code></pre></div>
 </div>
 <div class="tabbed-block">
-<div class="language-text highlight"><pre><span></span><code><span id="__span-13-1"><a id="__codelineno-13-1" name="__codelineno-13-1" href="#__codelineno-13-1"></a>~ ❯ kubectl get node nkpsecondary-md-0-fdrzg-clvf9-t8t4l -o jsonpath=&#39;{.metadata.labels}&#39; | grep -o &#39;csi\.nutanix\.com/[^,]*&#39; 
+<div class="language-text highlight"><pre><span></span><code><span id="__span-13-1"><a id="__codelineno-13-1" name="__codelineno-13-1" href="#__codelineno-13-1"></a>~ ❯ kubectl get node nkpsecondary-md-0-fdrzg-clvf9-t8t4l -o jsonpath='{.metadata.labels}' | grep -o 'csi\.nutanix\.com/[^,]*' 
 </span><span id="__span-13-2"><a id="__codelineno-13-2" name="__codelineno-13-2" href="#__codelineno-13-2"></a>
-</span><span id="__span-13-3"><a id="__codelineno-13-3" name="__codelineno-13-3" href="#__codelineno-13-3"></a><span class="hll">csi.nutanix.com/prism-central-uuid&quot;:&quot;cb5ca4e1-29d4-4a6f-91c7-xxxxxxxxxxxx&quot;
-</span></span><span id="__span-13-4"><a id="__codelineno-13-4" name="__codelineno-13-4" href="#__codelineno-13-4"></a><span class="hll">csi.nutanix.com/prism-element-uuid&quot;:&quot;000639fd-8cfa-9bf4-3d70-xxxxxxxxxxxx&quot;
+</span><span id="__span-13-3"><a id="__codelineno-13-3" name="__codelineno-13-3" href="#__codelineno-13-3"></a><span class="hll">csi.nutanix.com/prism-central-uuid":"cb5ca4e1-29d4-4a6f-91c7-xxxxxxxxxxxx"
+</span></span><span id="__span-13-4"><a id="__codelineno-13-4" name="__codelineno-13-4" href="#__codelineno-13-4"></a><span class="hll">csi.nutanix.com/prism-element-uuid":"000639fd-8cfa-9bf4-3d70-xxxxxxxxxxxx"
 </span></span></code></pre></div>
 </div>
 </div>
@@ -4382,7 +4382,7 @@ Each PE has a Files Server. </p>
 </li>
 <li>
 <p>Note and export the external  IP assigned to the NDK intercom service on the Primary Cluster</p>
-<div class="language-bash highlight"><pre><span></span><code><span id="__span-16-1"><a id="__codelineno-16-1" name="__codelineno-16-1" href="#__codelineno-16-1"></a><span class="nb">export</span><span class="w"> </span><span class="nv">SECONDARY_NDK_IP</span><span class="o">=</span><span class="k">$(</span>kubectl<span class="w"> </span>get<span class="w"> </span>svc<span class="w"> </span>-n<span class="w"> </span>ntnx-system<span class="w"> </span>ndk-intercom-service<span class="w"> </span>-o<span class="w"> </span><span class="nv">jsonpath</span><span class="o">=</span><span class="s1">&#39;{.status.loadBalancer.ingress[0].ip}&#39;</span><span class="k">)</span>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-16-1"><a id="__codelineno-16-1" name="__codelineno-16-1" href="#__codelineno-16-1"></a><span class="nb">export</span><span class="w"> </span><span class="nv">SECONDARY_NDK_IP</span><span class="o">=</span><span class="k">$(</span>kubectl<span class="w"> </span>get<span class="w"> </span>svc<span class="w"> </span>-n<span class="w"> </span>ntnx-system<span class="w"> </span>ndk-intercom-service<span class="w"> </span>-o<span class="w"> </span><span class="nv">jsonpath</span><span class="o">=</span><span class="s1">'{.status.loadBalancer.ingress[0].ip}'</span><span class="k">)</span>
 </span><span id="__span-16-2"><a id="__codelineno-16-2" name="__codelineno-16-2" href="#__codelineno-16-2"></a><span class="nb">echo</span><span class="w"> </span><span class="nv">$SECONDARY_NDK_IP</span>
 </span></code></pre></div>
 </li>
@@ -4392,7 +4392,7 @@ Each PE has a Files Server. </p>
 <div class="tabbed-content">
 <div class="tabbed-block">
 <div class="language-text highlight"><pre><span></span><code><span id="__span-17-1"><a id="__codelineno-17-1" name="__codelineno-17-1" href="#__codelineno-17-1"></a>export SECONDARY_NDK_PORT=2021
-</span><span id="__span-17-2"><a id="__codelineno-17-2" name="__codelineno-17-2" href="#__codelineno-17-2"></a>export SECONDARY_NDK_IP=$(kubectl get svc -n ntnx-system ndk-intercom-service -o jsonpath=&#39;{.status.loadBalancer.ingress[0].ip}&#39;)
+</span><span id="__span-17-2"><a id="__codelineno-17-2" name="__codelineno-17-2" href="#__codelineno-17-2"></a>export SECONDARY_NDK_IP=$(kubectl get svc -n ntnx-system ndk-intercom-service -o jsonpath='{.status.loadBalancer.ingress[0].ip}')
 </span></code></pre></div>
 </div>
 </div>
@@ -4605,11 +4605,11 @@ Each PE has a Files Server. </p>
 </span><span id="__span-34-2"><a id="__codelineno-34-2" name="__codelineno-34-2" href="#__codelineno-34-2"></a>
 </span><span id="__span-34-3"><a id="__codelineno-34-3" name="__codelineno-34-3" href="#__codelineno-34-3"></a>status:
 </span><span id="__span-34-4"><a id="__codelineno-34-4" name="__codelineno-34-4" href="#__codelineno-34-4"></a>  conditions:
-</span><span id="__span-34-5"><a id="__codelineno-34-5" name="__codelineno-34-5" href="#__codelineno-34-5"></a>  - lastTransitionTime: &quot;2025-07-16T21:31:06Z&quot;
-</span><span id="__span-34-6"><a id="__codelineno-34-6" name="__codelineno-34-6" href="#__codelineno-34-6"></a>    message: &quot;&quot;
+</span><span id="__span-34-5"><a id="__codelineno-34-5" name="__codelineno-34-5" href="#__codelineno-34-5"></a>  - lastTransitionTime: "2025-07-16T21:31:06Z"
+</span><span id="__span-34-6"><a id="__codelineno-34-6" name="__codelineno-34-6" href="#__codelineno-34-6"></a>    message: ""
 </span><span id="__span-34-7"><a id="__codelineno-34-7" name="__codelineno-34-7" href="#__codelineno-34-7"></a>    observedGeneration: 1
 </span><span id="__span-34-8"><a id="__codelineno-34-8" name="__codelineno-34-8" href="#__codelineno-34-8"></a><span class="hll">    reason: Healthy
-</span></span><span id="__span-34-9"><a id="__codelineno-34-9" name="__codelineno-34-9" href="#__codelineno-34-9"></a><span class="hll">    status: &quot;True&quot;
+</span></span><span id="__span-34-9"><a id="__codelineno-34-9" name="__codelineno-34-9" href="#__codelineno-34-9"></a><span class="hll">    status: "True"
 </span></span><span id="__span-34-10"><a id="__codelineno-34-10" name="__codelineno-34-10" href="#__codelineno-34-10"></a>    type: Available
 </span></code></pre></div>
 </div>
@@ -4686,30 +4686,30 @@ Each PE has a Files Server. </p>
 </span><span id="__span-38-3"><a id="__codelineno-38-3" name="__codelineno-38-3"></a>-<span class="w"> </span>apiVersion:<span class="w"> </span>dataservices.nutanix.com/v1alpha1
 </span><span id="__span-38-4"><a id="__codelineno-38-4" name="__codelineno-38-4"></a><span class="w">  </span>kind:<span class="w"> </span>ApplicationSnapshotReplication
 </span><span id="__span-38-5"><a id="__codelineno-38-5" name="__codelineno-38-5"></a><span class="w">  </span>metadata:
-</span><span id="__span-38-6"><a id="__codelineno-38-6" name="__codelineno-38-6"></a><span class="w">    </span>creationTimestamp:<span class="w"> </span><span class="s2">&quot;2025-12-03T07:58:11Z&quot;</span>
+</span><span id="__span-38-6"><a id="__codelineno-38-6" name="__codelineno-38-6"></a><span class="w">    </span>creationTimestamp:<span class="w"> </span><span class="s2">"2025-12-03T07:58:11Z"</span>
 </span><span id="__span-38-7"><a id="__codelineno-38-7" name="__codelineno-38-7"></a><span class="w">    </span>finalizers:
 </span><span id="__span-38-8"><a id="__codelineno-38-8" name="__codelineno-38-8"></a><span class="w">    </span>-<span class="w"> </span>dataservices.nutanix.com/app-snap-replicate
 </span><span id="__span-38-9"><a id="__codelineno-38-9" name="__codelineno-38-9"></a><span class="w">    </span>generation:<span class="w"> </span><span class="m">1</span>
 </span><span id="__span-38-10"><a id="__codelineno-38-10" name="__codelineno-38-10"></a><span class="w">    </span>name:<span class="w"> </span>wordpress-app-snapshot-replication
 </span><span id="__span-38-11"><a id="__codelineno-38-11" name="__codelineno-38-11"></a><span class="w">    </span>namespace:<span class="w"> </span>word
-</span><span id="__span-38-12"><a id="__codelineno-38-12" name="__codelineno-38-12"></a><span class="w">    </span>resourceVersion:<span class="w"> </span><span class="s2">&quot;24998974&quot;</span>
+</span><span id="__span-38-12"><a id="__codelineno-38-12" name="__codelineno-38-12"></a><span class="w">    </span>resourceVersion:<span class="w"> </span><span class="s2">"24998974"</span>
 </span><span id="__span-38-13"><a id="__codelineno-38-13" name="__codelineno-38-13"></a><span class="w">    </span>uid:<span class="w"> </span>3f755d1a-a777-401e-acfd-9822620d305d
 </span><span id="__span-38-14"><a id="__codelineno-38-14" name="__codelineno-38-14"></a><span class="w">  </span>spec:
 </span><span id="__span-38-15"><a id="__codelineno-38-15" name="__codelineno-38-15"></a><span class="w">    </span>applicationSnapshotName:<span class="w"> </span>wordpress-app-snapshot
 </span><span id="__span-38-16"><a id="__codelineno-38-16" name="__codelineno-38-16"></a><span class="w">    </span>replicationTargetName:<span class="w"> </span>rt-wordpress-app
 </span><span id="__span-38-17"><a id="__codelineno-38-17" name="__codelineno-38-17"></a><span class="w">  </span>status:
 </span><span id="__span-38-18"><a id="__codelineno-38-18" name="__codelineno-38-18"></a><span class="w">    </span>conditions:
-</span><span id="__span-38-19"><a id="__codelineno-38-19" name="__codelineno-38-19"></a><span class="w">    </span>-<span class="w"> </span>lastTransitionTime:<span class="w"> </span><span class="s2">&quot;2025-12-03T07:58:43Z&quot;</span>
-</span><span id="__span-38-20"><a id="__codelineno-38-20" name="__codelineno-38-20"></a><span class="w">      </span>message:<span class="w"> </span><span class="s2">&quot;&quot;</span>
+</span><span id="__span-38-19"><a id="__codelineno-38-19" name="__codelineno-38-19"></a><span class="w">    </span>-<span class="w"> </span>lastTransitionTime:<span class="w"> </span><span class="s2">"2025-12-03T07:58:43Z"</span>
+</span><span id="__span-38-20"><a id="__codelineno-38-20" name="__codelineno-38-20"></a><span class="w">      </span>message:<span class="w"> </span><span class="s2">""</span>
 </span><span id="__span-38-21"><a id="__codelineno-38-21" name="__codelineno-38-21"></a><span class="w">      </span>observedGeneration:<span class="w"> </span><span class="m">1</span>
 </span><span id="__span-38-22"><a id="__codelineno-38-22" name="__codelineno-38-22"></a><span class="w">      </span>reason:<span class="w"> </span>ReplicationComplete
-</span><span id="__span-38-23"><a id="__codelineno-38-23" name="__codelineno-38-23"></a><span class="hll"><span class="w">      </span>status:<span class="w"> </span><span class="s2">&quot;True&quot;</span>
+</span><span id="__span-38-23"><a id="__codelineno-38-23" name="__codelineno-38-23"></a><span class="hll"><span class="w">      </span>status:<span class="w"> </span><span class="s2">"True"</span>
 </span></span><span id="__span-38-24"><a id="__codelineno-38-24" name="__codelineno-38-24"></a><span class="hll"><span class="w">      </span>type:<span class="w"> </span>Available
-</span></span><span id="__span-38-25"><a id="__codelineno-38-25" name="__codelineno-38-25"></a><span class="w">    </span>-<span class="w"> </span>lastTransitionTime:<span class="w"> </span><span class="s2">&quot;2025-12-03T07:58:43Z&quot;</span>
-</span><span id="__span-38-26"><a id="__codelineno-38-26" name="__codelineno-38-26"></a><span class="w">      </span>message:<span class="w"> </span><span class="s2">&quot;&quot;</span>
+</span></span><span id="__span-38-25"><a id="__codelineno-38-25" name="__codelineno-38-25"></a><span class="w">    </span>-<span class="w"> </span>lastTransitionTime:<span class="w"> </span><span class="s2">"2025-12-03T07:58:43Z"</span>
+</span><span id="__span-38-26"><a id="__codelineno-38-26" name="__codelineno-38-26"></a><span class="w">      </span>message:<span class="w"> </span><span class="s2">""</span>
 </span><span id="__span-38-27"><a id="__codelineno-38-27" name="__codelineno-38-27"></a><span class="w">      </span>observedGeneration:<span class="w"> </span><span class="m">1</span>
 </span><span id="__span-38-28"><a id="__codelineno-38-28" name="__codelineno-38-28"></a><span class="w">      </span>reason:<span class="w"> </span>ReplicationComplete
-</span><span id="__span-38-29"><a id="__codelineno-38-29" name="__codelineno-38-29"></a><span class="w">      </span>status:<span class="w"> </span><span class="s2">&quot;False&quot;</span>
+</span><span id="__span-38-29"><a id="__codelineno-38-29" name="__codelineno-38-29"></a><span class="w">      </span>status:<span class="w"> </span><span class="s2">"False"</span>
 </span><span id="__span-38-30"><a id="__codelineno-38-30" name="__codelineno-38-30"></a><span class="w">      </span>type:<span class="w"> </span>Progressing
 </span></code></pre></div></td></tr></table></div>
 </div>
@@ -4827,32 +4827,32 @@ Each PE has a Files Server. </p>
 </span><span id="__span-48-2"><a id="__codelineno-48-2" name="__codelineno-48-2" href="#__codelineno-48-2"></a>status:
 </span><span id="__span-48-3"><a id="__codelineno-48-3" name="__codelineno-48-3" href="#__codelineno-48-3"></a>completed:<span class="w"> </span><span class="nb">true</span>
 </span><span id="__span-48-4"><a id="__codelineno-48-4" name="__codelineno-48-4" href="#__codelineno-48-4"></a>conditions:
-</span><span id="__span-48-5"><a id="__codelineno-48-5" name="__codelineno-48-5" href="#__codelineno-48-5"></a>-<span class="w"> </span>lastTransitionTime:<span class="w"> </span><span class="s2">&quot;2025-07-16T21:57:53Z&quot;</span>
+</span><span id="__span-48-5"><a id="__codelineno-48-5" name="__codelineno-48-5" href="#__codelineno-48-5"></a>-<span class="w"> </span>lastTransitionTime:<span class="w"> </span><span class="s2">"2025-07-16T21:57:53Z"</span>
 </span><span id="__span-48-6"><a id="__codelineno-48-6" name="__codelineno-48-6" href="#__codelineno-48-6"></a><span class="w">  </span>message:<span class="w"> </span>All<span class="w"> </span>prechecks<span class="w"> </span>passed<span class="w"> </span>and<span class="w"> </span>finalizers<span class="w"> </span>on<span class="w"> </span>dependent<span class="w"> </span>resources<span class="w"> </span><span class="nb">set</span>
 </span><span id="__span-48-7"><a id="__codelineno-48-7" name="__codelineno-48-7" href="#__codelineno-48-7"></a><span class="w">  </span>observedGeneration:<span class="w"> </span><span class="m">1</span>
 </span><span id="__span-48-8"><a id="__codelineno-48-8" name="__codelineno-48-8" href="#__codelineno-48-8"></a><span class="w">  </span>reason:<span class="w"> </span>PrechecksPassed
-</span><span id="__span-48-9"><a id="__codelineno-48-9" name="__codelineno-48-9" href="#__codelineno-48-9"></a><span class="hll"><span class="w">  </span>status:<span class="w"> </span><span class="s2">&quot;True&quot;</span>
+</span><span id="__span-48-9"><a id="__codelineno-48-9" name="__codelineno-48-9" href="#__codelineno-48-9"></a><span class="hll"><span class="w">  </span>status:<span class="w"> </span><span class="s2">"True"</span>
 </span></span><span id="__span-48-10"><a id="__codelineno-48-10" name="__codelineno-48-10" href="#__codelineno-48-10"></a><span class="hll"><span class="w">  </span>type:<span class="w"> </span>PrechecksPassed
-</span></span><span id="__span-48-11"><a id="__codelineno-48-11" name="__codelineno-48-11" href="#__codelineno-48-11"></a>-<span class="w"> </span>lastTransitionTime:<span class="w"> </span><span class="s2">&quot;2025-07-16T21:59:00Z&quot;</span>
+</span></span><span id="__span-48-11"><a id="__codelineno-48-11" name="__codelineno-48-11" href="#__codelineno-48-11"></a>-<span class="w"> </span>lastTransitionTime:<span class="w"> </span><span class="s2">"2025-07-16T21:59:00Z"</span>
 </span><span id="__span-48-12"><a id="__codelineno-48-12" name="__codelineno-48-12" href="#__codelineno-48-12"></a><span class="w">  </span>message:<span class="w"> </span>All<span class="w"> </span>eligible<span class="w"> </span>application<span class="w"> </span>configs<span class="w"> </span>restored
 </span><span id="__span-48-13"><a id="__codelineno-48-13" name="__codelineno-48-13" href="#__codelineno-48-13"></a><span class="w">  </span>observedGeneration:<span class="w"> </span><span class="m">1</span>
 </span><span id="__span-48-14"><a id="__codelineno-48-14" name="__codelineno-48-14" href="#__codelineno-48-14"></a><span class="w">  </span>reason:<span class="w"> </span>ApplicationConfigRestored
-</span><span id="__span-48-15"><a id="__codelineno-48-15" name="__codelineno-48-15" href="#__codelineno-48-15"></a><span class="hll"><span class="w">  </span>status:<span class="w"> </span><span class="s2">&quot;True&quot;</span>
+</span><span id="__span-48-15"><a id="__codelineno-48-15" name="__codelineno-48-15" href="#__codelineno-48-15"></a><span class="hll"><span class="w">  </span>status:<span class="w"> </span><span class="s2">"True"</span>
 </span></span><span id="__span-48-16"><a id="__codelineno-48-16" name="__codelineno-48-16" href="#__codelineno-48-16"></a><span class="hll"><span class="w">  </span>type:<span class="w"> </span>ApplicationConfigRestored
-</span></span><span id="__span-48-17"><a id="__codelineno-48-17" name="__codelineno-48-17" href="#__codelineno-48-17"></a>-<span class="w"> </span>lastTransitionTime:<span class="w"> </span><span class="s2">&quot;2025-07-16T21:59:15Z&quot;</span>
+</span></span><span id="__span-48-17"><a id="__codelineno-48-17" name="__codelineno-48-17" href="#__codelineno-48-17"></a>-<span class="w"> </span>lastTransitionTime:<span class="w"> </span><span class="s2">"2025-07-16T21:59:15Z"</span>
 </span><span id="__span-48-18"><a id="__codelineno-48-18" name="__codelineno-48-18" href="#__codelineno-48-18"></a><span class="w">  </span>message:<span class="w"> </span>All<span class="w"> </span>eligible<span class="w"> </span>volumes<span class="w"> </span>restored
 </span><span id="__span-48-19"><a id="__codelineno-48-19" name="__codelineno-48-19" href="#__codelineno-48-19"></a><span class="w">  </span>observedGeneration:<span class="w"> </span><span class="m">1</span>
 </span><span id="__span-48-20"><a id="__codelineno-48-20" name="__codelineno-48-20" href="#__codelineno-48-20"></a><span class="w">  </span>reason:<span class="w"> </span>VolumesRestored
-</span><span id="__span-48-21"><a id="__codelineno-48-21" name="__codelineno-48-21" href="#__codelineno-48-21"></a><span class="hll"><span class="w">  </span>status:<span class="w"> </span><span class="s2">&quot;True&quot;</span>
+</span><span id="__span-48-21"><a id="__codelineno-48-21" name="__codelineno-48-21" href="#__codelineno-48-21"></a><span class="hll"><span class="w">  </span>status:<span class="w"> </span><span class="s2">"True"</span>
 </span></span><span id="__span-48-22"><a id="__codelineno-48-22" name="__codelineno-48-22" href="#__codelineno-48-22"></a><span class="hll"><span class="w">  </span>type:<span class="w"> </span>VolumesRestored
-</span></span><span id="__span-48-23"><a id="__codelineno-48-23" name="__codelineno-48-23" href="#__codelineno-48-23"></a>-<span class="w"> </span>lastTransitionTime:<span class="w"> </span><span class="s2">&quot;2025-07-16T21:59:15Z&quot;</span>
+</span></span><span id="__span-48-23"><a id="__codelineno-48-23" name="__codelineno-48-23" href="#__codelineno-48-23"></a>-<span class="w"> </span>lastTransitionTime:<span class="w"> </span><span class="s2">"2025-07-16T21:59:15Z"</span>
 </span><span id="__span-48-24"><a id="__codelineno-48-24" name="__codelineno-48-24" href="#__codelineno-48-24"></a><span class="w">  </span>message:<span class="w"> </span>Application<span class="w"> </span>restore<span class="w"> </span>successfully<span class="w"> </span>finalised
 </span><span id="__span-48-25"><a id="__codelineno-48-25" name="__codelineno-48-25" href="#__codelineno-48-25"></a><span class="w">  </span>observedGeneration:<span class="w"> </span><span class="m">1</span>
 </span><span id="__span-48-26"><a id="__codelineno-48-26" name="__codelineno-48-26" href="#__codelineno-48-26"></a><span class="w">  </span>reason:<span class="w"> </span>ApplicationRestoreFinalised
-</span><span id="__span-48-27"><a id="__codelineno-48-27" name="__codelineno-48-27" href="#__codelineno-48-27"></a><span class="hll"><span class="w">  </span>status:<span class="w"> </span><span class="s2">&quot;True&quot;</span>
+</span><span id="__span-48-27"><a id="__codelineno-48-27" name="__codelineno-48-27" href="#__codelineno-48-27"></a><span class="hll"><span class="w">  </span>status:<span class="w"> </span><span class="s2">"True"</span>
 </span></span><span id="__span-48-28"><a id="__codelineno-48-28" name="__codelineno-48-28" href="#__codelineno-48-28"></a><span class="hll"><span class="w">  </span>type:<span class="w"> </span>ApplicationRestoreFinalised
-</span></span><span id="__span-48-29"><a id="__codelineno-48-29" name="__codelineno-48-29" href="#__codelineno-48-29"></a>finishTime:<span class="w"> </span><span class="s2">&quot;2025-07-16 21:59:15&quot;</span>
-</span><span id="__span-48-30"><a id="__codelineno-48-30" name="__codelineno-48-30" href="#__codelineno-48-30"></a>startTime:<span class="w"> </span><span class="s2">&quot;2025-07-16 21:57:52&quot;</span>
+</span></span><span id="__span-48-29"><a id="__codelineno-48-29" name="__codelineno-48-29" href="#__codelineno-48-29"></a>finishTime:<span class="w"> </span><span class="s2">"2025-07-16 21:59:15"</span>
+</span><span id="__span-48-30"><a id="__codelineno-48-30" name="__codelineno-48-30" href="#__codelineno-48-30"></a>startTime:<span class="w"> </span><span class="s2">"2025-07-16 21:57:52"</span>
 </span></code></pre></div>
 </div>
 </div>
@@ -4983,8 +4983,8 @@ Each PE has a Files Server. </p>
 <div class="tabbed-block">
 <div class="language-text no-copy highlight"><pre><span></span><code><span id="__span-55-1"><a id="__codelineno-55-1" name="__codelineno-55-1" href="#__codelineno-55-1"></a>namespace/wordpress created
 </span><span id="__span-55-2"><a id="__codelineno-55-2" name="__codelineno-55-2" href="#__codelineno-55-2"></a>
-</span><span id="__span-55-3"><a id="__codelineno-55-3" name="__codelineno-55-3" href="#__codelineno-55-3"></a>Context &quot;nkplb-admin@nkplb&quot; modified.
-</span><span id="__span-55-4"><a id="__codelineno-55-4" name="__codelineno-55-4" href="#__codelineno-55-4"></a>Active namespace is &quot;wordpress&quot;.
+</span><span id="__span-55-3"><a id="__codelineno-55-3" name="__codelineno-55-3" href="#__codelineno-55-3"></a>Context "nkplb-admin@nkplb" modified.
+</span><span id="__span-55-4"><a id="__codelineno-55-4" name="__codelineno-55-4" href="#__codelineno-55-4"></a>Active namespace is "wordpress".
 </span></code></pre></div>
 </div>
 </div>

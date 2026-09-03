@@ -4111,11 +4111,11 @@
 <div class="tabbed-set tabbed-alternate" data-tabs="1:2"><input checked="checked" id="__tabbed_1_1" name="__tabbed_1" type="radio" /><input id="__tabbed_1_2" name="__tabbed_1" type="radio" /><div class="tabbed-labels"><label for="__tabbed_1_1">Command</label><label for="__tabbed_1_2">Sample command</label></div>
 <div class="tabbed-content">
 <div class="tabbed-block">
-<div class="language-text highlight"><span class="filename">Paste the download URL within double quotes</span><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>curl -o nkp_v2.15.0_linux_amd64.tar.gz &quot;_paste_download_URL_here&quot;
+<div class="language-text highlight"><span class="filename">Paste the download URL within double quotes</span><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>curl -o nkp_v2.15.0_linux_amd64.tar.gz "_paste_download_URL_here"
 </span></code></pre></div>
 </div>
 <div class="tabbed-block">
-<div class="language-bash highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a>curl<span class="w"> </span>-o<span class="w"> </span>nkp_v2.15.0_linux_amd64.tar.gz<span class="w"> </span><span class="s2">&quot;https://download.nutanix.com/downloads/nkp/v2.15.0/nkp_v2.15.0_linux_amd64.tar.gz?Expires=1729016864&amp;........&quot;</span>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a>curl<span class="w"> </span>-o<span class="w"> </span>nkp_v2.15.0_linux_amd64.tar.gz<span class="w"> </span><span class="s2">"https://download.nutanix.com/downloads/nkp/v2.15.0/nkp_v2.15.0_linux_amd64.tar.gz?Expires=1729016864&amp;........"</span>
 </span></code></pre></div>
 </div>
 </div>
@@ -4380,7 +4380,7 @@ Reserve the second two IPs for MetalLB distributed load balancer
 </span><span id="__span-23-12"><a id="__codelineno-23-12" name="__codelineno-23-12" href="#__codelineno-23-12"></a>==&gt; nutanix.kib_image: Running post-processor: packer-manifest (type manifest)
 </span><span id="__span-23-13"><a id="__codelineno-23-13" name="__codelineno-23-13" href="#__codelineno-23-13"></a>
 </span><span id="__span-23-14"><a id="__codelineno-23-14" name="__codelineno-23-14" href="#__codelineno-23-14"></a>---&gt; 100%
-</span><span id="__span-23-15"><a id="__codelineno-23-15" name="__codelineno-23-15" href="#__codelineno-23-15"></a>Build &#39;nutanix.kib_image&#39; finished after 4 minutes 55 seconds.
+</span><span id="__span-23-15"><a id="__codelineno-23-15" name="__codelineno-23-15" href="#__codelineno-23-15"></a>Build 'nutanix.kib_image' finished after 4 minutes 55 seconds.
 </span><span id="__span-23-16"><a id="__codelineno-23-16" name="__codelineno-23-16" href="#__codelineno-23-16"></a>==&gt; Wait completed after 4 minutes 55 seconds
 </span><span id="__span-23-17"><a id="__codelineno-23-17" name="__codelineno-23-17" href="#__codelineno-23-17"></a>
 </span><span id="__span-23-18"><a id="__codelineno-23-18" name="__codelineno-23-18" href="#__codelineno-23-18"></a>==&gt; Builds finished. The artifacts of successful builds are:
@@ -4470,7 +4470,7 @@ Reserve the second two IPs for MetalLB distributed load balancer
 <details class="tip">
 <summary>Check your command for correct argument values</summary>
 <p>Run the following command to verify your <code>nkp</code> command and associated environment variables and values.</p>
-<div class="language-bash highlight"><pre><span></span><code><span id="__span-30-1"><a id="__codelineno-30-1" name="__codelineno-30-1" href="#__codelineno-30-1"></a><span class="nb">echo</span><span class="w"> </span><span class="s2">&quot;nkp create cluster nutanix -c </span><span class="si">${</span><span class="nv">NKP_CLUSTER_NAME</span><span class="si">}</span><span class="s2"> \</span>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-30-1"><a id="__codelineno-30-1" name="__codelineno-30-1" href="#__codelineno-30-1"></a><span class="nb">echo</span><span class="w"> </span><span class="s2">"nkp create cluster nutanix -c </span><span class="si">${</span><span class="nv">NKP_CLUSTER_NAME</span><span class="si">}</span><span class="s2"> \</span>
 </span><span id="__span-30-2"><a id="__codelineno-30-2" name="__codelineno-30-2" href="#__codelineno-30-2"></a><span class="s2">        --control-plane-endpoint-ip </span><span class="si">${</span><span class="nv">CONTROLPLANE_VIP</span><span class="si">}</span><span class="s2"> \</span>
 </span><span id="__span-30-3"><a id="__codelineno-30-3" name="__codelineno-30-3" href="#__codelineno-30-3"></a><span class="s2">        --control-plane-prism-element-cluster </span><span class="si">${</span><span class="nv">NUTANIX_CLUSTER</span><span class="si">}</span><span class="s2"> \</span>
 </span><span id="__span-30-4"><a id="__codelineno-30-4" name="__codelineno-30-4" href="#__codelineno-30-4"></a><span class="s2">        --control-plane-subnets </span><span class="si">${</span><span class="nv">NUTANIX_SUBNET_NAME</span><span class="si">}</span><span class="s2"> \</span>
@@ -4492,13 +4492,13 @@ Reserve the second two IPs for MetalLB distributed load balancer
 </span><span id="__span-30-20"><a id="__codelineno-30-20" name="__codelineno-30-20" href="#__codelineno-30-20"></a><span class="s2">        --worker-cores-per-vcpu </span><span class="si">${</span><span class="nv">WORKER_CORES_PER_VCPU</span><span class="si">}</span><span class="s2"> \</span>
 </span><span id="__span-30-21"><a id="__codelineno-30-21" name="__codelineno-30-21" href="#__codelineno-30-21"></a><span class="s2">        --csi-file-system </span><span class="si">${</span><span class="nv">CSI_FILESYSTEM</span><span class="si">}</span><span class="s2"> \</span>
 </span><span id="__span-30-22"><a id="__codelineno-30-22" name="__codelineno-30-22" href="#__codelineno-30-22"></a><span class="s2">        --csi-hypervisor-attached-volumes=</span><span class="si">${</span><span class="nv">CSI_HYPERVISOR_ATTACHED</span><span class="si">}</span><span class="s2"> \</span>
-</span><span id="__span-30-23"><a id="__codelineno-30-23" name="__codelineno-30-23" href="#__codelineno-30-23"></a><span class="s2">        --registry-mirror-url &quot;</span>https://registry-1.docker.io<span class="s2">&quot; \</span>
+</span><span id="__span-30-23"><a id="__codelineno-30-23" name="__codelineno-30-23" href="#__codelineno-30-23"></a><span class="s2">        --registry-mirror-url "</span>https://registry-1.docker.io<span class="s2">" \</span>
 </span><span id="__span-30-24"><a id="__codelineno-30-24" name="__codelineno-30-24" href="#__codelineno-30-24"></a><span class="s2">        --registry-mirror-username </span><span class="si">${</span><span class="nv">DOCKER_USERNAME</span><span class="si">}</span><span class="s2"> \</span>
 </span><span id="__span-30-25"><a id="__codelineno-30-25" name="__codelineno-30-25" href="#__codelineno-30-25"></a><span class="s2">        --registry-mirror-password </span><span class="si">${</span><span class="nv">DOCKER_PASSWORD</span><span class="si">}</span><span class="s2"> \</span>
 </span><span id="__span-30-26"><a id="__codelineno-30-26" name="__codelineno-30-26" href="#__codelineno-30-26"></a><span class="s2">        --control-plane-pc-project </span><span class="si">${</span><span class="nv">NUTANIX_PROJECT_NAME</span><span class="si">}</span><span class="s2"> \</span>
 </span><span id="__span-30-27"><a id="__codelineno-30-27" name="__codelineno-30-27" href="#__codelineno-30-27"></a><span class="s2">        --worker-pc-project </span><span class="si">${</span><span class="nv">NUTANIX_PROJECT_NAME</span><span class="si">}</span><span class="s2"> \</span>
 </span><span id="__span-30-28"><a id="__codelineno-30-28" name="__codelineno-30-28" href="#__codelineno-30-28"></a><span class="s2">        --self-managed \</span>
-</span><span id="__span-30-29"><a id="__codelineno-30-29" name="__codelineno-30-29" href="#__codelineno-30-29"></a><span class="s2">        --insecure&quot;</span>
+</span><span id="__span-30-29"><a id="__codelineno-30-29" name="__codelineno-30-29" href="#__codelineno-30-29"></a><span class="s2">        --insecure"</span>
 </span></code></pre></div>
 <p>If the values are incorrect, add the correct values to <code>.env</code> and source the  again by running the following command</p>
 <div class="language-bash highlight"><pre><span></span><code><span id="__span-31-1"><a id="__codelineno-31-1" name="__codelineno-31-1" href="#__codelineno-31-1"></a><span class="nb">source</span><span class="w"> </span><span class="nv">$HOME</span>/nkp/.env
@@ -4530,7 +4530,7 @@ Reserve the second two IPs for MetalLB distributed load balancer
 </span><span id="__span-32-20"><a id="__codelineno-32-20" name="__codelineno-32-20" href="#__codelineno-32-20"></a><span class="w">    </span>--worker-cores-per-vcpu<span class="w"> </span><span class="si">${</span><span class="nv">WORKER_CORES_PER_VCPU</span><span class="si">}</span><span class="w"> </span><span class="se">\</span>
 </span><span id="__span-32-21"><a id="__codelineno-32-21" name="__codelineno-32-21" href="#__codelineno-32-21"></a><span class="w">    </span>--csi-file-system<span class="w"> </span><span class="si">${</span><span class="nv">CSI_FILESYSTEM</span><span class="si">}</span><span class="w"> </span><span class="se">\</span>
 </span><span id="__span-32-22"><a id="__codelineno-32-22" name="__codelineno-32-22" href="#__codelineno-32-22"></a><span class="w">    </span>--csi-hypervisor-attached-volumes<span class="o">=</span><span class="si">${</span><span class="nv">CSI_HYPERVISOR_ATTACHED</span><span class="si">}</span><span class="w"> </span><span class="se">\</span>
-</span><span id="__span-32-23"><a id="__codelineno-32-23" name="__codelineno-32-23" href="#__codelineno-32-23"></a><span class="w">    </span>--registry-mirror-url<span class="w"> </span><span class="s2">&quot;https://registry-1.docker.io&quot;</span><span class="w"> </span><span class="se">\</span>
+</span><span id="__span-32-23"><a id="__codelineno-32-23" name="__codelineno-32-23" href="#__codelineno-32-23"></a><span class="w">    </span>--registry-mirror-url<span class="w"> </span><span class="s2">"https://registry-1.docker.io"</span><span class="w"> </span><span class="se">\</span>
 </span><span id="__span-32-24"><a id="__codelineno-32-24" name="__codelineno-32-24" href="#__codelineno-32-24"></a><span class="w">    </span>--registry-mirror-username<span class="w"> </span><span class="si">${</span><span class="nv">DOCKER_USERNAME</span><span class="si">}</span><span class="w"> </span><span class="se">\</span>
 </span><span id="__span-32-25"><a id="__codelineno-32-25" name="__codelineno-32-25" href="#__codelineno-32-25"></a><span class="w">    </span>--registry-mirror-password<span class="w"> </span><span class="si">${</span><span class="nv">DOCKER_PASSWORD</span><span class="si">}</span><span class="w"> </span><span class="se">\</span>
 </span><span id="__span-32-26"><a id="__codelineno-32-26" name="__codelineno-32-26" href="#__codelineno-32-26"></a><span class="w">    </span>--control-plane-pc-project<span class="w"> </span><span class="si">${</span><span class="nv">NUTANIX_PROJECT_NAME</span><span class="si">}</span><span class="w"> </span><span class="se">\</span>
@@ -4559,13 +4559,13 @@ Reserve the second two IPs for MetalLB distributed load balancer
 </span><span id="__span-33-17"><a id="__codelineno-33-17" name="__codelineno-33-17" href="#__codelineno-33-17"></a>✓ Moving cluster resources
 </span><span id="__span-33-18"><a id="__codelineno-33-18" name="__codelineno-33-18" href="#__codelineno-33-18"></a>
 </span><span id="__span-33-19"><a id="__codelineno-33-19" name="__codelineno-33-19" href="#__codelineno-33-19"></a>&gt; You can now view resources in the moved cluster by using the --kubeconfig flag with kubectl.
-</span><span id="__span-33-20"><a id="__codelineno-33-20" name="__codelineno-33-20" href="#__codelineno-33-20"></a>For example: kubectl --kubeconfig=&quot;$HOME/nkp/nkpdev.conf&quot; get nodes
+</span><span id="__span-33-20"><a id="__codelineno-33-20" name="__codelineno-33-20" href="#__codelineno-33-20"></a>For example: kubectl --kubeconfig="$HOME/nkp/nkpdev.conf" get nodes
 </span><span id="__span-33-21"><a id="__codelineno-33-21" name="__codelineno-33-21" href="#__codelineno-33-21"></a>
 </span><span id="__span-33-22"><a id="__codelineno-33-22" name="__codelineno-33-22" href="#__codelineno-33-22"></a>&gt; ✓ Deleting bootstrap cluster 
 </span><span id="__span-33-23"><a id="__codelineno-33-23" name="__codelineno-33-23" href="#__codelineno-33-23"></a>
 </span><span id="__span-33-24"><a id="__codelineno-33-24" name="__codelineno-33-24" href="#__codelineno-33-24"></a>Cluster default/nkpdev kubeconfig was written to to the filesystem.
 </span><span id="__span-33-25"><a id="__codelineno-33-25" name="__codelineno-33-25" href="#__codelineno-33-25"></a>You can now view resources in the new cluster by using the --kubeconfig flag with kubectl.
-</span><span id="__span-33-26"><a id="__codelineno-33-26" name="__codelineno-33-26" href="#__codelineno-33-26"></a>For example: kubectl --kubeconfig=&quot;$HOME/nkp/nkpdev.conf&quot; get nodes
+</span><span id="__span-33-26"><a id="__codelineno-33-26" name="__codelineno-33-26" href="#__codelineno-33-26"></a>For example: kubectl --kubeconfig="$HOME/nkp/nkpdev.conf" get nodes
 </span><span id="__span-33-27"><a id="__codelineno-33-27" name="__codelineno-33-27" href="#__codelineno-33-27"></a>
 </span><span id="__span-33-28"><a id="__codelineno-33-28" name="__codelineno-33-28" href="#__codelineno-33-28"></a>&gt; Starting kommander installation
 </span><span id="__span-33-29"><a id="__codelineno-33-29" name="__codelineno-33-29" href="#__codelineno-33-29"></a>✓ Deploying Flux 
@@ -4594,7 +4594,7 @@ Reserve the second two IPs for MetalLB distributed load balancer
 </span><span id="__span-33-52"><a id="__codelineno-33-52" name="__codelineno-33-52" href="#__codelineno-33-52"></a>✓ Creating cluster-admin credentials
 </span><span id="__span-33-53"><a id="__codelineno-33-53" name="__codelineno-33-53" href="#__codelineno-33-53"></a>
 </span><span id="__span-33-54"><a id="__codelineno-33-54" name="__codelineno-33-54" href="#__codelineno-33-54"></a>&gt; Cluster was created successfully! Get the dashboard details with:
-</span><span id="__span-33-55"><a id="__codelineno-33-55" name="__codelineno-33-55" href="#__codelineno-33-55"></a>&gt; nkp get dashboard --kubeconfig=&quot;$HOME/nkp/nkpdev.conf&quot;
+</span><span id="__span-33-55"><a id="__codelineno-33-55" name="__codelineno-33-55" href="#__codelineno-33-55"></a>&gt; nkp get dashboard --kubeconfig="$HOME/nkp/nkpdev.conf"
 </span></code></pre></div>
 </div>
 </div>
@@ -4700,7 +4700,7 @@ Reserve the second two IPs for MetalLB distributed load balancer
 </span></code></pre></div>
 </div>
 <div class="tabbed-block">
-<div class="language-text highlight"><pre><span></span><code><span id="__span-39-1"><a id="__codelineno-39-1" name="__codelineno-39-1" href="#__codelineno-39-1"></a>export GPU_NAME=&quot;Lovelace 40S&quot;
+<div class="language-text highlight"><pre><span></span><code><span id="__span-39-1"><a id="__codelineno-39-1" name="__codelineno-39-1" href="#__codelineno-39-1"></a>export GPU_NAME="Lovelace 40S"
 </span><span id="__span-39-2"><a id="__codelineno-39-2" name="__codelineno-39-2" href="#__codelineno-39-2"></a>export GPU_REPLICA_COUNT=1
 </span><span id="__span-39-3"><a id="__codelineno-39-3" name="__codelineno-39-3" href="#__codelineno-39-3"></a>export GPU_POOL=gpu-nodepool
 </span><span id="__span-39-4"><a id="__codelineno-39-4" name="__codelineno-39-4" href="#__codelineno-39-4"></a>export GPU_NODE_VCPUS=16
@@ -4740,7 +4740,7 @@ Reserve the second two IPs for MetalLB distributed load balancer
 </li>
 <li>
 <p>Add the necessary gpu section to our new <code>gpu-nodepool.yaml</code> using <code>yq</code> command</p>
-<div class="language-bash highlight"><pre><span></span><code><span id="__span-42-1"><a id="__codelineno-42-1" name="__codelineno-42-1" href="#__codelineno-42-1"></a>yq<span class="w"> </span>e<span class="w"> </span><span class="s1">&#39;(.spec.topology.workers.machineDeployments[] | select(.name == &quot;gpu-nodepool&quot;).variables.overrides[] | select(.name == &quot;workerConfig&quot;).value.nutanix.machineDetails) += {&quot;gpus&quot;: [{&quot;type&quot;: &quot;name&quot;, &quot;name&quot;: strenv(GPU_NAME)}]}&#39;</span><span class="w"> </span>-i<span class="w"> </span>gpu-nodepool.yaml
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-42-1"><a id="__codelineno-42-1" name="__codelineno-42-1" href="#__codelineno-42-1"></a>yq<span class="w"> </span>e<span class="w"> </span><span class="s1">'(.spec.topology.workers.machineDeployments[] | select(.name == "gpu-nodepool").variables.overrides[] | select(.name == "workerConfig").value.nutanix.machineDetails) += {"gpus": [{"type": "name", "name": strenv(GPU_NAME)}]}'</span><span class="w"> </span>-i<span class="w"> </span>gpu-nodepool.yaml
 </span></code></pre></div>
 <details class="success">
 <summary>Successful addtion of GPU specs?</summary>
@@ -4933,7 +4933,7 @@ Reserve the second two IPs for MetalLB distributed load balancer
 </span><span id="__span-52-10"><a id="__codelineno-52-10" name="__codelineno-52-10" href="#__codelineno-52-10"></a><span class="w">        </span><span class="nt">istio</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">ingressgateway</span>
 </span><span id="__span-52-11"><a id="__codelineno-52-11" name="__codelineno-52-11" href="#__codelineno-52-11"></a><span class="w">      </span><span class="nt">servers</span><span class="p">:</span>
 </span><span id="__span-52-12"><a id="__codelineno-52-12" name="__codelineno-52-12" href="#__codelineno-52-12"></a><span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">hosts</span><span class="p">:</span>
-</span><span id="__span-52-13"><a id="__codelineno-52-13" name="__codelineno-52-13" href="#__codelineno-52-13"></a><span class="w">        </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&#39;*&#39;</span>
+</span><span id="__span-52-13"><a id="__codelineno-52-13" name="__codelineno-52-13" href="#__codelineno-52-13"></a><span class="w">        </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">'*'</span>
 </span><span id="__span-52-14"><a id="__codelineno-52-14" name="__codelineno-52-14" href="#__codelineno-52-14"></a><span class="w">        </span><span class="nt">port</span><span class="p">:</span>
 </span><span id="__span-52-15"><a id="__codelineno-52-15" name="__codelineno-52-15" href="#__codelineno-52-15"></a><span class="w">          </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">https</span>
 </span><span id="__span-52-16"><a id="__codelineno-52-16" name="__codelineno-52-16" href="#__codelineno-52-16"></a><span class="w">          </span><span class="nt">number</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">443</span>

@@ -4400,26 +4400,26 @@
 </span><span id="__span-10-4"><a id="__codelineno-10-4" name="__codelineno-10-4" href="#__codelineno-10-4"></a><span class="s">config:</span>
 </span><span id="__span-10-5"><a id="__codelineno-10-5" name="__codelineno-10-5" href="#__codelineno-10-5"></a><span class="s">  envoyGateway:</span>
 </span><span id="__span-10-6"><a id="__codelineno-10-6" name="__codelineno-10-6" href="#__codelineno-10-6"></a><span class="s">    gateway:</span>
-</span><span id="__span-10-7"><a id="__codelineno-10-7" name="__codelineno-10-7" href="#__codelineno-10-7"></a><span class="s">      controllerName: &quot;gateway.envoyproxy.io/gatewayclass-controller&quot;</span>
+</span><span id="__span-10-7"><a id="__codelineno-10-7" name="__codelineno-10-7" href="#__codelineno-10-7"></a><span class="s">      controllerName: "gateway.envoyproxy.io/gatewayclass-controller"</span>
 </span><span id="__span-10-8"><a id="__codelineno-10-8" name="__codelineno-10-8" href="#__codelineno-10-8"></a><span class="s">    logging:</span>
 </span><span id="__span-10-9"><a id="__codelineno-10-9" name="__codelineno-10-9" href="#__codelineno-10-9"></a><span class="s">      level:</span>
-</span><span id="__span-10-10"><a id="__codelineno-10-10" name="__codelineno-10-10" href="#__codelineno-10-10"></a><span class="s">        default: &quot;info&quot;</span>
+</span><span id="__span-10-10"><a id="__codelineno-10-10" name="__codelineno-10-10" href="#__codelineno-10-10"></a><span class="s">        default: "info"</span>
 </span><span id="__span-10-11"><a id="__codelineno-10-11" name="__codelineno-10-11" href="#__codelineno-10-11"></a><span class="s">    provider:</span>
 </span><span id="__span-10-12"><a id="__codelineno-10-12" name="__codelineno-10-12" href="#__codelineno-10-12"></a><span class="s">      kubernetes:</span>
 </span><span id="__span-10-13"><a id="__codelineno-10-13" name="__codelineno-10-13" href="#__codelineno-10-13"></a><span class="s">        rateLimitDeployment:</span>
 </span><span id="__span-10-14"><a id="__codelineno-10-14" name="__codelineno-10-14" href="#__codelineno-10-14"></a><span class="s">          container:</span>
-</span><span id="__span-10-15"><a id="__codelineno-10-15" name="__codelineno-10-15" href="#__codelineno-10-15"></a><span class="s">            image: &quot;${REGISTRY}/${PROJECT}/nai-ratelimit:99d85510&quot;</span>
+</span><span id="__span-10-15"><a id="__codelineno-10-15" name="__codelineno-10-15" href="#__codelineno-10-15"></a><span class="s">            image: "${REGISTRY}/${PROJECT}/nai-ratelimit:99d85510"</span>
 </span><span id="__span-10-16"><a id="__codelineno-10-16" name="__codelineno-10-16" href="#__codelineno-10-16"></a><span class="s">          patch:</span>
-</span><span id="__span-10-17"><a id="__codelineno-10-17" name="__codelineno-10-17" href="#__codelineno-10-17"></a><span class="s">            type: &quot;StrategicMerge&quot;</span>
+</span><span id="__span-10-17"><a id="__codelineno-10-17" name="__codelineno-10-17" href="#__codelineno-10-17"></a><span class="s">            type: "StrategicMerge"</span>
 </span><span id="__span-10-18"><a id="__codelineno-10-18" name="__codelineno-10-18" href="#__codelineno-10-18"></a><span class="s">            value:</span>
 </span><span id="__span-10-19"><a id="__codelineno-10-19" name="__codelineno-10-19" href="#__codelineno-10-19"></a><span class="s">              spec:</span>
 </span><span id="__span-10-20"><a id="__codelineno-10-20" name="__codelineno-10-20" href="#__codelineno-10-20"></a><span class="s">                template:</span>
 </span><span id="__span-10-21"><a id="__codelineno-10-21" name="__codelineno-10-21" href="#__codelineno-10-21"></a><span class="s">                  spec:</span>
 </span><span id="__span-10-22"><a id="__codelineno-10-22" name="__codelineno-10-22" href="#__codelineno-10-22"></a><span class="s">                    containers:</span>
-</span><span id="__span-10-23"><a id="__codelineno-10-23" name="__codelineno-10-23" href="#__codelineno-10-23"></a><span class="s">                      - imagePullPolicy: &quot;IfNotPresent&quot;</span>
-</span><span id="__span-10-24"><a id="__codelineno-10-24" name="__codelineno-10-24" href="#__codelineno-10-24"></a><span class="s">                        name: &quot;envoy-ratelimit&quot;</span>
-</span><span id="__span-10-25"><a id="__codelineno-10-25" name="__codelineno-10-25" href="#__codelineno-10-25"></a><span class="s">                        image: &quot;${REGISTRY}/${PROJECT}/nai-ratelimit:99d85510&quot;</span>
-</span><span id="__span-10-26"><a id="__codelineno-10-26" name="__codelineno-10-26" href="#__codelineno-10-26"></a><span class="s">      type: &quot;Kubernetes&quot;</span>
+</span><span id="__span-10-23"><a id="__codelineno-10-23" name="__codelineno-10-23" href="#__codelineno-10-23"></a><span class="s">                      - imagePullPolicy: "IfNotPresent"</span>
+</span><span id="__span-10-24"><a id="__codelineno-10-24" name="__codelineno-10-24" href="#__codelineno-10-24"></a><span class="s">                        name: "envoy-ratelimit"</span>
+</span><span id="__span-10-25"><a id="__codelineno-10-25" name="__codelineno-10-25" href="#__codelineno-10-25"></a><span class="s">                        image: "${REGISTRY}/${PROJECT}/nai-ratelimit:99d85510"</span>
+</span><span id="__span-10-26"><a id="__codelineno-10-26" name="__codelineno-10-26" href="#__codelineno-10-26"></a><span class="s">      type: "Kubernetes"</span>
 </span><span id="__span-10-27"><a id="__codelineno-10-27" name="__codelineno-10-27" href="#__codelineno-10-27"></a><span class="s">    extensionApis:</span>
 </span><span id="__span-10-28"><a id="__codelineno-10-28" name="__codelineno-10-28" href="#__codelineno-10-28"></a><span class="s">      enableEnvoyPatchPolicy: true</span>
 </span><span id="__span-10-29"><a id="__codelineno-10-29" name="__codelineno-10-29" href="#__codelineno-10-29"></a><span class="s">      enableBackend: true</span>
@@ -4441,18 +4441,18 @@
 </span><span id="__span-10-45"><a id="__codelineno-10-45" name="__codelineno-10-45" href="#__codelineno-10-45"></a><span class="s">            secret:</span>
 </span><span id="__span-10-46"><a id="__codelineno-10-46" name="__codelineno-10-46" href="#__codelineno-10-46"></a><span class="s">              includeAll: true</span>
 </span><span id="__span-10-47"><a id="__codelineno-10-47" name="__codelineno-10-47" href="#__codelineno-10-47"></a><span class="s">          post:</span>
-</span><span id="__span-10-48"><a id="__codelineno-10-48" name="__codelineno-10-48" href="#__codelineno-10-48"></a><span class="s">            - &quot;Translation&quot;</span>
-</span><span id="__span-10-49"><a id="__codelineno-10-49" name="__codelineno-10-49" href="#__codelineno-10-49"></a><span class="s">            - &quot;Cluster&quot;</span>
-</span><span id="__span-10-50"><a id="__codelineno-10-50" name="__codelineno-10-50" href="#__codelineno-10-50"></a><span class="s">            - &quot;Route&quot;</span>
+</span><span id="__span-10-48"><a id="__codelineno-10-48" name="__codelineno-10-48" href="#__codelineno-10-48"></a><span class="s">            - "Translation"</span>
+</span><span id="__span-10-49"><a id="__codelineno-10-49" name="__codelineno-10-49" href="#__codelineno-10-49"></a><span class="s">            - "Cluster"</span>
+</span><span id="__span-10-50"><a id="__codelineno-10-50" name="__codelineno-10-50" href="#__codelineno-10-50"></a><span class="s">            - "Route"</span>
 </span><span id="__span-10-51"><a id="__codelineno-10-51" name="__codelineno-10-51" href="#__codelineno-10-51"></a><span class="s">      service:</span>
 </span><span id="__span-10-52"><a id="__codelineno-10-52" name="__codelineno-10-52" href="#__codelineno-10-52"></a><span class="s">        fqdn:</span>
-</span><span id="__span-10-53"><a id="__codelineno-10-53" name="__codelineno-10-53" href="#__codelineno-10-53"></a><span class="s">          hostname: &quot;ai-gateway-controller.nai-system.svc.cluster.local&quot;</span>
+</span><span id="__span-10-53"><a id="__codelineno-10-53" name="__codelineno-10-53" href="#__codelineno-10-53"></a><span class="s">          hostname: "ai-gateway-controller.nai-system.svc.cluster.local"</span>
 </span><span id="__span-10-54"><a id="__codelineno-10-54" name="__codelineno-10-54" href="#__codelineno-10-54"></a><span class="s">          port: 1063</span>
 </span><span id="__span-10-55"><a id="__codelineno-10-55" name="__codelineno-10-55" href="#__codelineno-10-55"></a><span class="s">    rateLimit:</span>
 </span><span id="__span-10-56"><a id="__codelineno-10-56" name="__codelineno-10-56" href="#__codelineno-10-56"></a><span class="s">      backend:</span>
-</span><span id="__span-10-57"><a id="__codelineno-10-57" name="__codelineno-10-57" href="#__codelineno-10-57"></a><span class="s">        type: &quot;Redis&quot;</span>
+</span><span id="__span-10-57"><a id="__codelineno-10-57" name="__codelineno-10-57" href="#__codelineno-10-57"></a><span class="s">        type: "Redis"</span>
 </span><span id="__span-10-58"><a id="__codelineno-10-58" name="__codelineno-10-58" href="#__codelineno-10-58"></a><span class="s">        redis:</span>
-</span><span id="__span-10-59"><a id="__codelineno-10-59" name="__codelineno-10-59" href="#__codelineno-10-59"></a><span class="s">          url: &quot;redis-sentinel.nai-system.svc.cluster.local:6379&quot;</span>
+</span><span id="__span-10-59"><a id="__codelineno-10-59" name="__codelineno-10-59" href="#__codelineno-10-59"></a><span class="s">          url: "redis-sentinel.nai-system.svc.cluster.local:6379"</span>
 </span><span id="__span-10-60"><a id="__codelineno-10-60" name="__codelineno-10-60" href="#__codelineno-10-60"></a><span class="s">EOF</span>
 </span></code></pre></div>
 </div>
@@ -4470,7 +4470,7 @@
 </span><span id="__span-11-4"><a id="__codelineno-11-4" name="__codelineno-11-4" href="#__codelineno-11-4"></a><span class="w">  </span>--create-namespace<span class="w"> </span>--wait<span class="w"> </span><span class="se">\</span>
 </span><span id="__span-11-5"><a id="__codelineno-11-5" name="__codelineno-11-5" href="#__codelineno-11-5"></a><span class="w">  </span>--set<span class="w"> </span>global.images.envoyGateway.image<span class="o">=</span><span class="si">${</span><span class="nv">REGISTRY</span><span class="si">}</span>/<span class="si">${</span><span class="nv">PROJECT</span><span class="si">}</span>/nai-gateway:v1.7.0<span class="w"> </span><span class="se">\</span>
 </span><span id="__span-11-6"><a id="__codelineno-11-6" name="__codelineno-11-6" href="#__codelineno-11-6"></a><span class="w">  </span>--set<span class="w"> </span>global.images.ratelimit.image<span class="o">=</span><span class="si">${</span><span class="nv">REGISTRY</span><span class="si">}</span>/<span class="si">${</span><span class="nv">PROJECT</span><span class="si">}</span>/nai-ratelimit:99d85510<span class="w"> </span><span class="se">\</span>
-</span><span id="__span-11-7"><a id="__codelineno-11-7" name="__codelineno-11-7" href="#__codelineno-11-7"></a><span class="w">  </span>--set<span class="w"> </span><span class="s2">&quot;global.imagePullSecrets[0].name=</span><span class="si">${</span><span class="nv">IMAGE_PULL_SECRET</span><span class="si">}</span><span class="s2">&quot;</span><span class="w"> </span><span class="se">\</span>
+</span><span id="__span-11-7"><a id="__codelineno-11-7" name="__codelineno-11-7" href="#__codelineno-11-7"></a><span class="w">  </span>--set<span class="w"> </span><span class="s2">"global.imagePullSecrets[0].name=</span><span class="si">${</span><span class="nv">IMAGE_PULL_SECRET</span><span class="si">}</span><span class="s2">"</span><span class="w"> </span><span class="se">\</span>
 </span><span id="__span-11-8"><a id="__codelineno-11-8" name="__codelineno-11-8" href="#__codelineno-11-8"></a><span class="w">  </span>-f<span class="w"> </span>./eg-config-for-gateway-mode.yaml
 </span></code></pre></div>
 </div>
@@ -4486,7 +4486,7 @@
 </span></code></pre></div>
 </div>
 <div class="tabbed-block">
-<div class="language-text no-copy highlight"><pre><span></span><code><span id="__span-13-1"><a id="__codelineno-13-1" name="__codelineno-13-1" href="#__codelineno-13-1"></a>Release &quot;eg&quot; does not exist. Installing it now.
+<div class="language-text no-copy highlight"><pre><span></span><code><span id="__span-13-1"><a id="__codelineno-13-1" name="__codelineno-13-1" href="#__codelineno-13-1"></a>Release "eg" does not exist. Installing it now.
 </span><span id="__span-13-2"><a id="__codelineno-13-2" name="__codelineno-13-2" href="#__codelineno-13-2"></a>Pulled: harbor.x.x.x.x.nip.io/nutanix/gateway-helm:v1.7.0
 </span><span id="__span-13-3"><a id="__codelineno-13-3" name="__codelineno-13-3" href="#__codelineno-13-3"></a>Digest: sha256:80ce6293c5a8658897971cd10adef51880a3ee6e5e1bbc92415b943cd4b94cb5
 </span><span id="__span-13-4"><a id="__codelineno-13-4" name="__codelineno-13-4" href="#__codelineno-13-4"></a>NAME: eg
@@ -4579,7 +4579,7 @@
 <div class="tabbed-block">
 <div class="language-text no-copy highlight"><pre><span></span><code><span id="__span-22-1"><a id="__codelineno-22-1" name="__codelineno-22-1" href="#__codelineno-22-1"></a>Pulled: harbor.x.x.x.x.nip.io/nutanix/kserve-crd:v0.15.0
 </span><span id="__span-22-2"><a id="__codelineno-22-2" name="__codelineno-22-2" href="#__codelineno-22-2"></a>Digest: sha256:b673a75fdf45602ae58bb528e7b445e4530617b18f8eebb5d6337c16d4596951
-</span><span id="__span-22-3"><a id="__codelineno-22-3" name="__codelineno-22-3" href="#__codelineno-22-3"></a>Release &quot;kserve-crd&quot; has been upgraded. Happy Helming!
+</span><span id="__span-22-3"><a id="__codelineno-22-3" name="__codelineno-22-3" href="#__codelineno-22-3"></a>Release "kserve-crd" has been upgraded. Happy Helming!
 </span><span id="__span-22-4"><a id="__codelineno-22-4" name="__codelineno-22-4" href="#__codelineno-22-4"></a>NAME: kserve-crd
 </span><span id="__span-22-5"><a id="__codelineno-22-5" name="__codelineno-22-5" href="#__codelineno-22-5"></a>LAST DEPLOYED: Tue Jun  2 07:03:11 2026
 </span><span id="__span-22-6"><a id="__codelineno-22-6" name="__codelineno-22-6" href="#__codelineno-22-6"></a>NAMESPACE: kserve
@@ -4623,7 +4623,7 @@
 <div class="tabbed-block">
 <div class="language-text no-copy highlight"><pre><span></span><code><span id="__span-25-1"><a id="__codelineno-25-1" name="__codelineno-25-1" href="#__codelineno-25-1"></a>Pulled: harbor.x.x.x.x.nip.io/nutanix/kserve:v0.15.0
 </span><span id="__span-25-2"><a id="__codelineno-25-2" name="__codelineno-25-2" href="#__codelineno-25-2"></a>Digest: sha256:e1bc365c75dd28f0c43581107b78614ffe21e6fbaf95a9351af440d3eec45130
-</span><span id="__span-25-3"><a id="__codelineno-25-3" name="__codelineno-25-3" href="#__codelineno-25-3"></a>Release &quot;kserve&quot; has been upgraded. Happy Helming!
+</span><span id="__span-25-3"><a id="__codelineno-25-3" name="__codelineno-25-3" href="#__codelineno-25-3"></a>Release "kserve" has been upgraded. Happy Helming!
 </span><span id="__span-25-4"><a id="__codelineno-25-4" name="__codelineno-25-4" href="#__codelineno-25-4"></a>NAME: kserve
 </span><span id="__span-25-5"><a id="__codelineno-25-5" name="__codelineno-25-5" href="#__codelineno-25-5"></a>LAST DEPLOYED: Tue Jun  2 07:08:10 2026
 </span><span id="__span-25-6"><a id="__codelineno-25-6" name="__codelineno-25-6" href="#__codelineno-25-6"></a>NAMESPACE: kserve
@@ -4637,7 +4637,7 @@
 <details class="warning">
 <summary>Kserve install failure?</summary>
 <p>Ocassionally the Kserve install might fail due to webhook race condition. If this happens, wait a few minutes and run the <code>helm update --install kserve ...</code> commmand from above once again.</p>
-<div class="language-bash highlight"><pre><span></span><code><span id="__span-26-1"><a id="__codelineno-26-1" name="__codelineno-26-1" href="#__codelineno-26-1"></a>failed<span class="w"> </span>calling<span class="w"> </span>webhook<span class="w"> </span><span class="s2">&quot;clusterservingruntime.kserve-webhook-server.validator&quot;</span>:<span class="w"> </span>failed<span class="w"> </span>to<span class="w"> </span>call<span class="w"> </span>webhook:<span class="w"> </span>Post<span class="w"> </span><span class="s2">&quot;https://kserve-webhook-server-service.kserve.svc:443/validate-serving-kserve-io-v1alpha1-clusterservingruntime?timeout=10s&quot;</span>:<span class="w"> </span>dial<span class="w"> </span>tcp<span class="w"> </span><span class="m">10</span>.106.128.236:443:<span class="w"> </span>connect:<span class="w"> </span>operation<span class="w"> </span>not<span class="w"> </span>permitted
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-26-1"><a id="__codelineno-26-1" name="__codelineno-26-1" href="#__codelineno-26-1"></a>failed<span class="w"> </span>calling<span class="w"> </span>webhook<span class="w"> </span><span class="s2">"clusterservingruntime.kserve-webhook-server.validator"</span>:<span class="w"> </span>failed<span class="w"> </span>to<span class="w"> </span>call<span class="w"> </span>webhook:<span class="w"> </span>Post<span class="w"> </span><span class="s2">"https://kserve-webhook-server-service.kserve.svc:443/validate-serving-kserve-io-v1alpha1-clusterservingruntime?timeout=10s"</span>:<span class="w"> </span>dial<span class="w"> </span>tcp<span class="w"> </span><span class="m">10</span>.106.128.236:443:<span class="w"> </span>connect:<span class="w"> </span>operation<span class="w"> </span>not<span class="w"> </span>permitted
 </span></code></pre></div>
 </details>
 </li>
@@ -4714,7 +4714,7 @@
 <div class="tabbed-block">
 <div class="language-text no-copy highlight"><pre><span></span><code><span id="__span-35-1"><a id="__codelineno-35-1" name="__codelineno-35-1" href="#__codelineno-35-1"></a>Pulled: harbor.x.x.x.x.nip.io/nutanix/opentelemetry-operator:0.102.0
 </span><span id="__span-35-2"><a id="__codelineno-35-2" name="__codelineno-35-2" href="#__codelineno-35-2"></a>Digest: sha256:bb3a48aeca0320a5c999b3849619e2d692eeec8ce59a6c43ca965c1fd1ffdb24
-</span><span id="__span-35-3"><a id="__codelineno-35-3" name="__codelineno-35-3" href="#__codelineno-35-3"></a>I0602 07:18:04.217343 1235342 warnings.go:107] &quot;Warning: spec.privateKey.rotationPolicy: In cert-manager &gt;= v1.18.0, the default value changed from `Never` to `Always`.&quot;
+</span><span id="__span-35-3"><a id="__codelineno-35-3" name="__codelineno-35-3" href="#__codelineno-35-3"></a>I0602 07:18:04.217343 1235342 warnings.go:107] "Warning: spec.privateKey.rotationPolicy: In cert-manager &gt;= v1.18.0, the default value changed from `Never` to `Always`."
 </span><span id="__span-35-4"><a id="__codelineno-35-4" name="__codelineno-35-4" href="#__codelineno-35-4"></a>NAME: opentelemetry-operator
 </span><span id="__span-35-5"><a id="__codelineno-35-5" name="__codelineno-35-5" href="#__codelineno-35-5"></a>LAST DEPLOYED: Tue Jun  2 07:18:02 2026
 </span><span id="__span-35-6"><a id="__codelineno-35-6" name="__codelineno-35-6" href="#__codelineno-35-6"></a>NAMESPACE: opentelemetry
@@ -4911,11 +4911,11 @@
 </span></code></pre></div>
 </div>
 <div class="tabbed-block">
-<div class="language-text no-copy highlight"><pre><span></span><code><span id="__span-50-1"><a id="__codelineno-50-1" name="__codelineno-50-1" href="#__codelineno-50-1"></a>Release &quot;nai-operators&quot; does not exist. Installing it now.
+<div class="language-text no-copy highlight"><pre><span></span><code><span id="__span-50-1"><a id="__codelineno-50-1" name="__codelineno-50-1" href="#__codelineno-50-1"></a>Release "nai-operators" does not exist. Installing it now.
 </span><span id="__span-50-2"><a id="__codelineno-50-2" name="__codelineno-50-2" href="#__codelineno-50-2"></a>Pulled: harbor.x.x.x.x.nip.io/nutanix/nai-operators:2.7.0
 </span><span id="__span-50-3"><a id="__codelineno-50-3" name="__codelineno-50-3" href="#__codelineno-50-3"></a>Digest: sha256:8a377a20f58f28500daab57730cf71bc4c7e2385615e061a9bd98e73ed47a978
-</span><span id="__span-50-4"><a id="__codelineno-50-4" name="__codelineno-50-4" href="#__codelineno-50-4"></a>I0602 07:33:51.855835 1236713 warnings.go:107] &quot;Warning: spec.template.spec.containers[1].ports[0]: duplicate port name \&quot;metrics\&quot; with spec.template.spec.containers[0].ports[0], services and probes that select ports by name will use spec.template.spec.containers[0].ports[0]&quot;
-</span><span id="__span-50-5"><a id="__codelineno-50-5" name="__codelineno-50-5" href="#__codelineno-50-5"></a>I0602 07:33:51.875877 1236713 warnings.go:107] &quot;Warning: spec.privateKey.rotationPolicy: In cert-manager &gt;= v1.18.0, the default value changed from `Never` to `Always`.&quot;
+</span><span id="__span-50-4"><a id="__codelineno-50-4" name="__codelineno-50-4" href="#__codelineno-50-4"></a>I0602 07:33:51.855835 1236713 warnings.go:107] "Warning: spec.template.spec.containers[1].ports[0]: duplicate port name \"metrics\" with spec.template.spec.containers[0].ports[0], services and probes that select ports by name will use spec.template.spec.containers[0].ports[0]"
+</span><span id="__span-50-5"><a id="__codelineno-50-5" name="__codelineno-50-5" href="#__codelineno-50-5"></a>I0602 07:33:51.875877 1236713 warnings.go:107] "Warning: spec.privateKey.rotationPolicy: In cert-manager &gt;= v1.18.0, the default value changed from `Never` to `Always`."
 </span><span id="__span-50-6"><a id="__codelineno-50-6" name="__codelineno-50-6" href="#__codelineno-50-6"></a>NAME: nai-operators
 </span><span id="__span-50-7"><a id="__codelineno-50-7" name="__codelineno-50-7" href="#__codelineno-50-7"></a>LAST DEPLOYED: Tue Jun  2 07:33:50 2026
 </span><span id="__span-50-8"><a id="__codelineno-50-8" name="__codelineno-50-8" href="#__codelineno-50-8"></a>NAMESPACE: nai-system
@@ -5257,7 +5257,7 @@
 </span></code></pre></div>
 </div>
 <div class="tabbed-block">
-<div class="language-text no-copy highlight"><pre><span></span><code><span id="__span-57-1"><a id="__codelineno-57-1" name="__codelineno-57-1" href="#__codelineno-57-1"></a>Release &quot;nai-core&quot; does not exist. Installing it now.
+<div class="language-text no-copy highlight"><pre><span></span><code><span id="__span-57-1"><a id="__codelineno-57-1" name="__codelineno-57-1" href="#__codelineno-57-1"></a>Release "nai-core" does not exist. Installing it now.
 </span><span id="__span-57-2"><a id="__codelineno-57-2" name="__codelineno-57-2" href="#__codelineno-57-2"></a>Pulled: harbor.x.x.x.x.nip.io/nutanix/nai-core:2.7.0
 </span><span id="__span-57-3"><a id="__codelineno-57-3" name="__codelineno-57-3" href="#__codelineno-57-3"></a>NAME: nai-core
 </span><span id="__span-57-4"><a id="__codelineno-57-4" name="__codelineno-57-4" href="#__codelineno-57-4"></a>LAST DEPLOYED: Wed Jun  3 01:38:56 2026
@@ -5281,7 +5281,7 @@
 </span></code></pre></div>
 </div>
 <div class="tabbed-block">
-<div class="language-text no-copy highlight"><pre><span></span><code><span id="__span-59-1"><a id="__codelineno-59-1" name="__codelineno-59-1" href="#__codelineno-59-1"></a>Active namespace is &quot;nai-system&quot;.
+<div class="language-text no-copy highlight"><pre><span></span><code><span id="__span-59-1"><a id="__codelineno-59-1" name="__codelineno-59-1" href="#__codelineno-59-1"></a>Active namespace is "nai-system".
 </span><span id="__span-59-2"><a id="__codelineno-59-2" name="__codelineno-59-2" href="#__codelineno-59-2"></a>
 </span><span id="__span-59-3"><a id="__codelineno-59-3" name="__codelineno-59-3" href="#__codelineno-59-3"></a>NAME                                                    READY   STATUS      RESTARTS        AGE
 </span><span id="__span-59-4"><a id="__codelineno-59-4" name="__codelineno-59-4" href="#__codelineno-59-4"></a>ai-gateway-controller-77d6cb4764-h2jfs                  1/1     Running     0               17h
@@ -5348,7 +5348,7 @@
 </li>
 <li>
 <p>Patch the Envoy gateway with the <code>nai-cert</code> certificate details</p>
-<div class="language-bash highlight"><pre><span></span><code><span id="__span-63-1"><a id="__codelineno-63-1" name="__codelineno-63-1" href="#__codelineno-63-1"></a>kubectl<span class="w"> </span>patch<span class="w"> </span>gateway<span class="w"> </span>nai-ingress-gateway<span class="w"> </span>-n<span class="w"> </span>nai-system<span class="w"> </span>--type<span class="o">=</span><span class="s1">&#39;json&#39;</span><span class="w"> </span>-p<span class="o">=</span><span class="s1">&#39;[{&quot;op&quot;: &quot;replace&quot;, &quot;path&quot;: &quot;/spec/listeners/1/tls/certificateRefs/0/name&quot;, &quot;value&quot;: &quot;nai-cert&quot;}]&#39;</span>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-63-1"><a id="__codelineno-63-1" name="__codelineno-63-1" href="#__codelineno-63-1"></a>kubectl<span class="w"> </span>patch<span class="w"> </span>gateway<span class="w"> </span>nai-ingress-gateway<span class="w"> </span>-n<span class="w"> </span>nai-system<span class="w"> </span>--type<span class="o">=</span><span class="s1">'json'</span><span class="w"> </span>-p<span class="o">=</span><span class="s1">'[{"op": "replace", "path": "/spec/listeners/1/tls/certificateRefs/0/name", "value": "nai-cert"}]'</span>
 </span></code></pre></div>
 </li>
 </ol>
@@ -5382,8 +5382,8 @@
 </span><span id="__span-65-5"><a id="__codelineno-65-5" name="__codelineno-65-5" href="#__codelineno-65-5"></a><span class="w">  </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">route53-api-token-secret</span>
 </span><span id="__span-65-6"><a id="__codelineno-65-6" name="__codelineno-65-6" href="#__codelineno-65-6"></a><span class="w">  </span><span class="nt">namespace</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">cert-manager</span>
 </span><span id="__span-65-7"><a id="__codelineno-65-7" name="__codelineno-65-7" href="#__codelineno-65-7"></a><span class="nt">data</span><span class="p">:</span>
-</span><span id="__span-65-8"><a id="__codelineno-65-8" name="__codelineno-65-8" href="#__codelineno-65-8"></a><span class="hll"><span class="w">  </span><span class="nt">access-key-id</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;_YOUR_AWS_ACCESS_KEY_ID&quot;</span>
-</span></span><span id="__span-65-9"><a id="__codelineno-65-9" name="__codelineno-65-9" href="#__codelineno-65-9"></a><span class="hll"><span class="w">  </span><span class="nt">secret-access-key</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;_YOUR_AWS_SECRET_KEY_ID&quot;</span>
+</span><span id="__span-65-8"><a id="__codelineno-65-8" name="__codelineno-65-8" href="#__codelineno-65-8"></a><span class="hll"><span class="w">  </span><span class="nt">access-key-id</span><span class="p">:</span><span class="w"> </span><span class="s">"_YOUR_AWS_ACCESS_KEY_ID"</span>
+</span></span><span id="__span-65-9"><a id="__codelineno-65-9" name="__codelineno-65-9" href="#__codelineno-65-9"></a><span class="hll"><span class="w">  </span><span class="nt">secret-access-key</span><span class="p">:</span><span class="w"> </span><span class="s">"_YOUR_AWS_SECRET_KEY_ID"</span>
 </span></span></code></pre></div>
 </div>
 </div>
@@ -5461,7 +5461,7 @@
 </li>
 <li>
 <p>Patch the Envoy gateway with the <code>nai-cert</code> certificate details</p>
-<div class="language-bash highlight"><pre><span></span><code><span id="__span-69-1"><a id="__codelineno-69-1" name="__codelineno-69-1" href="#__codelineno-69-1"></a>kubectl<span class="w"> </span>patch<span class="w"> </span>gateway<span class="w"> </span>nai-ingress-gateway<span class="w"> </span>-n<span class="w"> </span>nai-system<span class="w"> </span>--type<span class="o">=</span><span class="s1">&#39;json&#39;</span><span class="w"> </span>-p<span class="o">=</span><span class="s1">&#39;[{&quot;op&quot;: &quot;replace&quot;, &quot;path&quot;: &quot;/spec/listeners/1/tls/certificateRefs/0/name&quot;, &quot;value&quot;: &quot;nai-cert&quot;}]&#39;</span>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-69-1"><a id="__codelineno-69-1" name="__codelineno-69-1" href="#__codelineno-69-1"></a>kubectl<span class="w"> </span>patch<span class="w"> </span>gateway<span class="w"> </span>nai-ingress-gateway<span class="w"> </span>-n<span class="w"> </span>nai-system<span class="w"> </span>--type<span class="o">=</span><span class="s1">'json'</span><span class="w"> </span>-p<span class="o">=</span><span class="s1">'[{"op": "replace", "path": "/spec/listeners/1/tls/certificateRefs/0/name", "value": "nai-cert"}]'</span>
 </span></code></pre></div>
 </li>
 </ol>
@@ -5470,7 +5470,7 @@
 <ol>
 <li>
 <p>Get the NAI UI ingress gateway host using the following command:</p>
-<div class="language-bash highlight"><pre><span></span><code><span id="__span-70-1"><a id="__codelineno-70-1" name="__codelineno-70-1" href="#__codelineno-70-1"></a><span class="nv">NAI_UI_ENDPOINT</span><span class="o">=</span><span class="k">$(</span>kubectl<span class="w"> </span>get<span class="w"> </span>svc<span class="w"> </span>-n<span class="w"> </span>envoy-gateway-system<span class="w"> </span>-l<span class="w"> </span><span class="s2">&quot;gateway.envoyproxy.io/owning-gateway-name=nai-ingress-gateway,gateway.envoyproxy.io/owning-gateway-namespace=nai-system&quot;</span><span class="w"> </span>-o<span class="w"> </span><span class="nv">jsonpath</span><span class="o">=</span><span class="s1">&#39;{.items[0].status.loadBalancer.ingress[0].ip}&#39;</span><span class="k">)</span>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-70-1"><a id="__codelineno-70-1" name="__codelineno-70-1" href="#__codelineno-70-1"></a><span class="nv">NAI_UI_ENDPOINT</span><span class="o">=</span><span class="k">$(</span>kubectl<span class="w"> </span>get<span class="w"> </span>svc<span class="w"> </span>-n<span class="w"> </span>envoy-gateway-system<span class="w"> </span>-l<span class="w"> </span><span class="s2">"gateway.envoyproxy.io/owning-gateway-name=nai-ingress-gateway,gateway.envoyproxy.io/owning-gateway-namespace=nai-system"</span><span class="w"> </span>-o<span class="w"> </span><span class="nv">jsonpath</span><span class="o">=</span><span class="s1">'{.items[0].status.loadBalancer.ingress[0].ip}'</span><span class="k">)</span>
 </span></code></pre></div>
 </li>
 <li>
@@ -5531,7 +5531,7 @@
 </li>
 <li>
 <p>Patch the Envoy gateway with the <code>nai-cert</code> certificate details</p>
-<div class="language-bash highlight"><pre><span></span><code><span id="__span-76-1"><a id="__codelineno-76-1" name="__codelineno-76-1" href="#__codelineno-76-1"></a>kubectl<span class="w"> </span>patch<span class="w"> </span>gateway<span class="w"> </span>nai-ingress-gateway<span class="w"> </span>-n<span class="w"> </span>nai-system<span class="w"> </span>--type<span class="o">=</span><span class="s1">&#39;json&#39;</span><span class="w"> </span>-p<span class="o">=</span><span class="s1">&#39;[{&quot;op&quot;: &quot;replace&quot;, &quot;path&quot;: &quot;/spec/listeners/1/tls/certificateRefs/0/name&quot;, &quot;value&quot;: &quot;nai-cert&quot;}]&#39;</span>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-76-1"><a id="__codelineno-76-1" name="__codelineno-76-1" href="#__codelineno-76-1"></a>kubectl<span class="w"> </span>patch<span class="w"> </span>gateway<span class="w"> </span>nai-ingress-gateway<span class="w"> </span>-n<span class="w"> </span>nai-system<span class="w"> </span>--type<span class="o">=</span><span class="s1">'json'</span><span class="w"> </span>-p<span class="o">=</span><span class="s1">'[{"op": "replace", "path": "/spec/listeners/1/tls/certificateRefs/0/name", "value": "nai-cert"}]'</span>
 </span></code></pre></div>
 </li>
 <li>
@@ -5554,17 +5554,17 @@
 <li>
 <p>Patch the <code>nai-ingress-gateway</code> resource with the new <code>EnvoyProxy</code> details</p>
 <div class="language-bash highlight"><pre><span></span><code><span id="__span-78-1"><a id="__codelineno-78-1" name="__codelineno-78-1" href="#__codelineno-78-1"></a>kubectl<span class="w"> </span>patch<span class="w"> </span>gateway<span class="w"> </span>nai-ingress-gateway<span class="w"> </span>-n<span class="w"> </span>nai-system<span class="w"> </span>--type<span class="o">=</span>merge<span class="w"> </span><span class="se">\</span>
-</span><span id="__span-78-2"><a id="__codelineno-78-2" name="__codelineno-78-2" href="#__codelineno-78-2"></a>-p<span class="w"> </span><span class="s1">&#39;{</span>
-</span><span id="__span-78-3"><a id="__codelineno-78-3" name="__codelineno-78-3" href="#__codelineno-78-3"></a><span class="s1">    &quot;spec&quot;: {</span>
-</span><span id="__span-78-4"><a id="__codelineno-78-4" name="__codelineno-78-4" href="#__codelineno-78-4"></a><span class="s1">        &quot;infrastructure&quot;: {</span>
-</span><span id="__span-78-5"><a id="__codelineno-78-5" name="__codelineno-78-5" href="#__codelineno-78-5"></a><span class="s1">            &quot;parametersRef&quot;: {</span>
-</span><span id="__span-78-6"><a id="__codelineno-78-6" name="__codelineno-78-6" href="#__codelineno-78-6"></a><span class="s1">                &quot;group&quot;: &quot;gateway.envoyproxy.io&quot;,</span>
-</span><span id="__span-78-7"><a id="__codelineno-78-7" name="__codelineno-78-7" href="#__codelineno-78-7"></a><span class="s1">                &quot;kind&quot;: &quot;EnvoyProxy&quot;,</span>
-</span><span id="__span-78-8"><a id="__codelineno-78-8" name="__codelineno-78-8" href="#__codelineno-78-8"></a><span class="s1">                &quot;name&quot;: &quot;envoy-service-config&quot;</span>
+</span><span id="__span-78-2"><a id="__codelineno-78-2" name="__codelineno-78-2" href="#__codelineno-78-2"></a>-p<span class="w"> </span><span class="s1">'{</span>
+</span><span id="__span-78-3"><a id="__codelineno-78-3" name="__codelineno-78-3" href="#__codelineno-78-3"></a><span class="s1">    "spec": {</span>
+</span><span id="__span-78-4"><a id="__codelineno-78-4" name="__codelineno-78-4" href="#__codelineno-78-4"></a><span class="s1">        "infrastructure": {</span>
+</span><span id="__span-78-5"><a id="__codelineno-78-5" name="__codelineno-78-5" href="#__codelineno-78-5"></a><span class="s1">            "parametersRef": {</span>
+</span><span id="__span-78-6"><a id="__codelineno-78-6" name="__codelineno-78-6" href="#__codelineno-78-6"></a><span class="s1">                "group": "gateway.envoyproxy.io",</span>
+</span><span id="__span-78-7"><a id="__codelineno-78-7" name="__codelineno-78-7" href="#__codelineno-78-7"></a><span class="s1">                "kind": "EnvoyProxy",</span>
+</span><span id="__span-78-8"><a id="__codelineno-78-8" name="__codelineno-78-8" href="#__codelineno-78-8"></a><span class="s1">                "name": "envoy-service-config"</span>
 </span><span id="__span-78-9"><a id="__codelineno-78-9" name="__codelineno-78-9" href="#__codelineno-78-9"></a><span class="s1">            }</span>
 </span><span id="__span-78-10"><a id="__codelineno-78-10" name="__codelineno-78-10" href="#__codelineno-78-10"></a><span class="s1">        }</span>
 </span><span id="__span-78-11"><a id="__codelineno-78-11" name="__codelineno-78-11" href="#__codelineno-78-11"></a><span class="s1">    }</span>
-</span><span id="__span-78-12"><a id="__codelineno-78-12" name="__codelineno-78-12" href="#__codelineno-78-12"></a><span class="s1">}&#39;</span>
+</span><span id="__span-78-12"><a id="__codelineno-78-12" name="__codelineno-78-12" href="#__codelineno-78-12"></a><span class="s1">}'</span>
 </span></code></pre></div>
 </li>
 </ol>
@@ -5625,7 +5625,7 @@
 <div class="tabbed-block">
 <p><div class="language-text highlight"><span class="filename">Get jobs in nai-admin namespace</span><pre><span></span><code><span id="__span-83-1"><a id="__codelineno-83-1" name="__codelineno-83-1" href="#__codelineno-83-1"></a>kubens nai-admin
 </span><span id="__span-83-2"><a id="__codelineno-83-2" name="__codelineno-83-2" href="#__codelineno-83-2"></a>
-</span><span id="__span-83-3"><a id="__codelineno-83-3" name="__codelineno-83-3" href="#__codelineno-83-3"></a>✔ Active namespace is &quot;nai-admin&quot;
+</span><span id="__span-83-3"><a id="__codelineno-83-3" name="__codelineno-83-3" href="#__codelineno-83-3"></a>✔ Active namespace is "nai-admin"
 </span><span id="__span-83-4"><a id="__codelineno-83-4" name="__codelineno-83-4" href="#__codelineno-83-4"></a>
 </span><span id="__span-83-5"><a id="__codelineno-83-5" name="__codelineno-83-5" href="#__codelineno-83-5"></a>kubectl get jobs
 </span><span id="__span-83-6"><a id="__codelineno-83-6" name="__codelineno-83-6" href="#__codelineno-83-6"></a>
@@ -5670,11 +5670,11 @@
 <div class="tabbed-set tabbed-alternate" data-tabs="29:2"><input checked="checked" id="__tabbed_29_1" name="__tabbed_29" type="radio" /><input id="__tabbed_29_2" name="__tabbed_29" type="radio" /><div class="tabbed-labels"><label for="__tabbed_29_1"><span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16"><path d="m6.354 8.04-4.773 4.773a.75.75 0 1 0 1.061 1.06L7.945 8.57a.75.75 0 0 0 0-1.06L2.642 2.206a.75.75 0 0 0-1.06 1.061L6.353 8.04ZM8.75 11.5a.75.75 0 0 0 0 1.5h5.5a.75.75 0 0 0 0-1.5z"/></svg></span> Command</label><label for="__tabbed_29_2"><span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16"><path d="m6.354 8.04-4.773 4.773a.75.75 0 1 0 1.061 1.06L7.945 8.57a.75.75 0 0 0 0-1.06L2.642 2.206a.75.75 0 0 0-1.06 1.061L6.353 8.04ZM8.75 11.5a.75.75 0 0 0 0 1.5h5.5a.75.75 0 0 0 0-1.5z"/></svg></span> Command output</label></div>
 <div class="tabbed-content">
 <div class="tabbed-block">
-<div class="language-bash highlight"><pre><span></span><code><span id="__span-86-1"><a id="__codelineno-86-1" name="__codelineno-86-1" href="#__codelineno-86-1"></a>k<span class="w"> </span>get<span class="w"> </span>events<span class="w"> </span><span class="p">|</span><span class="w"> </span>awk<span class="w"> </span><span class="s1">&#39;{print $1, $3}&#39;</span>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-86-1"><a id="__codelineno-86-1" name="__codelineno-86-1" href="#__codelineno-86-1"></a>k<span class="w"> </span>get<span class="w"> </span>events<span class="w"> </span><span class="p">|</span><span class="w"> </span>awk<span class="w"> </span><span class="s1">'{print $1, $3}'</span>
 </span></code></pre></div>
 </div>
 <div class="tabbed-block">
-<div class="language-text no-copy highlight"><pre><span></span><code><span id="__span-87-1"><a id="__codelineno-87-1" name="__codelineno-87-1" href="#__codelineno-87-1"></a>$ k get events | awk &#39;{print $1, $3}&#39;
+<div class="language-text no-copy highlight"><pre><span></span><code><span id="__span-87-1"><a id="__codelineno-87-1" name="__codelineno-87-1" href="#__codelineno-87-1"></a>$ k get events | awk '{print $1, $3}'
 </span><span id="__span-87-2"><a id="__codelineno-87-2" name="__codelineno-87-2" href="#__codelineno-87-2"></a>
 </span><span id="__span-87-3"><a id="__codelineno-87-3" name="__codelineno-87-3" href="#__codelineno-87-3"></a>3m43s Scheduled
 </span><span id="__span-87-4"><a id="__codelineno-87-4" name="__codelineno-87-4" href="#__codelineno-87-4"></a>3m43s SuccessfulAttachVolume
@@ -5746,11 +5746,11 @@
 <div class="tabbed-set tabbed-alternate" data-tabs="31:2"><input checked="checked" id="__tabbed_31_1" name="__tabbed_31" type="radio" /><input id="__tabbed_31_2" name="__tabbed_31" type="radio" /><div class="tabbed-labels"><label for="__tabbed_31_1"><span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16"><path d="m6.354 8.04-4.773 4.773a.75.75 0 1 0 1.061 1.06L7.945 8.57a.75.75 0 0 0 0-1.06L2.642 2.206a.75.75 0 0 0-1.06 1.061L6.353 8.04ZM8.75 11.5a.75.75 0 0 0 0 1.5h5.5a.75.75 0 0 0 0-1.5z"/></svg></span> Command</label><label for="__tabbed_31_2"><span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16"><path d="m6.354 8.04-4.773 4.773a.75.75 0 1 0 1.061 1.06L7.945 8.57a.75.75 0 0 0 0-1.06L2.642 2.206a.75.75 0 0 0-1.06 1.061L6.353 8.04ZM8.75 11.5a.75.75 0 0 0 0 1.5h5.5a.75.75 0 0 0 0-1.5z"/></svg></span> Command output</label></div>
 <div class="tabbed-content">
 <div class="tabbed-block">
-<div class="language-bash highlight"><pre><span></span><code><span id="__span-90-1"><a id="__codelineno-90-1" name="__codelineno-90-1" href="#__codelineno-90-1"></a>kubectl<span class="w"> </span>get<span class="w"> </span>events<span class="w"> </span>-n<span class="w"> </span>nai-admin<span class="w"> </span>--sort-by<span class="o">=</span><span class="s1">&#39;.lastTimestamp&#39;</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>awk<span class="w"> </span><span class="s1">&#39;{print $1, $3, $5}&#39;</span>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-90-1"><a id="__codelineno-90-1" name="__codelineno-90-1" href="#__codelineno-90-1"></a>kubectl<span class="w"> </span>get<span class="w"> </span>events<span class="w"> </span>-n<span class="w"> </span>nai-admin<span class="w"> </span>--sort-by<span class="o">=</span><span class="s1">'.lastTimestamp'</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>awk<span class="w"> </span><span class="s1">'{print $1, $3, $5}'</span>
 </span></code></pre></div>
 </div>
 <div class="tabbed-block">
-<div class="language-bash highlight"><pre><span></span><code><span id="__span-91-1"><a id="__codelineno-91-1" name="__codelineno-91-1" href="#__codelineno-91-1"></a>$<span class="w"> </span>kubectl<span class="w"> </span>get<span class="w"> </span>events<span class="w"> </span>-n<span class="w"> </span>nai-admin<span class="w"> </span>--sort-by<span class="o">=</span><span class="s1">&#39;.lastTimestamp&#39;</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>awk<span class="w"> </span><span class="s1">&#39;{print $1, $3, $5}&#39;</span>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-91-1"><a id="__codelineno-91-1" name="__codelineno-91-1" href="#__codelineno-91-1"></a>$<span class="w"> </span>kubectl<span class="w"> </span>get<span class="w"> </span>events<span class="w"> </span>-n<span class="w"> </span>nai-admin<span class="w"> </span>--sort-by<span class="o">=</span><span class="s1">'.lastTimestamp'</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>awk<span class="w"> </span><span class="s1">'{print $1, $3, $5}'</span>
 </span><span id="__span-91-2"><a id="__codelineno-91-2" name="__codelineno-91-2" href="#__codelineno-91-2"></a>
 </span><span id="__span-91-3"><a id="__codelineno-91-3" name="__codelineno-91-3" href="#__codelineno-91-3"></a>110s<span class="w"> </span>FinalizerUpdate<span class="w"> </span>Updated
 </span><span id="__span-91-4"><a id="__codelineno-91-4" name="__codelineno-91-4" href="#__codelineno-91-4"></a>110s<span class="w"> </span>FinalizerUpdate<span class="w"> </span>Updated
@@ -5795,7 +5795,7 @@
 <p class="admonition-title">KNative Serving Image Tag Checking</p>
 <p>From testing, we have identified that KServe module is making sure that there are no container image tag discrepencies, by pulling image using SHA digest. This is done to avoid pulling images that are updated without updating the tag.</p>
 <p>We have avoided this behavior by patching the <code>config-deployment</code> config map in the <code>knative-serving</code> namespace to skip image tag checking. Check this <a href="#prepare-for-nai-deployment">Prepare for NAI Deployment</a> sectionfor more details.</p>
-<div class="language-bash highlight"><pre><span></span><code><span id="__span-94-1"><a id="__codelineno-94-1" name="__codelineno-94-1" href="#__codelineno-94-1"></a>kubectl<span class="w"> </span>patch<span class="w"> </span>configmap<span class="w">  </span>config-deployment<span class="w"> </span>-n<span class="w"> </span>knative-serving<span class="w"> </span>--type<span class="w"> </span>merge<span class="w"> </span>-p<span class="w"> </span><span class="s1">&#39;{&quot;data&quot;:{&quot;registries-skipping-tag-resolving&quot;:&quot;${REGISTRY}&quot;}&#39;</span>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-94-1"><a id="__codelineno-94-1" name="__codelineno-94-1" href="#__codelineno-94-1"></a>kubectl<span class="w"> </span>patch<span class="w"> </span>configmap<span class="w">  </span>config-deployment<span class="w"> </span>-n<span class="w"> </span>knative-serving<span class="w"> </span>--type<span class="w"> </span>merge<span class="w"> </span>-p<span class="w"> </span><span class="s1">'{"data":{"registries-skipping-tag-resolving":"${REGISTRY}"}'</span>
 </span></code></pre></div>
 <p>If this procedure was not followed, then the <code>isvc</code> will not start up.</p>
 </div>
@@ -5807,7 +5807,7 @@
 <div class="tabbed-block">
 <div class="language-bash highlight"><pre><span></span><code><span id="__span-95-1"><a id="__codelineno-95-1" name="__codelineno-95-1" href="#__codelineno-95-1"></a>kubens<span class="w"> </span>nai-admin
 </span><span id="__span-95-2"><a id="__codelineno-95-2" name="__codelineno-95-2" href="#__codelineno-95-2"></a>kubectl<span class="w"> </span>get<span class="w"> </span>isvc
-</span><span id="__span-95-3"><a id="__codelineno-95-3" name="__codelineno-95-3" href="#__codelineno-95-3"></a>kubectl<span class="w"> </span>get<span class="w"> </span>events<span class="w">  </span>--sort-by<span class="o">=</span><span class="s1">&#39;.lastTimestamp&#39;</span>
+</span><span id="__span-95-3"><a id="__codelineno-95-3" name="__codelineno-95-3" href="#__codelineno-95-3"></a>kubectl<span class="w"> </span>get<span class="w"> </span>events<span class="w">  </span>--sort-by<span class="o">=</span><span class="s1">'.lastTimestamp'</span>
 </span></code></pre></div>
 </div>
 <div class="tabbed-block">
@@ -5816,10 +5816,10 @@
 </span><span id="__span-96-3"><a id="__codelineno-96-3" name="__codelineno-96-3" href="#__codelineno-96-3"></a>NAME      URL                                          READY   PREV   LATEST   PREVROLLEDOUTREVISION   LATESTREADYREVISION       AGE
 </span><span id="__span-96-4"><a id="__codelineno-96-4" name="__codelineno-96-4" href="#__codelineno-96-4"></a><span class="hll">llama8b   http://llama8b.nai-admin.svc.cluster.local   False
 </span></span><span id="__span-96-5"><a id="__codelineno-96-5" name="__codelineno-96-5" href="#__codelineno-96-5"></a>
-</span><span id="__span-96-6"><a id="__codelineno-96-6" name="__codelineno-96-6" href="#__codelineno-96-6"></a>$ kubectl get events --sort-by=&#39;.lastTimestamp&#39;
+</span><span id="__span-96-6"><a id="__codelineno-96-6" name="__codelineno-96-6" href="#__codelineno-96-6"></a>$ kubectl get events --sort-by='.lastTimestamp'
 </span><span id="__span-96-7"><a id="__codelineno-96-7" name="__codelineno-96-7" href="#__codelineno-96-7"></a>
-</span><span id="__span-96-8"><a id="__codelineno-96-8" name="__codelineno-96-8" href="#__codelineno-96-8"></a>Warning   InternalError         revision/llama8b-predictor-00001   Unable to fetch image &quot;harbor.10.x.x.134.nip.io/nkp/nutanix/nai-tgi:2.3.1-825f39d&quot;: failed to resolve image to digest: 
-</span><span id="__span-96-9"><a id="__codelineno-96-9" name="__codelineno-96-9" href="#__codelineno-96-9"></a><span class="hll">Get &quot;https://harbor.10.x.x.134.nip.io/v2/&quot;: tls: failed to verify certificate: x509: certificate signed by unknown authority
+</span><span id="__span-96-8"><a id="__codelineno-96-8" name="__codelineno-96-8" href="#__codelineno-96-8"></a>Warning   InternalError         revision/llama8b-predictor-00001   Unable to fetch image "harbor.10.x.x.134.nip.io/nkp/nutanix/nai-tgi:2.3.1-825f39d": failed to resolve image to digest: 
+</span><span id="__span-96-9"><a id="__codelineno-96-9" name="__codelineno-96-9" href="#__codelineno-96-9"></a><span class="hll">Get "https://harbor.10.x.x.134.nip.io/v2/": tls: failed to verify certificate: x509: certificate signed by unknown authority
 </span></span></code></pre></div>
 </div>
 </div>

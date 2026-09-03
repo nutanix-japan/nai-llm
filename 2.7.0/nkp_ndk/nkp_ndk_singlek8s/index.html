@@ -3977,7 +3977,7 @@
 </span><span id="__span-3-3"><a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a><span class="nt">metadata</span><span class="p">:</span>
 </span><span id="__span-3-4"><a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a><span class="w">  </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">custom-nutanix-volumes</span>
 </span><span id="__span-3-5"><a id="__codelineno-3-5" name="__codelineno-3-5" href="#__codelineno-3-5"></a><span class="w">  </span><span class="nt">annotations</span><span class="p">:</span>
-</span><span id="__span-3-6"><a id="__codelineno-3-6" name="__codelineno-3-6" href="#__codelineno-3-6"></a><span class="w">    </span><span class="nt">storageclass.kubernetes.io/is-default-class</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;true&quot;</span><span class="w">  </span>
+</span><span id="__span-3-6"><a id="__codelineno-3-6" name="__codelineno-3-6" href="#__codelineno-3-6"></a><span class="w">    </span><span class="nt">storageclass.kubernetes.io/is-default-class</span><span class="p">:</span><span class="w"> </span><span class="s">"true"</span><span class="w">  </span>
 </span><span id="__span-3-7"><a id="__codelineno-3-7" name="__codelineno-3-7" href="#__codelineno-3-7"></a><span class="nt">provisioner</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">csi.nutanix.com</span>
 </span><span id="__span-3-8"><a id="__codelineno-3-8" name="__codelineno-3-8" href="#__codelineno-3-8"></a><span class="nt">parameters</span><span class="p">:</span>
 </span><span id="__span-3-9"><a id="__codelineno-3-9" name="__codelineno-3-9" href="#__codelineno-3-9"></a><span class="w">  </span><span class="nt">csi.storage.k8s.io/provisioner-secret-name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">ntnx-pe-secret</span>
@@ -3991,7 +3991,7 @@
 </span><span id="__span-3-17"><a id="__codelineno-3-17" name="__codelineno-3-17" href="#__codelineno-3-17"></a><span class="w">  </span><span class="nt">csi.storage.k8s.io/fstype</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">ext4</span>
 </span><span id="__span-3-18"><a id="__codelineno-3-18" name="__codelineno-3-18" href="#__codelineno-3-18"></a><span class="w">  </span><span class="nt">storageContainer</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">default</span><span class="w">    </span><span class="c1"># &lt;&lt;&lt; Make sure this Storage Container is present in the Nutanix cluster</span>
 </span><span id="__span-3-19"><a id="__codelineno-3-19" name="__codelineno-3-19" href="#__codelineno-3-19"></a><span class="w">  </span><span class="nt">storageType</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">NutanixVolumes</span>
-</span><span id="__span-3-20"><a id="__codelineno-3-20" name="__codelineno-3-20" href="#__codelineno-3-20"></a><span class="w">  </span><span class="c1">#description: &quot;description added to each storage object created by the driver&quot;</span>
+</span><span id="__span-3-20"><a id="__codelineno-3-20" name="__codelineno-3-20" href="#__codelineno-3-20"></a><span class="w">  </span><span class="c1">#description: "description added to each storage object created by the driver"</span>
 </span><span id="__span-3-21"><a id="__codelineno-3-21" name="__codelineno-3-21" href="#__codelineno-3-21"></a><span class="w">  </span><span class="c1">#hypervisorAttached: ENABLED</span>
 </span><span id="__span-3-22"><a id="__codelineno-3-22" name="__codelineno-3-22" href="#__codelineno-3-22"></a><span class="nt">allowVolumeExpansion</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
 </span><span id="__span-3-23"><a id="__codelineno-3-23" name="__codelineno-3-23" href="#__codelineno-3-23"></a><span class="nt">reclaimPolicy</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Delete</span>
@@ -4070,8 +4070,8 @@
 </span><span id="__span-7-23"><a id="__codelineno-7-23" name="__codelineno-7-23" href="#__codelineno-7-23"></a><span class="s">  containers:</span>
 </span><span id="__span-7-24"><a id="__codelineno-7-24" name="__codelineno-7-24" href="#__codelineno-7-24"></a><span class="s">  - name: app</span>
 </span><span id="__span-7-25"><a id="__codelineno-7-25" name="__codelineno-7-25" href="#__codelineno-7-25"></a><span class="s">    image: docker.io/library/busybox:1.36.1</span>
-</span><span id="__span-7-26"><a id="__codelineno-7-26" name="__codelineno-7-26" href="#__codelineno-7-26"></a><span class="s">    command: [&quot;/bin/sh&quot;]</span>
-</span><span id="__span-7-27"><a id="__codelineno-7-27" name="__codelineno-7-27" href="#__codelineno-7-27"></a><span class="s">    args: [&quot;-c&quot;, &quot;while true; do echo $(date -u) ; sleep 5; done&quot;]</span>
+</span><span id="__span-7-26"><a id="__codelineno-7-26" name="__codelineno-7-26" href="#__codelineno-7-26"></a><span class="s">    command: ["/bin/sh"]</span>
+</span><span id="__span-7-27"><a id="__codelineno-7-27" name="__codelineno-7-27" href="#__codelineno-7-27"></a><span class="s">    args: ["-c", "while true; do echo $(date -u) ; sleep 5; done"]</span>
 </span><span id="__span-7-28"><a id="__codelineno-7-28" name="__codelineno-7-28" href="#__codelineno-7-28"></a><span class="s">    volumeMounts:</span>
 </span><span id="__span-7-29"><a id="__codelineno-7-29" name="__codelineno-7-29" href="#__codelineno-7-29"></a><span class="s">    - name: persistent-storage</span>
 </span><span id="__span-7-30"><a id="__codelineno-7-30" name="__codelineno-7-30" href="#__codelineno-7-30"></a><span class="s">      mountPath: /data</span>
@@ -4109,7 +4109,7 @@
 <div class="tabbed-set tabbed-alternate" data-tabs="7:1"><input checked="checked" id="__tabbed_7_1" name="__tabbed_7" type="radio" /><div class="tabbed-labels"><label for="__tabbed_7_1"><span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16"><path d="m6.354 8.04-4.773 4.773a.75.75 0 1 0 1.061 1.06L7.945 8.57a.75.75 0 0 0 0-1.06L2.642 2.206a.75.75 0 0 0-1.06 1.061L6.353 8.04ZM8.75 11.5a.75.75 0 0 0 0 1.5h5.5a.75.75 0 0 0 0-1.5z"/></svg></span> Command</label></div>
 <div class="tabbed-content">
 <div class="tabbed-block">
-<div class="language-bash highlight"><pre><span></span><code><span id="__span-10-1"><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a>kubectl<span class="w"> </span><span class="nb">exec</span><span class="w"> </span>-it<span class="w"> </span>app-1<span class="w"> </span>--<span class="w"> </span>/bin/sh<span class="w"> </span>-c<span class="w"> </span><span class="s1">&#39;for i in $(seq 1 10000); do echo &quot;foobar&quot; &gt;&gt; /data/abc.txt;done&#39;</span>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-10-1"><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a>kubectl<span class="w"> </span><span class="nb">exec</span><span class="w"> </span>-it<span class="w"> </span>app-1<span class="w"> </span>--<span class="w"> </span>/bin/sh<span class="w"> </span>-c<span class="w"> </span><span class="s1">'for i in $(seq 1 10000); do echo "foobar" &gt;&gt; /data/abc.txt;done'</span>
 </span></code></pre></div>
 </div>
 </div>
@@ -4220,9 +4220,9 @@
 </span></span><span id="__span-18-27"><a id="__codelineno-18-27" name="__codelineno-18-27" href="#__codelineno-18-27"></a>Events:
 </span><span id="__span-18-28"><a id="__codelineno-18-28" name="__codelineno-18-28" href="#__codelineno-18-28"></a>  Type    Reason                   Age    From  Message
 </span><span id="__span-18-29"><a id="__codelineno-18-29" name="__codelineno-18-29" href="#__codelineno-18-29"></a>  ----    ------                   ----   ----  -------
-</span><span id="__span-18-30"><a id="__codelineno-18-30" name="__codelineno-18-30" href="#__codelineno-18-30"></a>  Normal  AcquireAppConfigWaiting  2m47s  NDK   ApplicationSnapshotContent&#39;s app config acquisition is waiting to be processed
-</span><span id="__span-18-31"><a id="__codelineno-18-31" name="__codelineno-18-31" href="#__codelineno-18-31"></a>  Normal  VolumeSnapshotWaiting    2m45s  NDK   ApplicationSnapshotContent&#39;s volume snapshot phase is waiting to be processed
-</span><span id="__span-18-32"><a id="__codelineno-18-32" name="__codelineno-18-32" href="#__codelineno-18-32"></a>  Normal  FinalizeSnapshotWaiting  2m16s  NDK   ApplicationSnapshotContent&#39;s finalize phase is waiting to be processed
+</span><span id="__span-18-30"><a id="__codelineno-18-30" name="__codelineno-18-30" href="#__codelineno-18-30"></a>  Normal  AcquireAppConfigWaiting  2m47s  NDK   ApplicationSnapshotContent's app config acquisition is waiting to be processed
+</span><span id="__span-18-31"><a id="__codelineno-18-31" name="__codelineno-18-31" href="#__codelineno-18-31"></a>  Normal  VolumeSnapshotWaiting    2m45s  NDK   ApplicationSnapshotContent's volume snapshot phase is waiting to be processed
+</span><span id="__span-18-32"><a id="__codelineno-18-32" name="__codelineno-18-32" href="#__codelineno-18-32"></a>  Normal  FinalizeSnapshotWaiting  2m16s  NDK   ApplicationSnapshotContent's finalize phase is waiting to be processed
 </span></code></pre></div></p>
 </div>
 </div>
@@ -4244,13 +4244,13 @@
 </span><span id="__span-20-5"><a id="__codelineno-20-5" name="__codelineno-20-5" href="#__codelineno-20-5"></a>-<span class="w"> </span>apiVersion:<span class="w"> </span>dataservices.nutanix.com/v1alpha1
 </span><span id="__span-20-6"><a id="__codelineno-20-6" name="__codelineno-20-6" href="#__codelineno-20-6"></a><span class="w">  </span>kind:<span class="w"> </span>ApplicationSnapshotContent
 </span><span id="__span-20-7"><a id="__codelineno-20-7" name="__codelineno-20-7" href="#__codelineno-20-7"></a><span class="w">  </span>metadata:
-</span><span id="__span-20-8"><a id="__codelineno-20-8" name="__codelineno-20-8" href="#__codelineno-20-8"></a><span class="w">    </span>creationTimestamp:<span class="w"> </span><span class="s2">&quot;2025-07-08T02:00:06Z&quot;</span>
+</span><span id="__span-20-8"><a id="__codelineno-20-8" name="__codelineno-20-8" href="#__codelineno-20-8"></a><span class="w">    </span>creationTimestamp:<span class="w"> </span><span class="s2">"2025-07-08T02:00:06Z"</span>
 </span><span id="__span-20-9"><a id="__codelineno-20-9" name="__codelineno-20-9" href="#__codelineno-20-9"></a><span class="w">    </span>finalizers:
 </span><span id="__span-20-10"><a id="__codelineno-20-10" name="__codelineno-20-10" href="#__codelineno-20-10"></a><span class="w">    </span>-<span class="w"> </span>dataservices.nutanix.com/app-snap
 </span><span id="__span-20-11"><a id="__codelineno-20-11" name="__codelineno-20-11" href="#__codelineno-20-11"></a><span class="w">    </span>-<span class="w"> </span>dataservices.nutanix.com/app-snap-content
 </span><span id="__span-20-12"><a id="__codelineno-20-12" name="__codelineno-20-12" href="#__codelineno-20-12"></a><span class="w">    </span>generation:<span class="w"> </span><span class="m">1</span>
 </span><span id="__span-20-13"><a id="__codelineno-20-13" name="__codelineno-20-13" href="#__codelineno-20-13"></a><span class="w">    </span>name:<span class="w"> </span>asc-8af85cca-3da7-468c-96fb-db54ec2cf940
-</span><span id="__span-20-14"><a id="__codelineno-20-14" name="__codelineno-20-14" href="#__codelineno-20-14"></a><span class="w">    </span>resourceVersion:<span class="w"> </span><span class="s2">&quot;7484635&quot;</span>
+</span><span id="__span-20-14"><a id="__codelineno-20-14" name="__codelineno-20-14" href="#__codelineno-20-14"></a><span class="w">    </span>resourceVersion:<span class="w"> </span><span class="s2">"7484635"</span>
 </span><span id="__span-20-15"><a id="__codelineno-20-15" name="__codelineno-20-15" href="#__codelineno-20-15"></a><span class="w">    </span>uid:<span class="w"> </span>9ed65107-b400-4d75-9acd-c0a7a0aede81
 </span><span id="__span-20-16"><a id="__codelineno-20-16" name="__codelineno-20-16" href="#__codelineno-20-16"></a><span class="w">  </span>spec:
 </span><span id="__span-20-17"><a id="__codelineno-20-17" name="__codelineno-20-17" href="#__codelineno-20-17"></a><span class="hll"><span class="w">    </span>applicationSnapshotRef:
@@ -4282,9 +4282,9 @@
 <div class="tabbed-block">
 <div class="language-text no-copy highlight"><pre><span></span><code><span id="__span-22-1"><a id="__codelineno-22-1" name="__codelineno-22-1" href="#__codelineno-22-1"></a>$ kubectl logs -f -n ntnx-system deploy/ndk-controller-manager
 </span><span id="__span-22-2"><a id="__codelineno-22-2" name="__codelineno-22-2" href="#__codelineno-22-2"></a>
-</span><span id="__span-22-3"><a id="__codelineno-22-3" name="__codelineno-22-3" href="#__codelineno-22-3"></a>{&quot;level&quot;:&quot;info&quot;,&quot;timestamp&quot;:&quot;2025-07-08T01:35:12.909Z&quot;,&quot;caller&quot;:&quot;applicationsnapshotcontent/asc_finalize.go:38&quot;,&quot;msg&quot;:&quot;resource regulated: ApplicationSnapshotContent&#39;s finalize phase is waiting to be processed&quot;,&quot;controller&quot;:&quot;applicationsnapshotcontent&quot;,&quot;controllerGroup&quot;:&quot;dataservices.nutanix.com&quot;,&quot;controllerKind&quot;:&quot;ApplicationSnapshotContent&quot;,&quot;ApplicationSnapshotContent&quot;:{&quot;name&quot;:&quot;asc-3c1e253a-266d-46fd-8559-d8aa189fea78&quot;},&quot;namespace&quot;:&quot;&quot;,&quot;name&quot;:&quot;asc-3c1e253a-266d-46fd-8559-d8aa189fea78&quot;,&quot;reconcileID&quot;:&quot;a0cf1641-40d7-4d51-b948-10cf9bae84e0&quot;,&quot;requestId&quot;:&quot;7566b4fa-0eda-4ffd-b34e-76daf2311148&quot;}
+</span><span id="__span-22-3"><a id="__codelineno-22-3" name="__codelineno-22-3" href="#__codelineno-22-3"></a>{"level":"info","timestamp":"2025-07-08T01:35:12.909Z","caller":"applicationsnapshotcontent/asc_finalize.go:38","msg":"resource regulated: ApplicationSnapshotContent's finalize phase is waiting to be processed","controller":"applicationsnapshotcontent","controllerGroup":"dataservices.nutanix.com","controllerKind":"ApplicationSnapshotContent","ApplicationSnapshotContent":{"name":"asc-3c1e253a-266d-46fd-8559-d8aa189fea78"},"namespace":"","name":"asc-3c1e253a-266d-46fd-8559-d8aa189fea78","reconcileID":"a0cf1641-40d7-4d51-b948-10cf9bae84e0","requestId":"7566b4fa-0eda-4ffd-b34e-76daf2311148"}
 </span><span id="__span-22-4"><a id="__codelineno-22-4" name="__codelineno-22-4" href="#__codelineno-22-4"></a>
-</span><span id="__span-22-5"><a id="__codelineno-22-5" name="__codelineno-22-5" href="#__codelineno-22-5"></a>{&quot;level&quot;:&quot;info&quot;,&quot;timestamp&quot;:&quot;2025-07-08T01:35:13.381Z&quot;,&quot;caller&quot;:&quot;utils/controller.go:36&quot;,&quot;msg&quot;:&quot;Ensuring finalizer on objects&quot;,&quot;controller&quot;:&quot;applicationsnapshot&quot;,&quot;controllerGroup&quot;:&quot;dataservices.nutanix.com&quot;,&quot;controllerKind&quot;:&quot;ApplicationSnapshot&quot;,&quot;ApplicationSnapshot&quot;:{&quot;name&quot;:&quot;app1-snap&quot;,&quot;namespace&quot;:&quot;default&quot;},&quot;namespace&quot;:&quot;default&quot;,&quot;name&quot;:&quot;app1-snap&quot;,&quot;reconcileID&quot;:&quot;5af23527-5d34-4992-ab02-99ba4af2a401&quot;,&quot;finalizer&quot;:&quot;dataservices.nutanix.com/app-snap-2a003355dcfd33a75426095a4a71154b&quot;}
+</span><span id="__span-22-5"><a id="__codelineno-22-5" name="__codelineno-22-5" href="#__codelineno-22-5"></a>{"level":"info","timestamp":"2025-07-08T01:35:13.381Z","caller":"utils/controller.go:36","msg":"Ensuring finalizer on objects","controller":"applicationsnapshot","controllerGroup":"dataservices.nutanix.com","controllerKind":"ApplicationSnapshot","ApplicationSnapshot":{"name":"app1-snap","namespace":"default"},"namespace":"default","name":"app1-snap","reconcileID":"5af23527-5d34-4992-ab02-99ba4af2a401","finalizer":"dataservices.nutanix.com/app-snap-2a003355dcfd33a75426095a4a71154b"}
 </span></code></pre></div>
 </div>
 </div>
@@ -4384,11 +4384,11 @@
 <div class="tabbed-set tabbed-alternate" data-tabs="16:2"><input checked="checked" id="__tabbed_16_1" name="__tabbed_16" type="radio" /><input id="__tabbed_16_2" name="__tabbed_16" type="radio" /><div class="tabbed-labels"><label for="__tabbed_16_1"><span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16"><path d="m6.354 8.04-4.773 4.773a.75.75 0 1 0 1.061 1.06L7.945 8.57a.75.75 0 0 0 0-1.06L2.642 2.206a.75.75 0 0 0-1.06 1.061L6.353 8.04ZM8.75 11.5a.75.75 0 0 0 0 1.5h5.5a.75.75 0 0 0 0-1.5z"/></svg></span> Command</label><label for="__tabbed_16_2"><span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16"><path d="m6.354 8.04-4.773 4.773a.75.75 0 1 0 1.061 1.06L7.945 8.57a.75.75 0 0 0 0-1.06L2.642 2.206a.75.75 0 0 0-1.06 1.061L6.353 8.04ZM8.75 11.5a.75.75 0 0 0 0 1.5h5.5a.75.75 0 0 0 0-1.5z"/></svg></span> Command Output</label></div>
 <div class="tabbed-content">
 <div class="tabbed-block">
-<div class="language-bash highlight"><pre><span></span><code><span id="__span-32-1"><a id="__codelineno-32-1" name="__codelineno-32-1" href="#__codelineno-32-1"></a>kubectl<span class="w"> </span><span class="nb">exec</span><span class="w"> </span>-it<span class="w"> </span>app-1<span class="w"> </span>--<span class="w"> </span>/bin/sh<span class="w"> </span>-c<span class="w"> </span><span class="s2">&quot;wc -l /data/abc.txt&quot;</span>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-32-1"><a id="__codelineno-32-1" name="__codelineno-32-1" href="#__codelineno-32-1"></a>kubectl<span class="w"> </span><span class="nb">exec</span><span class="w"> </span>-it<span class="w"> </span>app-1<span class="w"> </span>--<span class="w"> </span>/bin/sh<span class="w"> </span>-c<span class="w"> </span><span class="s2">"wc -l /data/abc.txt"</span>
 </span></code></pre></div>
 </div>
 <div class="tabbed-block">
-<div class="language-text highlight"><pre><span></span><code><span id="__span-33-1"><a id="__codelineno-33-1" name="__codelineno-33-1" href="#__codelineno-33-1"></a>kubectl exec -it app-1 -- /bin/sh -c &quot;wc -l /data/abc.txt&quot;
+<div class="language-text highlight"><pre><span></span><code><span id="__span-33-1"><a id="__codelineno-33-1" name="__codelineno-33-1" href="#__codelineno-33-1"></a>kubectl exec -it app-1 -- /bin/sh -c "wc -l /data/abc.txt"
 </span><span id="__span-33-2"><a id="__codelineno-33-2" name="__codelineno-33-2" href="#__codelineno-33-2"></a><span class="hll">10000 /data/abc.txt
 </span></span></code></pre></div>
 </div>
@@ -4464,8 +4464,8 @@
 <div class="tabbed-block">
 <div class="language-text no-copy highlight"><pre><span></span><code><span id="__span-38-1"><a id="__codelineno-38-1" name="__codelineno-38-1" href="#__codelineno-38-1"></a>namespace/restore created
 </span><span id="__span-38-2"><a id="__codelineno-38-2" name="__codelineno-38-2" href="#__codelineno-38-2"></a>
-</span><span id="__span-38-3"><a id="__codelineno-38-3" name="__codelineno-38-3" href="#__codelineno-38-3"></a>Context &quot;nkplb-admin@nkplb&quot; modified.
-</span><span id="__span-38-4"><a id="__codelineno-38-4" name="__codelineno-38-4" href="#__codelineno-38-4"></a>Active namespace is &quot;restore&quot;.
+</span><span id="__span-38-3"><a id="__codelineno-38-3" name="__codelineno-38-3" href="#__codelineno-38-3"></a>Context "nkplb-admin@nkplb" modified.
+</span><span id="__span-38-4"><a id="__codelineno-38-4" name="__codelineno-38-4" href="#__codelineno-38-4"></a>Active namespace is "restore".
 </span></code></pre></div>
 </div>
 </div>
@@ -4607,11 +4607,11 @@
 <div class="tabbed-set tabbed-alternate" data-tabs="22:2"><input checked="checked" id="__tabbed_22_1" name="__tabbed_22" type="radio" /><input id="__tabbed_22_2" name="__tabbed_22" type="radio" /><div class="tabbed-labels"><label for="__tabbed_22_1"><span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16"><path d="m6.354 8.04-4.773 4.773a.75.75 0 1 0 1.061 1.06L7.945 8.57a.75.75 0 0 0 0-1.06L2.642 2.206a.75.75 0 0 0-1.06 1.061L6.353 8.04ZM8.75 11.5a.75.75 0 0 0 0 1.5h5.5a.75.75 0 0 0 0-1.5z"/></svg></span> Command</label><label for="__tabbed_22_2"><span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16"><path d="m6.354 8.04-4.773 4.773a.75.75 0 1 0 1.061 1.06L7.945 8.57a.75.75 0 0 0 0-1.06L2.642 2.206a.75.75 0 0 0-1.06 1.061L6.353 8.04ZM8.75 11.5a.75.75 0 0 0 0 1.5h5.5a.75.75 0 0 0 0-1.5z"/></svg></span> Command Output</label></div>
 <div class="tabbed-content">
 <div class="tabbed-block">
-<div class="language-bash highlight"><pre><span></span><code><span id="__span-47-1"><a id="__codelineno-47-1" name="__codelineno-47-1" href="#__codelineno-47-1"></a>kubectl<span class="w"> </span><span class="nb">exec</span><span class="w"> </span>-it<span class="w"> </span>app-1<span class="w"> </span>--<span class="w"> </span>/bin/sh<span class="w"> </span>-c<span class="w"> </span><span class="s2">&quot;wc -l /data/abc.txt&quot;</span>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-47-1"><a id="__codelineno-47-1" name="__codelineno-47-1" href="#__codelineno-47-1"></a>kubectl<span class="w"> </span><span class="nb">exec</span><span class="w"> </span>-it<span class="w"> </span>app-1<span class="w"> </span>--<span class="w"> </span>/bin/sh<span class="w"> </span>-c<span class="w"> </span><span class="s2">"wc -l /data/abc.txt"</span>
 </span></code></pre></div>
 </div>
 <div class="tabbed-block">
-<div class="language-text highlight"><pre><span></span><code><span id="__span-48-1"><a id="__codelineno-48-1" name="__codelineno-48-1" href="#__codelineno-48-1"></a>kubectl exec -it app-1 -- /bin/sh -c &quot;wc -l /data/abc.txt&quot;
+<div class="language-text highlight"><pre><span></span><code><span id="__span-48-1"><a id="__codelineno-48-1" name="__codelineno-48-1" href="#__codelineno-48-1"></a>kubectl exec -it app-1 -- /bin/sh -c "wc -l /data/abc.txt"
 </span><span id="__span-48-2"><a id="__codelineno-48-2" name="__codelineno-48-2" href="#__codelineno-48-2"></a><span class="hll">10000 /data/abc.txt
 </span></span></code></pre></div>
 </div>

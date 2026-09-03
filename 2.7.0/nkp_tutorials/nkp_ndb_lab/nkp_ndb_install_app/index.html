@@ -4069,7 +4069,7 @@
 </span></code></pre></div>
    Update <code>DB_HOST</code> and <code>DB_PORT</code> in <code>app-variables.yaml</code>:
    <div class="language-yaml highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="nt">DB_HOST</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">dbforflower-svc</span>
-</span><span id="__span-2-2"><a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a><span class="nt">DB_PORT</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;80&quot;</span>
+</span><span id="__span-2-2"><a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a><span class="nt">DB_PORT</span><span class="p">:</span><span class="w"> </span><span class="s">"80"</span>
 </span></code></pre></div></li>
 <li>Apply the ConfigMap:
    <div class="language-bash highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a>kubectl<span class="w"> </span>apply<span class="w"> </span>-f<span class="w"> </span>app-variables.yaml<span class="w"> </span>-n<span class="w"> </span>ndb
@@ -4085,7 +4085,7 @@
 </span><span id="__span-6-2"><a id="__codelineno-6-2" name="__codelineno-6-2" href="#__codelineno-6-2"></a>django-job   1/1           19s        20s
 </span></code></pre></div></li>
 <li>Check job logs:
-   <div class="language-bash highlight"><pre><span></span><code><span id="__span-7-1"><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a>kubectl<span class="w"> </span>logs<span class="w"> </span>-n<span class="w"> </span>ndb<span class="w"> </span><span class="k">$(</span>kubectl<span class="w"> </span>get<span class="w"> </span>pod<span class="w"> </span>-n<span class="w"> </span>ndb<span class="w"> </span>-l<span class="w"> </span>job-name<span class="o">=</span>django-job<span class="w"> </span>-o<span class="w"> </span><span class="nv">jsonpath</span><span class="o">=</span><span class="s1">&#39;{.items[0].metadata.name}&#39;</span><span class="k">)</span>
+   <div class="language-bash highlight"><pre><span></span><code><span id="__span-7-1"><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a>kubectl<span class="w"> </span>logs<span class="w"> </span>-n<span class="w"> </span>ndb<span class="w"> </span><span class="k">$(</span>kubectl<span class="w"> </span>get<span class="w"> </span>pod<span class="w"> </span>-n<span class="w"> </span>ndb<span class="w"> </span>-l<span class="w"> </span>job-name<span class="o">=</span>django-job<span class="w"> </span>-o<span class="w"> </span><span class="nv">jsonpath</span><span class="o">=</span><span class="s1">'{.items[0].metadata.name}'</span><span class="k">)</span>
 </span></code></pre></div></li>
 <li>Verify new tables:
    <div class="language-bash highlight"><pre><span></span><code><span id="__span-8-1"><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a>kubectl<span class="w"> </span><span class="nb">exec</span><span class="w"> </span>-it<span class="w"> </span>psql<span class="w"> </span>-n<span class="w"> </span>ndb<span class="w"> </span>--<span class="w"> </span>psql<span class="w"> </span>-h<span class="w"> </span>dbforflower-svc<span class="w"> </span>-p<span class="w"> </span><span class="m">80</span><span class="w"> </span>-U<span class="w"> </span>postgres<span class="w"> </span>-d<span class="w"> </span>predictiondb
@@ -4176,7 +4176,7 @@
 </li>
 <li>
 <p>Replace <code>k8suserXX</code> with your user ID:</p>
-<div class="language-bash highlight"><pre><span></span><code><span id="__span-13-1"><a id="__codelineno-13-1" name="__codelineno-13-1" href="#__codelineno-13-1"></a>sed<span class="w"> </span>-i<span class="w"> </span><span class="s1">&#39;s/k8suserXX/your_user_id/g&#39;</span><span class="w"> </span>ingress.yaml
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-13-1"><a id="__codelineno-13-1" name="__codelineno-13-1" href="#__codelineno-13-1"></a>sed<span class="w"> </span>-i<span class="w"> </span><span class="s1">'s/k8suserXX/your_user_id/g'</span><span class="w"> </span>ingress.yaml
 </span></code></pre></div>
 </li>
 <li>

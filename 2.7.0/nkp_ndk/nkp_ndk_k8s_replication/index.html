@@ -4216,15 +4216,15 @@
 <div class="tabbed-content">
 <div class="tabbed-block">
 <div class="language-text highlight"><pre><span></span><code><span id="__span-4-1"><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a>helm upgrade -n ntnx-system --install ndk chart/ \
-</span><span id="__span-4-2"><a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a>--set manager.repository=&quot;$IMAGE_REGISTRY/ndk/manager&quot; \
+</span><span id="__span-4-2"><a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a>--set manager.repository="$IMAGE_REGISTRY/ndk/manager" \
 </span><span id="__span-4-3"><a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a>--set manager.tag=${NDK_VERSION} \
-</span><span id="__span-4-4"><a id="__codelineno-4-4" name="__codelineno-4-4" href="#__codelineno-4-4"></a>--set infraManager.repository=&quot;$IMAGE_REGISTRY/ndk/infra-manager&quot; \
+</span><span id="__span-4-4"><a id="__codelineno-4-4" name="__codelineno-4-4" href="#__codelineno-4-4"></a>--set infraManager.repository="$IMAGE_REGISTRY/ndk/infra-manager" \
 </span><span id="__span-4-5"><a id="__codelineno-4-5" name="__codelineno-4-5" href="#__codelineno-4-5"></a>--set infraManager.tag=${NDK_VERSION} \
-</span><span id="__span-4-6"><a id="__codelineno-4-6" name="__codelineno-4-6" href="#__codelineno-4-6"></a>--set kubeRbacProxy.repository=&quot;$IMAGE_REGISTRY/ndk/kube-rbac-proxy&quot; \
+</span><span id="__span-4-6"><a id="__codelineno-4-6" name="__codelineno-4-6" href="#__codelineno-4-6"></a>--set kubeRbacProxy.repository="$IMAGE_REGISTRY/ndk/kube-rbac-proxy" \
 </span><span id="__span-4-7"><a id="__codelineno-4-7" name="__codelineno-4-7" href="#__codelineno-4-7"></a>--set kubeRbacProxy.tag=${KUBE_RBAC_PROXY_VERSION} \
-</span><span id="__span-4-8"><a id="__codelineno-4-8" name="__codelineno-4-8" href="#__codelineno-4-8"></a>--set bitnamiKubectl.repository=&quot;$IMAGE_REGISTRY/ndk/bitnami-kubectl&quot; \
+</span><span id="__span-4-8"><a id="__codelineno-4-8" name="__codelineno-4-8" href="#__codelineno-4-8"></a>--set bitnamiKubectl.repository="$IMAGE_REGISTRY/ndk/bitnami-kubectl" \
 </span><span id="__span-4-9"><a id="__codelineno-4-9" name="__codelineno-4-9" href="#__codelineno-4-9"></a>--set bitnamiKubectl.tag=${KUBECTL_VERSION} \
-</span><span id="__span-4-10"><a id="__codelineno-4-10" name="__codelineno-4-10" href="#__codelineno-4-10"></a>--set jobScheduler.repository=&quot;$IMAGE_REGISTRY/ndk/job-scheduler&quot; \
+</span><span id="__span-4-10"><a id="__codelineno-4-10" name="__codelineno-4-10" href="#__codelineno-4-10"></a>--set jobScheduler.repository="$IMAGE_REGISTRY/ndk/job-scheduler" \
 </span><span id="__span-4-11"><a id="__codelineno-4-11" name="__codelineno-4-11" href="#__codelineno-4-11"></a>--set jobScheduler.tag=${NDK_VERSION} \
 </span><span id="__span-4-12"><a id="__codelineno-4-12" name="__codelineno-4-12" href="#__codelineno-4-12"></a>--set config.secret.name=nutanix-csi-credentials \
 </span><span id="__span-4-13"><a id="__codelineno-4-13" name="__codelineno-4-13" href="#__codelineno-4-13"></a>--set tls.server.enable=false
@@ -4232,22 +4232,22 @@
 </div>
 <div class="tabbed-block">
 <div class="language-text no-copy highlight"><pre><span></span><code><span id="__span-5-1"><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a>helm upgrade -n ntnx-system --install ndk chart/ \
-</span><span id="__span-5-2"><a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a>--set manager.repository=&quot;harbor.example.com/nkp/ndk/manager&quot; \
+</span><span id="__span-5-2"><a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a>--set manager.repository="harbor.example.com/nkp/ndk/manager" \
 </span><span id="__span-5-3"><a id="__codelineno-5-3" name="__codelineno-5-3" href="#__codelineno-5-3"></a>--set manager.tag=1.2.0 \
-</span><span id="__span-5-4"><a id="__codelineno-5-4" name="__codelineno-5-4" href="#__codelineno-5-4"></a>--set infraManager.repository=&quot;harbor.example.com/nkp/ndk/infra-manager&quot; \
+</span><span id="__span-5-4"><a id="__codelineno-5-4" name="__codelineno-5-4" href="#__codelineno-5-4"></a>--set infraManager.repository="harbor.example.com/nkp/ndk/infra-manager" \
 </span><span id="__span-5-5"><a id="__codelineno-5-5" name="__codelineno-5-5" href="#__codelineno-5-5"></a>--set infraManager.tag=1.2.0 \
-</span><span id="__span-5-6"><a id="__codelineno-5-6" name="__codelineno-5-6" href="#__codelineno-5-6"></a>--set kubeRbacProxy.repository=&quot;harbor.example.com/nkp/ndk/kube-rbac-proxy&quot; \
+</span><span id="__span-5-6"><a id="__codelineno-5-6" name="__codelineno-5-6" href="#__codelineno-5-6"></a>--set kubeRbacProxy.repository="harbor.example.com/nkp/ndk/kube-rbac-proxy" \
 </span><span id="__span-5-7"><a id="__codelineno-5-7" name="__codelineno-5-7" href="#__codelineno-5-7"></a>--set kubeRbacProxy.tag=v0.17.0 \
-</span><span id="__span-5-8"><a id="__codelineno-5-8" name="__codelineno-5-8" href="#__codelineno-5-8"></a>--set bitnamiKubectl.repository=&quot;harbor.example.com/nkp/ndk/bitnami-kubectl&quot; \
+</span><span id="__span-5-8"><a id="__codelineno-5-8" name="__codelineno-5-8" href="#__codelineno-5-8"></a>--set bitnamiKubectl.repository="harbor.example.com/nkp/ndk/bitnami-kubectl" \
 </span><span id="__span-5-9"><a id="__codelineno-5-9" name="__codelineno-5-9" href="#__codelineno-5-9"></a>--set bitnamiKubectl.tag=1.30.3 \
-</span><span id="__span-5-10"><a id="__codelineno-5-10" name="__codelineno-5-10" href="#__codelineno-5-10"></a>--set jobScheduler.repository=&quot;harbor.example.com/nkp/ndk/job-scheduler&quot; \
+</span><span id="__span-5-10"><a id="__codelineno-5-10" name="__codelineno-5-10" href="#__codelineno-5-10"></a>--set jobScheduler.repository="harbor.example.com/nkp/ndk/job-scheduler" \
 </span><span id="__span-5-11"><a id="__codelineno-5-11" name="__codelineno-5-11" href="#__codelineno-5-11"></a>--set jobScheduler.tag=1.2.0 \
 </span><span id="__span-5-12"><a id="__codelineno-5-12" name="__codelineno-5-12" href="#__codelineno-5-12"></a>--set config.secret.name=nutanix-csi-credentials \
 </span><span id="__span-5-13"><a id="__codelineno-5-13" name="__codelineno-5-13" href="#__codelineno-5-13"></a>--set tls.server.enable=false
 </span></code></pre></div>
 </div>
 <div class="tabbed-block">
-<div class="language-text no-copy highlight"><pre><span></span><code><span id="__span-6-1"><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a>Release &quot;ndk&quot; does not exist. Installing it now.
+<div class="language-text no-copy highlight"><pre><span></span><code><span id="__span-6-1"><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a>Release "ndk" does not exist. Installing it now.
 </span><span id="__span-6-2"><a id="__codelineno-6-2" name="__codelineno-6-2" href="#__codelineno-6-2"></a>NAME: ndk
 </span><span id="__span-6-3"><a id="__codelineno-6-3" name="__codelineno-6-3" href="#__codelineno-6-3"></a>LAST DEPLOYED: Mon Jul  7 06:33:28 2025
 </span><span id="__span-6-4"><a id="__codelineno-6-4" name="__codelineno-6-4" href="#__codelineno-6-4"></a>NAMESPACE: ntnx-system
@@ -4269,7 +4269,7 @@
 </span></code></pre></div>
 </div>
 <div class="tabbed-block">
-<div class="language-text highlight"><pre><span></span><code><span id="__span-8-1"><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a>Active namespace is &quot;ntnx-system&quot;.
+<div class="language-text highlight"><pre><span></span><code><span id="__span-8-1"><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a>Active namespace is "ntnx-system".
 </span><span id="__span-8-2"><a id="__codelineno-8-2" name="__codelineno-8-2" href="#__codelineno-8-2"></a>
 </span><span id="__span-8-3"><a id="__codelineno-8-3" name="__codelineno-8-3" href="#__codelineno-8-3"></a>$ k get all -l app.kubernetes.io/name=ndk
 </span><span id="__span-8-4"><a id="__codelineno-8-4" name="__codelineno-8-4" href="#__codelineno-8-4"></a>
@@ -4317,18 +4317,18 @@
 <div class="tabbed-set tabbed-alternate" data-tabs="6:3"><input checked="checked" id="__tabbed_6_1" name="__tabbed_6" type="radio" /><input id="__tabbed_6_2" name="__tabbed_6" type="radio" /><input id="__tabbed_6_3" name="__tabbed_6" type="radio" /><div class="tabbed-labels"><label for="__tabbed_6_1"><span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16"><path d="m6.354 8.04-4.773 4.773a.75.75 0 1 0 1.061 1.06L7.945 8.57a.75.75 0 0 0 0-1.06L2.642 2.206a.75.75 0 0 0-1.06 1.061L6.353 8.04ZM8.75 11.5a.75.75 0 0 0 0 1.5h5.5a.75.75 0 0 0 0-1.5z"/></svg></span>  Template Command</label><label for="__tabbed_6_2"><span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16"><path d="m6.354 8.04-4.773 4.773a.75.75 0 1 0 1.061 1.06L7.945 8.57a.75.75 0 0 0 0-1.06L2.642 2.206a.75.75 0 0 0-1.06 1.061L6.353 8.04ZM8.75 11.5a.75.75 0 0 0 0 1.5h5.5a.75.75 0 0 0 0-1.5z"/></svg></span>  Sample .command</label><label for="__tabbed_6_3"><span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16"><path d="m6.354 8.04-4.773 4.773a.75.75 0 1 0 1.061 1.06L7.945 8.57a.75.75 0 0 0 0-1.06L2.642 2.206a.75.75 0 0 0-1.06 1.061L6.353 8.04ZM8.75 11.5a.75.75 0 0 0 0 1.5h5.5a.75.75 0 0 0 0-1.5z"/></svg></span>  Command output</label></div>
 <div class="tabbed-content">
 <div class="tabbed-block">
-<div class="language-bash highlight"><pre><span></span><code><span id="__span-10-1"><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a>kubectl<span class="w"> </span>get<span class="w"> </span>node<span class="w"> </span>_any_nkp_node_name<span class="w"> </span>-o<span class="w"> </span><span class="nv">jsonpath</span><span class="o">=</span><span class="s1">&#39;{.metadata.labels}&#39;</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>grep<span class="w"> </span>-o<span class="w"> </span><span class="s1">&#39;csi\.nutanix\.com/[^,]*&#39;</span><span class="w"> </span>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-10-1"><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a>kubectl<span class="w"> </span>get<span class="w"> </span>node<span class="w"> </span>_any_nkp_node_name<span class="w"> </span>-o<span class="w"> </span><span class="nv">jsonpath</span><span class="o">=</span><span class="s1">'{.metadata.labels}'</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>grep<span class="w"> </span>-o<span class="w"> </span><span class="s1">'csi\.nutanix\.com/[^,]*'</span><span class="w"> </span>
 </span></code></pre></div>
 </div>
 <div class="tabbed-block">
-<div class="language-text highlight"><pre><span></span><code><span id="__span-11-1"><a id="__codelineno-11-1" name="__codelineno-11-1" href="#__codelineno-11-1"></a>kubectl get node nkpsecondary-md-0-fdrzg-clvf9-t8t4l -o jsonpath=&#39;{.metadata.labels}&#39; | grep -o &#39;csi\.nutanix\.com/[^,]*&#39; 
+<div class="language-text highlight"><pre><span></span><code><span id="__span-11-1"><a id="__codelineno-11-1" name="__codelineno-11-1" href="#__codelineno-11-1"></a>kubectl get node nkpsecondary-md-0-fdrzg-clvf9-t8t4l -o jsonpath='{.metadata.labels}' | grep -o 'csi\.nutanix\.com/[^,]*' 
 </span></code></pre></div>
 </div>
 <div class="tabbed-block">
-<div class="language-text highlight"><pre><span></span><code><span id="__span-12-1"><a id="__codelineno-12-1" name="__codelineno-12-1" href="#__codelineno-12-1"></a>$ kubectl get node nkpsecondary-md-0-fdrzg-clvf9-t8t4l -o jsonpath=&#39;{.metadata.labels}&#39; | grep -o &#39;csi\.nutanix\.com/[^,]*&#39; 
+<div class="language-text highlight"><pre><span></span><code><span id="__span-12-1"><a id="__codelineno-12-1" name="__codelineno-12-1" href="#__codelineno-12-1"></a>$ kubectl get node nkpsecondary-md-0-fdrzg-clvf9-t8t4l -o jsonpath='{.metadata.labels}' | grep -o 'csi\.nutanix\.com/[^,]*' 
 </span><span id="__span-12-2"><a id="__codelineno-12-2" name="__codelineno-12-2" href="#__codelineno-12-2"></a>
-</span><span id="__span-12-3"><a id="__codelineno-12-3" name="__codelineno-12-3" href="#__codelineno-12-3"></a><span class="hll">csi.nutanix.com/prism-central-uuid&quot;:&quot;cb5ca4e1-29d4-4a6f-91c7-xxxxxxxxxxxx&quot;
-</span></span><span id="__span-12-4"><a id="__codelineno-12-4" name="__codelineno-12-4" href="#__codelineno-12-4"></a><span class="hll">csi.nutanix.com/prism-element-uuid&quot;:&quot;000639fd-8cfa-9bf4-3d70-xxxxxxxxxxxx&quot;
+</span><span id="__span-12-3"><a id="__codelineno-12-3" name="__codelineno-12-3" href="#__codelineno-12-3"></a><span class="hll">csi.nutanix.com/prism-central-uuid":"cb5ca4e1-29d4-4a6f-91c7-xxxxxxxxxxxx"
+</span></span><span id="__span-12-4"><a id="__codelineno-12-4" name="__codelineno-12-4" href="#__codelineno-12-4"></a><span class="hll">csi.nutanix.com/prism-element-uuid":"000639fd-8cfa-9bf4-3d70-xxxxxxxxxxxx"
 </span></span></code></pre></div>
 </div>
 </div>
@@ -4359,7 +4359,7 @@
 </li>
 <li>
 <p>Note and export the external  IP assigned to the NDK intercom service on the Primary Cluster</p>
-<div class="language-bash highlight"><pre><span></span><code><span id="__span-15-1"><a id="__codelineno-15-1" name="__codelineno-15-1" href="#__codelineno-15-1"></a><span class="nb">export</span><span class="w"> </span><span class="nv">SECONDARY_NDK_IP</span><span class="o">=</span><span class="k">$(</span>k<span class="w"> </span>get<span class="w"> </span>svc<span class="w"> </span>-n<span class="w"> </span>ntnx-system<span class="w"> </span>ndk-intercom-service<span class="w"> </span>-o<span class="w"> </span><span class="nv">jsonpath</span><span class="o">=</span><span class="s1">&#39;{.status.loadBalancer.ingress[0].ip}&#39;</span><span class="k">)</span>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-15-1"><a id="__codelineno-15-1" name="__codelineno-15-1" href="#__codelineno-15-1"></a><span class="nb">export</span><span class="w"> </span><span class="nv">SECONDARY_NDK_IP</span><span class="o">=</span><span class="k">$(</span>k<span class="w"> </span>get<span class="w"> </span>svc<span class="w"> </span>-n<span class="w"> </span>ntnx-system<span class="w"> </span>ndk-intercom-service<span class="w"> </span>-o<span class="w"> </span><span class="nv">jsonpath</span><span class="o">=</span><span class="s1">'{.status.loadBalancer.ingress[0].ip}'</span><span class="k">)</span>
 </span><span id="__span-15-2"><a id="__codelineno-15-2" name="__codelineno-15-2" href="#__codelineno-15-2"></a><span class="nb">echo</span><span class="w"> </span><span class="nv">$SECONDARY_NDK_IP</span>
 </span></code></pre></div>
 </li>
@@ -4369,7 +4369,7 @@
 <div class="tabbed-content">
 <div class="tabbed-block">
 <div class="language-text highlight"><pre><span></span><code><span id="__span-16-1"><a id="__codelineno-16-1" name="__codelineno-16-1" href="#__codelineno-16-1"></a>export SECONDARY_NDK_PORT=2021
-</span><span id="__span-16-2"><a id="__codelineno-16-2" name="__codelineno-16-2" href="#__codelineno-16-2"></a>export SECONDARY_NDK_IP=$(k get svc -n ntnx-system ndk-intercom-service -o jsonpath=&#39;{.status.loadBalancer.ingress[0].ip}&#39;)
+</span><span id="__span-16-2"><a id="__codelineno-16-2" name="__codelineno-16-2" href="#__codelineno-16-2"></a>export SECONDARY_NDK_IP=$(k get svc -n ntnx-system ndk-intercom-service -o jsonpath='{.status.loadBalancer.ingress[0].ip}')
 </span></code></pre></div>
 </div>
 </div>
@@ -4545,11 +4545,11 @@
 </span><span id="__span-31-2"><a id="__codelineno-31-2" name="__codelineno-31-2" href="#__codelineno-31-2"></a>
 </span><span id="__span-31-3"><a id="__codelineno-31-3" name="__codelineno-31-3" href="#__codelineno-31-3"></a>status:
 </span><span id="__span-31-4"><a id="__codelineno-31-4" name="__codelineno-31-4" href="#__codelineno-31-4"></a>  conditions:
-</span><span id="__span-31-5"><a id="__codelineno-31-5" name="__codelineno-31-5" href="#__codelineno-31-5"></a>  - lastTransitionTime: &quot;2025-07-16T21:31:06Z&quot;
-</span><span id="__span-31-6"><a id="__codelineno-31-6" name="__codelineno-31-6" href="#__codelineno-31-6"></a>    message: &quot;&quot;
+</span><span id="__span-31-5"><a id="__codelineno-31-5" name="__codelineno-31-5" href="#__codelineno-31-5"></a>  - lastTransitionTime: "2025-07-16T21:31:06Z"
+</span><span id="__span-31-6"><a id="__codelineno-31-6" name="__codelineno-31-6" href="#__codelineno-31-6"></a>    message: ""
 </span><span id="__span-31-7"><a id="__codelineno-31-7" name="__codelineno-31-7" href="#__codelineno-31-7"></a>    observedGeneration: 1
 </span><span id="__span-31-8"><a id="__codelineno-31-8" name="__codelineno-31-8" href="#__codelineno-31-8"></a><span class="hll">    reason: Healthy
-</span></span><span id="__span-31-9"><a id="__codelineno-31-9" name="__codelineno-31-9" href="#__codelineno-31-9"></a><span class="hll">    status: &quot;True&quot;
+</span></span><span id="__span-31-9"><a id="__codelineno-31-9" name="__codelineno-31-9" href="#__codelineno-31-9"></a><span class="hll">    status: "True"
 </span></span><span id="__span-31-10"><a id="__codelineno-31-10" name="__codelineno-31-10" href="#__codelineno-31-10"></a>    type: Available
 </span></code></pre></div>
 </div>
@@ -4699,32 +4699,32 @@
 </span><span id="__span-45-2"><a id="__codelineno-45-2" name="__codelineno-45-2" href="#__codelineno-45-2"></a>status:
 </span><span id="__span-45-3"><a id="__codelineno-45-3" name="__codelineno-45-3" href="#__codelineno-45-3"></a>completed:<span class="w"> </span><span class="nb">true</span>
 </span><span id="__span-45-4"><a id="__codelineno-45-4" name="__codelineno-45-4" href="#__codelineno-45-4"></a>conditions:
-</span><span id="__span-45-5"><a id="__codelineno-45-5" name="__codelineno-45-5" href="#__codelineno-45-5"></a>-<span class="w"> </span>lastTransitionTime:<span class="w"> </span><span class="s2">&quot;2025-07-16T21:57:53Z&quot;</span>
+</span><span id="__span-45-5"><a id="__codelineno-45-5" name="__codelineno-45-5" href="#__codelineno-45-5"></a>-<span class="w"> </span>lastTransitionTime:<span class="w"> </span><span class="s2">"2025-07-16T21:57:53Z"</span>
 </span><span id="__span-45-6"><a id="__codelineno-45-6" name="__codelineno-45-6" href="#__codelineno-45-6"></a><span class="w">  </span>message:<span class="w"> </span>All<span class="w"> </span>prechecks<span class="w"> </span>passed<span class="w"> </span>and<span class="w"> </span>finalizers<span class="w"> </span>on<span class="w"> </span>dependent<span class="w"> </span>resources<span class="w"> </span><span class="nb">set</span>
 </span><span id="__span-45-7"><a id="__codelineno-45-7" name="__codelineno-45-7" href="#__codelineno-45-7"></a><span class="w">  </span>observedGeneration:<span class="w"> </span><span class="m">1</span>
 </span><span id="__span-45-8"><a id="__codelineno-45-8" name="__codelineno-45-8" href="#__codelineno-45-8"></a><span class="w">  </span>reason:<span class="w"> </span>PrechecksPassed
-</span><span id="__span-45-9"><a id="__codelineno-45-9" name="__codelineno-45-9" href="#__codelineno-45-9"></a><span class="hll"><span class="w">  </span>status:<span class="w"> </span><span class="s2">&quot;True&quot;</span>
+</span><span id="__span-45-9"><a id="__codelineno-45-9" name="__codelineno-45-9" href="#__codelineno-45-9"></a><span class="hll"><span class="w">  </span>status:<span class="w"> </span><span class="s2">"True"</span>
 </span></span><span id="__span-45-10"><a id="__codelineno-45-10" name="__codelineno-45-10" href="#__codelineno-45-10"></a><span class="hll"><span class="w">  </span>type:<span class="w"> </span>PrechecksPassed
-</span></span><span id="__span-45-11"><a id="__codelineno-45-11" name="__codelineno-45-11" href="#__codelineno-45-11"></a>-<span class="w"> </span>lastTransitionTime:<span class="w"> </span><span class="s2">&quot;2025-07-16T21:59:00Z&quot;</span>
+</span></span><span id="__span-45-11"><a id="__codelineno-45-11" name="__codelineno-45-11" href="#__codelineno-45-11"></a>-<span class="w"> </span>lastTransitionTime:<span class="w"> </span><span class="s2">"2025-07-16T21:59:00Z"</span>
 </span><span id="__span-45-12"><a id="__codelineno-45-12" name="__codelineno-45-12" href="#__codelineno-45-12"></a><span class="w">  </span>message:<span class="w"> </span>All<span class="w"> </span>eligible<span class="w"> </span>application<span class="w"> </span>configs<span class="w"> </span>restored
 </span><span id="__span-45-13"><a id="__codelineno-45-13" name="__codelineno-45-13" href="#__codelineno-45-13"></a><span class="w">  </span>observedGeneration:<span class="w"> </span><span class="m">1</span>
 </span><span id="__span-45-14"><a id="__codelineno-45-14" name="__codelineno-45-14" href="#__codelineno-45-14"></a><span class="w">  </span>reason:<span class="w"> </span>ApplicationConfigRestored
-</span><span id="__span-45-15"><a id="__codelineno-45-15" name="__codelineno-45-15" href="#__codelineno-45-15"></a><span class="hll"><span class="w">  </span>status:<span class="w"> </span><span class="s2">&quot;True&quot;</span>
+</span><span id="__span-45-15"><a id="__codelineno-45-15" name="__codelineno-45-15" href="#__codelineno-45-15"></a><span class="hll"><span class="w">  </span>status:<span class="w"> </span><span class="s2">"True"</span>
 </span></span><span id="__span-45-16"><a id="__codelineno-45-16" name="__codelineno-45-16" href="#__codelineno-45-16"></a><span class="hll"><span class="w">  </span>type:<span class="w"> </span>ApplicationConfigRestored
-</span></span><span id="__span-45-17"><a id="__codelineno-45-17" name="__codelineno-45-17" href="#__codelineno-45-17"></a>-<span class="w"> </span>lastTransitionTime:<span class="w"> </span><span class="s2">&quot;2025-07-16T21:59:15Z&quot;</span>
+</span></span><span id="__span-45-17"><a id="__codelineno-45-17" name="__codelineno-45-17" href="#__codelineno-45-17"></a>-<span class="w"> </span>lastTransitionTime:<span class="w"> </span><span class="s2">"2025-07-16T21:59:15Z"</span>
 </span><span id="__span-45-18"><a id="__codelineno-45-18" name="__codelineno-45-18" href="#__codelineno-45-18"></a><span class="w">  </span>message:<span class="w"> </span>All<span class="w"> </span>eligible<span class="w"> </span>volumes<span class="w"> </span>restored
 </span><span id="__span-45-19"><a id="__codelineno-45-19" name="__codelineno-45-19" href="#__codelineno-45-19"></a><span class="w">  </span>observedGeneration:<span class="w"> </span><span class="m">1</span>
 </span><span id="__span-45-20"><a id="__codelineno-45-20" name="__codelineno-45-20" href="#__codelineno-45-20"></a><span class="w">  </span>reason:<span class="w"> </span>VolumesRestored
-</span><span id="__span-45-21"><a id="__codelineno-45-21" name="__codelineno-45-21" href="#__codelineno-45-21"></a><span class="hll"><span class="w">  </span>status:<span class="w"> </span><span class="s2">&quot;True&quot;</span>
+</span><span id="__span-45-21"><a id="__codelineno-45-21" name="__codelineno-45-21" href="#__codelineno-45-21"></a><span class="hll"><span class="w">  </span>status:<span class="w"> </span><span class="s2">"True"</span>
 </span></span><span id="__span-45-22"><a id="__codelineno-45-22" name="__codelineno-45-22" href="#__codelineno-45-22"></a><span class="hll"><span class="w">  </span>type:<span class="w"> </span>VolumesRestored
-</span></span><span id="__span-45-23"><a id="__codelineno-45-23" name="__codelineno-45-23" href="#__codelineno-45-23"></a>-<span class="w"> </span>lastTransitionTime:<span class="w"> </span><span class="s2">&quot;2025-07-16T21:59:15Z&quot;</span>
+</span></span><span id="__span-45-23"><a id="__codelineno-45-23" name="__codelineno-45-23" href="#__codelineno-45-23"></a>-<span class="w"> </span>lastTransitionTime:<span class="w"> </span><span class="s2">"2025-07-16T21:59:15Z"</span>
 </span><span id="__span-45-24"><a id="__codelineno-45-24" name="__codelineno-45-24" href="#__codelineno-45-24"></a><span class="w">  </span>message:<span class="w"> </span>Application<span class="w"> </span>restore<span class="w"> </span>successfully<span class="w"> </span>finalised
 </span><span id="__span-45-25"><a id="__codelineno-45-25" name="__codelineno-45-25" href="#__codelineno-45-25"></a><span class="w">  </span>observedGeneration:<span class="w"> </span><span class="m">1</span>
 </span><span id="__span-45-26"><a id="__codelineno-45-26" name="__codelineno-45-26" href="#__codelineno-45-26"></a><span class="w">  </span>reason:<span class="w"> </span>ApplicationRestoreFinalised
-</span><span id="__span-45-27"><a id="__codelineno-45-27" name="__codelineno-45-27" href="#__codelineno-45-27"></a><span class="hll"><span class="w">  </span>status:<span class="w"> </span><span class="s2">&quot;True&quot;</span>
+</span><span id="__span-45-27"><a id="__codelineno-45-27" name="__codelineno-45-27" href="#__codelineno-45-27"></a><span class="hll"><span class="w">  </span>status:<span class="w"> </span><span class="s2">"True"</span>
 </span></span><span id="__span-45-28"><a id="__codelineno-45-28" name="__codelineno-45-28" href="#__codelineno-45-28"></a><span class="hll"><span class="w">  </span>type:<span class="w"> </span>ApplicationRestoreFinalised
-</span></span><span id="__span-45-29"><a id="__codelineno-45-29" name="__codelineno-45-29" href="#__codelineno-45-29"></a>finishTime:<span class="w"> </span><span class="s2">&quot;2025-07-16 21:59:15&quot;</span>
-</span><span id="__span-45-30"><a id="__codelineno-45-30" name="__codelineno-45-30" href="#__codelineno-45-30"></a>startTime:<span class="w"> </span><span class="s2">&quot;2025-07-16 21:57:52&quot;</span>
+</span></span><span id="__span-45-29"><a id="__codelineno-45-29" name="__codelineno-45-29" href="#__codelineno-45-29"></a>finishTime:<span class="w"> </span><span class="s2">"2025-07-16 21:59:15"</span>
+</span><span id="__span-45-30"><a id="__codelineno-45-30" name="__codelineno-45-30" href="#__codelineno-45-30"></a>startTime:<span class="w"> </span><span class="s2">"2025-07-16 21:57:52"</span>
 </span></code></pre></div>
 </div>
 </div>
@@ -4756,11 +4756,11 @@
 <div class="tabbed-set tabbed-alternate" data-tabs="24:2"><input checked="checked" id="__tabbed_24_1" name="__tabbed_24" type="radio" /><input id="__tabbed_24_2" name="__tabbed_24" type="radio" /><div class="tabbed-labels"><label for="__tabbed_24_1"><span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16"><path d="m6.354 8.04-4.773 4.773a.75.75 0 1 0 1.061 1.06L7.945 8.57a.75.75 0 0 0 0-1.06L2.642 2.206a.75.75 0 0 0-1.06 1.061L6.353 8.04ZM8.75 11.5a.75.75 0 0 0 0 1.5h5.5a.75.75 0 0 0 0-1.5z"/></svg></span> Command</label><label for="__tabbed_24_2"><span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16"><path d="m6.354 8.04-4.773 4.773a.75.75 0 1 0 1.061 1.06L7.945 8.57a.75.75 0 0 0 0-1.06L2.642 2.206a.75.75 0 0 0-1.06 1.061L6.353 8.04ZM8.75 11.5a.75.75 0 0 0 0 1.5h5.5a.75.75 0 0 0 0-1.5z"/></svg></span> Command Output</label></div>
 <div class="tabbed-content">
 <div class="tabbed-block">
-<div class="language-bash highlight"><pre><span></span><code><span id="__span-48-1"><a id="__codelineno-48-1" name="__codelineno-48-1" href="#__codelineno-48-1"></a>kubectl<span class="w"> </span><span class="nb">exec</span><span class="w"> </span>-it<span class="w"> </span>app-1<span class="w"> </span>--<span class="w"> </span>/bin/sh<span class="w"> </span>-c<span class="w"> </span><span class="s2">&quot;wc -l /data/abc.txt&quot;</span>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-48-1"><a id="__codelineno-48-1" name="__codelineno-48-1" href="#__codelineno-48-1"></a>kubectl<span class="w"> </span><span class="nb">exec</span><span class="w"> </span>-it<span class="w"> </span>app-1<span class="w"> </span>--<span class="w"> </span>/bin/sh<span class="w"> </span>-c<span class="w"> </span><span class="s2">"wc -l /data/abc.txt"</span>
 </span></code></pre></div>
 </div>
 <div class="tabbed-block">
-<div class="language-text highlight"><pre><span></span><code><span id="__span-49-1"><a id="__codelineno-49-1" name="__codelineno-49-1" href="#__codelineno-49-1"></a>kubectl exec -it app-1 -- /bin/sh -c &quot;wc -l /data/abc.txt&quot;
+<div class="language-text highlight"><pre><span></span><code><span id="__span-49-1"><a id="__codelineno-49-1" name="__codelineno-49-1" href="#__codelineno-49-1"></a>kubectl exec -it app-1 -- /bin/sh -c "wc -l /data/abc.txt"
 </span><span id="__span-49-2"><a id="__codelineno-49-2" name="__codelineno-49-2" href="#__codelineno-49-2"></a><span class="hll">10000 /data/abc.txt
 </span></span></code></pre></div>
 </div>

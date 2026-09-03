@@ -4330,11 +4330,11 @@
    <div class="language-bash highlight"><pre><span></span><code><span id="__span-18-1"><a id="__codelineno-18-1" name="__codelineno-18-1" href="#__codelineno-18-1"></a><span class="nv">NDB_IP</span><span class="o">=</span><span class="m">10</span>.42.12.18
 </span></code></pre></div></li>
 <li>Retrieve the NDB cluster UUID:
-   <div class="language-bash highlight"><pre><span></span><code><span id="__span-19-1"><a id="__codelineno-19-1" name="__codelineno-19-1" href="#__codelineno-19-1"></a><span class="nv">NDB_UUID</span><span class="o">=</span><span class="s2">&quot;</span><span class="k">$(</span>curl<span class="w"> </span>-X<span class="w"> </span>GET<span class="w"> </span>-u<span class="w"> </span>admin<span class="w"> </span>-k<span class="w"> </span>https://<span class="nv">$NDB_IP</span>/era/v0.9/clusters<span class="w"> </span><span class="p">|</span><span class="w"> </span>jq<span class="w"> </span><span class="s1">&#39;.[0].id&#39;</span><span class="k">)</span><span class="s2">&quot;</span>
+   <div class="language-bash highlight"><pre><span></span><code><span id="__span-19-1"><a id="__codelineno-19-1" name="__codelineno-19-1" href="#__codelineno-19-1"></a><span class="nv">NDB_UUID</span><span class="o">=</span><span class="s2">"</span><span class="k">$(</span>curl<span class="w"> </span>-X<span class="w"> </span>GET<span class="w"> </span>-u<span class="w"> </span>admin<span class="w"> </span>-k<span class="w"> </span>https://<span class="nv">$NDB_IP</span>/era/v0.9/clusters<span class="w"> </span><span class="p">|</span><span class="w"> </span>jq<span class="w"> </span><span class="s1">'.[0].id'</span><span class="k">)</span><span class="s2">"</span>
 </span><span id="__span-19-2"><a id="__codelineno-19-2" name="__codelineno-19-2" href="#__codelineno-19-2"></a><span class="nb">echo</span><span class="w"> </span><span class="nv">$NDB_UUID</span>
 </span></code></pre></div>
    Example output:
-   <div class="language-text highlight"><pre><span></span><code><span id="__span-20-1"><a id="__codelineno-20-1" name="__codelineno-20-1" href="#__codelineno-20-1"></a>&quot;eafdb83c-e512-46ce-8d7d-6859dc170272&quot;
+   <div class="language-text highlight"><pre><span></span><code><span id="__span-20-1"><a id="__codelineno-20-1" name="__codelineno-20-1" href="#__codelineno-20-1"></a>"eafdb83c-e512-46ce-8d7d-6859dc170272"
 </span></code></pre></div>
    Note the UUID for the next step.</li>
 </ol>
@@ -4381,12 +4381,12 @@
 </span><span id="__span-24-9"><a id="__codelineno-24-9" name="__codelineno-24-9" href="#__codelineno-24-9"></a><span class="s">  isClone: false</span>
 </span><span id="__span-24-10"><a id="__codelineno-24-10" name="__codelineno-24-10" href="#__codelineno-24-10"></a><span class="s">  databaseInstance:</span>
 </span><span id="__span-24-11"><a id="__codelineno-24-11" name="__codelineno-24-11" href="#__codelineno-24-11"></a><span class="s">    clusterId: $NDB_UUID</span>
-</span><span id="__span-24-12"><a id="__codelineno-24-12" name="__codelineno-24-12" href="#__codelineno-24-12"></a><span class="s">    name: &quot;$MY_DB_SERVER_NAME&quot;</span>
+</span><span id="__span-24-12"><a id="__codelineno-24-12" name="__codelineno-24-12" href="#__codelineno-24-12"></a><span class="s">    name: "$MY_DB_SERVER_NAME"</span>
 </span><span id="__span-24-13"><a id="__codelineno-24-13" name="__codelineno-24-13" href="#__codelineno-24-13"></a><span class="s">    databaseNames:</span>
 </span><span id="__span-24-14"><a id="__codelineno-24-14" name="__codelineno-24-14" href="#__codelineno-24-14"></a><span class="s">      - predictiondb</span>
 </span><span id="__span-24-15"><a id="__codelineno-24-15" name="__codelineno-24-15" href="#__codelineno-24-15"></a><span class="s">    credentialSecret: your-db-secret</span>
 </span><span id="__span-24-16"><a id="__codelineno-24-16" name="__codelineno-24-16" href="#__codelineno-24-16"></a><span class="s">    size: 10</span>
-</span><span id="__span-24-17"><a id="__codelineno-24-17" name="__codelineno-24-17" href="#__codelineno-24-17"></a><span class="s">    timezone: &quot;UTC&quot;</span>
+</span><span id="__span-24-17"><a id="__codelineno-24-17" name="__codelineno-24-17" href="#__codelineno-24-17"></a><span class="s">    timezone: "UTC"</span>
 </span><span id="__span-24-18"><a id="__codelineno-24-18" name="__codelineno-24-18" href="#__codelineno-24-18"></a><span class="s">    type: postgres</span>
 </span><span id="__span-24-19"><a id="__codelineno-24-19" name="__codelineno-24-19" href="#__codelineno-24-19"></a><span class="s">EOF</span>
 </span></code></pre></div></li>
@@ -4434,7 +4434,7 @@
 </span><span id="__span-33-9"><a id="__codelineno-33-9" name="__codelineno-33-9" href="#__codelineno-33-9"></a><span class="s">  containers:</span>
 </span><span id="__span-33-10"><a id="__codelineno-33-10" name="__codelineno-33-10" href="#__codelineno-33-10"></a><span class="s">  - name: psql</span>
 </span><span id="__span-33-11"><a id="__codelineno-33-11" name="__codelineno-33-11" href="#__codelineno-33-11"></a><span class="s">    image: postgres:15</span>
-</span><span id="__span-33-12"><a id="__codelineno-33-12" name="__codelineno-33-12" href="#__codelineno-33-12"></a><span class="s">    command: [&quot;/bin/sh&quot;, &quot;-c&quot;, &quot;echo &#39;Pod is running&#39; &amp;&amp; sleep 7200&quot;]</span>
+</span><span id="__span-33-12"><a id="__codelineno-33-12" name="__codelineno-33-12" href="#__codelineno-33-12"></a><span class="s">    command: ["/bin/sh", "-c", "echo 'Pod is running' &amp;&amp; sleep 7200"]</span>
 </span><span id="__span-33-13"><a id="__codelineno-33-13" name="__codelineno-33-13" href="#__codelineno-33-13"></a><span class="s">    env:</span>
 </span><span id="__span-33-14"><a id="__codelineno-33-14" name="__codelineno-33-14" href="#__codelineno-33-14"></a><span class="s">    - name: POSTGRES_PASSWORD</span>
 </span><span id="__span-33-15"><a id="__codelineno-33-15" name="__codelineno-33-15" href="#__codelineno-33-15"></a><span class="s">      value: postgres_password</span>

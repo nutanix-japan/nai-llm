@@ -4122,7 +4122,7 @@
 </span><span id="__span-2-2"><a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a>kubectl<span class="w"> </span>get<span class="w"> </span>imagerepository<span class="w"> </span>-n<span class="w"> </span>flux-system
 </span><span id="__span-2-3"><a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a>
 </span><span id="__span-2-4"><a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a><span class="c1"># Check what the ImagePolicy is referencing</span>
-</span><span id="__span-2-5"><a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a>kubectl<span class="w"> </span>get<span class="w"> </span>imagepolicy<span class="w"> </span>my-app<span class="w"> </span>-n<span class="w"> </span>flux-system<span class="w"> </span>-o<span class="w"> </span><span class="nv">jsonpath</span><span class="o">=</span><span class="s1">&#39;{.spec.imageRepositoryRef.name}&#39;</span>
+</span><span id="__span-2-5"><a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a>kubectl<span class="w"> </span>get<span class="w"> </span>imagepolicy<span class="w"> </span>my-app<span class="w"> </span>-n<span class="w"> </span>flux-system<span class="w"> </span>-o<span class="w"> </span><span class="nv">jsonpath</span><span class="o">=</span><span class="s1">'{.spec.imageRepositoryRef.name}'</span>
 </span></code></pre></div>
 <p>They must match. If not, delete and reapply both:</p>
 <div class="language-bash highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a>kubectl<span class="w"> </span>delete<span class="w"> </span>imagepolicy<span class="w"> </span>my-app<span class="w"> </span>-n<span class="w"> </span>flux-system
@@ -4150,34 +4150,34 @@
 </span></code></pre></div></p>
 <p>If the tag looks wrong, check your <code>filterTags.pattern</code> and <code>policy.alphabetical.order</code>:</p>
 <div class="language-yaml highlight"><pre><span></span><code><span id="__span-8-1"><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a><span class="nt">filterTags</span><span class="p">:</span>
-</span><span id="__span-8-2"><a id="__codelineno-8-2" name="__codelineno-8-2" href="#__codelineno-8-2"></a><span class="w">  </span><span class="nt">pattern</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;^[a-f0-9]{7,}$&#39;</span><span class="w">   </span><span class="c1"># must match your actual tag format</span>
+</span><span id="__span-8-2"><a id="__codelineno-8-2" name="__codelineno-8-2" href="#__codelineno-8-2"></a><span class="w">  </span><span class="nt">pattern</span><span class="p">:</span><span class="w"> </span><span class="s">'^[a-f0-9]{7,}$'</span><span class="w">   </span><span class="c1"># must match your actual tag format</span>
 </span><span id="__span-8-3"><a id="__codelineno-8-3" name="__codelineno-8-3" href="#__codelineno-8-3"></a><span class="nt">policy</span><span class="p">:</span>
 </span><span id="__span-8-4"><a id="__codelineno-8-4" name="__codelineno-8-4" href="#__codelineno-8-4"></a><span class="w">  </span><span class="nt">alphabetical</span><span class="p">:</span>
 </span><span id="__span-8-5"><a id="__codelineno-8-5" name="__codelineno-8-5" href="#__codelineno-8-5"></a><span class="w">    </span><span class="nt">order</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">desc</span><span class="w">                 </span><span class="c1"># desc = latest tag wins, asc = oldest tag wins</span>
 </span></code></pre></div>
 <p>Test your regex against your actual tags:</p>
 <div class="language-bash highlight"><pre><span></span><code><span id="__span-9-1"><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a><span class="c1"># See what tags exist</span>
-</span><span id="__span-9-2"><a id="__codelineno-9-2" name="__codelineno-9-2" href="#__codelineno-9-2"></a>kubectl<span class="w"> </span>get<span class="w"> </span>imagerepository<span class="w"> </span>my-app<span class="w"> </span>-n<span class="w"> </span>flux-system<span class="w"> </span>-o<span class="w"> </span><span class="nv">jsonpath</span><span class="o">=</span><span class="s1">&#39;{.status.lastScanResult}&#39;</span>
+</span><span id="__span-9-2"><a id="__codelineno-9-2" name="__codelineno-9-2" href="#__codelineno-9-2"></a>kubectl<span class="w"> </span>get<span class="w"> </span>imagerepository<span class="w"> </span>my-app<span class="w"> </span>-n<span class="w"> </span>flux-system<span class="w"> </span>-o<span class="w"> </span><span class="nv">jsonpath</span><span class="o">=</span><span class="s1">'{.status.lastScanResult}'</span>
 </span><span id="__span-9-3"><a id="__codelineno-9-3" name="__codelineno-9-3" href="#__codelineno-9-3"></a>
 </span><span id="__span-9-4"><a id="__codelineno-9-4" name="__codelineno-9-4" href="#__codelineno-9-4"></a><span class="c1"># Test your pattern manually</span>
-</span><span id="__span-9-5"><a id="__codelineno-9-5" name="__codelineno-9-5" href="#__codelineno-9-5"></a><span class="nb">echo</span><span class="w"> </span><span class="s2">&quot;3338bbe&quot;</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>grep<span class="w"> </span>-P<span class="w"> </span><span class="s1">&#39;^[a-f0-9]{7,}$&#39;</span>
+</span><span id="__span-9-5"><a id="__codelineno-9-5" name="__codelineno-9-5" href="#__codelineno-9-5"></a><span class="nb">echo</span><span class="w"> </span><span class="s2">"3338bbe"</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>grep<span class="w"> </span>-P<span class="w"> </span><span class="s1">'^[a-f0-9]{7,}$'</span>
 </span></code></pre></div>
 <hr />
 <h3 id="5-check-the-marker-in-your-deployment-file">5. Check the marker in your deployment file</h3>
 <p>This is the most common cause of wrong updates:</p>
 <div class="language-bash highlight"><pre><span></span><code><span id="__span-10-1"><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a>git<span class="w"> </span>pull<span class="w"> </span>origin<span class="w"> </span>main
-</span><span id="__span-10-2"><a id="__codelineno-10-2" name="__codelineno-10-2" href="#__codelineno-10-2"></a>grep<span class="w"> </span>-rn<span class="w"> </span><span class="s2">&quot;imagepolicy&quot;</span><span class="w"> </span>apps/
+</span><span id="__span-10-2"><a id="__codelineno-10-2" name="__codelineno-10-2" href="#__codelineno-10-2"></a>grep<span class="w"> </span>-rn<span class="w"> </span><span class="s2">"imagepolicy"</span><span class="w"> </span>apps/
 </span></code></pre></div>
 <p>Verify the marker format is exactly correct:</p>
 <div class="language-yaml highlight"><pre><span></span><code><span id="__span-11-1"><a id="__codelineno-11-1" name="__codelineno-11-1" href="#__codelineno-11-1"></a><span class="c1"># CORRECT - full image reference updated</span>
-</span><span id="__span-11-2"><a id="__codelineno-11-2" name="__codelineno-11-2" href="#__codelineno-11-2"></a><span class="nt">image</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">docker.io/ariesbabu/app-source:3338bbe</span><span class="w"> </span><span class="c1"># {&quot;$imagepolicy&quot;: &quot;flux-system:my-app&quot;}</span>
+</span><span id="__span-11-2"><a id="__codelineno-11-2" name="__codelineno-11-2" href="#__codelineno-11-2"></a><span class="nt">image</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">docker.io/ariesbabu/app-source:3338bbe</span><span class="w"> </span><span class="c1"># {"$imagepolicy": "flux-system:my-app"}</span>
 </span><span id="__span-11-3"><a id="__codelineno-11-3" name="__codelineno-11-3" href="#__codelineno-11-3"></a>
 </span><span id="__span-11-4"><a id="__codelineno-11-4" name="__codelineno-11-4" href="#__codelineno-11-4"></a><span class="c1"># WRONG - only tag is updated, image name gets lost</span>
-</span><span id="__span-11-5"><a id="__codelineno-11-5" name="__codelineno-11-5" href="#__codelineno-11-5"></a><span class="nt">image</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">3338bbe</span><span class="w"> </span><span class="c1"># {&quot;$imagepolicy&quot;: &quot;flux-system:my-app:tag&quot;}</span>
+</span><span id="__span-11-5"><a id="__codelineno-11-5" name="__codelineno-11-5" href="#__codelineno-11-5"></a><span class="nt">image</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">3338bbe</span><span class="w"> </span><span class="c1"># {"$imagepolicy": "flux-system:my-app:tag"}</span>
 </span></code></pre></div>
 <p>Validate the marker JSON is parseable:</p>
-<div class="language-bash highlight"><pre><span></span><code><span id="__span-12-1"><a id="__codelineno-12-1" name="__codelineno-12-1" href="#__codelineno-12-1"></a>grep<span class="w"> </span><span class="s2">&quot;imagepolicy&quot;</span><span class="w"> </span>apps/base/deployment.yaml<span class="w"> </span><span class="se">\</span>
-</span><span id="__span-12-2"><a id="__codelineno-12-2" name="__codelineno-12-2" href="#__codelineno-12-2"></a><span class="w">  </span><span class="p">|</span><span class="w"> </span>sed<span class="w"> </span><span class="s1">&#39;s/.*# //&#39;</span><span class="w"> </span><span class="se">\</span>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-12-1"><a id="__codelineno-12-1" name="__codelineno-12-1" href="#__codelineno-12-1"></a>grep<span class="w"> </span><span class="s2">"imagepolicy"</span><span class="w"> </span>apps/base/deployment.yaml<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-12-2"><a id="__codelineno-12-2" name="__codelineno-12-2" href="#__codelineno-12-2"></a><span class="w">  </span><span class="p">|</span><span class="w"> </span>sed<span class="w"> </span><span class="s1">'s/.*# //'</span><span class="w"> </span><span class="se">\</span>
 </span><span id="__span-12-3"><a id="__codelineno-12-3" name="__codelineno-12-3" href="#__codelineno-12-3"></a><span class="w">  </span><span class="p">|</span><span class="w"> </span>python3<span class="w"> </span>-m<span class="w"> </span>json.tool
 </span></code></pre></div>
 <p>If it fails to parse, Flux silently skips that line with no error.</p>
@@ -4185,17 +4185,17 @@
 <h3 id="6-check-the-messagetemplate-syntax">6. Check the messageTemplate syntax</h3>
 <p>If <code>ImageUpdateAutomation</code> shows <code>Ready: False</code> with a template error, the error message contains the actual struct that failed. Read it carefully:</p>
 <div class="language-bash highlight"><pre><span></span><code><span id="__span-13-1"><a id="__codelineno-13-1" name="__codelineno-13-1" href="#__codelineno-13-1"></a>kubectl<span class="w"> </span>get<span class="w"> </span>imageupdateautomation<span class="w"> </span>my-app<span class="w"> </span>-n<span class="w"> </span>flux-system<span class="w"> </span><span class="se">\</span>
-</span><span id="__span-13-2"><a id="__codelineno-13-2" name="__codelineno-13-2" href="#__codelineno-13-2"></a><span class="w">  </span>-o<span class="w"> </span><span class="nv">jsonpath</span><span class="o">=</span><span class="s1">&#39;{.status.conditions[*].message}&#39;</span>
+</span><span id="__span-13-2"><a id="__codelineno-13-2" name="__codelineno-13-2" href="#__codelineno-13-2"></a><span class="w">  </span>-o<span class="w"> </span><span class="nv">jsonpath</span><span class="o">=</span><span class="s1">'{.status.conditions[*].message}'</span>
 </span></code></pre></div>
 <p>Common template mistakes and fixes:</p>
-<div class="language-yaml highlight"><pre><span></span><code><span id="__span-14-1"><a id="__codelineno-14-1" name="__codelineno-14-1" href="#__codelineno-14-1"></a><span class="c1"># WRONG - OldTag/NewTag don&#39;t exist on update.Change</span>
-</span><span id="__span-14-2"><a id="__codelineno-14-2" name="__codelineno-14-2" href="#__codelineno-14-2"></a><span class="nt">messageTemplate</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;{{range</span><span class="nv"> </span><span class="s">.Changed.Changes}}{{.NewTag}}{{end}}&#39;</span>
+<div class="language-yaml highlight"><pre><span></span><code><span id="__span-14-1"><a id="__codelineno-14-1" name="__codelineno-14-1" href="#__codelineno-14-1"></a><span class="c1"># WRONG - OldTag/NewTag don't exist on update.Change</span>
+</span><span id="__span-14-2"><a id="__codelineno-14-2" name="__codelineno-14-2" href="#__codelineno-14-2"></a><span class="nt">messageTemplate</span><span class="p">:</span><span class="w"> </span><span class="s">'{{range</span><span class="nv"> </span><span class="s">.Changed.Changes}}{{.NewTag}}{{end}}'</span>
 </span><span id="__span-14-3"><a id="__codelineno-14-3" name="__codelineno-14-3" href="#__codelineno-14-3"></a>
 </span><span id="__span-14-4"><a id="__codelineno-14-4" name="__codelineno-14-4" href="#__codelineno-14-4"></a><span class="c1"># WRONG - .Changed is not directly rangeable</span>
-</span><span id="__span-14-5"><a id="__codelineno-14-5" name="__codelineno-14-5" href="#__codelineno-14-5"></a><span class="nt">messageTemplate</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;{{range</span><span class="nv"> </span><span class="s">.Changed}}{{.}}{{end}}&#39;</span>
+</span><span id="__span-14-5"><a id="__codelineno-14-5" name="__codelineno-14-5" href="#__codelineno-14-5"></a><span class="nt">messageTemplate</span><span class="p">:</span><span class="w"> </span><span class="s">'{{range</span><span class="nv"> </span><span class="s">.Changed}}{{.}}{{end}}'</span>
 </span><span id="__span-14-6"><a id="__codelineno-14-6" name="__codelineno-14-6" href="#__codelineno-14-6"></a>
 </span><span id="__span-14-7"><a id="__codelineno-14-7" name="__codelineno-14-7" href="#__codelineno-14-7"></a><span class="c1"># CORRECT - flat iteration over all changes</span>
-</span><span id="__span-14-8"><a id="__codelineno-14-8" name="__codelineno-14-8" href="#__codelineno-14-8"></a><span class="nt">messageTemplate</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;{{range</span><span class="nv"> </span><span class="s">.Changed.Changes}}{{print</span><span class="nv"> </span><span class="s">.OldValue}}</span><span class="nv"> </span><span class="s">-&gt;</span><span class="nv"> </span><span class="s">{{println</span><span class="nv"> </span><span class="s">.NewValue}}{{end}}&#39;</span>
+</span><span id="__span-14-8"><a id="__codelineno-14-8" name="__codelineno-14-8" href="#__codelineno-14-8"></a><span class="nt">messageTemplate</span><span class="p">:</span><span class="w"> </span><span class="s">'{{range</span><span class="nv"> </span><span class="s">.Changed.Changes}}{{print</span><span class="nv"> </span><span class="s">.OldValue}}</span><span class="nv"> </span><span class="s">-&gt;</span><span class="nv"> </span><span class="s">{{println</span><span class="nv"> </span><span class="s">.NewValue}}{{end}}'</span>
 </span><span id="__span-14-9"><a id="__codelineno-14-9" name="__codelineno-14-9" href="#__codelineno-14-9"></a>
 </span><span id="__span-14-10"><a id="__codelineno-14-10" name="__codelineno-14-10" href="#__codelineno-14-10"></a><span class="c1"># CORRECT - per-object detail</span>
 </span><span id="__span-14-11"><a id="__codelineno-14-11" name="__codelineno-14-11" href="#__codelineno-14-11"></a><span class="nt">messageTemplate</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">|</span>
@@ -4220,7 +4220,7 @@ Available fields on <code>ObjectIdentifier</code>: <code>.Kind</code>, <code>.Na
 </span><span id="__span-15-6"><a id="__codelineno-15-6" name="__codelineno-15-6" href="#__codelineno-15-6"></a>
 </span><span id="__span-15-7"><a id="__codelineno-15-7" name="__codelineno-15-7" href="#__codelineno-15-7"></a><span class="c1"># 3. Commit and push</span>
 </span><span id="__span-15-8"><a id="__codelineno-15-8" name="__codelineno-15-8" href="#__codelineno-15-8"></a>git<span class="w"> </span>add<span class="w"> </span>apps/base/deployment.yaml
-</span><span id="__span-15-9"><a id="__codelineno-15-9" name="__codelineno-15-9" href="#__codelineno-15-9"></a>git<span class="w"> </span>commit<span class="w"> </span>-m<span class="w"> </span><span class="s2">&quot;fix: correct image marker&quot;</span>
+</span><span id="__span-15-9"><a id="__codelineno-15-9" name="__codelineno-15-9" href="#__codelineno-15-9"></a>git<span class="w"> </span>commit<span class="w"> </span>-m<span class="w"> </span><span class="s2">"fix: correct image marker"</span>
 </span><span id="__span-15-10"><a id="__codelineno-15-10" name="__codelineno-15-10" href="#__codelineno-15-10"></a>git<span class="w"> </span>push<span class="w"> </span>origin<span class="w"> </span>main
 </span><span id="__span-15-11"><a id="__codelineno-15-11" name="__codelineno-15-11" href="#__codelineno-15-11"></a>
 </span><span id="__span-15-12"><a id="__codelineno-15-12" name="__codelineno-15-12" href="#__codelineno-15-12"></a><span class="c1"># 4. Verify the fix is actually on the remote before resuming</span>
@@ -4245,12 +4245,12 @@ Available fields on <code>ObjectIdentifier</code>: <code>.Kind</code>, <code>.Na
 </span><span id="__span-16-7"><a id="__codelineno-16-7" name="__codelineno-16-7" href="#__codelineno-16-7"></a>kubectl<span class="w"> </span>events<span class="w"> </span>--for<span class="w"> </span>imageupdateautomation/my-app<span class="w"> </span>-n<span class="w"> </span>flux-system<span class="w"> </span>--watch
 </span><span id="__span-16-8"><a id="__codelineno-16-8" name="__codelineno-16-8" href="#__codelineno-16-8"></a>
 </span><span id="__span-16-9"><a id="__codelineno-16-9" name="__codelineno-16-9" href="#__codelineno-16-9"></a><span class="c1"># Watch git log for new commits</span>
-</span><span id="__span-16-10"><a id="__codelineno-16-10" name="__codelineno-16-10" href="#__codelineno-16-10"></a>watch<span class="w"> </span>-n<span class="w"> </span><span class="m">5</span><span class="w"> </span><span class="s1">&#39;git pull -q &amp;&amp; git log --oneline -5&#39;</span>
+</span><span id="__span-16-10"><a id="__codelineno-16-10" name="__codelineno-16-10" href="#__codelineno-16-10"></a>watch<span class="w"> </span>-n<span class="w"> </span><span class="m">5</span><span class="w"> </span><span class="s1">'git pull -q &amp;&amp; git log --oneline -5'</span>
 </span></code></pre></div>
 <hr />
 <h3 id="9-dump-the-template-context-when-all-else-fails">9. Dump the template context when all else fails</h3>
 <p>If the messageTemplate keeps erroring and you don't know the field names, use <code>{{.}}</code> to dump the raw struct:</p>
-<div class="language-yaml highlight"><pre><span></span><code><span id="__span-17-1"><a id="__codelineno-17-1" name="__codelineno-17-1" href="#__codelineno-17-1"></a><span class="nt">messageTemplate</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;{{.}}&quot;</span>
+<div class="language-yaml highlight"><pre><span></span><code><span id="__span-17-1"><a id="__codelineno-17-1" name="__codelineno-17-1" href="#__codelineno-17-1"></a><span class="nt">messageTemplate</span><span class="p">:</span><span class="w"> </span><span class="s">"{{.}}"</span>
 </span></code></pre></div>
 <p>Apply it, wait for a reconcile, then read the error message — it prints the entire available data structure with real field names.</p>
 <hr />
@@ -4260,7 +4260,7 @@ Available fields on <code>ObjectIdentifier</code>: <code>.Kind</code>, <code>.Na
 </span><span id="__span-18-3"><a id="__codelineno-18-3" name="__codelineno-18-3" href="#__codelineno-18-3"></a>□ ImageUpdateAutomation Ready: True
 </span><span id="__span-18-4"><a id="__codelineno-18-4" name="__codelineno-18-4" href="#__codelineno-18-4"></a>□ imageRepositoryRef.name matches ImageRepository metadata.name
 </span><span id="__span-18-5"><a id="__codelineno-18-5" name="__codelineno-18-5" href="#__codelineno-18-5"></a>□ No stale/duplicate objects with old names
-</span><span id="__span-18-6"><a id="__codelineno-18-6" name="__codelineno-18-6" href="#__codelineno-18-6"></a>□ Deployment marker uses {&quot;$imagepolicy&quot;: &quot;flux-system:my-app&quot;} not :tag
+</span><span id="__span-18-6"><a id="__codelineno-18-6" name="__codelineno-18-6" href="#__codelineno-18-6"></a>□ Deployment marker uses {"$imagepolicy": "flux-system:my-app"} not :tag
 </span><span id="__span-18-7"><a id="__codelineno-18-7" name="__codelineno-18-7" href="#__codelineno-18-7"></a>□ Marker JSON is valid (no single quotes, has $ prefix, colon separator)
 </span><span id="__span-18-8"><a id="__codelineno-18-8" name="__codelineno-18-8" href="#__codelineno-18-8"></a>□ Marker is on the same line as the image value
 </span><span id="__span-18-9"><a id="__codelineno-18-9" name="__codelineno-18-9" href="#__codelineno-18-9"></a>□ Always suspend before editing Git files Flux manages

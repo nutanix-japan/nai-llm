@@ -4187,7 +4187,7 @@
 </span><span id="__span-3-3"><a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a><span class="nt">metadata</span><span class="p">:</span>
 </span><span id="__span-3-4"><a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a><span class="w">  </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">custom-nutanix-volumes</span>
 </span><span id="__span-3-5"><a id="__codelineno-3-5" name="__codelineno-3-5" href="#__codelineno-3-5"></a><span class="w">  </span><span class="nt">annotations</span><span class="p">:</span>
-</span><span id="__span-3-6"><a id="__codelineno-3-6" name="__codelineno-3-6" href="#__codelineno-3-6"></a><span class="w">    </span><span class="nt">storageclass.kubernetes.io/is-default-class</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;true&quot;</span><span class="w">  </span>
+</span><span id="__span-3-6"><a id="__codelineno-3-6" name="__codelineno-3-6" href="#__codelineno-3-6"></a><span class="w">    </span><span class="nt">storageclass.kubernetes.io/is-default-class</span><span class="p">:</span><span class="w"> </span><span class="s">"true"</span><span class="w">  </span>
 </span><span id="__span-3-7"><a id="__codelineno-3-7" name="__codelineno-3-7" href="#__codelineno-3-7"></a><span class="nt">provisioner</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">csi.nutanix.com</span>
 </span><span id="__span-3-8"><a id="__codelineno-3-8" name="__codelineno-3-8" href="#__codelineno-3-8"></a><span class="nt">parameters</span><span class="p">:</span>
 </span><span id="__span-3-9"><a id="__codelineno-3-9" name="__codelineno-3-9" href="#__codelineno-3-9"></a><span class="w">  </span><span class="nt">csi.storage.k8s.io/provisioner-secret-name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">ntnx-pe-secret</span>
@@ -4201,7 +4201,7 @@
 </span><span id="__span-3-17"><a id="__codelineno-3-17" name="__codelineno-3-17" href="#__codelineno-3-17"></a><span class="w">  </span><span class="nt">csi.storage.k8s.io/fstype</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">ext4</span>
 </span><span id="__span-3-18"><a id="__codelineno-3-18" name="__codelineno-3-18" href="#__codelineno-3-18"></a><span class="w">  </span><span class="nt">storageContainer</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">default</span><span class="w">    </span><span class="c1"># &lt;&lt;&lt; Make sure this Storage Container is present in the Nutanix cluster</span>
 </span><span id="__span-3-19"><a id="__codelineno-3-19" name="__codelineno-3-19" href="#__codelineno-3-19"></a><span class="w">  </span><span class="nt">storageType</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">NutanixVolumes</span>
-</span><span id="__span-3-20"><a id="__codelineno-3-20" name="__codelineno-3-20" href="#__codelineno-3-20"></a><span class="w">  </span><span class="c1">#description: &quot;description added to each storage object created by the driver&quot;</span>
+</span><span id="__span-3-20"><a id="__codelineno-3-20" name="__codelineno-3-20" href="#__codelineno-3-20"></a><span class="w">  </span><span class="c1">#description: "description added to each storage object created by the driver"</span>
 </span><span id="__span-3-21"><a id="__codelineno-3-21" name="__codelineno-3-21" href="#__codelineno-3-21"></a><span class="w">  </span><span class="c1">#hypervisorAttached: ENABLED</span>
 </span><span id="__span-3-22"><a id="__codelineno-3-22" name="__codelineno-3-22" href="#__codelineno-3-22"></a><span class="nt">allowVolumeExpansion</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
 </span><span id="__span-3-23"><a id="__codelineno-3-23" name="__codelineno-3-23" href="#__codelineno-3-23"></a><span class="nt">reclaimPolicy</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Delete</span>
@@ -4781,7 +4781,7 @@
 <div class="tabbed-block">
 <div class="language-text no-copy highlight"><pre><span></span><code><span id="__span-31-1"><a id="__codelineno-31-1" name="__codelineno-31-1" href="#__codelineno-31-1"></a>export PRIMARY_FS_FQDN=filesprimary.example.com
 </span><span id="__span-31-2"><a id="__codelineno-31-2" name="__codelineno-31-2" href="#__codelineno-31-2"></a>export SECONDARY_FS_FQDN=filessecondary.example.com
-</span><span id="__span-31-3"><a id="__codelineno-31-3" name="__codelineno-31-3" href="#__codelineno-31-3"></a>export REMOTE_NDK_CLUSTER=nkpprimary # since we don&#39;t have the secondary cluster yet
+</span><span id="__span-31-3"><a id="__codelineno-31-3" name="__codelineno-31-3" href="#__codelineno-31-3"></a>export REMOTE_NDK_CLUSTER=nkpprimary # since we don't have the secondary cluster yet
 </span></code></pre></div>
 </div>
 </div>
@@ -4822,13 +4822,13 @@
 </span><span id="__span-34-8"><a id="__codelineno-34-8" name="__codelineno-34-8" href="#__codelineno-34-8"></a><span class="hll"><span class="s">applicationSelector:</span>
 </span></span><span id="__span-34-9"><a id="__codelineno-34-9" name="__codelineno-34-9" href="#__codelineno-34-9"></a><span class="s"> resourceLabelSelectors:</span>
 </span><span id="__span-34-10"><a id="__codelineno-34-10" name="__codelineno-34-10" href="#__codelineno-34-10"></a><span class="s">  - includeResources:</span>
-</span><span id="__span-34-11"><a id="__codelineno-34-11" name="__codelineno-34-11" href="#__codelineno-34-11"></a><span class="s">    - group: &quot;&quot;</span>
+</span><span id="__span-34-11"><a id="__codelineno-34-11" name="__codelineno-34-11" href="#__codelineno-34-11"></a><span class="s">    - group: ""</span>
 </span><span id="__span-34-12"><a id="__codelineno-34-12" name="__codelineno-34-12" href="#__codelineno-34-12"></a><span class="s">      kind: PersistentVolumeClaim</span>
 </span><span id="__span-34-13"><a id="__codelineno-34-13" name="__codelineno-34-13" href="#__codelineno-34-13"></a><span class="s">    - group: apps</span>
 </span><span id="__span-34-14"><a id="__codelineno-34-14" name="__codelineno-34-14" href="#__codelineno-34-14"></a><span class="s">      kind: Deployment</span>
-</span><span id="__span-34-15"><a id="__codelineno-34-15" name="__codelineno-34-15" href="#__codelineno-34-15"></a><span class="s">    - group: &quot;&quot;</span>
+</span><span id="__span-34-15"><a id="__codelineno-34-15" name="__codelineno-34-15" href="#__codelineno-34-15"></a><span class="s">    - group: ""</span>
 </span><span id="__span-34-16"><a id="__codelineno-34-16" name="__codelineno-34-16" href="#__codelineno-34-16"></a><span class="s">      kind: Service</span>
-</span><span id="__span-34-17"><a id="__codelineno-34-17" name="__codelineno-34-17" href="#__codelineno-34-17"></a><span class="s">    - group: &quot;&quot;</span>
+</span><span id="__span-34-17"><a id="__codelineno-34-17" name="__codelineno-34-17" href="#__codelineno-34-17"></a><span class="s">    - group: ""</span>
 </span><span id="__span-34-18"><a id="__codelineno-34-18" name="__codelineno-34-18" href="#__codelineno-34-18"></a><span class="s">      kind: Secret                   </span>
 </span><span id="__span-34-19"><a id="__codelineno-34-19" name="__codelineno-34-19" href="#__codelineno-34-19"></a><span class="s">EOF</span>
 </span></code></pre></div>
@@ -4852,7 +4852,7 @@
 </span><span id="__span-36-5"><a id="__codelineno-36-5" name="__codelineno-36-5" href="#__codelineno-36-5"></a><span class="s">  name: wordpress-app-snapshot</span>
 </span><span id="__span-36-6"><a id="__codelineno-36-6" name="__codelineno-36-6" href="#__codelineno-36-6"></a><span class="s">  namespace: wordpress</span>
 </span><span id="__span-36-7"><a id="__codelineno-36-7" name="__codelineno-36-7" href="#__codelineno-36-7"></a><span class="s">spec:</span>
-</span><span id="__span-36-8"><a id="__codelineno-36-8" name="__codelineno-36-8" href="#__codelineno-36-8"></a><span class="s">  expiresAfter: &quot;1h&quot;</span>
+</span><span id="__span-36-8"><a id="__codelineno-36-8" name="__codelineno-36-8" href="#__codelineno-36-8"></a><span class="s">  expiresAfter: "1h"</span>
 </span><span id="__span-36-9"><a id="__codelineno-36-9" name="__codelineno-36-9" href="#__codelineno-36-9"></a><span class="s">  source:</span>
 </span><span id="__span-36-10"><a id="__codelineno-36-10" name="__codelineno-36-10" href="#__codelineno-36-10"></a><span class="s">    applicationRef:</span>
 </span><span id="__span-36-11"><a id="__codelineno-36-11" name="__codelineno-36-11" href="#__codelineno-36-11"></a><span class="s">      name: wordpress-app</span>
@@ -5071,9 +5071,9 @@
 <div class="tabbed-block">
 <div class="language-text no-copy highlight"><pre><span></span><code><span id="__span-47-1"><a id="__codelineno-47-1" name="__codelineno-47-1" href="#__codelineno-47-1"></a>~ ❯ kubectlubectl logs -f -n ntnx-system deploy/ndk-controller-manager
 </span><span id="__span-47-2"><a id="__codelineno-47-2" name="__codelineno-47-2" href="#__codelineno-47-2"></a>
-</span><span id="__span-47-3"><a id="__codelineno-47-3" name="__codelineno-47-3" href="#__codelineno-47-3"></a>{&quot;level&quot;:&quot;info&quot;,&quot;timestamp&quot;:&quot;2025-07-08T01:35:12.909Z&quot;,&quot;caller&quot;:&quot;applicationsnapshotcontent/asc_finalize.go:38&quot;,&quot;msg&quot;:&quot;resource regulated: ApplicationSnapshotContent&#39;s finalize phase is waiting to be processed&quot;,&quot;controller&quot;:&quot;applicationsnapshotcontent&quot;,&quot;controllerGroup&quot;:&quot;dataservices.nutanix.com&quot;,&quot;controllerKind&quot;:&quot;ApplicationSnapshotContent&quot;,&quot;ApplicationSnapshotContent&quot;:{&quot;name&quot;:&quot;asc-3c1e253a-266d-46fd-8559-d8aa189fea78&quot;},&quot;namespace&quot;:&quot;&quot;,&quot;name&quot;:&quot;asc-3c1e253a-266d-46fd-8559-d8aa189fea78&quot;,&quot;reconcileID&quot;:&quot;a0cf1641-40d7-4d51-b948-10cf9bae84e0&quot;,&quot;requestId&quot;:&quot;7566b4fa-0eda-4ffd-b34e-76daf2311148&quot;}
+</span><span id="__span-47-3"><a id="__codelineno-47-3" name="__codelineno-47-3" href="#__codelineno-47-3"></a>{"level":"info","timestamp":"2025-07-08T01:35:12.909Z","caller":"applicationsnapshotcontent/asc_finalize.go:38","msg":"resource regulated: ApplicationSnapshotContent's finalize phase is waiting to be processed","controller":"applicationsnapshotcontent","controllerGroup":"dataservices.nutanix.com","controllerKind":"ApplicationSnapshotContent","ApplicationSnapshotContent":{"name":"asc-3c1e253a-266d-46fd-8559-d8aa189fea78"},"namespace":"","name":"asc-3c1e253a-266d-46fd-8559-d8aa189fea78","reconcileID":"a0cf1641-40d7-4d51-b948-10cf9bae84e0","requestId":"7566b4fa-0eda-4ffd-b34e-76daf2311148"}
 </span><span id="__span-47-4"><a id="__codelineno-47-4" name="__codelineno-47-4" href="#__codelineno-47-4"></a>
-</span><span id="__span-47-5"><a id="__codelineno-47-5" name="__codelineno-47-5" href="#__codelineno-47-5"></a>{&quot;level&quot;:&quot;info&quot;,&quot;timestamp&quot;:&quot;2025-07-08T01:35:13.381Z&quot;,&quot;caller&quot;:&quot;utils/controller.go:36&quot;,&quot;msg&quot;:&quot;Ensuring finalizer on objects&quot;,&quot;controller&quot;:&quot;applicationsnapshot&quot;,&quot;controllerGroup&quot;:&quot;dataservices.nutanix.com&quot;,&quot;controllerKind&quot;:&quot;ApplicationSnapshot&quot;,&quot;ApplicationSnapshot&quot;:{&quot;name&quot;:&quot;wordpress-app-snapshot&quot;,&quot;namespace&quot;:&quot;default&quot;},&quot;namespace&quot;:&quot;default&quot;,&quot;name&quot;:&quot;wordpress-app-snapshot&quot;,&quot;reconcileID&quot;:&quot;5af23527-5d34-4992-ab02-99ba4af2a401&quot;,&quot;finalizer&quot;:&quot;dataservices.nutanix.com/app-snap-2a003355dcfd33a75426095a4a71154b&quot;}
+</span><span id="__span-47-5"><a id="__codelineno-47-5" name="__codelineno-47-5" href="#__codelineno-47-5"></a>{"level":"info","timestamp":"2025-07-08T01:35:13.381Z","caller":"utils/controller.go:36","msg":"Ensuring finalizer on objects","controller":"applicationsnapshot","controllerGroup":"dataservices.nutanix.com","controllerKind":"ApplicationSnapshot","ApplicationSnapshot":{"name":"wordpress-app-snapshot","namespace":"default"},"namespace":"default","name":"wordpress-app-snapshot","reconcileID":"5af23527-5d34-4992-ab02-99ba4af2a401","finalizer":"dataservices.nutanix.com/app-snap-2a003355dcfd33a75426095a4a71154b"}
 </span></code></pre></div>
 </div>
 </div>

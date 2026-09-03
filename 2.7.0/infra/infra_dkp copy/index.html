@@ -4046,7 +4046,7 @@
 </span><span id="__span-9-6"><a id="__codelineno-9-6" name="__codelineno-9-6" href="#__codelineno-9-6"></a>export STORAGE_CONTAINER=default
 </span><span id="__span-9-7"><a id="__codelineno-9-7" name="__codelineno-9-7" href="#__codelineno-9-7"></a>export SSH_PUBLIC_KEY=$HOME/.ssh/id_rsa.pub
 </span><span id="__span-9-8"><a id="__codelineno-9-8" name="__codelineno-9-8" href="#__codelineno-9-8"></a>export NKP_CLUSTER_NAME=nkp1
-</span><span id="__span-9-9"><a id="__codelineno-9-9" name="__codelineno-9-9" href="#__codelineno-9-9"></a>export GPU_NAME=&quot;Lovelace 40S&quot;
+</span><span id="__span-9-9"><a id="__codelineno-9-9" name="__codelineno-9-9" href="#__codelineno-9-9"></a>export GPU_NAME="Lovelace 40S"
 </span><span id="__span-9-10"><a id="__codelineno-9-10" name="__codelineno-9-10" href="#__codelineno-9-10"></a>export CONTROLPLANE_VIP=10.x.x.214
 </span><span id="__span-9-11"><a id="__codelineno-9-11" name="__codelineno-9-11" href="#__codelineno-9-11"></a>export METALLB_IP_RANGE=10.x.x.215-10.x.x.216
 </span></code></pre></div>
@@ -4083,7 +4083,7 @@
 </span><span id="__span-12-12"><a id="__codelineno-12-12" name="__codelineno-12-12" href="#__codelineno-12-12"></a><span class="o">==</span>&gt;<span class="w"> </span>nutanix.kib_image:<span class="w"> </span>Running<span class="w"> </span>post-processor:<span class="w"> </span>packer-manifest<span class="w"> </span><span class="o">(</span><span class="nb">type</span><span class="w"> </span>manifest<span class="o">)</span>
 </span><span id="__span-12-13"><a id="__codelineno-12-13" name="__codelineno-12-13" href="#__codelineno-12-13"></a>
 </span><span id="__span-12-14"><a id="__codelineno-12-14" name="__codelineno-12-14" href="#__codelineno-12-14"></a>---&gt;<span class="w"> </span><span class="m">100</span>%
-</span><span id="__span-12-15"><a id="__codelineno-12-15" name="__codelineno-12-15" href="#__codelineno-12-15"></a>Build<span class="w"> </span><span class="s1">&#39;nutanix.kib_image&#39;</span><span class="w"> </span>finished<span class="w"> </span>after<span class="w"> </span><span class="m">4</span><span class="w"> </span>minutes<span class="w"> </span><span class="m">55</span><span class="w"> </span>seconds.
+</span><span id="__span-12-15"><a id="__codelineno-12-15" name="__codelineno-12-15" href="#__codelineno-12-15"></a>Build<span class="w"> </span><span class="s1">'nutanix.kib_image'</span><span class="w"> </span>finished<span class="w"> </span>after<span class="w"> </span><span class="m">4</span><span class="w"> </span>minutes<span class="w"> </span><span class="m">55</span><span class="w"> </span>seconds.
 </span><span id="__span-12-16"><a id="__codelineno-12-16" name="__codelineno-12-16" href="#__codelineno-12-16"></a><span class="o">==</span>&gt;<span class="w"> </span>Wait<span class="w"> </span>completed<span class="w"> </span>after<span class="w"> </span><span class="m">4</span><span class="w"> </span>minutes<span class="w"> </span><span class="m">55</span><span class="w"> </span><span class="nv">seconds</span>
 </span><span id="__span-12-17"><a id="__codelineno-12-17" name="__codelineno-12-17" href="#__codelineno-12-17"></a>
 </span><span id="__span-12-18"><a id="__codelineno-12-18" name="__codelineno-12-18" href="#__codelineno-12-18"></a><span class="o">==</span>&gt;<span class="w"> </span>Builds<span class="w"> </span>finished.<span class="w"> </span>The<span class="w"> </span>artifacts<span class="w"> </span>of<span class="w"> </span>successful<span class="w"> </span>builds<span class="w"> </span>are:
@@ -4104,12 +4104,12 @@
 <div class="tabbed-set tabbed-alternate" data-tabs="4:2"><input checked="checked" id="__tabbed_4_1" name="__tabbed_4" type="radio" /><input id="__tabbed_4_2" name="__tabbed_4" type="radio" /><div class="tabbed-labels"><label for="__tabbed_4_1">Template command</label><label for="__tabbed_4_2">Sample command</label></div>
 <div class="tabbed-content">
 <div class="tabbed-block">
-<div class="language-text highlight"><pre><span></span><code><span id="__span-14-1"><a id="__codelineno-14-1" name="__codelineno-14-1" href="#__codelineno-14-1"></a>echo -e &quot;export NKP_IMAGE=nkp-image-name&quot; &gt;&gt; .env
+<div class="language-text highlight"><pre><span></span><code><span id="__span-14-1"><a id="__codelineno-14-1" name="__codelineno-14-1" href="#__codelineno-14-1"></a>echo -e "export NKP_IMAGE=nkp-image-name" &gt;&gt; .env
 </span><span id="__span-14-2"><a id="__codelineno-14-2" name="__codelineno-14-2" href="#__codelineno-14-2"></a>source .env
 </span></code></pre></div>
 </div>
 <div class="tabbed-block">
-<div class="language-text highlight"><pre><span></span><code><span id="__span-15-1"><a id="__codelineno-15-1" name="__codelineno-15-1" href="#__codelineno-15-1"></a>echo -e &quot;export NKP_IMAGE=nkp-ubuntu-22.04-1.29.6-20240717082720&quot; &gt;&gt; .env
+<div class="language-text highlight"><pre><span></span><code><span id="__span-15-1"><a id="__codelineno-15-1" name="__codelineno-15-1" href="#__codelineno-15-1"></a>echo -e "export NKP_IMAGE=nkp-ubuntu-22.04-1.29.6-20240717082720" &gt;&gt; .env
 </span><span id="__span-15-2"><a id="__codelineno-15-2" name="__codelineno-15-2" href="#__codelineno-15-2"></a>source .env
 </span></code></pre></div>
 </div>
@@ -4241,7 +4241,7 @@
 </li>
 <li>
 <p>Add the necessary gpu section to our new <code>gpu-nodepool.yaml</code> using <code>yq</code> command</p>
-<div class="language-bash highlight"><pre><span></span><code><span id="__span-29-1"><a id="__codelineno-29-1" name="__codelineno-29-1" href="#__codelineno-29-1"></a>yq<span class="w"> </span>e<span class="w"> </span><span class="s1">&#39;(.spec.topology.workers.machineDeployments[] | select(.name == &quot;gpu-nodepool&quot;).variables.overrides[] | select(.name == &quot;workerConfig&quot;).value.nutanix.machineDetails) += {&quot;gpus&quot;: [{&quot;type&quot;: &quot;name&quot;, &quot;name&quot;: strenv(GPU_NAME)}]}&#39;</span><span class="w"> </span>-i<span class="w"> </span>gpu-nodepool.yaml
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-29-1"><a id="__codelineno-29-1" name="__codelineno-29-1" href="#__codelineno-29-1"></a>yq<span class="w"> </span>e<span class="w"> </span><span class="s1">'(.spec.topology.workers.machineDeployments[] | select(.name == "gpu-nodepool").variables.overrides[] | select(.name == "workerConfig").value.nutanix.machineDetails) += {"gpus": [{"type": "name", "name": strenv(GPU_NAME)}]}'</span><span class="w"> </span>-i<span class="w"> </span>gpu-nodepool.yaml
 </span></code></pre></div>
 <details class="success">
 <summary>Successful addtion of GPU specs?</summary>
