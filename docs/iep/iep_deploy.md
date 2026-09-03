@@ -1,8 +1,8 @@
 # Deploying Nutanix Enterprise AI (NAI) NVD Reference Application
 
-!!! info "Version 2.7.0"
+!!! info "Version 2.8.0"
 
-    This version of the NAI deployment is based on the Nutanix Enterprise AI (NAI) ``v2.7.0`` release.
+    This version of the NAI deployment is based on the Nutanix Enterprise AI (NAI) ``v2.8.0`` release.
 
 ```mermaid
 stateDiagram-v2
@@ -25,7 +25,7 @@ stateDiagram-v2
 ## Prepare for NAI Deployment
 
 
-!!! example "GA Software with NAI v2.7.0"
+!!! example "GA Software with NAI v2.8.0"
     
     In this lab, we will deploy GA version of the following software to test the following:
 
@@ -36,13 +36,15 @@ stateDiagram-v2
 
 !!! info
 
-    Changes in NAI ``v2.7.0``
+    Changes in NAI ``v2.8.0``
 
-    - Kserve is of at least of ``v0.15.0``
+    - Kserve is of at least of ``v0.19.0``
     - Cert-manager is at least of ``v1.17.2``
-    - OpenTelemetry operator is at least of ``v0.102.0``
-    - Envoy Gateway is at least of ``v1.7.0``
-    - Prometheus Monitoring is at least of ``78.4.0``
+    - OpenTelemetry operator is at least of ``v0.114.1``
+    - Envoy Gateway is at least of ``v1.8.1``
+    - Prometheus Monitoring is at least of ``82.13.6``
+    - CloudNativePG Operator is ar least of ``0.28.0`` [Usually pre-installed with NKP]
+    - LeaderWorkerSet is at least of ``0.8.0``
   
 ## Enable Pre-requisite Applications  
 
@@ -67,7 +69,7 @@ The following pre-requisite applications will be enabled on NKP GUI:
 2. Click on **Management Cluster Workspace**
 3. Go to **Applications** to search and enable the following:
    
-     * **Prometheus Monitoring** : version ``78.4.0`` or higher with the following ``Values`` configuration 
+     * **Prometheus Monitoring** : version ``82.13.6`` or higher with the following ``Values`` configuration 
 
 4. Wait for ``Deployed`` state in the GUI
 
@@ -96,13 +98,13 @@ The following pre-requisite applications will be enabled on NKP GUI:
         source $HOME/nai-airgap/.env
         ```
 
-3. Install Envoy Gateway CRDs ``v1.7.0`` in **AI gateway mode**
+3. Install Envoy Gateway CRDs ``v1.8.1`` in **AI gateway mode**
    
     === ":octicons-command-palette-16: Command"
     
         ```bash
         helm template eg oci://docker.io/envoyproxy/gateway-crds-helm \
-        --version v1.7.0 \
+        --version v1.8.1 \
         --set crds.gatewayAPI.enabled=true \
         --set crds.envoyGateway.enabled=true \
         | kubectl apply --server-side --force-conflicts -f -
@@ -111,7 +113,7 @@ The following pre-requisite applications will be enabled on NKP GUI:
     === ":octicons-command-palette-16: Command output"
     
         ```bash
-        Pulled: docker.io/envoyproxy/gateway-crds-helm:v1.7.0
+        Pulled: docker.io/envoyproxy/gateway-crds-helm:v1.8.1
         Digest: sha256:e94d3fdf5d4cb08e2c8efa8c1da133b9804c2e88a3acb4d0e20adb8755a60174
         customresourcedefinition.apiextensions.k8s.io/backendtlspolicies.gateway.networking.k8s.io serverside-applied
         customresourcedefinition.apiextensions.k8s.io/gatewayclasses.gateway.networking.k8s.io serverside-applied
@@ -151,7 +153,7 @@ The following pre-requisite applications will be enabled on NKP GUI:
               kubernetes:
                 rateLimitDeployment:
                   container:
-                    image: "docker.io/envoyproxy/ratelimit:99d85510"
+                    image: "docker.io/envoyproxy/ratelimit:1e50889b"
                   patch:
                     type: "StrategicMerge"
                     value:
@@ -161,7 +163,12 @@ The following pre-requisite applications will be enabled on NKP GUI:
                             containers:
                               - imagePullPolicy: "IfNotPresent"
                                 name: "envoy-ratelimit"
-                                image: "docker.io/envoyproxy/ratelimit:99d85510"
+                                image: "docker.io/envoyproxy/ratelimit:1e50889b"
+                                env:
+                                  - name: REDIS_TYPE
+                                    value: "sentinel"
+                                  - name: REDIS_PIPELINE_WINDOW
+                                    value: "150us"
               type: "Kubernetes"
             extensionApis:
               enableEnvoyPatchPolicy: true
@@ -195,15 +202,15 @@ The following pre-requisite applications will be enabled on NKP GUI:
               backend:
                 type: "Redis"
                 redis:
-                  url: "redis-sentinel.nai-system.svc.cluster.local:6379"
+                  url: "mymaster,nai-valkey-sentinel.nai-system.svc.cluster.local:26379"
         ```
     
-5. Install Envoy Gateway ``v1.7.0``
+5. Install Envoy Gateway ``v1.8.1``
    
     === ":octicons-command-palette-16: Command"
     
         ```bash
-        helm upgrade --install eg oci://docker.io/envoyproxy/gateway-helm --version v1.7.0 \
+        helm upgrade --install eg oci://docker.io/envoyproxy/gateway-helm --version v1.8.1 \
         -n envoy-gateway-system --create-namespace --skip-crds \
         -f ./eg-config-for-gateway-mode.yaml
         ```
@@ -211,7 +218,7 @@ The following pre-requisite applications will be enabled on NKP GUI:
     === ":octicons-command-palette-16: Output"
         
         ```{ .text .no-copy }
-        Pulled: docker.io/envoyproxy/gateway-helm:v1.7.0
+        Pulled: docker.io/envoyproxy/gateway-helm:v1.8.1
         Digest: sha256:6dca101fdc0d41c702c1070eb42db119a2768a33388ba28041ae615cbe262aaf
         Release "eg" has been upgraded. Happy Helming!
         NAME: eg
@@ -286,7 +293,7 @@ The following pre-requisite applications will be enabled on NKP GUI:
 
 
     ```text
-    export KSERVE_VERSION=v0.15.0
+    export KSERVE_VERSION=v0.19.0
     ```
 
 8. Load the ``.env`` variables
@@ -316,7 +323,7 @@ The following pre-requisite applications will be enabled on NKP GUI:
     === ":octicons-command-palette-16: Output"
     
         ```{ .text .no-copy }
-        Pulled: ghcr.io/kserve/charts/kserve-crd:v0.15.0
+        Pulled: ghcr.io/kserve/charts/kserve-crd:v0.19.0
         Digest: sha256:57ad1a5475fd625cb558214ba711752aa77b7d91686a391a5f5320cfa72f3fa8
         Release "kserve-crd" has been upgraded. Happy Helming!
         NAME: kserve-crd
@@ -327,7 +334,7 @@ The following pre-requisite applications will be enabled on NKP GUI:
         TEST SUITE: None    
         ```
         ```{ .text .no-copy }
-        Pulled: ghcr.io/kserve/charts/kserve:v0.15.0
+        Pulled: ghcr.io/kserve/charts/kserve:v0.19.0
         Digest: sha256:905abce80e975c53b40fba7a12b0b9a1e24bdf65cceebb88fba4ef62bba01406
         Release "kserve" has been upgraded. Happy Helming!
         NAME: kserve
@@ -354,6 +361,101 @@ The following pre-requisite applications will be enabled on NKP GUI:
         ```{ .text .no-copy }
         NAME                                         READY   STATUS    RESTARTS   AGE
         kserve-controller-manager-69b6dbf9cf-ft55b   2/2     Running   0          2m
+        ```
+
+11. Install or upgrade the KServe LLMInferenceService CRD
+    
+    === ":octicons-command-palette-16: Command"
+    
+        ```bash
+        helm upgrade --install kserve-llmisvc-crd oci://ghcr.io/kserve/charts/kserve-llmisvc-crd \
+          --version $KSERVE_VERSION -n kserve --create-namespace --wait
+        ```
+
+    === ":octicons-command-palette-16: Command output"
+    
+        ```{ .text .no-copy }
+        Release "kserve-llmisvc-crd" does not exist. Installing it now.
+        Pulled: ghcr.io/kserve/charts/kserve-llmisvc-crd:v0.19.0
+        Digest: sha256:b6e8d32748ecaa0962f878a0678aa18ab4e8c1984ae0ead6c6aadad257757d8e
+        NAME: kserve-llmisvc-crd
+        LAST DEPLOYED: Thu Sep  3 01:30:52 2026
+        NAMESPACE: kserve
+        STATUS: deployed
+        REVISION: 1
+        DESCRIPTION: Install complete
+        TEST SUITE: None
+        ```
+    
+12. Install or upgrade the KServe LLMInferenceService resources
+ 
+    === ":octicons-command-palette-16: Command"
+    
+        ```bash
+        helm upgrade --install kserve-llmisvc-resources oci://ghcr.io/kserve/charts/kserve-llmisvc-resources \
+          --version $KSERVE_VERSION -n kserve --create-namespace --wait \
+          --set kserve.createSharedResources=false \
+          --set kserve.llmisvc.createGIECRDs=false
+        ```    
+    
+    === ":octicons-command-palette-16: Command output"
+    
+        ```{ .text .no-copy }
+        Pulled: ghcr.io/kserve/charts/kserve-llmisvc-resources:v0.19.0
+        Digest: sha256:f596635c00d66565113cda46cd09f72c4967094378dfcd7c03e2ac7f74e0565b
+        Release "kserve-llmisvc-resources" has been upgraded. Happy Helming!
+        NAME: kserve-llmisvc-resources
+        LAST DEPLOYED: Thu Sep  3 05:02:34 2026
+        NAMESPACE: kserve
+        STATUS: deployed
+        REVISION: 2
+        DESCRIPTION: Upgrade complete
+        TEST SUITE: None
+        ```
+
+### CloudNativePG
+
+!!! note
+    
+    NKP will have CloudNativePG pre-installed as a part of regular install. Check in the Applications Catalog of the NKP cluster for its presence. 
+
+    Check for CloudNativePG ``v0.28.0``, if present, skip this section. 
+
+1. Install CloudNativePG Operator
+   
+    === ":octicons-command-palette-16: Command"
+    
+        ```bash
+        helm install cnpg cloudnative-pg \
+          --repo https://cloudnative-pg.github.io/charts \
+          --version 0.28.0 -n cnpg-system --create-namespace --wait
+        ```
+
+### LeaderWorkerSet
+
+LeaderWorkerSet (LWS) is an open-source, custom Kubernetes API designed to deploy and manage multi-node AI/ML workloads—such as large language model (LLM) distributed inference and training—as a single, cohesive unit. It automatically groups a collection of pods into a specific topology consisting of one leader pod and multiple worker pods, managing their entire lifecycle simultaneously so that if a single pod fails, the entire group restarts together to prevent data inconsistency. Furthermore, LWS simplifies network communication across these nodes by automatically injecting group environment variables and optimizing pod placement within the same network topology to guarantee high-throughput, low-latency data transfers between GPUs.
+
+1. Install LeaderWorkerSet
+   
+    === ":octicons-command-palette-16: Command"
+    
+        ```bash
+        helm install lws oci://registry.k8s.io/lws/charts/lws \
+          --version 0.8.0 -n lws-system --create-namespace --wait
+        ```
+    
+    === ":octicons-command-palette-16: Command output"
+    
+        ```{ .text .no-copy }
+        Pulled: registry.k8s.io/lws/charts/lws:0.8.0
+        Digest: sha256:e7996d0b9ca8a1ab2d86458b0435a8d842389b81325dc650792389a2c1ad7f57
+        NAME: lws
+        LAST DEPLOYED: Thu Sep  3 01:33:55 2026
+        NAMESPACE: lws-system
+        STATUS: deployed
+        REVISION: 1
+        DESCRIPTION: Install complete
+        TEST SUITE: None
         ```
 
 ### OpenTelemetry
@@ -448,7 +550,7 @@ We will use the Docker login credentials we created in the previous section to d
         export DOCKER_NAI_USERNAME=ntnxsvcgpt
         export DOCKER_NAI_PASSWORD=dckr_pat_XXXXXXXXXXXXXXXXXXXXXXXXX
         export DOCKER_NAI_EMAIL=ntnxsvcgpt
-        export NAI_CORE_VERSION=2.7.0
+        export NAI_CORE_VERSION=2.8.0
         export NAI_API_RWX_STORAGECLASS=nai-nfs-storage
         export NAI_DEFAULT_RWO_STORAGECLASS=nutanix-volume
         export NKP_WORKSPACE_NAMESPACE=kommander
@@ -519,7 +621,7 @@ We will use the Docker login credentials we created in the previous section to d
         helm repo update ntnx-charts
         ```
 
-9. Search and confirm if NAI ``v2.7.0`` charts are available
+9. Search and confirm if NAI ``v2.8.0`` charts are available
     
     === ":octicons-command-palette-16: Command"
     
@@ -534,26 +636,70 @@ We will use the Docker login credentials we created in the previous section to d
         $ helm search repo ntnx-charts/nai-core --versions
         #
         NAME                            CHART VERSION   APP VERSION     DESCRIPTION                                       
-        ntnx-charts/nai-operators       2.7.0           0.1.0           A Helm chart for CRDs and Operators required by...
-        ntnx-charts/nai-operators       2.7.0           0.1.0           A Helm chart for CRDs and Operators required by...
+        ntnx-charts/nai-operators       2.8.0           0.1.0           A Helm chart for CRDs and Operators required by...
+        ntnx-charts/nai-operators       2.8.0           0.1.0           A Helm chart for CRDs and Operators required by...
+        ntnx-charts/nai-operators       2.6.0           0.1.0           A Helm chart for CRDs and Operators required by...
         ntnx-charts/nai-operators       2.5.0           0.1.0           A Helm chart for CRDs and Operators required by...
 
         NAME                    CHART VERSION   APP VERSION     DESCRIPTION                         
-        ntnx-charts/nai-core    2.7.0           0.1.0           A Helm chart for NAI core components
-        ntnx-charts/nai-core    2.7.0           0.1.0           A Helm chart for NAI core components
+        ntnx-charts/nai-core    2.8.0           0.1.0           A Helm chart for NAI core components
+        ntnx-charts/nai-core    2.8.0           0.1.0           A Helm chart for NAI core components
+        ntnx-charts/nai-core    2.6.0           0.1.0           A Helm chart for NAI core components
         ntnx-charts/nai-core    2.5.0           0.1.0           A Helm chart for NAI core components
         ntnx-charts/nai-core    2.4.0           0.1.0           A Helm chart for NAI core components
         ntnx-charts/nai-core    2.3.0           0.1.0           A Helm chart for NAI core components
         ```
     
 10. Install NAI operator
+    
+    ??? "Deploy NAI Profiles"
+
+        NAI ``v2.8.0`` onwards has support for profiles for different capacity of NAI use cases
+
+        | Name     	| Capacity                                                    	|
+        |----------	|------------------------------------------------------------	|
+        | Default 	| 300 concurrent requests and 100 API Keys       	            |
+        | c1k_k200  | 1000 concurrent requests and 200 API Keys                     |
+        | c5k_k1k   | 	5000 concurrent requests and 1000 API Keys 	                |
+       
+        **Extract the profiles from Helm charts:**
+ 
+        === ":octicons-command-palette-16: Command"
+        
+            ```bash
+            helm pull ntnx-charts/nai-operators --version 2.8.0 --untar=true
+            helm pull ntnx-charts/nai-core --version 2.8.0 --untar=true
+            ```
+        
+        **The extracted profile will be located in the following path:**
+        
+        === ":material-link: File Path"
+        
+            ```bash
+            ./nai-operators/profiles/c1k_k200.yaml
+            ./nai-operators/profiles/c5k_k1k.yaml
+    
+            ./nai-core/profiles/c1k_k200.yaml
+            ./nai-core/profiles/c5k_k1k.yaml
+            ```
+        
+        **Deploy NAI Operators for c1k_k200 profile**
+ 
+        === ":octicons-command-palette-16: Command"
+        
+            ```bash hl_lines="5"
+            helm upgrade --install nai-operators ntnx-charts/nai-operators --version 2.8.0 \
+              -n nai-system --create-namespace --wait --timeout 15m \
+              --set "global.storage.storageClassName=${NAI_DEFAULT_RWO_STORAGECLASS}" \
+              --set "global.imagePullSecrets[0].name=${REGISTRY_SECRET_NAME}" \
+              -f ./nai-operators/profiles/c1k_k200.yaml
+            ```
    
     === ":octicons-command-palette-16: Command"
 
         ```text
         helm upgrade --install nai-operators ntnx-charts/nai-operators \
-          --version 2.7.0 \ 
-          -n nai-system --create-namespace --take-ownership --wait \
+          --version 2.8.0  -n nai-system --create-namespace --take-ownership --wait \
           --set "global.imagePullSecrets[0].name=${REGISTRY_SECRET_NAME}" 
         ```
 
@@ -562,10 +708,11 @@ We will use the Docker login credentials we created in the previous section to d
         ```{ .text, .no-copy}
         Release "nai-operators" has been upgraded. Happy Helming!
         NAME: nai-operators
-        LAST DEPLOYED: Sun May 30 08:48:05 2026
+        LAST DEPLOYED: Thu Sep  3 05:16:59 2026
         NAMESPACE: nai-system
         STATUS: deployed
-        REVISION: 3
+        REVISION: 2
+        DESCRIPTION: Upgrade complete
         TEST SUITE: None
         ```
 
@@ -591,40 +738,82 @@ We will use the Docker login credentials we created in the previous section to d
     !!! info
 
         This installation takes about 5-10 minutes depending on the available resources
+
+    ??? "Deploy NAI Profiles"
+
+        NAI ``v2.8.0`` onwards has support for profiles for different capacity of NAI use cases
+
+        | Name     	| Capacity                                                    	|
+        |----------	|------------------------------------------------------------	|
+        | Default 	| 300 concurrent requests and 100 API Keys       	            |
+        | c1k_k200  | 1000 concurrent requests and 200 API Keys                     |
+        | c5k_k1k   | 	5000 concurrent requests and 1000 API Keys 	                |
+       
+        **Extract the profiles from Helm charts:**
+ 
+        === ":octicons-command-palette-16: Command"
+        
+            ```bash
+            helm pull ntnx-charts/nai-operators --version 2.8.0 --untar=true
+            helm pull ntnx-charts/nai-core --version 2.8.0 --untar=true
+            ```
+        
+        **The extracted profile will be located in the following path:**
+        
+        === ":material-link: File Path"
+        
+            ```bash
+            ./nai-operators/profiles/c1k_k200.yaml
+            ./nai-operators/profiles/c5k_k1k.yaml
+    
+            ./nai-core/profiles/c1k_k200.yaml
+            ./nai-core/profiles/c5k_k1k.yaml
+            ```
+        
+        **Deploy NAI Core for c1k_k200 profile**
+        
+        === ":octicons-command-palette-16: Command"
+        
+            ```bash hl_lines="6"
+            helm upgrade --install nai-core ntnx-charts/nai-core --version=2.8.0 \
+              -n nai-system --create-namespace --wait --timeout 15m \
+              --set "global.imagePullSecrets[0].name=${REGISTRY_SECRET_NAME}" \
+              --set "global.storage.storageClassNameRWX=${NAI_API_RWX_STORAGECLASS}" \
+              --set "global.storage.storageClassName=${NAI_DEFAULT_RWO_STORAGECLASS}" \
+              -f ./nai-core/profiles/c1k_k200.yaml
+            ```
     
     === ":octicons-command-palette-16: Command"
     
         ```text
         helm upgrade --install nai-core ntnx-charts/nai-core \
-          --version 2.7.0 -n nai-system --create-namespace \
+          --version 2.8.0 -n nai-system --create-namespace \
           --force-conflicts --wait \
           --set "global.imagePullSecrets[0].name=${REGISTRY_SECRET_NAME}" \
           --set "global.storage.storageClassNameRWX=${NAI_API_RWX_STORAGECLASS}" \
           --set "global.storage.storageClassName=${NAI_DEFAULT_RWO_STORAGECLASS}" \
           --set "naiMonitoring.nodeExporter.serviceMonitor.namespaceSelector.matchNames[0]=${NKP_WORKSPACE_NAMESPACE}" \
-          --set "naiMonitoring.dcgmExporter.serviceMonitor.namespaceSelector.matchNames[0]=${NKP_WORKSPACE_NAMESPACE}" \
-          --insecure-skip-tls-verify
+          --set "naiMonitoring.dcgmExporter.serviceMonitor.namespaceSelector.matchNames[0]=${NKP_WORKSPACE_NAMESPACE}" 
         ```
 
     === ":octicons-command-palette-16: Sample command"
     
         ```text
         helm upgrade --install nai-core ntnx-charts/nai-core \
-          --version 2.7.0 -n nai-system --create-namespace \
+          --version 2.8.0 -n nai-system --create-namespace \
           --force-conflicts --wait \
           --set "global.imagePullSecrets[0].name=nai-regcred" \
           --set "global.storage.storageClassNameRWX=nai-nfs-storage" \
           --set "global.storage.storageClassName=nutanix-volume" \
           --set "naiMonitoring.nodeExporter.serviceMonitor.namespaceSelector.matchNames[0]=kommander" \
-          --set "naiMonitoring.dcgmExporter.serviceMonitor.namespaceSelector.matchNames[0]=kommander" \
-          --insecure-skip-tls-verify
+          --set "naiMonitoring.dcgmExporter.serviceMonitor.namespaceSelector.matchNames[0]=kommander" 
         ```
 
     === ":octicons-command-palette-16: Command output"
 
         ```{ .text, .no-copy}
         NAME: nai-core
-        LAST DEPLOYED: Sun May 30 09:03:05 2026
+        LAST DEPLOYED: Thu Sep  3 05:16:59 2026
         NAMESPACE: nai-system
         STATUS: deployed
         REVISION: 1
@@ -645,36 +834,36 @@ We will use the Docker login credentials we created in the previous section to d
         Active namespace is "nai-system".
 
         NAME                                                    READY   STATUS      RESTARTS   AGE
-        ai-gateway-controller-d6bb9d79b-qrml2                   1/1     Running     0             6m
-        chi-nai-clickhouse-server-chcluster1-0-0-0              1/1     Running     0             6m
-        chk-nai-clickhouse-keeper-chkeeper-0-0-0                1/1     Running     0             6m
-        iam-database-bootstrap-cfwxl-zljjl                      0/1     Completed   0             6m
-        iam-proxy-7756b78f4c-nqswf                              1/1     Running     0             6m
-        iam-proxy-control-plane-64d65947bf-lgx5x                1/1     Running     0             6m
-        iam-themis-b4bffcf6d-ssg5f                              1/1     Running     1 (1m ago)    6m
-        iam-themis-bootstrap-6rqfk-xf2lm                        0/1     Completed   0             6m
-        iam-ui-c57c768d-fg7b7                                   1/1     Running     0             6m
-        iam-user-authn-d9c68c9f7-nm4sf                          1/1     Running     0             6m
-        nai-agent-7fd556556f-6t7f9                              1/1     Running     0             6m
-        nai-api-77bcff5b4f-hdnp6                                1/1     Running     2 (1m ago)    6m
-        nai-api-db-migrate-wiojv-9v2p8                          0/1     Completed   2             6m
-        nai-clickhouse-schema-job-1780198147-q9drf              0/1     Completed   0             6m
-        nai-db-0                                                1/1     Running     0             6m
-        nai-iep-model-controller-56f79987c7-nhj7t               1/1     Running     0             6m
-        nai-oauth2-proxy-86c574869c-6vw54                       1/1     Running     0             6m
-        nai-operators-nai-clickhouse-operator-f8f666db9-2746s   2/2     Running     0             6m
-        nai-otel-collector-collector-29qwn                      1/1     Running     0             6m
-        nai-otel-collector-collector-78lcj                      1/1     Running     0             6m
-        nai-otel-collector-collector-rp7nt                      1/1     Running     0             6m
-        nai-otel-collector-collector-s6j7c                      1/1     Running     0             6m
-        nai-otel-collector-collector-tqxj7                      1/1     Running     0             6m
-        nai-otel-collector-collector-trbqn                      1/1     Running     0             6m
-        nai-otel-collector-collector-xgcmb                      1/1     Running     0             6m
-        nai-otel-collector-targetallocator-75799c778-h2wf2      1/1     Running     0             6m
-        nai-pulse-job-29671205-4t2kp                            0/1     Completed   0             7m
-        nai-securityscan-manager-c6bc5c8b4-v5jfn                1/1     Running     4 (1m ago)    6m
-        nai-ui-557f5f6c89-xjlzt                                 1/1     Running     0             6m
-        redis-standalone-cf49969d-pzqmt                         2/2     Running     0             6m
+        ai-gateway-controller-6fff98cbd6-lv8dd                   1/1     Running     0          67m
+        chi-nai-clickhouse-server-chcluster1-0-0-0               1/1     Running     0          64m
+        chk-nai-clickhouse-keeper-chkeeper-0-0-0                 1/1     Running     0          63m
+        iam-database-bootstrap-pdzxh-7j9m7                       0/1     Completed   0          64m
+        iam-proxy-5bd954bb85-qmdwx                               1/1     Running     0          64m
+        iam-proxy-control-plane-5ff697cdfb-5pnlz                 1/1     Running     0          64m
+        iam-themis-849478f448-7c6bx                              2/2     Running     0          60m
+        iam-themis-bootstrap-e5pyk-pl96p                         0/1     Completed   0          64m
+        iam-ui-7476458cb-q8rns                                   1/1     Running     0          64m
+        iam-user-authn-57d8b4dd67-nsdt5                          2/2     Running     0          60m
+        nai-agent-5d7b86946d-8b8jn                               1/1     Running     0          64m
+        nai-api-86d58c7b6f-5fg4h                                 1/1     Running     0          64m
+        nai-api-db-migrate-vk5y2-2dfr8                           0/1     Completed   5          64m
+        nai-clickhouse-schema-job-1788408841-hvwl8               0/1     Completed   0          64m
+        nai-db-iep-1                                             1/1     Running     0          66m
+        nai-oauth2-proxy-595d65db9c-lt6bs                        1/1     Running     0          64m
+        nai-operators-nai-clickhouse-operator-687479c97b-m9hn7   2/2     Running     0          67m
+        nai-otel-collector-collector-2b5xm                       1/1     Running     0          64m
+        nai-otel-collector-collector-5xj4k                       1/1     Running     0          64m
+        nai-otel-collector-collector-7jdln                       1/1     Running     0          64m
+        nai-otel-collector-collector-7tlz8                       1/1     Running     0          64m
+        nai-otel-collector-collector-b6vpl                       1/1     Running     0          64m
+        nai-otel-collector-collector-k52pv                       1/1     Running     0          64m
+        nai-otel-collector-collector-qnk9d                       1/1     Running     0          64m
+        nai-otel-collector-collector-w4zlf                       1/1     Running     0          64m
+        nai-otel-collector-targetallocator-7fcccfc477-ndgkr      1/1     Running     0          64m
+        nai-securityscan-manager-77679b5554-94p4z                1/1     Running     0          64m
+        nai-ui-7b5b9b88b4-c9wzz                                  1/1     Running     0          64m
+        nai-valkey-0                                             1/1     Running     0          67m
+        nai-valkey-sentinel-0                                    1/1     Running     0          67m
         ```
 
 ## Install SSL Certificate and Gateway Elements

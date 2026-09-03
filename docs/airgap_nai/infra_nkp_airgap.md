@@ -53,7 +53,7 @@ Below are the sizing requirements needed to successfully deploy NAI on a NKP Clu
 
     For a general example:
 
-    - To host a 8b(illion) parameter model, multiply the parameter number by 2 to get minimum GPU memory requirments. 
+    - To host a 8b(illion) parameter model, multiply the parameter number by 2 to get minimum GPU memory requirements. 
       e.g. 16GB of GPU memory is required for 8b parameter model.
   
     > So in the case of the `meta-llama/Meta-Llama-3-8B-Instruct` model, you'll need a min. 16 GiB GPU vRAM available
@@ -114,28 +114,32 @@ Below are minimum requirements for deploying NAI on the NKP Demo Cluster.
 
 10. Download and extract the NKP air-gap bundle from the link you copied earlier
     
-    === "Command"
+    === ":octicons-command-palette-16: Command"
 
         ```text title="Paste the download URL within double quotes"
         curl -o nkp-air-gapped-bundle_v2.17.1_linux_amd64.tar.gz "_paste_download_URL_here"
         ```
 
-    === "Sample command"
+    === ":octicons-command-palette-16: Sample command"
         
         ```bash
         curl -o nkp-air-gapped-bundle_v2.17.1_linux_amd64.tar.gz "https://download.nutanix.com/downloads/nkp/v2.17.1/nkp-air-gapped-bundle_v2.17.1_linux_amd64.tar.gz?........"
         ```
         
-    ```bash
-    tar xvfz nkp-air-gapped-bundle_v2.17.1_linux_amd64.tar.gz
-    ```
+    === ":octicons-command-palette-16: Command"
+    
+        ```bash
+        tar xvfz nkp-air-gapped-bundle_v2.17.1_linux_amd64.tar.gz
+        ```
+
 
 11. Move the ``nkp`` binary to a directory that is included in your ``PATH`` environment variable
 
-    ```bash
-    sudo cp nkp-v2.17.1/cli/nkp /usr/local/bin/
-    ```
-
+    === ":octicons-command-palette-16: Command"
+    
+        ```bash
+        sudo cp nkp-v2.17.1/cli/nkp /usr/local/bin/
+        ```
 
 12. Verify the ``nkp`` binary is installed correctly. Ensure the version is latest
     
@@ -143,13 +147,13 @@ Below are minimum requirements for deploying NAI on the NKP Demo Cluster.
 
         At the time of writing this lab nkp version is ``v2.17.1``
 
-    === "Command"
+    === ":octicons-command-palette-16: Command"
 
         ```bash
         nkp version
         ```
 
-    === "Command Output"
+    === ":octicons-command-palette-16: Command Output"
 
         ```{ .bash .no-copy }
         $ nkp version
@@ -171,7 +175,7 @@ If not already done, follow the steps in [Setup Docker on Jumphost](../infra/inf
 
 1. From VSC, open Terminal and run the following command to load the ``nkp`` images
     
-    === "Command"
+    === ":octicons-command-palette-16: Command"
     
         ```bash
         cd $HOME/airgap-nkp/nkp-v2.17.1/
@@ -179,7 +183,7 @@ If not already done, follow the steps in [Setup Docker on Jumphost](../infra/inf
         docker load -i konvoy-bootstrap-image-v2.17.1.tar
         ```
     
-    === "Command output"
+    === ":octicons-command-palette-16: Command output"
 
         ```bash
         $ docker load -i nkp-image-builder-image-v2.17.1.tar 
@@ -203,13 +207,13 @@ If not already done, follow the steps in [Setup Docker on Jumphost](../infra/inf
 
 2. Confirm presence of container images on jumhost VM
    
-    === "Command"
+    === ":octicons-command-palette-16: Command"
     
         ```bash
         docker image ls
         ```
     
-    === "Command output"
+    === ":octicons-command-palette-16: Command output"
     
         ```text hl_lines="4 5"
         $ docker image ls
@@ -239,20 +243,22 @@ We will reserve a total of three IPs for the following:
 
 3. Install ``nmap`` tool (if not already done)
 
-    ```bash
-    cd $HOME/sol-cnai-infra
-    devbox add nmap
-    ```
+    === ":octicons-command-palette-16: Command
+    
+        ```bash
+        cd $HOME/sol-cnai-infra
+        devbox add nmap
+        ```
 
 4. Find three unused static IP addresses in the subnet
 
-    === "Command"
+    === ":octicons-command-palette-16: Command
 
         ```bash
         nmap -v -sn  <your CIDR>
         ```
 
-    === "Sample command"
+    === ":octicons-command-palette-16: Sample command"
 
         ```bash 
         nmap -v -sn 10.x.x.0/24

@@ -71,8 +71,8 @@ Below are minimum requirements for deploying NAI on the NKP Demo Cluster.
 
 | Role          | No. of Nodes (VM) | vCPU per Node | Memory per Node | Storage per Node | Total vCPU | Total Memory |
 |---------------|-------------------|---------------|-----------------|------------------|------------|--------------|
-| Control plane | 3                 | 4             | 16 GB           | 150 GB           | 12         | 48 GB        |
-| Worker        | 4                 | 12            | 32 GB           | 150 GB           | 36         | 128 GB       |
+| Control plane | 3                 | 4             | 16 GB           | 200 GB           | 12         | 48 GB        |
+| Worker        | 4                 | 12            | 32 GB           | 200 GB           | 36         | 128 GB       |
 | GPU           | 1                 | 20            | 40 GB           | 300 GB           | 20         | 40 GB        |
 | **Totals**    |                   |               |                 |                  | **68**     | **216 GB**   |
 
@@ -80,9 +80,9 @@ Below are minimum requirements for deploying NAI on the NKP Demo Cluster.
 
     1. Existing Ubuntu Linux jumphost VM. See here for jumphost installation [steps](../infra/infra_jumphost_tofu.md).
     2. [Docker](#setup-docker-on-jumphost) or Podman installed on the jumphost VM
-    3. Nutanix PC is at least ``pc.7.5.0.1``
-    4. Nutanix AOS is at least ``7.3.0.5``
-    5. Download and install NKP ``v2.17.1`` binary from Nutanix Portal
+    3. Nutanix PC is at least ``pc.7.5.x.x``
+    4. Nutanix AOS is at least ``7.5.x`` or later
+    5. Download and install NKP ``v2.18.0`` binary from Nutanix Portal
     6. Find and reserve 3 IPs for control plane and MetalLB access from AHV network
     7. Find GPU details from Nutanix cluster
     8. Create a base image to use with NKP nodes using ``nkp`` command
@@ -113,17 +113,17 @@ Below are minimum requirements for deploying NAI on the NKP Demo Cluster.
     === "Command"
 
         ```text title="Paste the download URL within double quotes"
-        curl -o nkp_v2.17.1_linux_amd64.tar.gz "_paste_download_URL_here"
+        curl -o nkp_v2.18.0_linux_amd64.tar.gz "_paste_download_URL_here"
         ```
 
     === "Sample command"
         
         ```bash
-        curl -o nkp_v2.17.1_linux_amd64.tar.gz "https://download.nutanix.com/downloads/nkp/v2.17.1/nkp_v2.17.1_linux_amd64.tar.gz?Expires=1729016864&........"
+        curl -o nkp_v2.18.0_linux_amd64.tar.gz "https://download.nutanix.com/downloads/nkp/v2.18.0/nkp_v2.18.0_linux_amd64.tar.gz?Expires=1729016864&........"
         ```
         
     ```bash
-    tar xvfz nkp_v2.17.1_linux_amd64.tar.gz
+    tar xvfz nkp_v2.18.0_linux_amd64.tar.gz
     ```
 
 11. Move the ``nkp`` binary to a directory that is included in your ``PATH`` environment variable
@@ -137,7 +137,7 @@ Below are minimum requirements for deploying NAI on the NKP Demo Cluster.
     
     !!! note
 
-        At the time of writing this lab nkp version is ``v2.17.1``
+        At the time of writing this lab nkp version is ``v2.18.0``
 
     === "Command"
 
@@ -149,14 +149,14 @@ Below are minimum requirements for deploying NAI on the NKP Demo Cluster.
 
         ```{ .text .no-copy }
         $ nkp version
-        catalog: v0.8.1
-        diagnose: v0.12.0
-        imagebuilder: v2.17.1
-        kommander: v2.17.1
-        konvoy: v2.17.1
-        konvoybundlepusher: v2.17.1
-        mindthegap: v1.24.0
-        nkp: v2.17.1
+        catalog: v0.9.1
+        diagnose: v0.13.2
+        imagebuilder: v2.18.0
+        kommander: v2.18.0
+        konvoy: v2.18.0
+        konvoybundlepusher: v2.18.0
+        mindthegap: v1.26.1
+        nkp: v2.18.0
         ```
 
 ### Setup Docker on Jumphost
@@ -433,16 +433,6 @@ We are now ready to install the workload ``nkpdev`` cluster
 
 ## Create NKP Workload Cluster
 
-!!!warning
-
-    Do not use hyphens ``-`` in the nkp cluster name. 
- 
-    ```text title="Clustername Validation Rules"
-    a lowercase RFC 1123 subdomain must consist of lower case alphanumeric       │
-    │characters, '-' or '.', and must start and end with an alphanumeric character (e.g. 'example.com',  │
-    │regex used for validation is '[a-z0-9]([-a-z0-9]*[a-z0-9])?(\.[a-z0-9]([-a-z0-9]*[a-z0-9])?)*')
-    ```
-
 !!!note
 
     In this lab the workload cluster will have the Management cluster role as well to reduce resource consumption in a lab environment. 
@@ -510,11 +500,11 @@ We are now ready to install the workload ``nkpdev`` cluster
                 --worker-vm-image ${NKP_IMAGE} \
                 --ssh-public-key-file ${SSH_PUBLIC_KEY} \
                 --kubernetes-service-load-balancer-ip-range ${LB_IP_RANGE} \
-                --control-plane-disk-size 150 \
+                --control-plane-disk-size 200 \
                 --control-plane-memory ${CONTROL_PLANE_MEMORY_GIB} \
                 --control-plane-vcpus ${CONTROL_PLANE_VCPUS} \
                 --control-plane-cores-per-vcpu ${CONTROL_PLANE_CORES_PER_VCPU} \
-                --worker-disk-size 150 \
+                --worker-disk-size 200 \
                 --worker-memory ${WORKER_MEMORY_GIB} \
                 --worker-vcpus ${WORKER_VCPUS} \
                 --worker-cores-per-vcpu ${WORKER_CORES_PER_VCPU} \
@@ -550,11 +540,11 @@ We are now ready to install the workload ``nkpdev`` cluster
             --worker-vm-image ${NKP_IMAGE} \
             --ssh-public-key-file ${SSH_PUBLIC_KEY} \
             --kubernetes-service-load-balancer-ip-range ${LB_IP_RANGE} \
-            --control-plane-disk-size 150 \
+            --control-plane-disk-size 200 \
             --control-plane-memory ${CONTROL_PLANE_MEMORY_GIB} \
             --control-plane-vcpus ${CONTROL_PLANE_VCPUS} \
             --control-plane-cores-per-vcpu ${CONTROL_PLANE_CORES_PER_VCPU} \
-            --worker-disk-size 150 \
+            --worker-disk-size 200 \
             --worker-memory ${WORKER_MEMORY_GIB} \
             --worker-vcpus ${WORKER_VCPUS} \
             --worker-cores-per-vcpu ${WORKER_CORES_PER_VCPU} \
@@ -908,7 +898,7 @@ In this section we will create a nodepool to host the AI apps with a GPU.
 
 ## Enable GPU Operator
 
-We will need to enable GPU operator ``v25.3.1`` for deploying NKP application. 
+We will need to enable GPU operator ``v26.3.0`` for deploying NKP application. 
 
 1. In the NKP GUI, Go to **Clusters**
 2. Click on **Kommander Host**
