@@ -1,0 +1,42 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+name: network-tester
+spec:
+replicas: 1
+selector:
+    matchLabels:
+    app: network-tester
+template:
+    metadata:
+    labels:
+        app: network-tester
+    spec:
+    containers:
+    - name: tester
+        image: python:3.9-slim-bookworm 
+        command: ["/bin/sh", "-c"]
+        args: 
+        - apt-get update && apt-get install -y iperf3 postgresql-15 curl && pip install flask && python /app/app.py
+        ports:
+        - containerPort: 8080
+        volumeMounts:
+        - name: app-code
+        mountPath: /app
+    volumes:
+    - name: app-code
+        configMap:
+        name: tester-app-code
+---
+apiVersion: v1
+kind: Service
+metadata:
+name: network-tester-svc
+spec:
+type: ClusterIP
+selector:
+    app: network-tester
+ports:
+    - protocol: TCP
+    port: 80
+    targetPort: 8080
