@@ -22,11 +22,11 @@ nav:
 
 - NAI on NKP Tutorials:
   - NAI:
-    # - NAI (NKP App Catalog):
-    #   - Getting Started: nkp_catalog_nai/index.md
-    #   - Setup NKP Clusters: nkp_catalog_nai/nkp_catalog_infra_nkp.md
-    #   - Pre-requisites NAI: nkp_catalog_nai/nkp_catalog_pre_reqs.md
-    #   - Deploy NAI: nkp_catalog_nai/nkp_catalog_nai_deploy.md
+    - NAI (NKP App Catalog):
+      - Getting Started: nkp_catalog_nai/index.md
+      - Setup NKP Clusters: nkp_catalog_nai/nkp_catalog_infra_nkp.md
+      - Pre-requisites NAI: nkp_catalog_nai/nkp_catalog_pre_reqs.md
+      - Deploy NAI: nkp_catalog_nai/nkp_catalog_nai_deploy.md
     - NAI (Helm):
       - Getting Started: iep/index.md
       - Setup NKP Cluster: infra/infra_nkp.md

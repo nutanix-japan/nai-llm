@@ -15,7 +15,7 @@ We will also deploy a Kubernetes cluster so far as per the NVD [design requireme
 
 **NKP cluster**: to host NAI - this will use GPU passed through to the kubernetes worker node.
 
-We will install NAI ``v2.7.0`` using the NKP Catalog applications. All pre-requisite applications for NAI are published in the NKP ``v2.17.1`` Applications Catalog.
+We will install NAI ``v2.8.0`` using the NKP Catalog applications. All pre-requisite applications for NAI are published in the NKP ``v2.18.0`` Applications Catalog.
 
 The following is the flow of the NAI lab:
 

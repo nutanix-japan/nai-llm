@@ -211,6 +211,28 @@ Example `versions.json` output:
   }
 ]
 ```
+---
+
+## Remove old versions in gh-pages
+
+# 1. Fetch latest and force local gh-pages to match remote
+
+```bash
+git fetch origin gh-pages
+git checkout gh-pages
+git reset --hard origin/gh-pages
+
+# 2. Remove the 2.5.0 folder
+git rm -rf 2.5.0
+
+# 3. Open versions.json, delete the {"version": "2.5.0", ...} entry, save it, and stage it
+git add versions.json
+
+# 4. Commit, push, and return to main
+git commit -m "chore: remove 2.5.0 docs"
+git push origin gh-pages
+git checkout main
+```
 
 ---
 

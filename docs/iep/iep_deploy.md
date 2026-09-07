@@ -43,7 +43,7 @@ stateDiagram-v2
     - OpenTelemetry operator is at least of ``v0.114.1``
     - Envoy Gateway is at least of ``v1.8.1``
     - Prometheus Monitoring is at least of ``82.13.6``
-    - CloudNativePG Operator is ar least of ``0.28.0`` [Usually pre-installed with NKP]
+    - CloudNativePG Operator is ar least of ``0.28.0`` [usually pre-installed with NKP]
     - LeaderWorkerSet is at least of ``0.8.0``
   
 ## Enable Pre-requisite Applications  
@@ -363,7 +363,7 @@ The following pre-requisite applications will be enabled on NKP GUI:
         kserve-controller-manager-69b6dbf9cf-ft55b   2/2     Running   0          2m
         ```
 
-11. Install or upgrade the KServe LLMInferenceService CRD
+11. Install or upgrade the ``KServe LLMInferenceService`` CRD
     
     === ":octicons-command-palette-16: Command"
     
@@ -387,7 +387,7 @@ The following pre-requisite applications will be enabled on NKP GUI:
         TEST SUITE: None
         ```
     
-12. Install or upgrade the KServe LLMInferenceService resources
+12. Install or upgrade the ``KServe LLMInferenceService`` resources
  
     === ":octicons-command-palette-16: Command"
     
@@ -411,6 +411,23 @@ The following pre-requisite applications will be enabled on NKP GUI:
         REVISION: 2
         DESCRIPTION: Upgrade complete
         TEST SUITE: None
+        ```
+13. Check if ``Kserve LLMInferenceService`` resources are ready either in the GUI by watching for ``Running`` state or in the commandline as follows:
+    
+   
+    === ":octicons-command-palette-16: Command"
+    
+        ```bash
+        kubens kserve
+        kubectl get pods    
+        ```
+
+    === ":octicons-command-palette-16: Output"
+    
+        ```{ .text .no-copy }
+        NAME                                         READY   STATUS    RESTARTS   AGE
+        kserve-controller-manager-857dcfb7d8-fqmpw   2/2     Running   0          4m
+        llmisvc-controller-manager-cf84cf6db-mwftz   1/1     Running   0          4m
         ```
 
 ### CloudNativePG
@@ -683,7 +700,7 @@ We will use the Docker login credentials we created in the previous section to d
             ./nai-core/profiles/c5k_k1k.yaml
             ```
         
-        **Deploy NAI Operators for c1k_k200 profile**
+        **Deploy NAI Operators for ``c1k_k200`` profile**
  
         === ":octicons-command-palette-16: Command"
         
@@ -770,7 +787,7 @@ We will use the Docker login credentials we created in the previous section to d
             ./nai-core/profiles/c5k_k1k.yaml
             ```
         
-        **Deploy NAI Core for c1k_k200 profile**
+        **Deploy NAI Core for ``c1k_k200`` profile**
         
         === ":octicons-command-palette-16: Command"
         
