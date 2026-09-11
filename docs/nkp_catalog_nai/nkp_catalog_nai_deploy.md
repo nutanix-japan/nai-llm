@@ -38,7 +38,7 @@ description: This lab takes your through installing NAI using NKP catalog applic
 
 !!! warning
     
-    Make sure to license NKP cluster with at least NKP Pro License to make use of the NKP Applications catalog to provision NAI (and other applications)
+    Make sure to license NKP cluster with at least **NKP Pro License** to make use of the NKP Applications catalog to provision NAI (and other applications)
     
 ### Prometheus
 
@@ -69,7 +69,7 @@ The following pre-requisite applications will be enabled on NKP GUI:
     2. Click on **Management Cluster Workspace**
     3. Go to **Applications** to search and enable the following:
     
-         * **Cert-manager**- ``v1.17.2``
+         * **Cert-manager**- at least ``v1.17.2``
             
     4. Wait for ``Deployed`` state in the GUI
   
@@ -80,7 +80,7 @@ The following pre-requisite applications will be enabled on NKP GUI:
 2. Click on **Management Cluster Workspace**
 3. Go to **Applications** to search and enable the following:
    
-     * **NAI - Envoy Gateway** : version ``v1.7.0`` or higher with the following ``Values`` configuration 
+     * **NAI - Envoy Gateway** : version ``v1.8.1`` or higher with the following ``Values`` configuration 
      
         ```yaml
         config:
@@ -211,6 +211,8 @@ The following pre-requisite applications will be enabled on NKP GUI:
     === ":octicons-command-palette-16: Output"
     
         ```{ .text .no-copy }
+        $ kubectl get pods 
+        #
         NAME                                         READY   STATUS    RESTARTS   AGE
         kserve-controller-manager-857dcfb7d8-fqmpw   2/2     Running   0          4m
         llmisvc-controller-manager-cf84cf6db-mwftz   1/1     Running   0          4m
@@ -390,92 +392,6 @@ We will use the Docker login credentials we created in the previous section to d
 6. In the NKP GUI, Go to **Clusters**
 7. Click on **Management Cluster Workspace**
 8. Create a template file with Values configuration
-   
-    ??? tip "Optional - NAI with Public CA Certificate and Cert Manager"  
- 
-        Using **Cert Manager** to manage the Public Certificate Authority (CA) for NAI SSL Certificate is also a possiblity.
-    
-        At a high level (Cloudflare Example):
-    
-        1. Get a API key from DNS provider woth Edit Zone rights
-        2. Create a Kubernetes ``Secret`` from the API key
-          
-            === "Cloudflare Example" 
-            
-                ```yaml hl_lines="8"
-                apiVersion: v1
-                kind: Secret
-                metadata:
-                  name: cloudflare-api-token-secret
-                  namespace: harbor
-                type: Opaque
-                stringData:
-                  api-token: _YOUR_CLOUDFLARE_API_TOKEN_HERE
-                ```
-            
-            === "AWS Route 53 Example"
-            
-                ```yaml hl_lines="8 9"
-                apiVersion: v1
-                kind: Secret
-                metadata:
-                  creationTimestamp: null
-                  name: route53-api-token-secret
-                  namespace: cert-manager
-                data:
-                  access-key-id: "_YOUR_AWS_ACCESS_KEY_ID"
-                  secret-access-key: "_YOUR_AWS_SECRET_KEY_ID"
-                ```
-    
-        3. Create a ``ClusterIssuer`` with Cert Mangager/Let's Encrypt - Configure cert-manager to use DNS-01 challenge with Cloudflare for automatic certificate issuance.
-            
-            === "Cloudflare Example"
-    
-                ```yaml hl_lines="8"
-                apiVersion: cert-manager.io/v1
-                kind: ClusterIssuer
-                metadata:
-                  name: letsencrypt-cloudflare
-                  namespace: cert-manager
-                spec:
-                  acme:
-                    email: _YOUR_DOMAIN_OWNER_EMAIL_ADDRESS
-                    server: https://acme-v02.api.letsencrypt.org/directory
-                    privateKeySecretRef:
-                      name: letsencrypt-cloudflare-account-key
-                    solvers:
-                    - dns01:
-                        cloudflare:
-                          apiTokenSecretRef:
-                            name: cloudflare-api-token-secret
-                            key: api-token
-                ```
-    
-            === "AWS Route 53 Example"
-                
-                ```yaml hl_lines="7"
-                apiVersion: cert-manager.io/v1
-                kind: ClusterIssuer
-                metadata:
-                  name: letsencrypt-cloudflare
-                spec:
-                  acme:
-                    email: _YOUR_DOMAIN_OWNER_EMAIL_ADDRESS
-                    server: https://acme-v02.api.letsencrypt.org/directory
-                    privateKeySecretRef:
-                      name: nai-letsencrypt-cluster
-                    solvers:
-                      - dns01:
-                          route53:
-                            region: us-east-1
-                            accessKeyIDSecretRef:
-                              name: route53-api-token-secret
-                              key: access-key-id
-                            secretAccessKeySecretRef:
-                              name: route53-api-token-secret
-                              key: secret-access-key
-                            hostedZoneID: _HOSTED_ZONE_ID
-                ```
    
     === ":octicons-command-palette-16: Command"
     

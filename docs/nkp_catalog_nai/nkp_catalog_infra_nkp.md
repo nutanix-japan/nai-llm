@@ -528,7 +528,7 @@ We are now ready to install the workload ``nkpdev`` cluster
     === "Command"
 
         ```bash hl_lines="28"
-        nkp create cluster nutanix -c ${NKP_CLUSTER_NAME} \
+        nohup nkp create cluster nutanix -c ${NKP_CLUSTER_NAME} \
             --control-plane-endpoint-ip ${CONTROLPLANE_VIP} \
             --control-plane-prism-element-cluster ${NUTANIX_CLUSTER} \
             --control-plane-subnets ${NUTANIX_SUBNET_NAME} \
@@ -554,7 +554,10 @@ We are now ready to install the workload ``nkpdev`` cluster
             --registry-mirror-username ${DOCKER_USERNAME} \
             --registry-mirror-password ${DOCKER_PASSWORD} \
             --self-managed \
-            --insecure
+            --insecure &
+        ```
+        ```bash title="Track the install logs"
+        tail -f nohup.out
         ```
 
     === "Command Output"

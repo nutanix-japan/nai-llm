@@ -623,56 +623,61 @@ In this section we will create the NKP catalog applications components that can 
     === ":octicons-command-palette-16: Command"
     
         ```bash
-        nkp create catalog-bundle --airgapped \
-          --collection-tag 2.17 \
-          --apps=nutanix-ai=2.7.0,envoy-gateway-nai=1.7.0,kserve=0.15.0,opentelemetry-operator=0.102.0
+        nkp create catalog-bundle --airgapped --collection-tag 2.18 \
+        --apps=nutanix-ai=2.8.0,envoy-gateway-nai=1.8.1,kserve=0.19.0,opentelemetry-operator=0.114.1,leaderworkerset=0.8.0
         ```
     
     === ":octicons-command-palette-16: Command output"
     
         ```{ .text .no-copy }
-        nkp create catalog-bundle --airgapped --collection-tag 2.17  --apps=nutanix-ai=2.7.0,envoy-gateway-nai=1.7.0,kserve=0.15.0,opentelemetry-operator=0.102.0
-        Bundling 4 application(s) (airgapped : true)
-        ✓ Building OCI artifact nkp-nutanix-product-catalog/collection:2.17
-        ✓ Building OCI artifact nkp-nutanix-product-catalog/nutanix-ai:2.7.0
-        ✓ Building OCI artifact nkp-nutanix-product-catalog/envoy-gateway-nai:1.7.0
-        ✓ Building OCI artifact nkp-nutanix-product-catalog/kserve:0.15.0
-        ✓ Building OCI artifact nkp-nutanix-product-catalog/opentelemetry-operator:0.102.0
-        Processing application nutanix-ai/2.7.0
-        ✓ K8s [1.34.0 1.35.0 1.36.0]: Parsing resources 
-        ✓ K8s v1.34.0: Validating 
+        $ nkp create catalog-bundle --airgapped --collection-tag 2.18 \
+        --apps=nutanix-ai=2.8.0,envoy-gateway-nai=1.8.1,kserve=0.19.0,opentelemetry-operator=0.114.1,leaderworkerset=0.8.0
+        #
+        Bundling 5 application(s) (airgapped : true)
+        ✓ Building OCI artifact nkp-nutanix-product-catalog/collection:2.18
+        ✓ Building OCI artifact nkp-nutanix-product-catalog/nutanix-ai:2.8.0
+        ✓ Building OCI artifact nkp-nutanix-product-catalog/envoy-gateway-nai:1.8.1
+        ✓ Building OCI artifact nkp-nutanix-product-catalog/kserve:0.19.0
+        ✓ Building OCI artifact nkp-nutanix-product-catalog/opentelemetry-operator:0.114.1
+        ✓ Building OCI artifact nkp-nutanix-product-catalog/leaderworkerset:0.8.0
+
+        Processing application artifacts...
+        Processing application nutanix-ai/2.8.0
+        ✓ K8s [1.35.0 1.36.0]: Parsing resources 
         ✓ K8s v1.35.0: Validating 
         ✓ K8s v1.36.0: Validating 
-        Processing application envoy-gateway-nai/1.7.0
-        ✓ K8s [1.34.0 1.35.0 1.36.0]: Parsing resources 
-        ✓ K8s v1.34.0: Validating 
+        Processing application envoy-gateway-nai/1.8.1
+        ✓ K8s [1.35.0 1.36.0]: Parsing resources 
         ✓ K8s v1.35.0: Validating 
         ✓ K8s v1.36.0: Validating 
-        Processing application kserve/0.15.0
-        ✓ K8s [1.33.0 1.34.0 1.35.0 1.36.0]: Parsing resources 
-        ✓ K8s v1.33.0: Validating 
-        ✓ K8s v1.34.0: Validating 
+        Processing application kserve/0.19.0
+        ✓ K8s [1.35.0 1.36.0]: Parsing resources 
         ✓ K8s v1.35.0: Validating 
         ✓ K8s v1.36.0: Validating 
-        Processing application opentelemetry-operator/0.102.0
-        ✓ K8s [1.33.0 1.34.0 1.35.0 1.36.0]: Parsing resources 
-        ✓ K8s v1.33.0: Validating 
-        ✓ K8s v1.34.0: Validating 
-        ✓ K8s v1.35.0: Validating 
-        ✓ K8s v1.36.0: Validating 
-        ✓ Pulling requested images [==================================>57/57] (time elapsed 9m59s) 
-        ✓ Saving application bundle to /home/ubuntu/temp/nkp-nutanix-product-catalog/nkp-nutanix-product-catalog-airgapped.tar 
+        Processing application opentelemetry-operator/0.114.1
+        ✓ K8s [1.35.0 1.36.0]: Parsing resources 
+        ✓ K8s v1.35.0: Validating
+        ✓ K8s v1.36.0: Validating
+        Processing application leaderworkerset/0.8.0
+        ✓ K8s [1.35.0 1.36.0]: Parsing resources 
+        ✓ K8s v1.35.0: Validating
+        ✓ K8s v1.36.0: Validating
+        ✓ Pulling requested images [==================================>75/75] (time elapsed 3m14s) 
+
+        Saving bundle...
+        ✓ Saving application bundle to /home/ubuntu/nkp/nkp-nutanix-product-catalog/nkp-nutanix-product-catalog-2.18-airgapped.tar 
+
         Run the following to push the artifact to your registry:
 
-        nkp push bundle --bundle /home/ubuntu/temp/nkp-nutanix-product-catalog/nkp-nutanix-product-catalog-airgapped.tar --to-registry <your-registry-url>
+                nkp push bundle --bundle /home/ubuntu/nkp/nkp-nutanix-product-catalog/nkp-nutanix-product-catalog-2.18-airgapped.tar --to-registry <your-registry-url>
 
 
         Run the following command to create catalog artifact(s) after pushing them:
 
-        nkp create catalog-collection --url oci://<registry-url>/nkp-nutanix-product-catalog/collection --tag 2.17 --workspace kommander-workspace
+                nkp create catalog-collection --url oci://<registry-url>/nkp-nutanix-product-catalog/collection --tag 2.18 --workspace kommander-workspace
         ```
     
-16. Login to your local Harbor registry with credentials to be able to **upload** NAI container images and artifacts
+3.  Login to your local Harbor registry with credentials to be able to **upload** NAI container images and artifacts
 
     === ":octicons-file-code-16: Command"
         
@@ -696,13 +701,13 @@ In this section we will create the NKP catalog applications components that can 
         Login Succeeded
         ```
 
-17. Push the created bundle to the registry
+4.  Push the created bundle to the registry
     
     === ":octicons-command-palette-16: Command"
     
         ```bash
         nkp push bundle \
-          --bundle nkp-nutanix-product-catalog-airgapped.tar \ 
+          --bundle nkp-nutanix-product-catalog-2.18-airgapped.tar \ 
           --to-registry ${HARBOR_REGISTRY}/${HARBOR_PROJECT}
         ```
     
@@ -710,23 +715,23 @@ In this section we will create the NKP catalog applications components that can 
     
         ```bash
         nkp push bundle \
-          --bundle nkp-nutanix-product-catalog-airgapped.tar \
+          --bundle nkp-nutanix-product-catalog-2.18-airgapped.tar \
           --to-registry harbor.10.x.x.134.nip.io/nutanix
         ```
     
     === ":octicons-command-palette-16: Command output"
     
         ```{ .text .no-copy }
-        nkp push bundle --bundle /home/ubuntu/temp/nkp-nutanix-product-catalog/nkp-nutanix-product-catalog-airgapped.tar --to-registry harbor.10.x.x.134.nip.io/nutanix
+        nkp push bundle --bundle nkp-nutanix-product-catalog-2.18-airgapped.tar --to-registry harbor.10.x.x.134.nip.io/nutanix
         ✓ Creating temporary directory
-        ✓ Extracting bundle configs from "/home/ubuntu/temp/nkp-nutanix-product-catalog/nkp-nutanix-product-catalog-airgapped.tar"
+        ✓ Extracting bundle configs from "nkp-nutanix-product-catalog-2.18-airgapped.tar"
         ✓ Parsing image bundle config
         ✓ Starting temporary Docker registry
-        ✓ Pushing bundled images [==================================>57/57] (time elapsed 1m29s) 
+        ✓ Pushing bundled images [==================================>75/75] (time elapsed 1m12s) 
         ```
     
 
-18. Deploy catalog collection
+5.  Deploy catalog collection
     
     === ":octicons-command-palette-16: Command"
     

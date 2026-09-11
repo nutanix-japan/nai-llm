@@ -671,20 +671,42 @@ In this section we will use internal Harbor container registry to upload NKP con
          ✓ Starting temporary Docker registry
          ✓ Pushing bundled images [================================>231/231] (time elapsed 34s)
         ```
+## Using Registry Mirror with Private CA Certificate
+
+We have tested deploying NKP cluster with registry mirror options using the Harbor (Hub) certified by a private CA server.
+
+!!! warning "Best Practice for Private CA Certificates"
+    
+    The best practice is to deploy the NKP air-gapped cluster with a private CA certificate for validating registry and registry mirrors is as follows:
+
+    
+    | | Command     	| Details                                                    	                                                                |
+    |--|----------	|------------------------------------------------------------	                                                                    |
+    | Private registry.   | ``nkp create cluster nutanix --registry-cacert``	    | Private registry hosting private container images - company specific  |
+    | Private registry mirror | ``nkp create cluster nutanix --registry-mirror-cacert`` | Private registry hosting public container images              |
+
+    For Day 1 and 2 operations, the private CA certificate will need to be added to all the NKP air-gapped cluster nodes as and when it is updated
+
+    - Update corresponding ``_cluster_name_-image-registry-mirror-credentials ``secret
+    - Rollout all nodes in the NKP cluster 
+
+!!! info "Registry vs Registry Mirror"
+
+    In a Cluster API (CAPI) architecture, the core difference is how your image paths are resolved: a Registry requires you to explicitly change your Kubernetes YAML files to point to a specific server URL, whereas a Registry Mirror acts as a transparent, automated fallback configured directly within the container runtime (like containerd) of your workload nodes.
+
+    **Quick Comparison**
+    
+    | Feature | Registry (Custom/Private) | Registry Mirror (Pull-Through Cache) |
+    |---|---|---|
+    | **Image Path in YAML**| Must match the specific registry URL. | Keeps standard paths (e.g., docker.io/...). |
+    | **How it Works** | Direct pull from specified server. | Node intercepts pull request and redirects to local mirror. |
+    | **Air-Gap Use Case** | Requires fully modifying all CAPI manifests. | Keeps manifests intact; relies on node configurations. |
+    | **Configuration Level**| Kubernetes API / Manifest layer. | Node OS / Container runtime layer (containerd). |
+    | **Day 2 Ops**| Update Node OS files / Container runtime restart (containerd).| Update Node OS files / Container runtime restart (containerd). |
 
 We are now ready to install the workload ``nkpdarksite`` cluster
 
 ## Create Air-gapped NKP Workload Cluster
-
-!!!warning
-
-    Do not use hyphens ``-`` in the nkp cluster name. 
- 
-    ```text title="Clustername Validation Rules"
-    a lowercase RFC 1123 subdomain must consist of lower case alphanumeric       │
-    │characters, '-' or '.', and must start and end with an alphanumeric character (e.g. 'example.com',  │
-    │regex used for validation is '[a-z0-9]([-a-z0-9]*[a-z0-9])?(\.[a-z0-9]([-a-z0-9]*[a-z0-9])?)*')
-    ```
 
 !!!note
    
@@ -809,7 +831,10 @@ We are now ready to install the workload ``nkpdarksite`` cluster
             --control-plane-pc-project ${NUTANIX_PROJECT_NAME} \
             --worker-pc-project ${NUTANIX_PROJECT_NAME} \
             --self-managed \
-            --airgapped
+            --airgapped &
+        ```
+        ```bash title="Track the install logs"
+        tail -f nohup.out
         ```
 
     === "Command output"

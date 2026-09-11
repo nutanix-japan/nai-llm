@@ -81,7 +81,7 @@ The following pre-requisite applications will be enabled on NKP GUI:
     2. Click on **Management Cluster Workspace**
     3. Go to **Applications** to search and enable the following:
     
-         * **Cert-manager**- ``v1.17.2``
+         * **Cert-manager**-  at least ``v1.17.2``
             
     4. Wait for ``Deployed`` state in the GUI
     
