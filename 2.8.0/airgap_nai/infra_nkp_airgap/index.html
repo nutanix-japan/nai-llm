@@ -1329,7 +1329,7 @@
   <span class="md-ellipsis">
     
   
-    NAI Unified Endpoints
+    NAI Air-gapped
   
 
     
@@ -1342,6 +1342,262 @@
         
         <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_4_2_label" aria-expanded="false">
           <label class="md-nav__title" for="__nav_4_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    NAI Air-gapped
+  
+
+          </label>
+          <ul class="md-nav__list">
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4_2_1" >
+        
+          
+          <label class="md-nav__link" for="__nav_4_2_1" id="__nav_4_2_1_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    NAI (NKP App Catalog)
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_4_2_1_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4_2_1">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    NAI (NKP App Catalog)
+  
+
+          </label>
+          <ul class="md-nav__list">
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../airgap_nkp_catalog_nai/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Getting Started
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../airgap_nkp_catalog_nai/airgap_nkp_catalog_harbor/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Harbor Container Registry
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../airgap_nkp_catalog_nai/airgap_nkp_catalog_infra_nkp_airgap/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Setup Air-gapped NKP Cluster
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../airgap_nkp_catalog_nai/airgap_nkp_catalog_pre_reqs/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Pre-requisites NAI
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../airgap_nkp_catalog_nai/airgap_nkp_catalog_nai_deploy/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Deploy NAI
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_4_3" id="__nav_4_3_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    NAI Unified Endpoints
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_4_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4_3">
             <span class="md-nav__icon md-icon"></span>
             
   
@@ -3312,6 +3568,17 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#using-registry-mirror-with-private-ca-certificate" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Using Registry Mirror with Private CA Certificate
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#create-air-gapped-nkp-workload-cluster" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -4189,18 +4456,83 @@ Reserve the second two IPs for MetalLB distributed load balancer
 </div>
 </div>
 </div>
+<h2 id="using-registry-mirror-with-private-ca-certificate">Using Registry Mirror with Private CA Certificate</h2>
 </li>
 </ol>
+<p>We have tested deploying NKP cluster with registry mirror options using the Harbor (Hub) certified by a private CA server.</p>
+<div class="admonition warning">
+<p class="admonition-title">Best Practice for Private CA Certificates</p>
+<p>The best practice is to deploy the NKP air-gapped cluster with a private CA certificate for validating registry and registry mirrors is as follows:</p>
+<table>
+<thead>
+<tr>
+<th></th>
+<th>Command</th>
+<th>Details</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Private registry.</td>
+<td><code>nkp create cluster nutanix --registry-cacert</code></td>
+<td>Private registry hosting private container images - company specific</td>
+</tr>
+<tr>
+<td>Private registry mirror</td>
+<td><code>nkp create cluster nutanix --registry-mirror-cacert</code></td>
+<td>Private registry hosting public container images</td>
+</tr>
+</tbody>
+</table>
+<p>For Day 1 and 2 operations, the private CA certificate will need to be added to all the NKP air-gapped cluster nodes as and when it is updated</p>
+<ul>
+<li>Update corresponding <code>_cluster_name_-image-registry-mirror-credentials</code>secret</li>
+<li>Rollout all nodes in the NKP cluster </li>
+</ul>
+</div>
+<div class="admonition info">
+<p class="admonition-title">Registry vs Registry Mirror</p>
+<p>In a Cluster API (CAPI) architecture, the core difference is how your image paths are resolved: a Registry requires you to explicitly change your Kubernetes YAML files to point to a specific server URL, whereas a Registry Mirror acts as a transparent, automated fallback configured directly within the container runtime (like containerd) of your workload nodes.</p>
+<p><strong>Quick Comparison</strong></p>
+<table>
+<thead>
+<tr>
+<th>Feature</th>
+<th>Registry (Custom/Private)</th>
+<th>Registry Mirror (Pull-Through Cache)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Image Path in YAML</strong></td>
+<td>Must match the specific registry URL.</td>
+<td>Keeps standard paths (e.g., docker.io/...).</td>
+</tr>
+<tr>
+<td><strong>How it Works</strong></td>
+<td>Direct pull from specified server.</td>
+<td>Node intercepts pull request and redirects to local mirror.</td>
+</tr>
+<tr>
+<td><strong>Air-Gap Use Case</strong></td>
+<td>Requires fully modifying all CAPI manifests.</td>
+<td>Keeps manifests intact; relies on node configurations.</td>
+</tr>
+<tr>
+<td><strong>Configuration Level</strong></td>
+<td>Kubernetes API / Manifest layer.</td>
+<td>Node OS / Container runtime layer (containerd).</td>
+</tr>
+<tr>
+<td><strong>Day 2 Ops</strong></td>
+<td>Update Node OS files / Container runtime restart (containerd).</td>
+<td>Update Node OS files / Container runtime restart (containerd).</td>
+</tr>
+</tbody>
+</table>
+</div>
 <p>We are now ready to install the workload <code>nkpdarksite</code> cluster</p>
 <h2 id="create-air-gapped-nkp-workload-cluster">Create Air-gapped NKP Workload Cluster</h2>
-<div class="admonition warning">
-<p class="admonition-title">Warning</p>
-<p>Do not use hyphens <code>-</code> in the nkp cluster name. </p>
-<div class="language-text highlight"><span class="filename">Clustername Validation Rules</span><pre><span></span><code><span id="__span-51-1"><a id="__codelineno-51-1" name="__codelineno-51-1" href="#__codelineno-51-1"></a>a lowercase RFC 1123 subdomain must consist of lower case alphanumeric       │
-</span><span id="__span-51-2"><a id="__codelineno-51-2" name="__codelineno-51-2" href="#__codelineno-51-2"></a>│characters, '-' or '.', and must start and end with an alphanumeric character (e.g. 'example.com',  │
-</span><span id="__span-51-3"><a id="__codelineno-51-3" name="__codelineno-51-3" href="#__codelineno-51-3"></a>│regex used for validation is '[a-z0-9]([-a-z0-9]*[a-z0-9])?(\.[a-z0-9]([-a-z0-9]*[a-z0-9])?)*')
-</span></code></pre></div>
-</div>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <p>In this lab the workload cluster will have the Management cluster role as well to reduce resource consumption in a lab environment. </p>
@@ -4212,31 +4544,31 @@ Reserve the second two IPs for MetalLB distributed load balancer
 <div class="tabbed-set tabbed-alternate" data-tabs="18:2"><input checked="checked" id="__tabbed_18_1" name="__tabbed_18" type="radio" /><input id="__tabbed_18_2" name="__tabbed_18" type="radio" /><div class="tabbed-labels"><label for="__tabbed_18_1">Template .env</label><label for="__tabbed_18_2">Sample .env</label></div>
 <div class="tabbed-content">
 <div class="tabbed-block">
-<div class="language-text highlight"><pre><span></span><code><span id="__span-52-1"><a id="__codelineno-52-1" name="__codelineno-52-1" href="#__codelineno-52-1"></a>export CONTROL_PLANE_REPLICAS=_no_of_control_plane_replicas
-</span><span id="__span-52-2"><a id="__codelineno-52-2" name="__codelineno-52-2" href="#__codelineno-52-2"></a>export CONTROL_PLANE_VCPUS=_no_of_control_plane_vcpus
-</span><span id="__span-52-3"><a id="__codelineno-52-3" name="__codelineno-52-3" href="#__codelineno-52-3"></a>export CONTROL_PLANE_CORES_PER_VCPU=_no_of_control_plane_cores_per_vcpu
-</span><span id="__span-52-4"><a id="__codelineno-52-4" name="__codelineno-52-4" href="#__codelineno-52-4"></a>export CONTROL_PLANE_MEMORY_GIB=_no_of_control_plane_memory_gib
-</span><span id="__span-52-5"><a id="__codelineno-52-5" name="__codelineno-52-5" href="#__codelineno-52-5"></a>export WORKER_REPLICAS=_no_of_worker_replicas
-</span><span id="__span-52-6"><a id="__codelineno-52-6" name="__codelineno-52-6" href="#__codelineno-52-6"></a>export WORKER_VCPUS=_no_of_worker_vcpus
-</span><span id="__span-52-7"><a id="__codelineno-52-7" name="__codelineno-52-7" href="#__codelineno-52-7"></a>export WORKER_CORES_PER_VCPU=_no_of_worker_cores_per_vcpu
-</span><span id="__span-52-8"><a id="__codelineno-52-8" name="__codelineno-52-8" href="#__codelineno-52-8"></a>export WORKER_MEMORY_GIB=_no_of_worker_memory_gib
-</span><span id="__span-52-9"><a id="__codelineno-52-9" name="__codelineno-52-9" href="#__codelineno-52-9"></a>export CSI_FILESYSTEM=_preferred_filesystem_ext4/xfs
-</span><span id="__span-52-10"><a id="__codelineno-52-10" name="__codelineno-52-10" href="#__codelineno-52-10"></a>export CSI_HYPERVISOR_ATTACHED=_true/false
-</span><span id="__span-52-11"><a id="__codelineno-52-11" name="__codelineno-52-11" href="#__codelineno-52-11"></a>export NUTANIX_PROJECT_NAME=_your_pc_project_name
+<div class="language-text highlight"><pre><span></span><code><span id="__span-51-1"><a id="__codelineno-51-1" name="__codelineno-51-1" href="#__codelineno-51-1"></a>export CONTROL_PLANE_REPLICAS=_no_of_control_plane_replicas
+</span><span id="__span-51-2"><a id="__codelineno-51-2" name="__codelineno-51-2" href="#__codelineno-51-2"></a>export CONTROL_PLANE_VCPUS=_no_of_control_plane_vcpus
+</span><span id="__span-51-3"><a id="__codelineno-51-3" name="__codelineno-51-3" href="#__codelineno-51-3"></a>export CONTROL_PLANE_CORES_PER_VCPU=_no_of_control_plane_cores_per_vcpu
+</span><span id="__span-51-4"><a id="__codelineno-51-4" name="__codelineno-51-4" href="#__codelineno-51-4"></a>export CONTROL_PLANE_MEMORY_GIB=_no_of_control_plane_memory_gib
+</span><span id="__span-51-5"><a id="__codelineno-51-5" name="__codelineno-51-5" href="#__codelineno-51-5"></a>export WORKER_REPLICAS=_no_of_worker_replicas
+</span><span id="__span-51-6"><a id="__codelineno-51-6" name="__codelineno-51-6" href="#__codelineno-51-6"></a>export WORKER_VCPUS=_no_of_worker_vcpus
+</span><span id="__span-51-7"><a id="__codelineno-51-7" name="__codelineno-51-7" href="#__codelineno-51-7"></a>export WORKER_CORES_PER_VCPU=_no_of_worker_cores_per_vcpu
+</span><span id="__span-51-8"><a id="__codelineno-51-8" name="__codelineno-51-8" href="#__codelineno-51-8"></a>export WORKER_MEMORY_GIB=_no_of_worker_memory_gib
+</span><span id="__span-51-9"><a id="__codelineno-51-9" name="__codelineno-51-9" href="#__codelineno-51-9"></a>export CSI_FILESYSTEM=_preferred_filesystem_ext4/xfs
+</span><span id="__span-51-10"><a id="__codelineno-51-10" name="__codelineno-51-10" href="#__codelineno-51-10"></a>export CSI_HYPERVISOR_ATTACHED=_true/false
+</span><span id="__span-51-11"><a id="__codelineno-51-11" name="__codelineno-51-11" href="#__codelineno-51-11"></a>export NUTANIX_PROJECT_NAME=_your_pc_project_name
 </span></code></pre></div>
 </div>
 <div class="tabbed-block">
-<div class="language-text highlight"><pre><span></span><code><span id="__span-53-1"><a id="__codelineno-53-1" name="__codelineno-53-1" href="#__codelineno-53-1"></a>export CONTROL_PLANE_REPLICAS=3
-</span><span id="__span-53-2"><a id="__codelineno-53-2" name="__codelineno-53-2" href="#__codelineno-53-2"></a>export CONTROL_PLANE_VCPUS=4
-</span><span id="__span-53-3"><a id="__codelineno-53-3" name="__codelineno-53-3" href="#__codelineno-53-3"></a>export CONTROL_PLANE_CORES_PER_VCPU=1
-</span><span id="__span-53-4"><a id="__codelineno-53-4" name="__codelineno-53-4" href="#__codelineno-53-4"></a>export CONTROL_PLANE_MEMORY_GIB=16
-</span><span id="__span-53-5"><a id="__codelineno-53-5" name="__codelineno-53-5" href="#__codelineno-53-5"></a>export WORKER_REPLICAS=4
-</span><span id="__span-53-6"><a id="__codelineno-53-6" name="__codelineno-53-6" href="#__codelineno-53-6"></a>export WORKER_VCPUS=8 
-</span><span id="__span-53-7"><a id="__codelineno-53-7" name="__codelineno-53-7" href="#__codelineno-53-7"></a>export WORKER_CORES_PER_VCPU=1
-</span><span id="__span-53-8"><a id="__codelineno-53-8" name="__codelineno-53-8" href="#__codelineno-53-8"></a>export WORKER_MEMORY_GIB=32
-</span><span id="__span-53-9"><a id="__codelineno-53-9" name="__codelineno-53-9" href="#__codelineno-53-9"></a>export CSI_FILESYSTEM=ext4
-</span><span id="__span-53-10"><a id="__codelineno-53-10" name="__codelineno-53-10" href="#__codelineno-53-10"></a>export CSI_HYPERVISOR_ATTACHED=true
-</span><span id="__span-53-11"><a id="__codelineno-53-11" name="__codelineno-53-11" href="#__codelineno-53-11"></a>export NUTANIX_PROJECT_NAME=dev-lab
+<div class="language-text highlight"><pre><span></span><code><span id="__span-52-1"><a id="__codelineno-52-1" name="__codelineno-52-1" href="#__codelineno-52-1"></a>export CONTROL_PLANE_REPLICAS=3
+</span><span id="__span-52-2"><a id="__codelineno-52-2" name="__codelineno-52-2" href="#__codelineno-52-2"></a>export CONTROL_PLANE_VCPUS=4
+</span><span id="__span-52-3"><a id="__codelineno-52-3" name="__codelineno-52-3" href="#__codelineno-52-3"></a>export CONTROL_PLANE_CORES_PER_VCPU=1
+</span><span id="__span-52-4"><a id="__codelineno-52-4" name="__codelineno-52-4" href="#__codelineno-52-4"></a>export CONTROL_PLANE_MEMORY_GIB=16
+</span><span id="__span-52-5"><a id="__codelineno-52-5" name="__codelineno-52-5" href="#__codelineno-52-5"></a>export WORKER_REPLICAS=4
+</span><span id="__span-52-6"><a id="__codelineno-52-6" name="__codelineno-52-6" href="#__codelineno-52-6"></a>export WORKER_VCPUS=8 
+</span><span id="__span-52-7"><a id="__codelineno-52-7" name="__codelineno-52-7" href="#__codelineno-52-7"></a>export WORKER_CORES_PER_VCPU=1
+</span><span id="__span-52-8"><a id="__codelineno-52-8" name="__codelineno-52-8" href="#__codelineno-52-8"></a>export WORKER_MEMORY_GIB=32
+</span><span id="__span-52-9"><a id="__codelineno-52-9" name="__codelineno-52-9" href="#__codelineno-52-9"></a>export CSI_FILESYSTEM=ext4
+</span><span id="__span-52-10"><a id="__codelineno-52-10" name="__codelineno-52-10" href="#__codelineno-52-10"></a>export CSI_HYPERVISOR_ATTACHED=true
+</span><span id="__span-52-11"><a id="__codelineno-52-11" name="__codelineno-52-11" href="#__codelineno-52-11"></a>export NUTANIX_PROJECT_NAME=dev-lab
 </span></code></pre></div>
 </div>
 </div>
@@ -4244,7 +4576,7 @@ Reserve the second two IPs for MetalLB distributed load balancer
 </li>
 <li>
 <p>Source the new variables and values to the environment</p>
-<div class="language-bash highlight"><pre><span></span><code><span id="__span-54-1"><a id="__codelineno-54-1" name="__codelineno-54-1" href="#__codelineno-54-1"></a><span class="nb">source</span><span class="w"> </span>.env
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-53-1"><a id="__codelineno-53-1" name="__codelineno-53-1" href="#__codelineno-53-1"></a><span class="nb">source</span><span class="w"> </span>.env
 </span></code></pre></div>
 </li>
 <li>
@@ -4252,74 +4584,76 @@ Reserve the second two IPs for MetalLB distributed load balancer
 <details class="tip">
 <summary>Check your command for correct argument values</summary>
 <p>Run the following command to verify your <code>nkp</code> command and associated environment variables and values.</p>
-<div class="language-bash highlight"><pre><span></span><code><span id="__span-55-1"><a id="__codelineno-55-1" name="__codelineno-55-1" href="#__codelineno-55-1"></a><span class="nb">echo</span><span class="w"> </span><span class="s2">"nkp create cluster nutanix -c </span><span class="si">${</span><span class="nv">NKP_CLUSTER_NAME</span><span class="si">}</span><span class="s2"> \</span>
-</span><span id="__span-55-2"><a id="__codelineno-55-2" name="__codelineno-55-2" href="#__codelineno-55-2"></a><span class="s2">        --control-plane-endpoint-ip </span><span class="si">${</span><span class="nv">CONTROLPLANE_VIP</span><span class="si">}</span><span class="s2"> \</span>
-</span><span id="__span-55-3"><a id="__codelineno-55-3" name="__codelineno-55-3" href="#__codelineno-55-3"></a><span class="s2">        --control-plane-prism-element-cluster </span><span class="si">${</span><span class="nv">NUTANIX_CLUSTER</span><span class="si">}</span><span class="s2"> \</span>
-</span><span id="__span-55-4"><a id="__codelineno-55-4" name="__codelineno-55-4" href="#__codelineno-55-4"></a><span class="s2">        --control-plane-subnets </span><span class="si">${</span><span class="nv">NUTANIX_SUBNET_NAME</span><span class="si">}</span><span class="s2"> \</span>
-</span><span id="__span-55-5"><a id="__codelineno-55-5" name="__codelineno-55-5" href="#__codelineno-55-5"></a><span class="s2">        --control-plane-vm-image </span><span class="si">${</span><span class="nv">NKP_IMAGE</span><span class="si">}</span><span class="s2"> \</span>
-</span><span id="__span-55-6"><a id="__codelineno-55-6" name="__codelineno-55-6" href="#__codelineno-55-6"></a><span class="s2">        --csi-storage-container </span><span class="si">${</span><span class="nv">STORAGE_CONTAINER</span><span class="si">}</span><span class="s2"> \</span>
-</span><span id="__span-55-7"><a id="__codelineno-55-7" name="__codelineno-55-7" href="#__codelineno-55-7"></a><span class="s2">        --endpoint https://</span><span class="si">${</span><span class="nv">NUTANIX_ENDPOINT</span><span class="si">}</span><span class="s2">:9440 \</span>
-</span><span id="__span-55-8"><a id="__codelineno-55-8" name="__codelineno-55-8" href="#__codelineno-55-8"></a><span class="s2">        --worker-prism-element-cluster </span><span class="si">${</span><span class="nv">NUTANIX_CLUSTER</span><span class="si">}</span><span class="s2"> \</span>
-</span><span id="__span-55-9"><a id="__codelineno-55-9" name="__codelineno-55-9" href="#__codelineno-55-9"></a><span class="s2">        --worker-subnets </span><span class="si">${</span><span class="nv">NUTANIX_SUBNET_NAME</span><span class="si">}</span><span class="s2"> \</span>
-</span><span id="__span-55-10"><a id="__codelineno-55-10" name="__codelineno-55-10" href="#__codelineno-55-10"></a><span class="s2">        --worker-vm-image </span><span class="si">${</span><span class="nv">NKP_IMAGE</span><span class="si">}</span><span class="s2"> \</span>
-</span><span id="__span-55-11"><a id="__codelineno-55-11" name="__codelineno-55-11" href="#__codelineno-55-11"></a><span class="s2">        --ssh-public-key-file </span><span class="si">${</span><span class="nv">SSH_PUBLIC_KEY</span><span class="si">}</span><span class="s2"> \</span>
-</span><span id="__span-55-12"><a id="__codelineno-55-12" name="__codelineno-55-12" href="#__codelineno-55-12"></a><span class="s2">        --kubernetes-service-load-balancer-ip-range </span><span class="si">${</span><span class="nv">LB_IP_RANGE</span><span class="si">}</span><span class="s2"> \</span>
-</span><span id="__span-55-13"><a id="__codelineno-55-13" name="__codelineno-55-13" href="#__codelineno-55-13"></a><span class="s2">        --control-plane-disk-size 150 \</span>
-</span><span id="__span-55-14"><a id="__codelineno-55-14" name="__codelineno-55-14" href="#__codelineno-55-14"></a><span class="s2">        --control-plane-memory </span><span class="si">${</span><span class="nv">CONTROL_PLANE_MEMORY_GIB</span><span class="si">}</span><span class="s2"> \</span>
-</span><span id="__span-55-15"><a id="__codelineno-55-15" name="__codelineno-55-15" href="#__codelineno-55-15"></a><span class="s2">        --control-plane-vcpus </span><span class="si">${</span><span class="nv">CONTROL_PLANE_VCPUS</span><span class="si">}</span><span class="s2"> \</span>
-</span><span id="__span-55-16"><a id="__codelineno-55-16" name="__codelineno-55-16" href="#__codelineno-55-16"></a><span class="s2">        --control-plane-cores-per-vcpu </span><span class="si">${</span><span class="nv">CONTROL_PLANE_CORES_PER_VCPU</span><span class="si">}</span><span class="s2"> \</span>
-</span><span id="__span-55-17"><a id="__codelineno-55-17" name="__codelineno-55-17" href="#__codelineno-55-17"></a><span class="s2">        --worker-disk-size 150 \</span>
-</span><span id="__span-55-18"><a id="__codelineno-55-18" name="__codelineno-55-18" href="#__codelineno-55-18"></a><span class="s2">        --worker-memory </span><span class="si">${</span><span class="nv">WORKER_MEMORY_GIB</span><span class="si">}</span><span class="s2"> \</span>
-</span><span id="__span-55-19"><a id="__codelineno-55-19" name="__codelineno-55-19" href="#__codelineno-55-19"></a><span class="s2">        --worker-vcpus </span><span class="si">${</span><span class="nv">WORKER_VCPUS</span><span class="si">}</span><span class="s2"> \</span>
-</span><span id="__span-55-20"><a id="__codelineno-55-20" name="__codelineno-55-20" href="#__codelineno-55-20"></a><span class="s2">        --worker-cores-per-vcpu </span><span class="si">${</span><span class="nv">WORKER_CORES_PER_VCPU</span><span class="si">}</span><span class="s2"> \</span>
-</span><span id="__span-55-21"><a id="__codelineno-55-21" name="__codelineno-55-21" href="#__codelineno-55-21"></a><span class="s2">        --csi-file-system </span><span class="si">${</span><span class="nv">CSI_FILESYSTEM</span><span class="si">}</span><span class="s2"> \</span>
-</span><span id="__span-55-22"><a id="__codelineno-55-22" name="__codelineno-55-22" href="#__codelineno-55-22"></a><span class="s2">        --csi-hypervisor-attached-volumes=</span><span class="si">${</span><span class="nv">CSI_HYPERVISOR_ATTACHED</span><span class="si">}</span><span class="s2"> \</span>
-</span><span id="__span-55-23"><a id="__codelineno-55-23" name="__codelineno-55-23" href="#__codelineno-55-23"></a><span class="s2">        --registry-mirror-url=</span><span class="si">${</span><span class="nv">REGISTRY_MIRROR_URL</span><span class="si">}</span><span class="s2"> \</span>
-</span><span id="__span-55-24"><a id="__codelineno-55-24" name="__codelineno-55-24" href="#__codelineno-55-24"></a><span class="s2">        --registry-mirror-username=</span><span class="si">${</span><span class="nv">REGISTRY_MIRROR_USERNAME</span><span class="si">}</span><span class="s2"> \</span>
-</span><span id="__span-55-25"><a id="__codelineno-55-25" name="__codelineno-55-25" href="#__codelineno-55-25"></a><span class="s2">        --registry-mirror-password=</span><span class="si">${</span><span class="nv">REGISTRY_MIRROR_PASSWORD</span><span class="si">}</span><span class="s2"> \</span>
-</span><span id="__span-55-26"><a id="__codelineno-55-26" name="__codelineno-55-26" href="#__codelineno-55-26"></a><span class="s2">        --registry-mirror-cacert=</span><span class="si">${</span><span class="nv">REGISTRY_MIRROR_CACERT</span><span class="si">}</span><span class="s2"> \</span>
-</span><span id="__span-55-27"><a id="__codelineno-55-27" name="__codelineno-55-27" href="#__codelineno-55-27"></a><span class="s2">        --self-managed \</span>
-</span><span id="__span-55-28"><a id="__codelineno-55-28" name="__codelineno-55-28" href="#__codelineno-55-28"></a><span class="s2">        --airgapped"</span>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-54-1"><a id="__codelineno-54-1" name="__codelineno-54-1" href="#__codelineno-54-1"></a><span class="nb">echo</span><span class="w"> </span><span class="s2">"nkp create cluster nutanix -c </span><span class="si">${</span><span class="nv">NKP_CLUSTER_NAME</span><span class="si">}</span><span class="s2"> \</span>
+</span><span id="__span-54-2"><a id="__codelineno-54-2" name="__codelineno-54-2" href="#__codelineno-54-2"></a><span class="s2">        --control-plane-endpoint-ip </span><span class="si">${</span><span class="nv">CONTROLPLANE_VIP</span><span class="si">}</span><span class="s2"> \</span>
+</span><span id="__span-54-3"><a id="__codelineno-54-3" name="__codelineno-54-3" href="#__codelineno-54-3"></a><span class="s2">        --control-plane-prism-element-cluster </span><span class="si">${</span><span class="nv">NUTANIX_CLUSTER</span><span class="si">}</span><span class="s2"> \</span>
+</span><span id="__span-54-4"><a id="__codelineno-54-4" name="__codelineno-54-4" href="#__codelineno-54-4"></a><span class="s2">        --control-plane-subnets </span><span class="si">${</span><span class="nv">NUTANIX_SUBNET_NAME</span><span class="si">}</span><span class="s2"> \</span>
+</span><span id="__span-54-5"><a id="__codelineno-54-5" name="__codelineno-54-5" href="#__codelineno-54-5"></a><span class="s2">        --control-plane-vm-image </span><span class="si">${</span><span class="nv">NKP_IMAGE</span><span class="si">}</span><span class="s2"> \</span>
+</span><span id="__span-54-6"><a id="__codelineno-54-6" name="__codelineno-54-6" href="#__codelineno-54-6"></a><span class="s2">        --csi-storage-container </span><span class="si">${</span><span class="nv">STORAGE_CONTAINER</span><span class="si">}</span><span class="s2"> \</span>
+</span><span id="__span-54-7"><a id="__codelineno-54-7" name="__codelineno-54-7" href="#__codelineno-54-7"></a><span class="s2">        --endpoint https://</span><span class="si">${</span><span class="nv">NUTANIX_ENDPOINT</span><span class="si">}</span><span class="s2">:9440 \</span>
+</span><span id="__span-54-8"><a id="__codelineno-54-8" name="__codelineno-54-8" href="#__codelineno-54-8"></a><span class="s2">        --worker-prism-element-cluster </span><span class="si">${</span><span class="nv">NUTANIX_CLUSTER</span><span class="si">}</span><span class="s2"> \</span>
+</span><span id="__span-54-9"><a id="__codelineno-54-9" name="__codelineno-54-9" href="#__codelineno-54-9"></a><span class="s2">        --worker-subnets </span><span class="si">${</span><span class="nv">NUTANIX_SUBNET_NAME</span><span class="si">}</span><span class="s2"> \</span>
+</span><span id="__span-54-10"><a id="__codelineno-54-10" name="__codelineno-54-10" href="#__codelineno-54-10"></a><span class="s2">        --worker-vm-image </span><span class="si">${</span><span class="nv">NKP_IMAGE</span><span class="si">}</span><span class="s2"> \</span>
+</span><span id="__span-54-11"><a id="__codelineno-54-11" name="__codelineno-54-11" href="#__codelineno-54-11"></a><span class="s2">        --ssh-public-key-file </span><span class="si">${</span><span class="nv">SSH_PUBLIC_KEY</span><span class="si">}</span><span class="s2"> \</span>
+</span><span id="__span-54-12"><a id="__codelineno-54-12" name="__codelineno-54-12" href="#__codelineno-54-12"></a><span class="s2">        --kubernetes-service-load-balancer-ip-range </span><span class="si">${</span><span class="nv">LB_IP_RANGE</span><span class="si">}</span><span class="s2"> \</span>
+</span><span id="__span-54-13"><a id="__codelineno-54-13" name="__codelineno-54-13" href="#__codelineno-54-13"></a><span class="s2">        --control-plane-disk-size 150 \</span>
+</span><span id="__span-54-14"><a id="__codelineno-54-14" name="__codelineno-54-14" href="#__codelineno-54-14"></a><span class="s2">        --control-plane-memory </span><span class="si">${</span><span class="nv">CONTROL_PLANE_MEMORY_GIB</span><span class="si">}</span><span class="s2"> \</span>
+</span><span id="__span-54-15"><a id="__codelineno-54-15" name="__codelineno-54-15" href="#__codelineno-54-15"></a><span class="s2">        --control-plane-vcpus </span><span class="si">${</span><span class="nv">CONTROL_PLANE_VCPUS</span><span class="si">}</span><span class="s2"> \</span>
+</span><span id="__span-54-16"><a id="__codelineno-54-16" name="__codelineno-54-16" href="#__codelineno-54-16"></a><span class="s2">        --control-plane-cores-per-vcpu </span><span class="si">${</span><span class="nv">CONTROL_PLANE_CORES_PER_VCPU</span><span class="si">}</span><span class="s2"> \</span>
+</span><span id="__span-54-17"><a id="__codelineno-54-17" name="__codelineno-54-17" href="#__codelineno-54-17"></a><span class="s2">        --worker-disk-size 150 \</span>
+</span><span id="__span-54-18"><a id="__codelineno-54-18" name="__codelineno-54-18" href="#__codelineno-54-18"></a><span class="s2">        --worker-memory </span><span class="si">${</span><span class="nv">WORKER_MEMORY_GIB</span><span class="si">}</span><span class="s2"> \</span>
+</span><span id="__span-54-19"><a id="__codelineno-54-19" name="__codelineno-54-19" href="#__codelineno-54-19"></a><span class="s2">        --worker-vcpus </span><span class="si">${</span><span class="nv">WORKER_VCPUS</span><span class="si">}</span><span class="s2"> \</span>
+</span><span id="__span-54-20"><a id="__codelineno-54-20" name="__codelineno-54-20" href="#__codelineno-54-20"></a><span class="s2">        --worker-cores-per-vcpu </span><span class="si">${</span><span class="nv">WORKER_CORES_PER_VCPU</span><span class="si">}</span><span class="s2"> \</span>
+</span><span id="__span-54-21"><a id="__codelineno-54-21" name="__codelineno-54-21" href="#__codelineno-54-21"></a><span class="s2">        --csi-file-system </span><span class="si">${</span><span class="nv">CSI_FILESYSTEM</span><span class="si">}</span><span class="s2"> \</span>
+</span><span id="__span-54-22"><a id="__codelineno-54-22" name="__codelineno-54-22" href="#__codelineno-54-22"></a><span class="s2">        --csi-hypervisor-attached-volumes=</span><span class="si">${</span><span class="nv">CSI_HYPERVISOR_ATTACHED</span><span class="si">}</span><span class="s2"> \</span>
+</span><span id="__span-54-23"><a id="__codelineno-54-23" name="__codelineno-54-23" href="#__codelineno-54-23"></a><span class="s2">        --registry-mirror-url=</span><span class="si">${</span><span class="nv">REGISTRY_MIRROR_URL</span><span class="si">}</span><span class="s2"> \</span>
+</span><span id="__span-54-24"><a id="__codelineno-54-24" name="__codelineno-54-24" href="#__codelineno-54-24"></a><span class="s2">        --registry-mirror-username=</span><span class="si">${</span><span class="nv">REGISTRY_MIRROR_USERNAME</span><span class="si">}</span><span class="s2"> \</span>
+</span><span id="__span-54-25"><a id="__codelineno-54-25" name="__codelineno-54-25" href="#__codelineno-54-25"></a><span class="s2">        --registry-mirror-password=</span><span class="si">${</span><span class="nv">REGISTRY_MIRROR_PASSWORD</span><span class="si">}</span><span class="s2"> \</span>
+</span><span id="__span-54-26"><a id="__codelineno-54-26" name="__codelineno-54-26" href="#__codelineno-54-26"></a><span class="s2">        --registry-mirror-cacert=</span><span class="si">${</span><span class="nv">REGISTRY_MIRROR_CACERT</span><span class="si">}</span><span class="s2"> \</span>
+</span><span id="__span-54-27"><a id="__codelineno-54-27" name="__codelineno-54-27" href="#__codelineno-54-27"></a><span class="s2">        --self-managed \</span>
+</span><span id="__span-54-28"><a id="__codelineno-54-28" name="__codelineno-54-28" href="#__codelineno-54-28"></a><span class="s2">        --airgapped"</span>
 </span></code></pre></div>
 <p>If the values are incorrect, add the correct values to <code>.env</code> and source the  again by running the following command</p>
-<div class="language-bash highlight"><pre><span></span><code><span id="__span-56-1"><a id="__codelineno-56-1" name="__codelineno-56-1" href="#__codelineno-56-1"></a><span class="nb">source</span><span class="w"> </span>.env
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-55-1"><a id="__codelineno-55-1" name="__codelineno-55-1" href="#__codelineno-55-1"></a><span class="nb">source</span><span class="w"> </span>.env
 </span></code></pre></div>
 <p>Then rerun the <code>echo nkp</code> command to verify the values again before running the <code>nkp create cluster nutanix</code> command.</p>
 </details>
 <div class="tabbed-set tabbed-alternate" data-tabs="19:2"><input checked="checked" id="__tabbed_19_1" name="__tabbed_19" type="radio" /><input id="__tabbed_19_2" name="__tabbed_19" type="radio" /><div class="tabbed-labels"><label for="__tabbed_19_1">Command</label><label for="__tabbed_19_2">Command output</label></div>
 <div class="tabbed-content">
 <div class="tabbed-block">
-<div class="language-bash highlight"><pre><span></span><code><span id="__span-57-1"><a id="__codelineno-57-1" name="__codelineno-57-1" href="#__codelineno-57-1"></a>nkp<span class="w"> </span>create<span class="w"> </span>cluster<span class="w"> </span>nutanix<span class="w"> </span>-c<span class="w"> </span><span class="si">${</span><span class="nv">NKP_CLUSTER_NAME</span><span class="si">}</span><span class="w"> </span><span class="se">\</span>
-</span><span id="__span-57-2"><a id="__codelineno-57-2" name="__codelineno-57-2" href="#__codelineno-57-2"></a><span class="w">    </span>--control-plane-endpoint-ip<span class="w"> </span><span class="si">${</span><span class="nv">CONTROLPLANE_VIP</span><span class="si">}</span><span class="w"> </span><span class="se">\</span>
-</span><span id="__span-57-3"><a id="__codelineno-57-3" name="__codelineno-57-3" href="#__codelineno-57-3"></a><span class="w">    </span>--control-plane-prism-element-cluster<span class="w"> </span><span class="si">${</span><span class="nv">NUTANIX_CLUSTER</span><span class="si">}</span><span class="w"> </span><span class="se">\</span>
-</span><span id="__span-57-4"><a id="__codelineno-57-4" name="__codelineno-57-4" href="#__codelineno-57-4"></a><span class="w">    </span>--control-plane-subnets<span class="w"> </span><span class="si">${</span><span class="nv">NUTANIX_SUBNET_NAME</span><span class="si">}</span><span class="w"> </span><span class="se">\</span>
-</span><span id="__span-57-5"><a id="__codelineno-57-5" name="__codelineno-57-5" href="#__codelineno-57-5"></a><span class="w">    </span>--control-plane-vm-image<span class="w"> </span><span class="si">${</span><span class="nv">NKP_IMAGE</span><span class="si">}</span><span class="w"> </span><span class="se">\</span>
-</span><span id="__span-57-6"><a id="__codelineno-57-6" name="__codelineno-57-6" href="#__codelineno-57-6"></a><span class="w">    </span>--csi-storage-container<span class="w"> </span><span class="si">${</span><span class="nv">STORAGE_CONTAINER</span><span class="si">}</span><span class="w"> </span><span class="se">\</span>
-</span><span id="__span-57-7"><a id="__codelineno-57-7" name="__codelineno-57-7" href="#__codelineno-57-7"></a><span class="w">    </span>--endpoint<span class="w"> </span>https://<span class="si">${</span><span class="nv">NUTANIX_ENDPOINT</span><span class="si">}</span>:9440<span class="w"> </span><span class="se">\</span>
-</span><span id="__span-57-8"><a id="__codelineno-57-8" name="__codelineno-57-8" href="#__codelineno-57-8"></a><span class="w">    </span>--worker-prism-element-cluster<span class="w"> </span><span class="si">${</span><span class="nv">NUTANIX_CLUSTER</span><span class="si">}</span><span class="w"> </span><span class="se">\</span>
-</span><span id="__span-57-9"><a id="__codelineno-57-9" name="__codelineno-57-9" href="#__codelineno-57-9"></a><span class="w">    </span>--worker-subnets<span class="w"> </span><span class="si">${</span><span class="nv">NUTANIX_SUBNET_NAME</span><span class="si">}</span><span class="w"> </span><span class="se">\</span>
-</span><span id="__span-57-10"><a id="__codelineno-57-10" name="__codelineno-57-10" href="#__codelineno-57-10"></a><span class="w">    </span>--worker-vm-image<span class="w"> </span><span class="si">${</span><span class="nv">NKP_IMAGE</span><span class="si">}</span><span class="w"> </span><span class="se">\</span>
-</span><span id="__span-57-11"><a id="__codelineno-57-11" name="__codelineno-57-11" href="#__codelineno-57-11"></a><span class="w">    </span>--ssh-public-key-file<span class="w"> </span><span class="si">${</span><span class="nv">SSH_PUBLIC_KEY</span><span class="si">}</span><span class="w"> </span><span class="se">\</span>
-</span><span id="__span-57-12"><a id="__codelineno-57-12" name="__codelineno-57-12" href="#__codelineno-57-12"></a><span class="w">    </span>--kubernetes-service-load-balancer-ip-range<span class="w"> </span><span class="si">${</span><span class="nv">LB_IP_RANGE</span><span class="si">}</span><span class="w"> </span><span class="se">\</span>
-</span><span id="__span-57-13"><a id="__codelineno-57-13" name="__codelineno-57-13" href="#__codelineno-57-13"></a><span class="w">    </span>--control-plane-disk-size<span class="w"> </span><span class="m">150</span><span class="w"> </span><span class="se">\</span>
-</span><span id="__span-57-14"><a id="__codelineno-57-14" name="__codelineno-57-14" href="#__codelineno-57-14"></a><span class="w">    </span>--control-plane-memory<span class="w"> </span><span class="si">${</span><span class="nv">CONTROL_PLANE_MEMORY_GIB</span><span class="si">}</span><span class="w"> </span><span class="se">\</span>
-</span><span id="__span-57-15"><a id="__codelineno-57-15" name="__codelineno-57-15" href="#__codelineno-57-15"></a><span class="w">    </span>--control-plane-vcpus<span class="w"> </span><span class="si">${</span><span class="nv">CONTROL_PLANE_VCPUS</span><span class="si">}</span><span class="w"> </span><span class="se">\</span>
-</span><span id="__span-57-16"><a id="__codelineno-57-16" name="__codelineno-57-16" href="#__codelineno-57-16"></a><span class="w">    </span>--control-plane-cores-per-vcpu<span class="w"> </span><span class="si">${</span><span class="nv">CONTROL_PLANE_CORES_PER_VCPU</span><span class="si">}</span><span class="w"> </span><span class="se">\</span>
-</span><span id="__span-57-17"><a id="__codelineno-57-17" name="__codelineno-57-17" href="#__codelineno-57-17"></a><span class="w">    </span>--worker-disk-size<span class="w"> </span><span class="m">150</span><span class="w"> </span><span class="se">\</span>
-</span><span id="__span-57-18"><a id="__codelineno-57-18" name="__codelineno-57-18" href="#__codelineno-57-18"></a><span class="w">    </span>--worker-memory<span class="w"> </span><span class="si">${</span><span class="nv">WORKER_MEMORY_GIB</span><span class="si">}</span><span class="w"> </span><span class="se">\</span>
-</span><span id="__span-57-19"><a id="__codelineno-57-19" name="__codelineno-57-19" href="#__codelineno-57-19"></a><span class="w">    </span>--worker-vcpus<span class="w"> </span><span class="si">${</span><span class="nv">WORKER_VCPUS</span><span class="si">}</span><span class="w"> </span><span class="se">\</span>
-</span><span id="__span-57-20"><a id="__codelineno-57-20" name="__codelineno-57-20" href="#__codelineno-57-20"></a><span class="w">    </span>--worker-cores-per-vcpu<span class="w"> </span><span class="si">${</span><span class="nv">WORKER_CORES_PER_VCPU</span><span class="si">}</span><span class="w"> </span><span class="se">\</span>
-</span><span id="__span-57-21"><a id="__codelineno-57-21" name="__codelineno-57-21" href="#__codelineno-57-21"></a><span class="w">    </span>--csi-file-system<span class="w"> </span><span class="si">${</span><span class="nv">CSI_FILESYSTEM</span><span class="si">}</span><span class="w"> </span><span class="se">\</span>
-</span><span id="__span-57-22"><a id="__codelineno-57-22" name="__codelineno-57-22" href="#__codelineno-57-22"></a><span class="w">    </span>--csi-hypervisor-attached-volumes<span class="o">=</span><span class="si">${</span><span class="nv">CSI_HYPERVISOR_ATTACHED</span><span class="si">}</span><span class="w"> </span><span class="se">\</span>
-</span><span id="__span-57-23"><a id="__codelineno-57-23" name="__codelineno-57-23" href="#__codelineno-57-23"></a><span class="w">    </span>--registry-mirror-url<span class="o">=</span><span class="si">${</span><span class="nv">REGISTRY_MIRROR_URL</span><span class="si">}</span><span class="w"> </span><span class="se">\</span>
-</span><span id="__span-57-24"><a id="__codelineno-57-24" name="__codelineno-57-24" href="#__codelineno-57-24"></a><span class="w">    </span>--registry-mirror-username<span class="o">=</span><span class="si">${</span><span class="nv">REGISTRY_MIRROR_USERNAME</span><span class="si">}</span><span class="w"> </span><span class="se">\</span>
-</span><span id="__span-57-25"><a id="__codelineno-57-25" name="__codelineno-57-25" href="#__codelineno-57-25"></a><span class="w">    </span>--registry-mirror-password<span class="o">=</span><span class="si">${</span><span class="nv">REGISTRY_MIRROR_PASSWORD</span><span class="si">}</span><span class="w"> </span><span class="se">\</span>
-</span><span id="__span-57-26"><a id="__codelineno-57-26" name="__codelineno-57-26" href="#__codelineno-57-26"></a><span class="w">    </span>--registry-mirror-cacert<span class="o">=</span><span class="si">${</span><span class="nv">REGISTRY_MIRROR_CACERT</span><span class="si">}</span><span class="w"> </span><span class="se">\</span>
-</span><span id="__span-57-27"><a id="__codelineno-57-27" name="__codelineno-57-27" href="#__codelineno-57-27"></a><span class="w">    </span>--control-plane-pc-project<span class="w"> </span><span class="si">${</span><span class="nv">NUTANIX_PROJECT_NAME</span><span class="si">}</span><span class="w"> </span><span class="se">\</span>
-</span><span id="__span-57-28"><a id="__codelineno-57-28" name="__codelineno-57-28" href="#__codelineno-57-28"></a><span class="w">    </span>--worker-pc-project<span class="w"> </span><span class="si">${</span><span class="nv">NUTANIX_PROJECT_NAME</span><span class="si">}</span><span class="w"> </span><span class="se">\</span>
-</span><span id="__span-57-29"><a id="__codelineno-57-29" name="__codelineno-57-29" href="#__codelineno-57-29"></a><span class="w">    </span>--self-managed<span class="w"> </span><span class="se">\</span>
-</span><span id="__span-57-30"><a id="__codelineno-57-30" name="__codelineno-57-30" href="#__codelineno-57-30"></a><span class="w">    </span>--airgapped
+<p><div class="language-bash highlight"><pre><span></span><code><span id="__span-56-1"><a id="__codelineno-56-1" name="__codelineno-56-1" href="#__codelineno-56-1"></a>nkp<span class="w"> </span>create<span class="w"> </span>cluster<span class="w"> </span>nutanix<span class="w"> </span>-c<span class="w"> </span><span class="si">${</span><span class="nv">NKP_CLUSTER_NAME</span><span class="si">}</span><span class="w"> </span><span class="se">\</span>
+</span><span id="__span-56-2"><a id="__codelineno-56-2" name="__codelineno-56-2" href="#__codelineno-56-2"></a><span class="w">    </span>--control-plane-endpoint-ip<span class="w"> </span><span class="si">${</span><span class="nv">CONTROLPLANE_VIP</span><span class="si">}</span><span class="w"> </span><span class="se">\</span>
+</span><span id="__span-56-3"><a id="__codelineno-56-3" name="__codelineno-56-3" href="#__codelineno-56-3"></a><span class="w">    </span>--control-plane-prism-element-cluster<span class="w"> </span><span class="si">${</span><span class="nv">NUTANIX_CLUSTER</span><span class="si">}</span><span class="w"> </span><span class="se">\</span>
+</span><span id="__span-56-4"><a id="__codelineno-56-4" name="__codelineno-56-4" href="#__codelineno-56-4"></a><span class="w">    </span>--control-plane-subnets<span class="w"> </span><span class="si">${</span><span class="nv">NUTANIX_SUBNET_NAME</span><span class="si">}</span><span class="w"> </span><span class="se">\</span>
+</span><span id="__span-56-5"><a id="__codelineno-56-5" name="__codelineno-56-5" href="#__codelineno-56-5"></a><span class="w">    </span>--control-plane-vm-image<span class="w"> </span><span class="si">${</span><span class="nv">NKP_IMAGE</span><span class="si">}</span><span class="w"> </span><span class="se">\</span>
+</span><span id="__span-56-6"><a id="__codelineno-56-6" name="__codelineno-56-6" href="#__codelineno-56-6"></a><span class="w">    </span>--csi-storage-container<span class="w"> </span><span class="si">${</span><span class="nv">STORAGE_CONTAINER</span><span class="si">}</span><span class="w"> </span><span class="se">\</span>
+</span><span id="__span-56-7"><a id="__codelineno-56-7" name="__codelineno-56-7" href="#__codelineno-56-7"></a><span class="w">    </span>--endpoint<span class="w"> </span>https://<span class="si">${</span><span class="nv">NUTANIX_ENDPOINT</span><span class="si">}</span>:9440<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-56-8"><a id="__codelineno-56-8" name="__codelineno-56-8" href="#__codelineno-56-8"></a><span class="w">    </span>--worker-prism-element-cluster<span class="w"> </span><span class="si">${</span><span class="nv">NUTANIX_CLUSTER</span><span class="si">}</span><span class="w"> </span><span class="se">\</span>
+</span><span id="__span-56-9"><a id="__codelineno-56-9" name="__codelineno-56-9" href="#__codelineno-56-9"></a><span class="w">    </span>--worker-subnets<span class="w"> </span><span class="si">${</span><span class="nv">NUTANIX_SUBNET_NAME</span><span class="si">}</span><span class="w"> </span><span class="se">\</span>
+</span><span id="__span-56-10"><a id="__codelineno-56-10" name="__codelineno-56-10" href="#__codelineno-56-10"></a><span class="w">    </span>--worker-vm-image<span class="w"> </span><span class="si">${</span><span class="nv">NKP_IMAGE</span><span class="si">}</span><span class="w"> </span><span class="se">\</span>
+</span><span id="__span-56-11"><a id="__codelineno-56-11" name="__codelineno-56-11" href="#__codelineno-56-11"></a><span class="w">    </span>--ssh-public-key-file<span class="w"> </span><span class="si">${</span><span class="nv">SSH_PUBLIC_KEY</span><span class="si">}</span><span class="w"> </span><span class="se">\</span>
+</span><span id="__span-56-12"><a id="__codelineno-56-12" name="__codelineno-56-12" href="#__codelineno-56-12"></a><span class="w">    </span>--kubernetes-service-load-balancer-ip-range<span class="w"> </span><span class="si">${</span><span class="nv">LB_IP_RANGE</span><span class="si">}</span><span class="w"> </span><span class="se">\</span>
+</span><span id="__span-56-13"><a id="__codelineno-56-13" name="__codelineno-56-13" href="#__codelineno-56-13"></a><span class="w">    </span>--control-plane-disk-size<span class="w"> </span><span class="m">150</span><span class="w"> </span><span class="se">\</span>
+</span><span id="__span-56-14"><a id="__codelineno-56-14" name="__codelineno-56-14" href="#__codelineno-56-14"></a><span class="w">    </span>--control-plane-memory<span class="w"> </span><span class="si">${</span><span class="nv">CONTROL_PLANE_MEMORY_GIB</span><span class="si">}</span><span class="w"> </span><span class="se">\</span>
+</span><span id="__span-56-15"><a id="__codelineno-56-15" name="__codelineno-56-15" href="#__codelineno-56-15"></a><span class="w">    </span>--control-plane-vcpus<span class="w"> </span><span class="si">${</span><span class="nv">CONTROL_PLANE_VCPUS</span><span class="si">}</span><span class="w"> </span><span class="se">\</span>
+</span><span id="__span-56-16"><a id="__codelineno-56-16" name="__codelineno-56-16" href="#__codelineno-56-16"></a><span class="w">    </span>--control-plane-cores-per-vcpu<span class="w"> </span><span class="si">${</span><span class="nv">CONTROL_PLANE_CORES_PER_VCPU</span><span class="si">}</span><span class="w"> </span><span class="se">\</span>
+</span><span id="__span-56-17"><a id="__codelineno-56-17" name="__codelineno-56-17" href="#__codelineno-56-17"></a><span class="w">    </span>--worker-disk-size<span class="w"> </span><span class="m">150</span><span class="w"> </span><span class="se">\</span>
+</span><span id="__span-56-18"><a id="__codelineno-56-18" name="__codelineno-56-18" href="#__codelineno-56-18"></a><span class="w">    </span>--worker-memory<span class="w"> </span><span class="si">${</span><span class="nv">WORKER_MEMORY_GIB</span><span class="si">}</span><span class="w"> </span><span class="se">\</span>
+</span><span id="__span-56-19"><a id="__codelineno-56-19" name="__codelineno-56-19" href="#__codelineno-56-19"></a><span class="w">    </span>--worker-vcpus<span class="w"> </span><span class="si">${</span><span class="nv">WORKER_VCPUS</span><span class="si">}</span><span class="w"> </span><span class="se">\</span>
+</span><span id="__span-56-20"><a id="__codelineno-56-20" name="__codelineno-56-20" href="#__codelineno-56-20"></a><span class="w">    </span>--worker-cores-per-vcpu<span class="w"> </span><span class="si">${</span><span class="nv">WORKER_CORES_PER_VCPU</span><span class="si">}</span><span class="w"> </span><span class="se">\</span>
+</span><span id="__span-56-21"><a id="__codelineno-56-21" name="__codelineno-56-21" href="#__codelineno-56-21"></a><span class="w">    </span>--csi-file-system<span class="w"> </span><span class="si">${</span><span class="nv">CSI_FILESYSTEM</span><span class="si">}</span><span class="w"> </span><span class="se">\</span>
+</span><span id="__span-56-22"><a id="__codelineno-56-22" name="__codelineno-56-22" href="#__codelineno-56-22"></a><span class="w">    </span>--csi-hypervisor-attached-volumes<span class="o">=</span><span class="si">${</span><span class="nv">CSI_HYPERVISOR_ATTACHED</span><span class="si">}</span><span class="w"> </span><span class="se">\</span>
+</span><span id="__span-56-23"><a id="__codelineno-56-23" name="__codelineno-56-23" href="#__codelineno-56-23"></a><span class="w">    </span>--registry-mirror-url<span class="o">=</span><span class="si">${</span><span class="nv">REGISTRY_MIRROR_URL</span><span class="si">}</span><span class="w"> </span><span class="se">\</span>
+</span><span id="__span-56-24"><a id="__codelineno-56-24" name="__codelineno-56-24" href="#__codelineno-56-24"></a><span class="w">    </span>--registry-mirror-username<span class="o">=</span><span class="si">${</span><span class="nv">REGISTRY_MIRROR_USERNAME</span><span class="si">}</span><span class="w"> </span><span class="se">\</span>
+</span><span id="__span-56-25"><a id="__codelineno-56-25" name="__codelineno-56-25" href="#__codelineno-56-25"></a><span class="w">    </span>--registry-mirror-password<span class="o">=</span><span class="si">${</span><span class="nv">REGISTRY_MIRROR_PASSWORD</span><span class="si">}</span><span class="w"> </span><span class="se">\</span>
+</span><span id="__span-56-26"><a id="__codelineno-56-26" name="__codelineno-56-26" href="#__codelineno-56-26"></a><span class="w">    </span>--registry-mirror-cacert<span class="o">=</span><span class="si">${</span><span class="nv">REGISTRY_MIRROR_CACERT</span><span class="si">}</span><span class="w"> </span><span class="se">\</span>
+</span><span id="__span-56-27"><a id="__codelineno-56-27" name="__codelineno-56-27" href="#__codelineno-56-27"></a><span class="w">    </span>--control-plane-pc-project<span class="w"> </span><span class="si">${</span><span class="nv">NUTANIX_PROJECT_NAME</span><span class="si">}</span><span class="w"> </span><span class="se">\</span>
+</span><span id="__span-56-28"><a id="__codelineno-56-28" name="__codelineno-56-28" href="#__codelineno-56-28"></a><span class="w">    </span>--worker-pc-project<span class="w"> </span><span class="si">${</span><span class="nv">NUTANIX_PROJECT_NAME</span><span class="si">}</span><span class="w"> </span><span class="se">\</span>
+</span><span id="__span-56-29"><a id="__codelineno-56-29" name="__codelineno-56-29" href="#__codelineno-56-29"></a><span class="w">    </span>--self-managed<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-56-30"><a id="__codelineno-56-30" name="__codelineno-56-30" href="#__codelineno-56-30"></a><span class="w">    </span>--airgapped<span class="w"> </span><span class="p">&amp;</span>
 </span></code></pre></div>
+<div class="language-bash highlight"><span class="filename">Track the install logs</span><pre><span></span><code><span id="__span-57-1"><a id="__codelineno-57-1" name="__codelineno-57-1" href="#__codelineno-57-1"></a>tail<span class="w"> </span>-f<span class="w"> </span>nohup.out
+</span></code></pre></div></p>
 </div>
 <div class="tabbed-block">
 <div class="language-text no-copy highlight"><pre><span></span><code><span id="__span-58-1"><a id="__codelineno-58-1" name="__codelineno-58-1" href="#__codelineno-58-1"></a>&gt; ✓ Creating a bootstrap cluster 
