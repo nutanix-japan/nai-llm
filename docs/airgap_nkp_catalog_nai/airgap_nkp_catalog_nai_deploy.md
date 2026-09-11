@@ -180,15 +180,7 @@ The following pre-requisite applications will be enabled on NKP GUI:
 2. Click on **Management Cluster Workspace**
 3. Go to **Applications** to search and enable the following:
    
-     * **Kserve** : version ``v0.15.0`` or higher with the following ``Values`` configuration 
-     
-        ```yaml
-        kserve:
-          controller:
-            deploymentMode: "RawDeployment"
-            gateway:
-              disableIngressCreation: true
-        ```
+     * **Kserve** : version ``v0.15.0``
 
 4. Check if Kserve resources are ready either in the GUI by watching for ``Deployed`` state or in the commandline as follows:
     
