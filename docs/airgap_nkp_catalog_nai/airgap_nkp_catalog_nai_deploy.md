@@ -21,6 +21,7 @@ description: This lab takes your through installing NAI using NKP catalog applic
   
         * **Unified Endpoints** - multiple endpoints for HA and token-based rate limiting
         * **Providers** - Add remote endpoints from providers to utilize their models in Nutanix Enterprise AI workloads.
+        * **NAI Profiles** - Customise NAI deployment by choosing profiles to match concurrency requirements of the environment
 
 !!! info
 
@@ -175,6 +176,13 @@ The following pre-requisite applications will be enabled on NKP GUI:
 
 ### Kserve
 
+!!! info "Kserve and Kserve LLMInferenceService"
+    
+    Note that ``Kserve`` and ``Kserve LLMInferenceService`` are bundled in the same Kserve NKP catalog application.
+
+    Installing ``Kserve`` will also install ``Kserve LLMInferenceService`` CRDs and resources.
+
+    For more information, see catalog application packaging [here](https://github.com/nutanix-cloud-native/nkp-nutanix-product-catalog/tree/release-2.x/applications/kserve/0.19.0/helmrelease) on Github.
 
 1. In the NKP GUI, Go to **Clusters**
 2. Click on **Management Cluster Workspace**
@@ -201,6 +209,7 @@ The following pre-requisite applications will be enabled on NKP GUI:
         kserve-controller-manager-857dcfb7d8-fqmpw   2/2     Running   0          4m
         llmisvc-controller-manager-cf84cf6db-mwftz   1/1     Running   0          4m
         ```
+
 ### CloudNativePG
 
 !!! note

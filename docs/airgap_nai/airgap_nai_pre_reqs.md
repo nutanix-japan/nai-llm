@@ -423,18 +423,18 @@ The procedure will be done on the jumphost VM.
      source $HOME/airgap-nai/.env
      ```
 
-13.  Download the NAI ``2.7.0`` helm chart bundle from Nutanix Portal
+13.  Download the NAI ``2.8.0`` helm chart bundle from Nutanix Portal
    
     === ":octicons-command-palette-16: Command"
 
         ```bash
-        curl -o "nai-helm-charts-2.7.0.tar" "_paste_download_URL_here"
+        curl -o "nai-helm-charts-2.8.0.tar" "_paste_download_URL_here"
         ```
     
     === ":octicons-command-palette-16: Sample command"
     
         ```{ .text .no-copy }
-        curl -o "nai-helm-charts-2.7.0.tar" "https://download.nutanix.com/downloads/nai/2.7.0/nai-helm-charts-2.7.0.tarr?Expires=xxxxx"
+        curl -o "nai-helm-charts-2.8.0.tar" "https://download.nutanix.com/downloads/nai/2.8.0/nai-helm-charts-2.8.0.tarr?Expires=xxxxx"
         ```
 
 14. Extract the helm charts file
@@ -442,20 +442,20 @@ The procedure will be done on the jumphost VM.
     === ":octicons-command-palette-16: Command"
     
         ```bash
-        tar xvf nai-helm-charts-2.7.0.tar
+        tar xvf nai-helm-charts-2.8.0.tar
         ```
     
     === ":octicons-command-palette-16: Command output"
     
         ```bash
-        $ tar xvf nai-helm-charts-2.7.0.tar
+        $ tar xvf nai-helm-charts-2.8.0.tar
 
         gateway-crds-helm-v1.7.0.tgz
         gateway-helm-v1.7.0.tgz
         kserve-crd-v0.15.0.tgz
         kserve-v0.15.0.tgz
-        nai-core-2.7.0.tgz
-        nai-operators-2.7.0.tgz
+        nai-core-2.8.0.tgz
+        nai-operators-2.8.0.tgz
         opentelemetry-operator-0.102.0.tgz          
         ```
     
@@ -532,11 +532,11 @@ The procedure will be done on the jumphost VM.
         Pushing: kserve-v0.15.0.tgz
         Pushed: harbor.x.x.x.x.nip.io/nutanix/kserve:v0.15.0
         Digest: sha256:e1bc365c75dd28f0c43581107b78614ffe21e6fbaf95a9351af440d3eec45130
-        Pushing: nai-core-2.7.0.tgz
-        Pushed: harbor.x.x.x.x.nip.io/nutanix/nai-core:2.7.0
+        Pushing: nai-core-2.8.0.tgz
+        Pushed: harbor.x.x.x.x.nip.io/nutanix/nai-core:2.8.0
         Digest: sha256:2484532e59822e3c660aa4fa4a9152788d68bd51d1a47ea6e4b4884fa02bafe1
-        Pushing: nai-operators-2.7.0.tgz
-        Pushed: harbor.x.x.x.x.nip.io/nutanix/nai-operators:2.7.0
+        Pushing: nai-operators-2.8.0.tgz
+        Pushed: harbor.x.x.x.x.nip.io/nutanix/nai-operators:2.8.0
         Digest: sha256:8a377a20f58f28500daab57730cf71bc4c7e2385615e061a9bd98e73ed47a978
         Pushing: opentelemetry-operator-0.102.0.tgz
         Pushed: harbor.x.x.x.x.nip.io/nutanix/opentelemetry-operator:0.102.0
@@ -583,13 +583,13 @@ stateDiagram-v2
     === ":octicons-command-palette-16: Command"
 
         ```text title="Paste the download URL within double quotes"
-        curl -o nai-2.7.0.tar "_paste_download_URL_here"
+        curl -o nai-2.8.0.tar "_paste_download_URL_here"
         ```
 
     === ":octicons-command-palette-16: Sample command"
         
         ```bash title="This download is about 63 GBs"
-        curl -o nai-2.7.0-1.tar "https://download.nutanix.com/downloads/nai/2.7.0/nai-2.7.0.tar?..."
+        curl -o nai-2.8.0-1.tar "https://download.nutanix.com/downloads/nai/2.8.0/nai-2.8.0.tar?..."
         ```
 
 2. Since we will be using the same internal Harbor container registry to upload container images, make sure the following environment variables are set (these were already set during air-gap NKP preparation). Append (add) the following to your ``$HOME/airgap-nai/.env`` file
@@ -632,13 +632,13 @@ stateDiagram-v2
     === ":octicons-command-palette-16: Command"
 
          ```bash
-         ./push-images-to-registry.sh ${REGISTRY} ${PROJECT} nai-v2.7.0.tar
+         ./push-images-to-registry.sh ${REGISTRY} ${PROJECT} nai-v2.8.0.tar
          ```
     
     === ":octicons-command-palette-16: Sample command"
 
          ```bash
-         ./push-images-to-registry.sh harbor.10.x.x.134.nip.io nutanix nai-v2.7.0.tar
+         ./push-images-to-registry.sh harbor.10.x.x.134.nip.io nutanix nai-v2.8.0.tar
          ```
 
     === ":octicons-command-palette-16: Command output"
@@ -647,29 +647,32 @@ stateDiagram-v2
 
         < Snipped output >
 
-        → [40/40] Processing: nutanix/nai-go-processor:v2.7.0
-        → Tagging as: harbor.x.x.x.x.nip.io/nutanix/nai-go-processor:v2.7.0
+        → [41/41] Processing: nutanix/nai-finetuning:v2.8.0
+        → Tagging as: hub.10.122.7.90.nip.io/nutanix/nai-finetuning:v2.8.0
         → Pushing to registry...
-        The push refers to repository [harbor.x.x.x.x.nip.io/nutanix/nai-go-processor]
-        68c62dd01600: Layer already exists 
-        9f1399477dbf: Layer already exists 
-        6fd88674c4ba: Layer already exists 
-        14087c42d4b4: Layer already exists 
-        2cb1f8643318: Layer already exists 
-        ffcaa2070b2e: Layer already exists 
-        a9f9b89dc1f2: Layer already exists 
-        29df493baa13: Layer already exists 
-        v2.7.0: digest: sha256:22d4558b118f0f5afb0d572e080f44dd6518d5365783222de21a721fa947b9ee size: 1993
+        The push refers to repository [hub.10.122.7.90.nip.io/nutanix/nai-finetuning]
+        5f70bf18a086: Mounted from nutanix/nai-agent-app 
+        407defdb829d: Pushed 
+        044dfd200326: Pushed 
+        990a0cbf775a: Pushed 
+        6df455e80990: Pushed 
+        98bde6aa61d1: Pushed 
+        e51356ccd199: Pushed 
+        ed0b07001c4d: Pushed 
+        08e17bfb58d0: Pushed 
+        cc3d70f1bbd5: Pushed 
+        123a078714d5: Pushed 
+        v2.8.0: digest: sha256:fa7de0ba47a8aca53f77e8ca6164dc930bce1340c05c6ba254d52ea05255a908 size: 2634
         ✓ Pushed successfully
-        
+
         ========================================
         Summary
         ========================================
-        Total images loaded:    40
-        Successfully pushed:    40
+        Total images loaded:    41
+        Successfully pushed:    41
         Failed:                 0
-        
-        ✓ All images successfully pushed to harbor.x.x.x.x.nip.io/nutanix
+
+        ✓ All images successfully pushed to hub.10.x.x.134.nip.io/nutanix
         ```
 
 Now we are ready to deploy our NAI workloads.

@@ -40,13 +40,13 @@ nav:
       - Setup Air-gapped NKP Cluster: airgap_nkp_catalog_nai/airgap_nkp_catalog_infra_nkp_airgap.md
       - Pre-requisites NAI: airgap_nkp_catalog_nai/airgap_nkp_catalog_pre_reqs.md
       - Deploy NAI: airgap_nkp_catalog_nai/airgap_nkp_catalog_nai_deploy.md
-  #   - Air-gapped NAI (Helm):
-  #     - Getting Started: airgap_nai/index.md
-  #     - Harbor Container Registry: airgap_nai/harbor.md
-  #     - Setup Air-gapped NKP Cluster: airgap_nai/infra_nkp_airgap.md
-  #     - Pre-requisites NAI: airgap_nai/airgap_nai_pre_reqs.md
-  #     - Deploy NAI: airgap_nai/airgap_nai_deploy.md
-  #     - Test NAI: airgap_nai/airgap_nai_test.md
+    - Air-gapped NAI (Helm):
+      - Getting Started: airgap_nai/index.md
+      - Harbor Container Registry: airgap_nai/harbor.md
+      - Setup Air-gapped NKP Cluster: airgap_nai/infra_nkp_airgap.md
+      - Pre-requisites NAI: airgap_nai/airgap_nai_pre_reqs.md
+      - Deploy NAI: airgap_nai/airgap_nai_deploy.md
+      - Test NAI: airgap_nai/airgap_nai_test.md
   - NAI Unified Endpoints:
     - Getting Started: uep/index.md
     - Fall Back Endpoints: uep/iep_uep_test.md

@@ -75,8 +75,8 @@ Below are minimum requirements for deploying NAI on the NKP Demo Cluster.
 
 | Role          | No. of Nodes (VM) | vCPU per Node | Memory per Node | Storage per Node | Total vCPU | Total Memory |
 |---------------|-------------------|---------------|-----------------|------------------|------------|--------------|
-| Control plane | 3                 | 4             | 16 GB           | 150 GB           | 12         | 48 GB        |
-| Worker        | 4                 | 12            | 32 GB           | 150 GB           | 36         | 128 GB       |
+| Control plane | 3                 | 4             | 16 GB           | 200 GB           | 12         | 48 GB        |
+| Worker        | 4                 | 12            | 32 GB           | 200 GB           | 36         | 128 GB       |
 | GPU           | 1                 | 20            | 40 GB           | 300 GB           | 20         | 40 GB        |
 | **Totals**    |                   |               |                 |                  | **68**     | **216 GB**   |
 
@@ -84,9 +84,9 @@ Below are minimum requirements for deploying NAI on the NKP Demo Cluster.
 
     1. Existing Ubuntu Linux jumphost VM. See here for jumphost installation [steps](../infra/infra_jumphost_tofu.md).
     2. [Docker](#setup-docker-on-jumphost) or Podman installed on the jumphost VM
-    3. Nutanix PC is at least ``pc.7.5.0.1``
-    4. Nutanix AOS is at least ``7.3.0.5``
-    5. Download and install NKP ``v2.17`` binary from Nutanix Portal
+    3. Nutanix PC is at least ``pc.7.5.x.x``
+    4. Nutanix AOS is at least ``7.5.x`` or later
+    5. Download and install NKP ``v2.18.0`` binary from Nutanix Portal
     6. Find and reserve 3 IPs for control plane and MetalLB access from AHV network
     7. Find GPU details from Nutanix cluster
     8. Create a base image to use with NKP nodes using ``nkp`` command
@@ -117,19 +117,19 @@ Below are minimum requirements for deploying NAI on the NKP Demo Cluster.
     === ":octicons-command-palette-16: Command"
 
         ```text title="Paste the download URL within double quotes"
-        curl -o nkp-air-gapped-bundle_v2.17.1_linux_amd64.tar.gz "_paste_download_URL_here"
+        curl -o nkp-air-gapped-bundle_v2.18.0_linux_amd64.tar.gz "_paste_download_URL_here"
         ```
 
     === ":octicons-command-palette-16: Sample command"
         
         ```bash
-        curl -o nkp-air-gapped-bundle_v2.17.1_linux_amd64.tar.gz "https://download.nutanix.com/downloads/nkp/v2.17.1/nkp-air-gapped-bundle_v2.17.1_linux_amd64.tar.gz?........"
+        curl -o nkp-air-gapped-bundle_v2.18.0_linux_amd64.tar.gz "https://download.nutanix.com/downloads/nkp/v2.18.0/nkp-air-gapped-bundle_v2.18.0_linux_amd64.tar.gz?........"
         ```
         
     === ":octicons-command-palette-16: Command"
     
         ```bash
-        tar xvfz nkp-air-gapped-bundle_v2.17.1_linux_amd64.tar.gz
+        tar xvfz nkp-air-gapped-bundle_v2.18.0_linux_amd64.tar.gz
         ```
 
 
@@ -138,14 +138,14 @@ Below are minimum requirements for deploying NAI on the NKP Demo Cluster.
     === ":octicons-command-palette-16: Command"
     
         ```bash
-        sudo cp nkp-v2.17.1/cli/nkp /usr/local/bin/
+        sudo cp nkp-v2.18.0/cli/nkp /usr/local/bin/
         ```
 
 12. Verify the ``nkp`` binary is installed correctly. Ensure the version is latest
     
     !!! note
 
-        At the time of writing this lab nkp version is ``v2.17.1``
+        At the time of writing this lab nkp version is ``v2.18.0``
 
     === ":octicons-command-palette-16: Command"
 
@@ -159,12 +159,12 @@ Below are minimum requirements for deploying NAI on the NKP Demo Cluster.
         $ nkp version
         catalog: v0.8.1
         diagnose: v0.12.0
-        imagebuilder: v2.17.1
-        kommander: v2.17.1
-        konvoy: v2.17.1
-        konvoybundlepusher: v2.17.1
+        imagebuilder: v2.18.0
+        kommander: v2.18.0
+        konvoy: v2.18.0
+        konvoybundlepusher: v2.18.0
         mindthegap: v1.24.0
-        nkp: v2.17.1
+        nkp: v2.18.0
         ```
 
 ### Setup Docker on Jumphost
@@ -178,15 +178,15 @@ If not already done, follow the steps in [Setup Docker on Jumphost](../infra/inf
     === ":octicons-command-palette-16: Command"
     
         ```bash
-        cd $HOME/airgap-nkp/nkp-v2.17.1/
-        docker load -i nkp-image-builder-image-v2.17.1.tar
-        docker load -i konvoy-bootstrap-image-v2.17.1.tar
+        cd $HOME/airgap-nkp/nkp-v2.18.0/
+        docker load -i nkp-image-builder-image-v2.18.0.tar
+        docker load -i konvoy-bootstrap-image-v2.18.0.tar
         ```
     
     === ":octicons-command-palette-16: Command output"
 
         ```bash
-        $ docker load -i nkp-image-builder-image-v2.17.1.tar 
+        $ docker load -i nkp-image-builder-image-v2.18.0.tar 
         9fe9a137fd00: Loading layer [==================================================>]   7.63MB/7.63MB
         76fcadd9b36b: Loading layer [==================================================>]  33.57MB/33.57MB
         9a230b56c773: Loading layer [==================================================>]  85.18MB/85.18MB
@@ -198,11 +198,11 @@ If not already done, follow the steps in [Setup Docker on Jumphost](../infra/inf
         5210ca26c0aa: Loading layer [==================================================>]  528.4MB/528.4MB
         2ffff926e4e0: Loading layer [==================================================>]  12.69MB/12.69MB
         ea1091ae88c8: Loading layer [==================================================>]  5.632kB/5.632kB
-        Loaded image: mesosphere/nkp-image-builder:v2.17.1
+        Loaded image: mesosphere/nkp-image-builder:v2.18.0
         ```
         ```bash
-        $ docker load -i konvoy-bootstrap-image-v2.17.1.tar 
-        Loaded image: mesosphere/konvoy-bootstrap:v2.17.1
+        $ docker load -i konvoy-bootstrap-image-v2.18.0.tar 
+        Loaded image: mesosphere/konvoy-bootstrap:v2.18.0
         ```
 
 2. Confirm presence of container images on jumhost VM
@@ -219,8 +219,8 @@ If not already done, follow the steps in [Setup Docker on Jumphost](../infra/inf
         $ docker image ls
 
         REPOSITORY                                            TAG          IMAGE ID       CREATED        SIZE
-        mesosphere/nkp-image-builder                          v2.17.1      4bae9be67aa2   45 years ago   1.3GB
-        mesosphere/konvoy-bootstrap                           v2.17.1      a2aa0268435b   2 weeks ago    2.64GB
+        mesosphere/nkp-image-builder                          v2.18.0      4bae9be67aa2   45 years ago   1.3GB
+        mesosphere/konvoy-bootstrap                           v2.18.0      a2aa0268435b   2 weeks ago    2.64GB
         ```
 
 ## Reserve Control Plane and MetalLB IP
@@ -241,10 +241,10 @@ We will reserve a total of three IPs for the following:
 
 2. From VSC, logon to your jumpbox VM and open Terminal
 
-3. Install ``nmap`` tool (if not already done)
-
-    === ":octicons-command-palette-16: Command
-    
+3. Install ``nmap`` tool
+   
+    === ":octicons-command-palette-16: Command"
+        
         ```bash
         cd $HOME/sol-cnai-infra
         devbox add nmap
@@ -252,7 +252,7 @@ We will reserve a total of three IPs for the following:
 
 4. Find three unused static IP addresses in the subnet
 
-    === ":octicons-command-palette-16: Command
+    === ":octicons-command-palette-16: Command"
 
         ```bash
         nmap -v -sn  <your CIDR>
@@ -377,7 +377,7 @@ In this section we will go through creating a base image for all the control pla
         export NKP_CLUSTER_NAME=nkpdarksite
         export CONTROLPLANE_VIP=10.x.x.214
         export LB_IP_RANGE=10.x.x.215-10.x.x.216
-        export OS_BUNDLE_DIR=nkp-v2.17.1/image-artifacts/
+        export OS_BUNDLE_DIR=nkp-v2.18.0/image-artifacts/
         export OS=ubuntu-24.04
         export BASE_IMAGE=ubuntu-24.04-server-cloudimg-amd64.img
         ```
@@ -387,7 +387,7 @@ In this section we will go through creating a base image for all the control pla
     ```bash
     cd $HOME/airgap-nkp
     source .env
-    cd nkp-v2.17.1/
+    cd nkp-v2.18.0/
     ```
 
 7. Upload ``ubuntu24.04`` base image to Prism Central > Images using the following download URL
@@ -410,7 +410,7 @@ In this section we will go through creating a base image for all the control pla
     === ":octicons-command-palette-16: Sample command"
     
         ```bash
-        curl -OL "https://download.nutanix.com/downloads/nkp/v2.17.1/nkp-air-gapped-bundle_v2.17.1_linux_amd64.tar.gz?Expires=xxxx"
+        curl -OL "https://download.nutanix.com/downloads/nkp/v2.18.0/nkp-air-gapped-bundle_v2.18.0_linux_amd64.tar.gz?Expires=xxxx"
         ```
 
 9. Verify checksum with the one published in download site and extract the offline bundle
@@ -425,8 +425,8 @@ In this section we will go through creating a base image for all the control pla
     === ":octicons-command-palette-16: Sample command"
     
         ```bash
-        sha256sum nkp-air-gapped-bundle_v2.17.1_linux_amd64.tar.gz
-        tar xvf nkp-air-gapped-bundle_v2.17.1_linux_amd64.tar.gz
+        sha256sum nkp-air-gapped-bundle_v2.18.0_linux_amd64.tar.gz
+        tar xvf nkp-air-gapped-bundle_v2.18.0_linux_amd64.tar.gz
         ```
     
 10. Create the package bundle to include in the image using ``ubuntu-24.04`` as the target OS
@@ -440,15 +440,15 @@ In this section we will go through creating a base image for all the control pla
     === ":octicons-command-palette-16: Sample command"
     
         ```bash
-        nkp create package-bundle ubuntu-24.04 --artifacts-directory nkp-v2.17.1/image-artifacts/
+        nkp create package-bundle ubuntu-24.04 --artifacts-directory nkp-v2.18.0/image-artifacts/
         ```
 
     === ":octicons-command-palette-16: Command output"
 
         ```{ .text .no-copy }
-        $ nkp create package-bundle ubuntu-24.04 --artifacts-directory nkp-v2.17.1/image-artifacts/ 
+        $ nkp create package-bundle ubuntu-24.04 --artifacts-directory nkp-v2.18.0/image-artifacts/ 
 
-        OS bundle configuration files extracted to /home/ubuntu/airgap-nkp/nkp-v2.17.1/kib/artifacts/.dkp-image-builder-2593079857
+        OS bundle configuration files extracted to /home/ubuntu/airgap-nkp/nkp-v2.18.0/kib/artifacts/.dkp-image-builder-2593079857
         Get:1 http://archive.ubuntu.com/ubuntu jammy InRelease [270 kB]
         Get:2 http://security.ubuntu.com/ubuntu jammy-security InRelease [129 kB]
 
@@ -459,7 +459,7 @@ In this section we will go through creating a base image for all the control pla
         Get:243 http://archive.ubuntu.com/ubuntu jammy-updates/universe amd64 python3-wheel all 0.37.1-2ubuntu0.24.04.1 [32.0 kB]               
         Fetched 176 MB in 9s (19.9 MB/s) 
         dpkg-scanpackages: info: Wrote 243 entries to output Packages file.
-        /home/ubuntu/airgap-nkp/nkp-v2.17.1/kib/artifacts/.dkp-image-builder-2593079857/ubuntu-24.04/Packages       
+        /home/ubuntu/airgap-nkp/nkp-v2.18.0/kib/artifacts/.dkp-image-builder-2593079857/ubuntu-24.04/Packages       
         ```
 
 11. After a successful run of the create package-bundle command, there will be ``1.34.3_ubuntu_24.04_x86_64.tar.gz`` file inside the image-artifacts directory
@@ -473,17 +473,17 @@ In this section we will go through creating a base image for all the control pla
     === ":octicons-command-palette-16: Command output"
     
         ```text hl_lines="13"
-        ├── nkp-air-gapped-bundle_v2.17.1_linux_amd64.tar.gz
-        └── nkp-v2.17.1
+        ├── nkp-air-gapped-bundle_v2.18.0_linux_amd64.tar.gz
+        └── nkp-v2.18.0
             ├── NOTICES
             ├── application-repositories
-            │   └── kommander-applications-v2.17.1.tar.gz
+            │   └── kommander-applications-v2.18.0.tar.gz
             ├── cli
             │   ├── NOTICES
             │   └── nkp
             ├── container-images
-            │   ├── kommander-image-bundle-v2.17.1.tar
-            │   └── konvoy-image-bundle-v2.17.1.tar
+            │   ├── kommander-image-bundle-v2.18.0.tar
+            │   └── konvoy-image-bundle-v2.18.0.tar
             ├── image-artifacts
             │   ├── 1.34.3_ubuntu_24.04_x86_64.tar.gz
             │   ├── containerd-1.7.29-d2iq.1-ol-8.9-x86_64.tar.gz
@@ -513,7 +513,7 @@ In this section we will go through creating a base image for all the control pla
         ```bash
         nkp create image nutanix ubuntu-24.04 --endpoint pc.example.com \
         --cluster pe --subnet User1 --source-image ubuntu-24.04 \ 
-        --artifacts-directory nkp-v2.17.1/image-artifacts/ \
+        --artifacts-directory nkp-v2.18.0/image-artifacts/ \
         --insecure
         ```
 
@@ -586,7 +586,7 @@ In this section we will use internal Harbor container registry to upload NKP con
 
     ```bash
     nkp create cluster nutanix -c ${NKP_CLUSTER_NAME} \
-    --bundle=/path_to_extracted_airgap_bundle/nkp-v2.17.1/container-images/*.tar \  # (1)
+    --bundle=/path_to_extracted_airgap_bundle/nkp-v2.18.0/container-images/*.tar \  # (1)
     # other options
     ```
     
@@ -629,19 +629,19 @@ In this section we will use internal Harbor container registry to upload NKP con
 3. Push the images to air-gapped registry
    
     ```bash
-    cd nkp-v2.17.1/
+    cd nkp-v2.18.0/
     ```
    
     === "Command"
 
         ```bash
-        nkp push bundle --bundle ./container-images/konvoy-image-bundle-v2.17.1.tar \
+        nkp push bundle --bundle ./container-images/konvoy-image-bundle-v2.18.0.tar \
         --to-registry=${REGISTRY_MIRROR_URL} --to-registry-username=${REGISTRY_MIRROR_USERNAME} \
         --to-registry-password=${REGISTRY_MIRROR_PASSWORD} \
         --to-registry-ca-cert-file=${REGISTRY_MIRROR_CACERT}
         ```
         ```bash
-        nkp push bundle --bundle ./container-images/kommander-image-bundle-v2.17.1.tar \
+        nkp push bundle --bundle ./container-images/kommander-image-bundle-v2.18.0.tar \
         --to-registry=${REGISTRY_MIRROR_URL} --to-registry-username=${REGISTRY_MIRROR_USERNAME} \
         --to-registry-password=${REGISTRY_MIRROR_PASSWORD} \
         --to-registry-ca-cert-file=${REGISTRY_MIRROR_CACERT}
@@ -650,27 +650,30 @@ In this section we will use internal Harbor container registry to upload NKP con
     === "Command output"
 
         ```{ .text .no-copy }
-        $ nkp push bundle --bundle ./container-images/konvoy-image-bundle-v2.17.1.tar \
+        $ nkp push bundle --bundle ./container-images/konvoy-image-bundle-v2.18.0.tar \
         --to-registry=${REGISTRY_MIRROR_URL} --to-registry-username=${REGISTRY_MIRROR_USERNAME} \
         --to-registry-password=${REGISTRY_MIRROR_PASSWORD} \
         --to-registry-ca-cert-file=${REGISTRY_MIRROR_CACERT}
           ✓ Creating temporary directory
-          ✓ Extracting bundle configs from "nkp-v2.17.1/container-images/konvoy-image-bundle-v2.17.1.tar"
+          ✓ Extracting bundle configs from "nkp-v2.18.0/container-images/konvoy-image-bundle-v2.18.0.tar"
           ✓ Parsing image bundle config
           ✓ Starting temporary Docker registry
           ✓ Pushing bundled images [================================>114/114] (time elapsed 12s) 
         ```
         ```{ .text .no-copy }
-        $ nkp push bundle --bundle ./container-images/kommander-image-bundle-v2.17.1.tar \
+        $ nkp push bundle --bundle ./container-images/kommander-image-bundle-v2.18.0.tar \
         --to-registry=${REGISTRY_MIRROR_URL} --to-registry-username=${REGISTRY_MIRROR_USERNAME} \
         --to-registry-password=${REGISTRY_MIRROR_PASSWORD} \
         --to-registry-ca-cert-file=${REGISTRY_MIRROR_CACERT}
          ✓ Creating temporary directory
-         ✓ Extracting bundle configs from "nkp-v2.17.1/container-images/kommander-image-bundle-v2.17.1.tar"
+         ✓ Extracting bundle configs from "nkp-v2.18.0/container-images/kommander-image-bundle-v2.18.0.tar"
          ✓ Parsing image bundle config
          ✓ Starting temporary Docker registry
          ✓ Pushing bundled images [================================>231/231] (time elapsed 34s)
         ```
+
+We are now ready to install the workload ``nkpdarksite`` cluster
+
 ## Using Registry Mirror with Private CA Certificate
 
 We have tested deploying NKP cluster with registry mirror options using the Harbor (Hub) certified by a private CA server.
@@ -703,8 +706,6 @@ We have tested deploying NKP cluster with registry mirror options using the Harb
     | **Air-Gap Use Case** | Requires fully modifying all CAPI manifests. | Keeps manifests intact; relies on node configurations. |
     | **Configuration Level**| Kubernetes API / Manifest layer. | Node OS / Container runtime layer (containerd). |
     | **Day 2 Ops**| Update Node OS files / Container runtime restart (containerd).| Update Node OS files / Container runtime restart (containerd). |
-
-We are now ready to install the workload ``nkpdarksite`` cluster
 
 ## Create Air-gapped NKP Workload Cluster
 
@@ -760,7 +761,7 @@ We are now ready to install the workload ``nkpdarksite`` cluster
 
         Run the following command to verify your ``nkp`` command and associated environment variables and values.
 
-        ```bash
+        ```bash hl_lines="23-26"
         echo "nkp create cluster nutanix -c ${NKP_CLUSTER_NAME} \
                 --control-plane-endpoint-ip ${CONTROLPLANE_VIP} \
                 --control-plane-prism-element-cluster ${NUTANIX_CLUSTER} \
@@ -773,11 +774,11 @@ We are now ready to install the workload ``nkpdarksite`` cluster
                 --worker-vm-image ${NKP_IMAGE} \
                 --ssh-public-key-file ${SSH_PUBLIC_KEY} \
                 --kubernetes-service-load-balancer-ip-range ${LB_IP_RANGE} \
-                --control-plane-disk-size 150 \
+                --control-plane-disk-size 200 \
                 --control-plane-memory ${CONTROL_PLANE_MEMORY_GIB} \
                 --control-plane-vcpus ${CONTROL_PLANE_VCPUS} \
                 --control-plane-cores-per-vcpu ${CONTROL_PLANE_CORES_PER_VCPU} \
-                --worker-disk-size 150 \
+                --worker-disk-size 200 \
                 --worker-memory ${WORKER_MEMORY_GIB} \
                 --worker-vcpus ${WORKER_VCPUS} \
                 --worker-cores-per-vcpu ${WORKER_CORES_PER_VCPU} \
@@ -801,8 +802,8 @@ We are now ready to install the workload ``nkpdarksite`` cluster
 
     === "Command"
 
-        ```bash 
-        nkp create cluster nutanix -c ${NKP_CLUSTER_NAME} \
+        ```bash hl_lines="23-26"
+        nohup nkp create cluster nutanix -c ${NKP_CLUSTER_NAME} \
             --control-plane-endpoint-ip ${CONTROLPLANE_VIP} \
             --control-plane-prism-element-cluster ${NUTANIX_CLUSTER} \
             --control-plane-subnets ${NUTANIX_SUBNET_NAME} \
@@ -814,11 +815,11 @@ We are now ready to install the workload ``nkpdarksite`` cluster
             --worker-vm-image ${NKP_IMAGE} \
             --ssh-public-key-file ${SSH_PUBLIC_KEY} \
             --kubernetes-service-load-balancer-ip-range ${LB_IP_RANGE} \
-            --control-plane-disk-size 150 \
+            --control-plane-disk-size 200 \
             --control-plane-memory ${CONTROL_PLANE_MEMORY_GIB} \
             --control-plane-vcpus ${CONTROL_PLANE_VCPUS} \
             --control-plane-cores-per-vcpu ${CONTROL_PLANE_CORES_PER_VCPU} \
-            --worker-disk-size 150 \
+            --worker-disk-size 200 \
             --worker-memory ${WORKER_MEMORY_GIB} \
             --worker-vcpus ${WORKER_VCPUS} \
             --worker-cores-per-vcpu ${WORKER_CORES_PER_VCPU} \
@@ -828,8 +829,6 @@ We are now ready to install the workload ``nkpdarksite`` cluster
             --registry-mirror-username=${REGISTRY_MIRROR_USERNAME} \
             --registry-mirror-password=${REGISTRY_MIRROR_PASSWORD} \
             --registry-mirror-cacert=${REGISTRY_MIRROR_CACERT} \
-            --control-plane-pc-project ${NUTANIX_PROJECT_NAME} \
-            --worker-pc-project ${NUTANIX_PROJECT_NAME} \
             --self-managed \
             --airgapped &
         ```
@@ -896,17 +895,6 @@ We are now ready to install the workload ``nkpdarksite`` cluster
         > Cluster was created successfully! Get the dashboard details with:
         > nkp get dashboard --kubeconfig="$HOME/airgap-nkp/nkpdarksite.conf"
         ```
-
-    !!! info "Deployment info"
-
-        The above command with the use of ``--self-managed`` argument, will create a bootstrap cluster, deploy CAPI resources on it and create a NKP base cluster (konvoy) using the CAPI components in the bootstrap cluster. It will automatically do the following once the NKP base cluster is provisioned:
-
-        - Deploy CAPI components on the bootstrap cluster
-        - Move the CAPI components from the bootstrap cluster to the new cluster
-        - Delete the Bootstrap cluster
-        - Deploy the Kommander components on top of the new base NKP cluster 
-
-        See [NKP the Hard Way](../appendix/infra_nkp_hard_way.md) section for more information for customizable NKP cluster deployments. 
   
 4. Observe the events in the shell and in Prism Central events
 
@@ -935,9 +923,6 @@ We are now ready to install the workload ``nkpdarksite`` cluster
         ```
 
 ## Add NKP GPU Workload Pool
-
-!!! note "Are you just deploying NKP?"
-    If you are doing this lab only to deploy NKP, then you can skip this GPU section.
 
 The steps below covers the following:
     - Retrieving and Applying NKP Pro License

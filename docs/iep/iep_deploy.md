@@ -667,7 +667,7 @@ We will use the Docker login credentials we created in the previous section to d
         ntnx-charts/nai-core    2.3.0           0.1.0           A Helm chart for NAI core components
         ```
     
-10. Install NAI operator
+10. Install NAI operator in the ``nai-system`` namespace.
     
     ??? "Deploy NAI Profiles"
 
