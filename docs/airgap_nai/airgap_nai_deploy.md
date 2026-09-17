@@ -75,7 +75,7 @@ The following pre-requisite applications will be enabled on NKP GUI:
 2. Click on **Management Cluster Workspace**
 3. Go to **Applications** to search and enable the following:
    
-     * **Prometheus Monitoring** : version ``78.4.0`` or higher with the following ``Values`` configuration 
+     * **Prometheus Monitoring** : version ``82.13.6`` or higher with the following ``Values`` configuration 
 
 4. Wait for ``Deployed`` state in the GUI
 
@@ -1411,7 +1411,7 @@ LeaderWorkerSet (LWS) is an open-source, custom Kubernetes API designed to deplo
         nai-valkey-sentinel-0                                    1/1     Running     0             18h
         ```
 
-## Install SSL Certificate and Gateway Elements
+## Install SSL Certificate and Gateway Elements (Optional)
 
 In this section we will install SSL Certificate to access the NAI UI. This is required as the endpoint will only work with a ssl endpoint with a valid certificate.
 
