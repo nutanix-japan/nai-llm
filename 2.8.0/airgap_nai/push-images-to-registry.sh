@@ -14,7 +14,7 @@
 #   ./push-images-to-registry.sh <registry-url> <project> <tar-file>
 #
 # Example:
-#   ./push-images-to-registry.sh registry.example.com nutanix nai-images-2.7.0.tar
+#   ./push-images-to-registry.sh registry.example.com nutanix nai-images-2.8.0.tar
 #
 
 set -uo pipefail
@@ -55,7 +55,7 @@ if [ $# -ne 3 ]; then
     echo "  tar-file        Path to the NAI images tar bundle"
     echo ""
     echo "Example:"
-    echo "  $0 registry.example.com nutanix nai-images-2.7.0.tar"
+    echo "  $0 registry.example.com nutanix nai-images-2.8.0.tar"
     echo ""
     exit 1
 fi
@@ -121,7 +121,7 @@ for source_image in "${LOADED_IMAGES[@]}"; do
     print_info "[$((PUSHED_COUNT + 1))/$TOTAL_IMAGES] Processing: $source_image"
     
     # Retag image for target registry
-    # Format: nutanix/nai-api:v2.7.0 → registry.example.com/<project>/nai-api:v2.7.0
+    # Format: nutanix/nai-api:v2.8.0 → registry.example.com/<project>/nai-api:v2.8.0
     if [[ "$source_image" =~ ^nutanix/(.+)$ ]]; then
         image_path="${BASH_REMATCH[1]}"
         target_image="${REGISTRY}/${PROJECT}/${image_path}"
